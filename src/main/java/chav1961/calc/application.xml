@@ -3,18 +3,32 @@
 	<app:i18n location="i18n:prop:chav1961/calculator/i18n/i18n"/>
 	<app:menu id="mainmenu">
 		<app:submenu name="menu.file" caption="menu.file" tooltip="menu.ttFile">
+			<app:item name="menu.file.cleanpipe" caption="menu.cleanPipe" tooltip="menu.ttCleanPipe" action="cleanPipe"/>
+			<app:item name="menu.file.loadpipe" caption="menu.loadPipe" tooltip="menu.ttLoadPipe" action="loadPipe"/>
+			<app:separator/>
+			<app:item name="menu.file.savepipe" caption="menu.savePipe" tooltip="menu.ttSavePipe" action="savePipe"/>
+			<app:item name="menu.file.savepipeAs" caption="menu.savePipeAs" tooltip="menu.ttSavePipeAs" action="savePipeAs"/>
+			<app:separator/>
 			<app:item name="menu.file.exit" caption="menu.exit" tooltip="menu.ttExit" action="exit"/>
 		</app:submenu>
-		<app:submenu name="menu.elements" caption="menu.elements" tooltip="menu.ttElements">
-			<app:submenu name="menu.elements.coils" caption="menu.elements.coils" tooltip="menu.ttElements.coils">
-				<app:item name="menu.elements.coils.onelayer" caption="menu.elements.coils.onelayer" tooltip="menu.ttElements.coils.onelayer" action="elementsCoilsOneLayer"/>
-			</app:submenu>
+		<app:submenu name="menu.tools" caption="menu.tools" tooltip="menu.ttTools">
+			<app:item name="menu.tools.find" caption="menu.find" tooltip="menu.ttFind" action="find"/>
+			<app:builtinSubmenu name="builtin.languages" caption="menu.languages" tooltip="menu.ttLanguages"/>
 		</app:submenu>
 		<app:submenu name="menu.help" caption="menu.help" tooltip="menu.ttHelp">
 			<app:item name="menu.help.about" caption="menu.about" tooltip="menu.ttAbout" action="helpAbout"/>
 		</app:submenu>
 	</app:menu>
-	<app:menu id="toolbar">
-		<app:item name="menu.help.about" caption="menu.about" tooltip="menu.ttAbout" action="helpAbout"/>
+	<app:menu id="navigator">
+		<app:submenu name="menu.elements" caption="menu.elements" tooltip="menu.ttElements">
+			<app:submenu name="menu.elements.coils" caption="menu.elements.coils" tooltip="menu.ttElements.coils">
+				<app:item name="menu.elements.coils.onelayer" caption="menu.elements.coils.onelayer" tooltip="menu.ttElements.coils.onelayer" action="elementsCoilsOneLayer"/>
+				<app:item name="menu.elements.coils.multilayer" caption="menu.elements.coils.multilayer" tooltip="menu.ttElements.coils.multilayer" action="elementsCoilsMultiLayer"/>
+			</app:submenu>
+		</app:submenu>
+	</app:menu>
+	<app:menu id="desktopToolbar">
+		<app:item name="desktop.toolbar.closeAll" caption="desktop.toolbar.closeAll" tooltip="desktop.toolbar.closeAllTT" icon="root://chav1961.calc.Application/chav1961/calc/closeAll.png" action="closeAll"/>
+		<app:item name="menu.tools.find" caption="menu.find" tooltip="menu.ttFind" icon="root://chav1961.calc.Application/chav1961/calc/find.png" action="find"/>
 	</app:menu>
 </app:root>

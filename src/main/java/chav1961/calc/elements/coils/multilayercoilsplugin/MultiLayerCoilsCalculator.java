@@ -1,7 +1,6 @@
-package chav1961.calc.elements.coils;
+package chav1961.calc.elements.coils.multilayercoilsplugin;
 
 import chav1961.purelib.basic.exceptions.FlowException;
-
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
@@ -10,10 +9,10 @@ import chav1961.purelib.ui.interfacers.FormManager;
 import chav1961.purelib.ui.interfacers.Format;
 import chav1961.purelib.ui.interfacers.Action;
 
-@LocaleResourceLocation(Localizer.LOCALIZER_SCHEME+":prop:chav1961/calc/elements/coils/singlecoils")
+@LocaleResourceLocation(Localizer.LOCALIZER_SCHEME+":prop:chav1961/calc/elements/coils/multilayercoils")
 @Action(resource=@LocaleResource(value="calculateInductance",tooltip="calculateInductanceTooltip"),actionString="calculateInductance")
 @Action(resource=@LocaleResource(value="calculateCoils",tooltip="calculateCoilsTooltip"),actionString="calculateCoils")
-class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator> {
+class MultiLayerCoilsCalculator implements FormManager<Object,MultiLayerCoilsCalculator> {
 	private final LoggerFacade	logger;
 	
 @LocaleResource(value="length",tooltip="lengthTooltip")
@@ -30,23 +29,23 @@ class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator>
 @LocaleResource(value="coils",tooltip="coilsTooltip")	
 	private float				coils = 0.0f;
 
-	SingleCoilsCalculator(final LoggerFacade logger) {
+	MultiLayerCoilsCalculator(final Localizer localizer, final LoggerFacade logger) {
 		this.logger = logger;
 	}
 	
 	@Override
-	public RefreshMode onRecord(final Action action, final SingleCoilsCalculator oldRecord, final Object oldId, final SingleCoilsCalculator newRecord, final Object newId) throws FlowException {
+	public RefreshMode onRecord(final Action action, final MultiLayerCoilsCalculator oldRecord, final Object oldId, final MultiLayerCoilsCalculator newRecord, final Object newId) throws FlowException {
 		return RefreshMode.NONE;
 	}
 
 	@Override
-	public RefreshMode onField(final SingleCoilsCalculator inst, final Object id, final String fieldName, final Object oldValue) throws FlowException {
+	public RefreshMode onField(final MultiLayerCoilsCalculator inst, final Object id, final String fieldName, final Object oldValue) throws FlowException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public RefreshMode onAction(final SingleCoilsCalculator inst, final Object id, final String actionName, final Object parameter) throws FlowException {
+	public RefreshMode onAction(final MultiLayerCoilsCalculator inst, final Object id, final String actionName, final Object parameter) throws FlowException {
 		// TODO Auto-generated method stub
 		switch (actionName) {
 			case "calculateInductance"	:

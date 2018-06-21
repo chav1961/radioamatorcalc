@@ -36,4 +36,9 @@ public abstract class LocalizationKeys {
 	public static final String		SINGLECOILS_TOOLTIP = "SingleCoils.tooltip";
 	public static final String		SINGLECOILS_HELP = "SingleCoils.help";
 	
+	public static final String		ROOT = "root";
+	public static final String		ROOT_TOOLTIP = "root.tooltip";
+	
+	public static final String		DESKTOP_TOOLBAR_CLOSEALL = "desktop.toolbar.closeAll";
+	public static final String		DESKTOP_TOOLBAR_CLOSEALL_TOOLTIP = "desktop.toolbar.closeAllTT";
 }
