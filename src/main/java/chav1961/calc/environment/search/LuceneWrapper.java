@@ -1,4 +1,4 @@
-package chav1961.calc.environment;
+package chav1961.calc.environment.search;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,9 +12,14 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.StopwordAnalyzerBase;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.analysis.ru.RussianAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -40,14 +45,19 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.RAMDirectory;
 
+import chav1961.calc.interfaces.PluginInterface;
+import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
+import chav1961.purelib.i18n.interfaces.Localizer;
 
 public class LuceneWrapper {
-	public static final int		COUNTERS_DIRS = 0;
-	public static final int		COUNTERS_FILES = 1;
-	public static final int		COUNTERS_PARSED = 2;
-	public static final int		COUNTERS_FAILED = 3;
+	public static final int		COUNTERS_PARSED = 0;
+	public static final int		COUNTERS_FAILED = 1;
+	
+	private static final LangAndAnalyzer[]	ANALYZERS = {new LangAndAnalyzer("ru",new RussianAnalyzer())
+														, new LangAndAnalyzer("en",new EnglishAnalyzer())
+														};
 	
 	private final Directory		luceneDir;
 
@@ -65,11 +75,13 @@ public class LuceneWrapper {
 			this.luceneDir = luceneDir;
 		}
 	}
-	
-	public int[] buildDirectoryIndex(final File root, final FileFilter filter, final Map<String,URI> classes, final LoggerFacade printer) throws IOException {
-		final int[]		counters = new int[]{0,0,0,0};
+
+	public int[] buildDirectoryIndex(final Localizer parent, final LoggerFacade printer) throws IOException, LocalizationException {
+		final int[]		counters = new int[]{0,0};
 		
-		buildDirectoryIndex(root,filter,new StandardAnalyzer(),classes,printer,counters);
+		for (LangAndAnalyzer item : ANALYZERS) {
+			buildDirectoryIndex(parent,item,printer,counters);
+		}
 		return counters;
 	}
 
@@ -103,74 +115,45 @@ public class LuceneWrapper {
 			return new ArrayList<>();
 		}
 	}
-	
-	
-	private void buildDirectoryIndex(final File root, final FileFilter filter, final Analyzer analyzer, final Map<String,URI> classes, final LoggerFacade printer, final int[] counters) throws IOException {
-		final IndexWriterConfig	config = new IndexWriterConfig(analyzer);
 
-		Arrays.fill(counters,0);
+	private void buildDirectoryIndex(final Localizer parent, final LangAndAnalyzer item, final LoggerFacade printer, final int[] counters) throws LocalizationException, IOException {
+		final IndexWriterConfig	config = new IndexWriterConfig(item.analyzer);
+
 	    try(final IndexWriter writer = new IndexWriter(luceneDir,config)) {
-	    	indexContent(root,filter,writer,classes,printer,counters);
+	    	indexContent(parent,item,writer,printer,counters);
 		}
 	}
+
 	
-	private void indexContent(final File dir, final FileFilter filter, final IndexWriter writer, final Map<String,URI> classes, final LoggerFacade printer, final int[] counters) {
-		if (dir != null) {
-			if (dir.isFile()) {
-				counters[COUNTERS_FILES]++;
-				if (filter.accept(dir)) {
-					try(final InputStream	is = new FileInputStream(dir)) {
-						
-						parseContent(is, dir.getName(), dir.getAbsoluteFile().toURI(), writer, classes);
-						printer.message(Severity.debug,"File ["+dir.getAbsolutePath()+"] appended to search index");
-						counters[COUNTERS_PARSED]++;
-					} catch (Exception e) {
-						printer.message(Severity.warning,"File ["+dir.getAbsolutePath()+"] - I/O error on parsing ("+e.getMessage()+")");
-						counters[COUNTERS_FAILED]++;
-					}
-				}
-			}
-			else {
-				final File[]	content = dir.listFiles(); 
-				
-				if (content != null) {
-					counters[COUNTERS_DIRS]++;
-					for (File item : content) {
-						printer.message(Severity.debug,"Scanning ["+dir.getAbsolutePath()+"]...");
-						indexContent(item, filter, writer, classes, printer, counters);
-					}
-				}
-			}
-		}
-	}
-	
-	private void parseContent(final InputStream is, final String name, final URI location, final IndexWriter writer, final Map<String,URI> classes) throws IOException {
-		final StringBuilder	sb = new StringBuilder(); 
-		
-		try(final Reader	rdr = new InputStreamReader(is);
-			final BufferedReader	brdr = new BufferedReader(rdr)) {
-			int				index;
-			String			line;
+	private void indexContent(final Localizer parent, final LangAndAnalyzer item, final IndexWriter writer, final LoggerFacade printer, final int[] counters) throws LocalizationException, IOException {
+		for (PluginInterface plugin : ServiceLoader.load(PluginInterface.class)) {
+			final Localizer		localizer = plugin.getLocalizerAssociated(parent);
+			final Document 		doc = new Document();
+			final StringBuilder	sb = new StringBuilder();
 			
-			while ((line = brdr.readLine()) != null) {
-				if ((index = line.indexOf("package ")) >= 0) {
-					final String	className = line.substring(index+"package ".length()).split("\\;")[0].trim()+"."+(name.replace(".java",""));
-					
-					classes.put(className,location);
-				}
-				
-				sb.append(line).append('\n');
-			}
-		}
-		if (sb.length() > 0) {
-			final Document 	doc = new Document();
+			localizer.setCurrentLocale(Locale.forLanguageTag(item.language));
 			
-			doc.add(new StringField("name", name, Field.Store.YES));
-			doc.add(new TextField("content", sb.toString(), Field.Store.YES));
-			doc.add(new StringField("location", location.toString(), Field.Store.YES));
+			doc.add(new StringField("pluginId", plugin.getPluginId(), Field.Store.YES));
+			doc.add(new TextField("content", localizer.getValue(plugin.getCaptionId()) +localizer.getValue(plugin.getHelpId()), Field.Store.YES));
+			
+			sb.setLength(0);
+			for (String value : plugin.getUsesIds(parent)) {
+				sb.append(localizer.getValue(value)).append("\n");
+			}
+			doc.add(new TextField("uses", sb.toString(), Field.Store.YES));
+			
+			sb.setLength(0);
+			for (String value : plugin.getTagsIds(parent)) {
+				sb.append(localizer.getValue(value)).append("\n");
+			}
+			doc.add(new TextField("tags", sb.toString(), Field.Store.YES));
+			
 			writer.addDocument(doc);
+			
+			localizer.setCurrentLocale(parent.currentLocale().getLocale());
 		}
 	}
+	
 
 	private static class URIAndScoreImpl implements URIAndScore {
 		private final URI		uri;
@@ -186,5 +169,15 @@ public class LuceneWrapper {
 		@Override public URI getURI() {return uri;}
 		@Override public float getScore() {return score;}
 		@Override public String getFragment() {return fragment;}
+	}
+	
+	private static class LangAndAnalyzer {
+		final String				language;
+		final StopwordAnalyzerBase	analyzer;
+		
+		public LangAndAnalyzer(final String language, final StopwordAnalyzerBase analyzer) {
+			this.language = language;
+			this.analyzer = analyzer;
+		} 
 	}
 }

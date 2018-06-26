@@ -1,4 +1,4 @@
-package chav1961.calc.environment;
+package chav1961.calc.environment.desktop;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
+import chav1961.calc.Application;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.i18n.interfaces.Localizer;
@@ -20,17 +21,19 @@ import chav1961.purelib.ui.swing.interfaces.OnAction;
 public class DesktopManager extends JPanel implements LocaleChangeListener {
 	private static final long serialVersionUID = 813296081208498667L;
 
+	private final Application				application;
 	private final XMLDescribedApplication	xda;
 	private final Localizer					localizer;
 	private final JToolBar					tool;
 	private final DesktopPipeManager		mgr; 
 	
-	public DesktopManager(final XMLDescribedApplication xda, final Localizer localizer) throws NullPointerException, IllegalArgumentException, EnvironmentException {
+	public DesktopManager(final Application application, final XMLDescribedApplication xda, final Localizer localizer) throws NullPointerException, IllegalArgumentException, EnvironmentException {
 		super(new BorderLayout());
 		if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null"); 
 		}
 		else {
+			this.application = application; 
 			this.xda = xda; 
 			this.localizer = localizer;
 			
@@ -64,6 +67,11 @@ public class DesktopManager extends JPanel implements LocaleChangeListener {
 		mgr.removeAll();
 	}
 
+	@OnAction("find")
+	public void search() {
+		application.search();
+	}
+	
 	private void fillLocalizedString(final Locale oldLocale, final Locale newLocale) {
 		// TODO Auto-generated method stub
 	}

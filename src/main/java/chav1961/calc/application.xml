@@ -13,6 +13,8 @@
 		</app:submenu>
 		<app:submenu name="menu.tools" caption="menu.tools" tooltip="menu.ttTools">
 			<app:item name="menu.tools.find" caption="menu.find" tooltip="menu.ttFind" action="find"/>
+			<app:item name="menu.tools.index" caption="menu.index" tooltip="menu.ttIndex" action="index"/>
+			<app:separator/>
 			<app:builtinSubmenu name="builtin.languages" caption="menu.languages" tooltip="menu.ttLanguages"/>
 		</app:submenu>
 		<app:submenu name="menu.help" caption="menu.help" tooltip="menu.ttHelp">
@@ -30,5 +32,8 @@
 	<app:menu id="desktopToolbar">
 		<app:item name="desktop.toolbar.closeAll" caption="desktop.toolbar.closeAll" tooltip="desktop.toolbar.closeAllTT" icon="root://chav1961.calc.Application/chav1961/calc/closeAll.png" action="closeAll"/>
 		<app:item name="menu.tools.find" caption="menu.find" tooltip="menu.ttFind" icon="root://chav1961.calc.Application/chav1961/calc/find.png" action="find"/>
+	</app:menu>
+	<app:menu id="searchToolbar">
+		<app:item name="search.toolbar.close" caption="search.toolbar.close" tooltip="search.toolbar.closeTT" icon="root://chav1961.calc.Application/chav1961/calc/closeAll.png" action="closeSearch"/>
 	</app:menu>
 </app:root>

@@ -1,6 +1,5 @@
 package chav1961.calc.elements.coils.singlecoilsplugin;
 
-import chav1961.calc.elements.coils.multilayercoilsplugin.CoilsCalculationType;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;

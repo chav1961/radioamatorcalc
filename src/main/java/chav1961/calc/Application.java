@@ -1,13 +1,15 @@
 package chav1961.calc;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.Locale;
 import java.util.ServiceLoader;
 import java.util.Timer;
@@ -26,9 +28,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
 import javax.swing.border.EtchedBorder;
 
-import chav1961.calc.environment.DesktopManager;
+import org.apache.lucene.store.FSDirectory;
+
+import chav1961.calc.environment.desktop.DesktopManager;
+import chav1961.calc.environment.pipe.PipeFactory;
+import chav1961.calc.environment.search.LuceneWrapper;
+import chav1961.calc.environment.search.SearchManager;
+import chav1961.calc.interfaces.PipeInterface;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.PluginInterface.PluginInstance;
 import chav1961.purelib.basic.AbstractLoggerFacade;
@@ -41,6 +50,7 @@ import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.PureLibLocalizer;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
+import chav1961.purelib.ui.swing.AnnotatedActionListener;
 import chav1961.purelib.ui.swing.SimpleNavigatorTree;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.XMLDescribedApplication;
@@ -55,16 +65,28 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private static final String				WARNING_FORMAT = "<html><body><font color=blue>%1$s</font></body></html>"; 
 	private static final String				ERROR_FORMAT = "<html><body><font color=red>%1$s</font></body></html>"; 
 	private static final String				SEVERE_FORMAT = "<html><body><font color=red><b>%1$s</b></font></body></html>"; 
+
+	private static final String				DESKTOP_WINDOW = "DesktopWindow";
+	private static final String				SEARCH_WINDOW = "SearchWindow";
 	
 	private final Localizer					localizer;
 	private final JLabel					stateString = new JLabel();
 	private final LoggerFacade				logger;
 	private final JMenuBar					menu;
 	private final SimpleNavigatorTree		leftMenu;
-	private final DesktopManager			mgr;
-	private final Timer						timer = new Timer(true); 
+	private final DesktopManager			desktopMgr;
+	private final SearchManager				searchMgr;
+	private final PipeFactory				pipeFactory;
+	private final File						luceneDir = new File("./lucene");
+	private final LuceneWrapper				lucene;
+	private final CardLayout				cardLayout = new CardLayout(); 
+	private final JPanel					rightScreen = new JPanel(cardLayout);
+	private final Timer						timer = new Timer(true);
 	
-	public Application(final XMLDescribedApplication xda, final Localizer parentLocalizer) throws NullPointerException, IllegalArgumentException, EnvironmentException {
+	private PipeInterface					currentPipe = null;
+	private File							currentPipeFile = null;
+	
+	public Application(final XMLDescribedApplication xda, final Localizer parentLocalizer) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException {
 		if (xda == null) {
 			throw new NullPointerException("Application descriptor can't be null");
 		}
@@ -100,8 +122,8 @@ public class Application extends JFrame implements LocaleChangeListener {
 								}
 							};
 			
-			localizer.setParent(parentLocalizer);
-			localizer.addLocaleChangeListener(this);
+			parentLocalizer.push(localizer);
+			parentLocalizer.addLocaleChangeListener(this);
 			
 			this.menu = xda.getEntity("mainmenu",JMenuBar.class,null); 
 			final JPanel	centerPanel = new JPanel(new BorderLayout()); 
@@ -117,15 +139,24 @@ public class Application extends JFrame implements LocaleChangeListener {
 			leftMenu = new SimpleNavigatorTree(localizer,xda.getEntity("navigator",JMenuBar.class,null));
 			leftMenu.addActionListener(SwingUtils.buildAnnotatedActionListener(this,(action)->{}));
 
-			mgr = new DesktopManager(xda,localizer);
+			desktopMgr = new DesktopManager(this,xda,localizer);
+			searchMgr = new SearchManager(this,xda,localizer);
+			pipeFactory = new PipeFactory(this,localizer);
+			rightScreen.add(desktopMgr,DESKTOP_WINDOW);
+			rightScreen.add(searchMgr,SEARCH_WINDOW);
+			cardLayout.show(rightScreen,DESKTOP_WINDOW);			
 			
 			split.setLeftComponent(new JScrollPane(leftMenu));
-			split.setRightComponent(mgr);
+			split.setRightComponent(rightScreen);
 			split.setDividerLocation(200);
 			
 			centerPanel.add(split,BorderLayout.CENTER);
 			
 			SwingUtils.assignHelpKey((JPanel)getContentPane(),localizer,LocalizationKeys.HELP_ABOUT_APPLICATION);
+			SwingUtils.assignActionKey((JPanel)getContentPane()
+						,KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_DOWN_MASK)
+						,new AnnotatedActionListener<Application>(this)
+						,"find");
 			SwingUtils.centerMainWindow(this,0.75f);
 			addWindowListener(new WindowListener() {
 				@Override public void windowOpened(WindowEvent e) {}
@@ -142,6 +173,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				@Override public void windowDeactivated(WindowEvent e) {}
 			});
 			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
+			this.lucene = buildIndex();
 		}
 	}
 
@@ -150,21 +182,55 @@ public class Application extends JFrame implements LocaleChangeListener {
 		fillLocalizedStrings(oldLocale,newLocale);
 		SwingUtils.refreshLocale(menu,oldLocale, newLocale);
 		SwingUtils.refreshLocale(leftMenu,oldLocale, newLocale);
-		SwingUtils.refreshLocale(mgr,oldLocale, newLocale);
+		SwingUtils.refreshLocale(desktopMgr,oldLocale, newLocale);
+		SwingUtils.refreshLocale(searchMgr,oldLocale, newLocale);
 	}
 	
 	private void fillLocalizedStrings(Locale oldLocale, Locale newLocale) throws LocalizationException {
 		setTitle(localizer.getValue(LocalizationKeys.TITLE_APPLICATION));
 	}
 
+	private LuceneWrapper buildIndex() throws IOException, LocalizationException {
+		final LuceneWrapper		result;
+		
+		if (!luceneDir.exists()) {
+			luceneDir.mkdirs();
+			result = new LuceneWrapper(FSDirectory.open(luceneDir.toPath()));
+			
+			try(final LoggerFacade 	transLogger	= logger.transaction("lucene index")) {
+				
+				result.buildDirectoryIndex(localizer,transLogger);
+				transLogger.rollback();
+			}
+		}
+		else {
+			result = new LuceneWrapper(FSDirectory.open(luceneDir.toPath()));
+		}
+		return result;
+	}
+	
 	@OnAction("cleanPipe")
 	private void cleanPipe() {
-		mgr.closeContent();
+		try{if (currentPipe != null) {
+				currentPipe.close();
+			}
+			desktopMgr.closeContent();
+			currentPipe = pipeFactory.newPipe();
+		} catch (IOException e) {
+			message(e.getLocalizedMessage());
+		}
 	}
 	
 	@OnAction("loadPipe")
 	private void loadPipe() {
-		// TODO:
+		try{if (currentPipe != null) {
+				currentPipe.close();
+			}
+			desktopMgr.closeContent();
+			currentPipe = pipeFactory.loadPipe(null);
+		} catch (IOException e) {
+			message(e.getLocalizedMessage());
+		}
 	}
 	
 	@OnAction("savePipe")
@@ -179,7 +245,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	
 	@OnAction("exit")
 	private void exitApplication () {
-		if (mgr.getPipeManager().getComponentCount() > 0) {
+		if (desktopMgr.getPipeManager().getComponentCount() > 0) {
 			setVisible(false);
 			dispose();
 		}
@@ -189,6 +255,25 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
+	@OnAction("find")
+	public void search() {
+		cardLayout.show(rightScreen,SEARCH_WINDOW);
+		searchMgr.focus();
+	}
+
+	@OnAction("index")
+	public void buildSearchIndex() {
+		try{buildIndex();
+			message(localizer.getValue(LocalizationKeys.MESSAGE_REINDEXED));
+		} catch (LocalizationException | IOException e) {
+			message(e.getLocalizedMessage());
+		}
+	}
+	
+	public void unsearch() {
+		cardLayout.show(rightScreen,DESKTOP_WINDOW);			
+	}
+	
 	@OnAction("elementsCoilsOneLayer")
 	private void elementsCoilsOneLayer() throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
 		final PluginInterface	plugin = seekSPIPlugin("SingleCoilsService"); 
@@ -237,7 +322,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	}
 
 	private void placePlugin(final PluginInterface plugin, final PluginInstance component) throws LocalizationException {
-		mgr.getPipeManager().newWindow(component.getLocalizerAssociated(),plugin.getPluginId(),plugin.getCaptionId(),plugin.getHelpId(),plugin.getIcon(),(JComponent)component);
+		desktopMgr.getPipeManager().newWindow(component.getLocalizerAssociated(),plugin.getPluginId(),plugin.getCaptionId(),plugin.getHelpId(),plugin.getIcon(),(JComponent)component);
 	}
 	
 	private void message(final String format, final Object... parameters) {

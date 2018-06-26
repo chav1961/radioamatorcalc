@@ -1,4 +1,4 @@
-package chav1961.calc.environment;
+package chav1961.calc.environment.desktop;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

@@ -1,6 +1,7 @@
 package chav1961.calc.interfaces;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -24,6 +25,11 @@ public interface PluginInterface {
 	String getCaptionId();
 	String getToolTipId();
 	String getHelpId();
-	String getTagsId();
 	Icon getIcon();
+	URL getMiniIconURL();
+	URL getLeftIconURL();
+	Localizer getLocalizerAssociated(final Localizer parent) throws LocalizationException;
+	String[] getUsesIds(final Localizer parent) throws LocalizationException;
+	String[] getTagsIds(final Localizer parent) throws LocalizationException;
+	String[] getSeeAlsoIds(final Localizer parent) throws LocalizationException;
 }
