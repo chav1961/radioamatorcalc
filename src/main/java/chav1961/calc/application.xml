@@ -3,7 +3,9 @@
 	<app:i18n location="i18n:prop:chav1961/calculator/i18n/i18n"/>
 	<app:menu id="mainmenu">
 		<app:submenu name="menu.file" caption="menu.file" tooltip="menu.ttFile">
-			<app:item name="menu.file.cleanpipe" caption="menu.cleanPipe" tooltip="menu.ttCleanPipe" action="cleanPipe"/>
+			<app:item name="menu.file.cleandesktop" caption="menu.cleanDesktop" tooltip="menu.ttCleanDesktop" action="cleanDektop"/>
+			<app:separator/>
+			<app:item name="menu.file.newpipe" caption="menu.newPipe" tooltip="menu.ttNewPipe" action="newPipe"/>
 			<app:item name="menu.file.loadpipe" caption="menu.loadPipe" tooltip="menu.ttLoadPipe" action="loadPipe"/>
 			<app:separator/>
 			<app:item name="menu.file.savepipe" caption="menu.savePipe" tooltip="menu.ttSavePipe" action="savePipe"/>
@@ -16,6 +18,7 @@
 			<app:item name="menu.tools.index" caption="menu.index" tooltip="menu.ttIndex" action="index"/>
 			<app:separator/>
 			<app:builtinSubmenu name="builtin.languages" caption="menu.languages" tooltip="menu.ttLanguages"/>
+			<app:item name="menu.tools.settings" caption="menu.settings" tooltip="menu.ttSettings" action="settings"/>
 		</app:submenu>
 		<app:submenu name="menu.help" caption="menu.help" tooltip="menu.ttHelp">
 			<app:item name="menu.help.about" caption="menu.about" tooltip="menu.ttAbout" action="helpAbout"/>

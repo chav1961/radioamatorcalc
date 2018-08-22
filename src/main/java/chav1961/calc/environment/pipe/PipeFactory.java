@@ -1,6 +1,7 @@
 package chav1961.calc.environment.pipe;
 
 import java.io.InputStream;
+import java.io.Reader;
 
 import chav1961.calc.Application;
 import chav1961.calc.interfaces.PipeInterface;
@@ -28,7 +29,7 @@ public class PipeFactory {
 		return null;
 	}
 
-	public PipeInterface loadPipe(final InputStream pipeDescriptor) {
+	public PipeInterface loadPipe(final Reader pipeDescriptor) {
 		return null;
 	}
 }

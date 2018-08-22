@@ -13,22 +13,31 @@ public abstract class LocalizationKeys {
 	public static final String		MENU_FILE_EXIT = "menu.exit";
 	public static final String		MENU_FILE_EXIT_TOOLTIP = "menu.ttExit";
 	
-	public static final String		MENU_ELEMENTS = "menu.elements";
-	public static final String		MENU_ELEMENTS_TOOLTIP = "menu.ttElements";
-
-	public static final String		MENU_ELEMENTS_COILS = "menu.elements.coils";
-	public static final String		MENU_ELEMENTS_COILS_TOOLTIP = "menu.ttElements.coils";
-
-	public static final String		MENU_ELEMENTS_COILS_ONELAYER = "menu.elements.coils.onelayer";
-	public static final String		MENU_ELEMENTS_COILS_ONELAYER_TOOLTIP = "menu.ttElements.coils.onelayer";
-	
 	public static final String		MENU_HELP = "menu.help";
 	public static final String		MENU_HELP_TOOLTIP = "menu.ttHelp";
 	public static final String		MENU_HELP_ABOUT = "menu.about";
 	public static final String		MENU_HELP_ABOUT_TOOLTIP = "menu.ttAbout";
 
+	public static final String		SETTINGS_CAPTION = "settings.caption";
+	public static final String		SETTINGS_HELP = "settings.help";
+	
 	public static final String		HELP_ABOUT_APPLICATION = "help.aboutApplication";
-
+	
+	public static final String		CONFIRM_BUTTON_OPEN = "confirm.button.open";
+	public static final String		CONFIRM_BUTTON_OPEN_TOOLTIP = "confirm.button.open.tooltip";
+	public static final String		CONFIRM_BUTTON_SAVE = "confirm.button.save";
+	public static final String		CONFIRM_BUTTON_SAVE_TOOLTIP = "confirm.button.save.tooltip";
+	public static final String		CONFIRM_BUTTON_YES = "confirm.button.yes";
+	public static final String		CONFIRM_BUTTON_NO = "confirm.button.no";
+	public static final String		CONFIRM_BUTTON_CANCEL = "confirm.button.cancel";
+	
+	public static final String		CONFIRM_CLEAR_DESKTOP_CAPTION = "confirm.clearDesktop.caption";
+	public static final String		CONFIRM_CLEAR_DESKTOP_MESSAGE = "confirm.clearDesktop.message";
+	public static final String		CONFIRM_SAVE_PIPE_CAPTION = "confirm.savePipe.caption";
+	public static final String		CONFIRM_SAVE_PIPE_MESSAGE = "confirm.savePipe.message";
+	
+	public static final String		CONFIRM_FILEFILTER_PIPE = "confirm.fileFilter.pipe";
+	
 	public static final String		MESSAGE_REINDEXED = "message.reindexed";
 	
 	public static final String		TITLE_HELP_ABOUT_APPLICATION = "title.help.aboutApplication";

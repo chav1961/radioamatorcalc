@@ -6,7 +6,9 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
 
-public interface PipeInterface extends Closeable {
+import chav1961.purelib.basic.interfaces.ModifiableEntity;
+
+public interface PipeInterface extends Closeable, ModifiableEntity {
 	public interface UserDefinedField {
 		String getFieldLabel();
 		int getFieldType();

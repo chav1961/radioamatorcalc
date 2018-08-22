@@ -18,7 +18,19 @@ class PipeManager implements PipeInterface, LocaleChangeListener {
 	PipeManager(final PipeFactory factory) {
 		
 	}
-	
+
+	@Override
+	public boolean isModified() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setModified(boolean modificationFlag) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	public void close() throws IOException {
 		// TODO Auto-generated method stub

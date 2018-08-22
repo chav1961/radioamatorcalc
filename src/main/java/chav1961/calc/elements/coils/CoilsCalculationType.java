@@ -1,4 +1,4 @@
-package chav1961.calc.elements.coils.singlecoilsplugin;
+package chav1961.calc.elements.coils;
 
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 

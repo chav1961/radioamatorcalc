@@ -1,5 +1,6 @@
 package chav1961.calc.elements.coils.singlecoilsplugin;
 
+import chav1961.calc.elements.coils.CoilsCalculationType;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
@@ -10,6 +11,12 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.ui.interfacers.FormManager;
 import chav1961.purelib.ui.interfacers.Format;
 import chav1961.purelib.ui.interfacers.Action;
+
+/**
+ * 
+ * @author Alexander Chernomyrdin aka chav1961
+ * @since 0.0.1
+ */
 
 @LocaleResourceLocation(Localizer.LOCALIZER_SCHEME+":prop:chav1961/calc/elements/coils/singlecoilsplugin/singlecoils")
 @Action(resource=@LocaleResource(value="calculate",tooltip="calculateTooltip"),actionString="calculate") 
@@ -24,20 +31,22 @@ class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator>
 	private final LoggerFacade		logger;
 	
 @LocaleResource(value="length",tooltip="lengthTooltip")
-@Format("m")
+@Format("10.3m")
 	private float 					length = 0.0f;
 @LocaleResource(value="diameter",tooltip="diameterTooltip")	
-@Format("m")
+@Format("10.3m")
 	private float					diameter = 0.0f;
 @LocaleResource(value="wireDiameter",tooltip="wireDiameterTooltip")	
-@Format("m")
+@Format("10.3m")
 	private float					wireDiameter = 0.0f;
 @LocaleResource(value="calcType",tooltip="calcTypeTooltip")	
-@Format("m")
+@Format("10.3m")
 	private CoilsCalculationType	calcType = CoilsCalculationType.INDUCTANCE;
 @LocaleResource(value="inductance",tooltip="inductanceTooltip")	
+@Format("10.3")
 	private float					inductance = 0.0f;
 @LocaleResource(value="coils",tooltip="coilsTooltip")	
+@Format("10.3")
 	private float					coils = 0.0f;
 
 	SingleCoilsCalculator(final Localizer localizer,final LoggerFacade logger) {
@@ -92,11 +101,14 @@ class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator>
 	public RefreshMode onAction(final SingleCoilsCalculator inst, final Object id, final String actionName, final Object parameter) throws FlowException {
 		switch (actionName) {
 			case "calculate"	:
-				if (calcType == CoilsCalculationType.INDUCTANCE) {
-					inductance = 0.1f * diameter * coils * coils / (length/diameter + 0.44f);
-				}
-				else {
-					inductance = 0.1f * diameter * coils * coils / (length/diameter + 0.44f);
+				switch (calcType) {
+					case INDUCTANCE		:
+						inductance = 0.1f * diameter * coils * coils / (length/diameter + 0.44f);
+						break;
+					case NUMBER_OF_COILS:
+						coils = (float) (Math.sqrt(5 * inductance * (90 * diameter + 200 * length))/(10*diameter));
+						break;
+					default: throw new UnsupportedOperationException("Calculation type ["+calcType+"] is not supported yet");
 				}
 				break;
 			default :
