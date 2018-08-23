@@ -1,4 +1,4 @@
-package chav1961.calc.elements.coils.singlecoilsplugin;
+package chav1961.calc.schemes.powerfactor.mc34262plugin;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,19 +18,19 @@ import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
 
-public class SingleCoilsService implements PluginInterface {
-	private static final URL	LEFT_ICON_RESOURCE = SingleCoils.class.getResource("SingleCoils.png");
-	private static final URL	MINI_ICON_RESOURCE = SingleCoils.class.getResource("SingleCoilsIcon.png");
+public class MC34262Service implements PluginInterface {
+	private static final URL	LEFT_ICON_RESOURCE = RingCoils.class.getResource("MC34262.png");
+	private static final URL	MINI_ICON_RESOURCE = RingCoils.class.getResource("MC34262Icon.png");
 	private static final Icon	ICON = new ImageIcon(MINI_ICON_RESOURCE);
 
-	private SingleCoils			inner = null;
+	private RingCoils			inner = null;
 	
-	public SingleCoilsService() {
+	public MC34262Service() {
 	}
 	
 	@Override
 	public synchronized PluginInstance newInstance(final Localizer localizer, final LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		return new SingleCoils(localizer,new SingleCoilsCalculator(localizer,logger)); 
+		return new RingCoils(localizer,new MC34262Calculator(localizer,logger)); 
 	}
 	
 	@Override
@@ -60,7 +60,7 @@ public class SingleCoilsService implements PluginInterface {
 
 	@Override
 	public synchronized Localizer getLocalizerAssociated(final Localizer parent) throws LocalizationException {
-		return parent.getLocalizerById(SingleCoilsCalculator.class.getAnnotation(LocaleResourceLocation.class).value()); 
+		return parent.getLocalizerById(MC34262Calculator.class.getAnnotation(LocaleResourceLocation.class).value()); 
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class SingleCoilsService implements PluginInterface {
 	@Override
 	public synchronized String[] getUsesIds(final Localizer parent) throws LocalizationException {
 		if (inner == null) {
-			try{inner = new SingleCoils(parent,new SystemErrLoggerFacade());
+			try{inner = new RingCoils(parent,new SystemErrLoggerFacade());
 			} catch (SyntaxException | ContentException | IOException e) {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
@@ -86,7 +86,7 @@ public class SingleCoilsService implements PluginInterface {
 
 	@Override
 	public String[] getTagsIds(final Localizer parent) throws LocalizationException {
-		return new String[]{"SingleCoilsService.tag1","SingleCoilsService.tag2","SingleCoilsService.tag3"};
+		return new String[]{"MC34262Service.tag1","MC34262Service.tag2","MC34262Service.tag3","MC34262Service.tag4"};
 	}
 
 	@Override
@@ -94,14 +94,14 @@ public class SingleCoilsService implements PluginInterface {
 		return new String[]{};
 	}	
 	
-	private static class SingleCoils extends AutoBuiltForm<SingleCoilsCalculator> implements PluginInstance {
+	private static class RingCoils extends AutoBuiltForm<MC34262Calculator> implements PluginInstance {
 		private static final long 	serialVersionUID = 2615737307529282959L;
 		
-		public SingleCoils(final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-			this(localizer,new SingleCoilsCalculator(localizer,logger));
+		public RingCoils(final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+			this(localizer,new MC34262Calculator(localizer,logger));
 		}
 
-		protected SingleCoils(final Localizer localizer, final SingleCoilsCalculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+		protected RingCoils(final Localizer localizer, final MC34262Calculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
 			super(localizer,LEFT_ICON_RESOURCE,instance,instance);
 		}
 

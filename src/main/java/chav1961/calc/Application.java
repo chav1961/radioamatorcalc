@@ -474,6 +474,16 @@ public class Application extends JFrame implements LocaleChangeListener {
 		placePlugin(plugin,inst);
 	}
 	
+	@OnAction("elementsCoilsRingLayer")
+	private void elementsCoilsRingLayer() throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+		final PluginInterface	plugin = seekSPIPlugin("RingCoilsService"); 
+		final PluginInstance	inst = plugin.newInstance(localizer,logger);
+		
+		inst.getComponent().setPreferredSize(new Dimension(450,250));
+		placePlugin(plugin,inst);
+	}
+	
+
 	@OnAction("builtin.languages:en")
 	private void selectEnglish() throws LocalizationException, NullPointerException {
 		localizer.setCurrentLocale(Locale.forLanguageTag("en"));

@@ -78,13 +78,13 @@ public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 		switch (actionName) {
 			case "OK"		:
 				saveCurrent();
-				return RefreshMode.DEFAULT;
+				return RefreshMode.NONE;
 			case "reset"	:
 				loadLastSaved();
 				return RefreshMode.RECORD_ONLY;
 			case "cancel"	:
 				loadLastSaved();
-				return RefreshMode.DEFAULT;
+				return RefreshMode.NONE;
 			default : throw new UnsupportedOperationException("Operation ["+actionName+"] is not supported yet");
 		}
 	}

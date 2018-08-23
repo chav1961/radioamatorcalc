@@ -1,6 +1,6 @@
 package chav1961.calc.formulas;
 
-public class Coils {
+public class Utils {
 	/**
 	 * <p>Calculate inductance of the one layer coil.</p>
 	 * @param diameter diameter (sm)
@@ -50,6 +50,29 @@ public class Coils {
 	}
 
 	public static double numberOfCoilsSquaredFlatCoil(final double minWidth, final double maxWidth, final double wireWidth, final double inductance) {
+		return 0;
+	}
+	
+	public static double ringCoilsInductance(final int coils, final float outerDiameter, final float innerDiameter, final float height, final int permability) {
+		if (outerDiameter/innerDiameter > 1.75) {
+			return 0.0002f * permability * height * coils * coils * Math.log(outerDiameter/innerDiameter);
+		}
+		else {
+			return 0.0004f * permability * height * coils * coils * (outerDiameter - innerDiameter) / (outerDiameter + innerDiameter);
+		}
+	}
+
+	public static int ringCoilsCoils(final float inductance, final float outerDiameter, final float innerDiameter, final float height, final int permability) {
+		if (outerDiameter/innerDiameter > 1.75) {
+			return (int) Math.sqrt(inductance / (0.0002f * permability * height * Math.log(outerDiameter/innerDiameter)));  
+		}
+		else {
+			return (int) Math.sqrt(inductance / (0.0004f * permability * height * (outerDiameter - innerDiameter) / (outerDiameter + innerDiameter)));
+		}
+	}
+
+	public static float ringCoilsInduction(final float peakCurrent, final int coils, final float outerDiameter, final float innerDiameter, final float height, final int permability) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 }

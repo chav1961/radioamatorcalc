@@ -28,7 +28,7 @@
 		<app:submenu name="menu.elements" caption="menu.elements" tooltip="menu.ttElements">
 			<app:submenu name="menu.elements.coils" caption="menu.elements.coils" tooltip="menu.ttElements.coils">
 				<app:item name="menu.elements.coils.onelayer" caption="menu.elements.coils.onelayer" tooltip="menu.ttElements.coils.onelayer" action="elementsCoilsOneLayer"/>
-				<app:item name="menu.elements.coils.multilayer" caption="menu.elements.coils.multilayer" tooltip="menu.ttElements.coils.multilayer" action="elementsCoilsMultiLayer"/>
+				<app:item name="menu.elements.coils.ringlayer" caption="menu.elements.coils.ringlayer" tooltip="menu.ttElements.coils.ringlayer" action="elementsCoilsRingLayer"/>
 			</app:submenu>
 		</app:submenu>
 	</app:menu>
