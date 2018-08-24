@@ -1,5 +1,7 @@
 package chav1961.calc.elements.coils.ringcoilsplugin;
 
+
+import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -8,6 +10,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
+import chav1961.calc.environment.Utils;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.purelib.basic.SystemErrLoggerFacade;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -19,11 +22,12 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
 
 public class RingCoilsService implements PluginInterface {
-	private static final URL	LEFT_ICON_RESOURCE = RingCoils.class.getResource("RingCoils.png");
-	private static final URL	MINI_ICON_RESOURCE = RingCoils.class.getResource("RingCoilsIcon.png");
-	private static final Icon	ICON = new ImageIcon(MINI_ICON_RESOURCE);
+	private static final URL		LEFT_ICON_RESOURCE = RingCoils.class.getResource("RingCoils.png");
+	private static final URL		MINI_ICON_RESOURCE = RingCoils.class.getResource("RingCoilsIcon.png");
+	private static final Icon		ICON = new ImageIcon(MINI_ICON_RESOURCE);
+	private static final String[]	RECOMMENDED_PATH = {"menu.elements","coils","ringlayer"};
 
-	private RingCoils			inner = null;
+	private RingCoils				inner = null;
 	
 	public RingCoilsService() {
 	}
@@ -60,7 +64,14 @@ public class RingCoilsService implements PluginInterface {
 
 	@Override
 	public synchronized Localizer getLocalizerAssociated(final Localizer parent) throws LocalizationException {
-		return parent.getLocalizerById(RingCoilsCalculator.class.getAnnotation(LocaleResourceLocation.class).value()); 
+		Localizer	result = parent.getLocalizerById(RingCoilsCalculator.class.getAnnotation(LocaleResourceLocation.class).value());
+		
+		if (result == null) {
+			return Utils.attachLocalizer(parent,URI.create(RingCoilsCalculator.class.getAnnotation(LocaleResourceLocation.class).value()));
+		}
+		else {
+			return result; 
+		}
 	}
 
 	@Override
@@ -73,6 +84,12 @@ public class RingCoilsService implements PluginInterface {
 		return LEFT_ICON_RESOURCE;
 	}
 
+
+	@Override
+	public String[] getRecommendedNavigationPath() {
+		return RECOMMENDED_PATH;
+	}
+	
 	@Override
 	public synchronized String[] getUsesIds(final Localizer parent) throws LocalizationException {
 		if (inner == null) {
@@ -91,11 +108,12 @@ public class RingCoilsService implements PluginInterface {
 
 	@Override
 	public String[] getSeeAlsoIds(final Localizer parent) throws LocalizationException {
-		return new String[]{};
+		return Utils.extractFormulas(RingCoilsCalculator.class);
 	}	
 	
 	private static class RingCoils extends AutoBuiltForm<RingCoilsCalculator> implements PluginInstance {
-		private static final long 	serialVersionUID = 2615737307529282959L;
+		private static final long 		serialVersionUID = 2615737307529282959L;
+		private static final Dimension	RECOMMENDED_SIZE = new Dimension(450,200);
 		
 		public RingCoils(final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
 			this(localizer,new RingCoilsCalculator(localizer,logger));
@@ -108,6 +126,11 @@ public class RingCoilsService implements PluginInterface {
 		@Override
 		public JComponent getComponent() {
 			return this;
+		}
+
+		@Override
+		public Dimension getRecommendedSize() {
+			return RECOMMENDED_SIZE;
 		}
 	}
 }

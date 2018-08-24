@@ -1,5 +1,8 @@
 package chav1961.calc.schemes.powerfactor.mc34262plugin;
 
+
+import java.awt.Dimension;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -8,6 +11,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
+import chav1961.calc.environment.Utils;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.purelib.basic.SystemErrLoggerFacade;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -19,18 +23,19 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
 
 public class MC34262Service implements PluginInterface {
-	private static final URL	LEFT_ICON_RESOURCE = RingCoils.class.getResource("MC34262.png");
-	private static final URL	MINI_ICON_RESOURCE = RingCoils.class.getResource("MC34262Icon.png");
-	private static final Icon	ICON = new ImageIcon(MINI_ICON_RESOURCE);
+	private static final URL		LEFT_ICON_RESOURCE = MC34262.class.getResource("MC34262.png");
+	private static final URL		MINI_ICON_RESOURCE = MC34262.class.getResource("MC34262Icon.png");
+	private static final Icon		ICON = new ImageIcon(MINI_ICON_RESOURCE);
+	private static final String[]	RECOMMENDED_PATH = {"menu.schemes","powerfactor", "mc34262"};
 
-	private RingCoils			inner = null;
+	private MC34262					inner = null;
 	
 	public MC34262Service() {
 	}
 	
 	@Override
 	public synchronized PluginInstance newInstance(final Localizer localizer, final LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		return new RingCoils(localizer,new MC34262Calculator(localizer,logger)); 
+		return new MC34262(localizer,new MC34262Calculator(localizer,logger)); 
 	}
 	
 	@Override
@@ -60,7 +65,14 @@ public class MC34262Service implements PluginInterface {
 
 	@Override
 	public synchronized Localizer getLocalizerAssociated(final Localizer parent) throws LocalizationException {
-		return parent.getLocalizerById(MC34262Calculator.class.getAnnotation(LocaleResourceLocation.class).value()); 
+		Localizer	result = parent.getLocalizerById(MC34262Calculator.class.getAnnotation(LocaleResourceLocation.class).value());
+		
+		if (result == null) {
+			return Utils.attachLocalizer(parent,URI.create(MC34262Calculator.class.getAnnotation(LocaleResourceLocation.class).value()));
+		}
+		else {
+			return result; 
+		}
 	}
 
 	@Override
@@ -74,9 +86,14 @@ public class MC34262Service implements PluginInterface {
 	}
 
 	@Override
+	public String[] getRecommendedNavigationPath() {
+		return RECOMMENDED_PATH;
+	}
+	
+	@Override
 	public synchronized String[] getUsesIds(final Localizer parent) throws LocalizationException {
 		if (inner == null) {
-			try{inner = new RingCoils(parent,new SystemErrLoggerFacade());
+			try{inner = new MC34262(parent,new SystemErrLoggerFacade());
 			} catch (SyntaxException | ContentException | IOException e) {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
@@ -86,28 +103,34 @@ public class MC34262Service implements PluginInterface {
 
 	@Override
 	public String[] getTagsIds(final Localizer parent) throws LocalizationException {
-		return new String[]{"MC34262Service.tag1","MC34262Service.tag2","MC34262Service.tag3","MC34262Service.tag4"};
+		return new String[]{"MC34262Service.tag1","MC34262Service.tag2"};
 	}
 
 	@Override
 	public String[] getSeeAlsoIds(final Localizer parent) throws LocalizationException {
-		return new String[]{};
+		return Utils.extractFormulas(MC34262Calculator.class);
 	}	
 	
-	private static class RingCoils extends AutoBuiltForm<MC34262Calculator> implements PluginInstance {
-		private static final long 	serialVersionUID = 2615737307529282959L;
+	private static class MC34262 extends AutoBuiltForm<MC34262Calculator> implements PluginInstance {
+		private static final long 		serialVersionUID = 2615737307529282959L;
+		private static final Dimension	RECOMMENDED_SIZE = new Dimension(450,360);
 		
-		public RingCoils(final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+		public MC34262(final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
 			this(localizer,new MC34262Calculator(localizer,logger));
 		}
 
-		protected RingCoils(final Localizer localizer, final MC34262Calculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+		protected MC34262(final Localizer localizer, final MC34262Calculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
 			super(localizer,LEFT_ICON_RESOURCE,instance,instance);
 		}
 
 		@Override
 		public JComponent getComponent() {
 			return this;
+		}
+
+		@Override
+		public Dimension getRecommendedSize() {
+			return RECOMMENDED_SIZE;
 		}
 	}
 }

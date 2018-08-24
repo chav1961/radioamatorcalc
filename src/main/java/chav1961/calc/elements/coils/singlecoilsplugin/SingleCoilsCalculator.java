@@ -1,6 +1,8 @@
 package chav1961.calc.elements.coils.singlecoilsplugin;
 
+import chav1961.calc.LocalizationKeys;
 import chav1961.calc.elements.coils.CoilsCalculationType;
+import chav1961.calc.interfaces.UseFormulas;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
@@ -19,7 +21,8 @@ import chav1961.purelib.ui.interfacers.Action;
  */
 
 @LocaleResourceLocation(Localizer.LOCALIZER_SCHEME+":prop:chav1961/calc/elements/coils/singlecoilsplugin/singlecoils")
-@Action(resource=@LocaleResource(value="calculate",tooltip="calculateTooltip"),actionString="calculate") 
+@Action(resource=@LocaleResource(value="calculate",tooltip="calculateTooltip"),actionString="calculate",simulateCheck=true) 
+@UseFormulas({LocalizationKeys.FORMULA_NUMBER_OF_COILS_ONE_LAYER_COIL,LocalizationKeys.FORMULA_INDUCTANCE_ONE_LAYER_COIL})
 class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator> {
 	private static final String		MESSAGE_LENGTH_POSITIVE = "lengthPositive";
 	private static final String		MESSAGE_DIAMETER_POSITIVE = "diameterPositive";

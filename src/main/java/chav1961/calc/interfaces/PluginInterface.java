@@ -1,5 +1,6 @@
 package chav1961.calc.interfaces;
 
+import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URL;
 
@@ -16,6 +17,7 @@ import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 public interface PluginInterface {
 	public interface PluginInstance extends AutoCloseable, LocaleChangeListener {
 		JComponent getComponent();
+		Dimension getRecommendedSize();
 		Localizer getLocalizerAssociated() throws LocalizationException;
 		void close();
 	}
@@ -28,6 +30,7 @@ public interface PluginInterface {
 	Icon getIcon();
 	URL getMiniIconURL();
 	URL getLeftIconURL();
+	String[] getRecommendedNavigationPath();
 	Localizer getLocalizerAssociated(final Localizer parent) throws LocalizationException;
 	String[] getUsesIds(final Localizer parent) throws LocalizationException;
 	String[] getTagsIds(final Localizer parent) throws LocalizationException;

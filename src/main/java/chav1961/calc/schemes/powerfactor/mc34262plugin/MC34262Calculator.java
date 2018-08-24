@@ -1,7 +1,9 @@
 package chav1961.calc.schemes.powerfactor.mc34262plugin;
 
 
+import chav1961.calc.LocalizationKeys;
 import chav1961.calc.formulas.Utils;
+import chav1961.calc.interfaces.UseFormulas;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
@@ -20,18 +22,27 @@ import chav1961.purelib.ui.interfacers.Format;
  */
 
 @LocaleResourceLocation(Localizer.LOCALIZER_SCHEME+":prop:chav1961/calc/schemes/powerfactor/mc34262plugin/MC34262")
-@Action(resource=@LocaleResource(value="calculate",tooltip="calculateTooltip"),actionString="calculate") 
+@Action(resource=@LocaleResource(value="calculate",tooltip="calculateTooltip"),actionString="calculate",simulateCheck=true) 
+@UseFormulas({LocalizationKeys.FORMULA_COILS_RING_COIL,LocalizationKeys.FORMULA_INDUCTANCE_RING_COIL,LocalizationKeys.FORMULA_INDUCTION_RING_COIL})
 class MC34262Calculator implements FormManager<Object,MC34262Calculator> {
 	private static final float 		ETHA = 0.92f;
 	private static final float 		ROOT2 = (float)Math.sqrt(2);
-//	private static final String		MESSAGE_HEIGHT_POSITIVE = "heightPositive";
-//	private static final String		MESSAGE_DIAMETER_POSITIVE = "diameterPositive";
-//	private static final String		MESSAGE_DIAMETER_INNER_GREATER = "diameterInnerGreater";
-//	private static final String		MESSAGE_PERMABILITY_GREAT_ONE = "permabilityGreatOne";
-//	private static final String		MESSAGE_WIREDIAMETER_POSITIVE = "wirediameterPositive";
-//	private static final String		MESSAGE_INDUCTANCE_NONNEGATIVE = "indictanceNonnegative";
-//	private static final String		MESSAGE_COILS_NONNEGATIVE = "coilsNonnegative";
-	private static final String		MESSAGE_TOO_STRONG = "coilsNonnegative";
+	private static final String		MESSAGE_INNER_VOLTAGE_POSITIVE = "innerVoltagePositive";
+	private static final String		MESSAGE_OUTER_VOLTAGE_POSITIVE = "outerVoltagePositive";	
+	private static final String		MESSAGE_OUTER_VOLTAGE_LESS_INNER = "outerVoltageLessInner";
+	private static final String		MESSAGE_OUTER_CURRENT_POSITIVE = "outerCurrentPositive";
+	private static final String		MESSAGE_SWITCHING_CYCLE_OUT_OF_RANGE = "switchingCycleOutOfRange";
+	private static final String		MESSAGE_PERMABILITY_POSITIVE = "permabilityPositive";
+	private static final String		MESSAGE_INDUCTION_POSITIVE = "inductionPositive";
+	private static final String		MESSAGE_OUTER_DIAMETER_POSITIVE = "outerDiameterPositive";
+	private static final String		MESSAGE_OUTER_DIAMETER_LESS_INNER = "outerDiameterLessInner";
+	private static final String		MESSAGE_INNER_DIAMETER_POSITIVE = "innerDiameterPositive";
+	private static final String		MESSAGE_HEIGHT_POSITIVE = "heightPositive";
+	private static final String		MESSAGE_WIRE_DIAMETER_POSITIVE = "wireDiameterPositive";
+	private static final String		MESSAGE_INDUCTION_TOO_STRONG = "inductionTooStrong";
+	private static final String		MESSAGE_TOO_MANY_COILS = "tooManyCoils";
+
+	private static final String[]	FIELDS_ANNOTATED = chav1961.calc.environment.Utils.buildFieldsAnnotated(MC34262Calculator.class); 
 	
 	private final Localizer			localizer;
 	private final LoggerFacade		logger;
@@ -64,7 +75,7 @@ class MC34262Calculator implements FormManager<Object,MC34262Calculator> {
 @Format("10.3m")
 	private float 					height = 0.0f;
 @LocaleResource(value="wireDiameter",tooltip="wireDiameterTooltip")	
-@Format("10.3r")
+@Format("10.3m")
 	private float 					wireDiameter = 0.0f;
 @LocaleResource(value="pulseCurrent",tooltip="pulseCurrentTooltip")	
 @Format("10.3r")
@@ -91,66 +102,52 @@ class MC34262Calculator implements FormManager<Object,MC34262Calculator> {
 	}
 	
 	@Override
-	public RefreshMode onRecord(final Action action, final MC34262Calculator oldRecord, final Object oldId, final MC34262Calculator newRecord, final Object newId) throws FlowException {
-		return RefreshMode.NONE;
+	public RefreshMode onRecord(final Action action, final MC34262Calculator oldRecord, final Object oldId, final MC34262Calculator newRecord, final Object newId) throws FlowException, LocalizationException {
+		switch (action) {
+			case CHECK	:
+				for (String field : FIELDS_ANNOTATED) {
+					if (onField(oldRecord,oldId,field,null) == RefreshMode.REJECT) {
+						return RefreshMode.REJECT;
+					}
+				}
+				return RefreshMode.NONE;
+			default 	:
+				return RefreshMode.NONE;
+		}
 	}
 
 	@Override
 	public RefreshMode onField(final MC34262Calculator inst, final Object id, final String fieldName, final Object oldValue) throws FlowException, LocalizationException, IllegalArgumentException {
-//		switch (fieldName) {
-//			case "height"		:
-//				if (height <= 0) {
-//					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_HEIGHT_POSITIVE),height);
-//					return RefreshMode.REJECT;
-//				}
-//				break;
-//			case "outerDiameter"		:
-//				if (outerDiameter <= 0) {
-//					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_DIAMETER_POSITIVE),outerDiameter);
-//					return RefreshMode.REJECT;
-//				}
-//				else if (outerDiameter < innerDiameter) {
-//					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_DIAMETER_INNER_GREATER),outerDiameter,innerDiameter);
-//					return RefreshMode.REJECT;
-//				}
-//				break;
-//			case "innerDiameter"		:
-//				if (innerDiameter <= 0) {
-//					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_DIAMETER_POSITIVE),innerDiameter);
-//					return RefreshMode.REJECT;
-//				}
-//				else if (outerDiameter < innerDiameter) {
-//					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_DIAMETER_INNER_GREATER),outerDiameter,innerDiameter);
-//					return RefreshMode.REJECT;
-//				}
-//				break;
-//			case "permability"		:
-//				if (permability < 1) {
-//					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_PERMABILITY_GREAT_ONE),permability);
-//					return RefreshMode.REJECT;
-//				}
-//				break;
-//			case "wireDiameter"	:
-//				if (wireDiameter <= 0) {
-//					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_WIREDIAMETER_POSITIVE),wireDiameter);
-//					return RefreshMode.REJECT;
-//				}
-//				break;
-//			case "inductance"	:
-//				if (inductance < 0) {
-//					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_INDUCTANCE_NONNEGATIVE),inductance);
-//					return RefreshMode.REJECT;
-//				}
-//				break;
-//			case "coils"		:
-//				if (coils < 0) {
-//					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_COILS_NONNEGATIVE),coils);
-//					return RefreshMode.REJECT;
-//				}
-//				break;
-//			default :
-//		}
-		return RefreshMode.NONE;
+		switch (fieldName) {
+			case "innerVoltage"		:
+				return checkAndNotify(innerVoltage > 0,localizer.getValue(MESSAGE_INNER_VOLTAGE_POSITIVE),innerVoltage) ? RefreshMode.NONE : RefreshMode.REJECT;
+			case "outerVoltage"		:
+				return checkAndNotify(outerVoltage > 0,localizer.getValue(MESSAGE_OUTER_VOLTAGE_POSITIVE),outerVoltage) ? 
+						(checkAndNotify(outerVoltage > ROOT2*innerVoltage,localizer.getValue(MESSAGE_OUTER_VOLTAGE_LESS_INNER),outerVoltage,ROOT2*innerVoltage) ? RefreshMode.NONE : RefreshMode.REJECT)
+					: RefreshMode.REJECT;
+			case "outerCurrent"		:
+				return checkAndNotify(outerCurrent > 0,localizer.getValue(MESSAGE_OUTER_CURRENT_POSITIVE),outerCurrent) ? RefreshMode.NONE : RefreshMode.REJECT;
+			case "switchingCycle"		:
+				return checkAndNotify((Math.abs(switchingCycle - 20) < 0.01 || Math.abs(switchingCycle - 40) < 0.01),localizer.getValue(MESSAGE_SWITCHING_CYCLE_OUT_OF_RANGE),switchingCycle) ? RefreshMode.NONE : RefreshMode.REJECT;
+			case "permability"		:
+				return checkAndNotify(permability > 0,localizer.getValue(MESSAGE_PERMABILITY_POSITIVE),permability) ? RefreshMode.NONE : RefreshMode.REJECT;
+			case "induction"		:
+				return checkAndNotify(induction > 0,localizer.getValue(MESSAGE_INDUCTION_POSITIVE),induction) ? RefreshMode.NONE : RefreshMode.REJECT;
+			case "outerDiameter"		:
+				return checkAndNotify(outerDiameter > 0,localizer.getValue(MESSAGE_OUTER_DIAMETER_POSITIVE),outerDiameter) ? 
+						(checkAndNotify(outerDiameter > innerDiameter,localizer.getValue(MESSAGE_OUTER_DIAMETER_LESS_INNER),outerDiameter,innerDiameter) ? RefreshMode.NONE : RefreshMode.REJECT)
+					: RefreshMode.REJECT;
+			case "innerDiameter"		:
+				return checkAndNotify(innerDiameter > 0,localizer.getValue(MESSAGE_INNER_DIAMETER_POSITIVE),innerDiameter) ? 
+						(checkAndNotify(outerDiameter > innerDiameter,localizer.getValue(MESSAGE_OUTER_DIAMETER_LESS_INNER),outerDiameter,innerDiameter) ? RefreshMode.NONE : RefreshMode.REJECT)
+					: RefreshMode.REJECT;
+			case "height"		:
+				return checkAndNotify(height > 0,localizer.getValue(MESSAGE_HEIGHT_POSITIVE),height) ? RefreshMode.NONE : RefreshMode.REJECT;
+			case "wireDiameter"		:
+				return checkAndNotify(wireDiameter > 0,localizer.getValue(MESSAGE_WIRE_DIAMETER_POSITIVE),wireDiameter) ? RefreshMode.NONE : RefreshMode.REJECT;
+			default :
+				return RefreshMode.NONE;
+		}
 	}
 
 	@Override
@@ -160,15 +157,31 @@ class MC34262Calculator implements FormManager<Object,MC34262Calculator> {
 				final float power = outerVoltage * outerCurrent;
 				final float peakCurrent = 2 * ROOT2 * power / (ETHA * innerVoltage);
 				final float coilInductance = switchingCycle * (outerVoltage / ROOT2 - innerVoltage) * ETHA * innerVoltage * innerVoltage / (ETHA * outerVoltage * power);
-				final int 	drosselCoils = Utils.ringCoilsCoils(coilInductance,outerDiameter,innerDiameter,height,permability);
-				final float currentInduction = Utils.ringCoilsInduction(peakCurrent,drosselCoils,outerDiameter,innerDiameter,height,permability);
+				final int 	drosselCoils = Utils.coilsRingCoil(coilInductance,outerDiameter,innerDiameter,height,permability);
+				final float currentInduction = Utils.inductionRingCoil(peakCurrent,drosselCoils,outerDiameter,innerDiameter,permability);
 				
 				if (currentInduction > induction) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_TOO_STRONG),currentInduction,induction);
+					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_INDUCTION_TOO_STRONG),currentInduction,induction);
 					return RefreshMode.NONE;
 				}
 				else {
-					final float switchOn = 2 * power * coilInductance / (ETHA * innerVoltage * innerVoltage);  
+					final float 	senseResistance = (float) ((Math.abs(switchingCycle - 20) < 0.01 ? 1.0 : 0.5) / peakCurrent);
+					final int		secondCoils = drosselCoils / 10;
+					final float[]	forLength1 = Utils.wireLength4Ring(drosselCoils,wireDiameter,outerDiameter,innerDiameter,height);
+					final float[]	forLength2 = Utils.wireLength4Ring(secondCoils,wireDiameter,outerDiameter,innerDiameter,height);
+					
+					if (forLength1 == null) {
+						getLogger().message(Severity.warning,localizer.getValue(MESSAGE_TOO_MANY_COILS));
+						return RefreshMode.NONE;
+					}
+					else {
+						pulseCurrent = peakCurrent;
+						coils1 = drosselCoils;
+						wireLength1 = forLength1[0] + 0.1f;
+						coils2 = secondCoils;
+						wireLength2 = forLength2[0] + 0.1f;
+						currentSenceResistance = senseResistance;
+					}
 				}
 				break;
 			default :
@@ -180,5 +193,15 @@ class MC34262Calculator implements FormManager<Object,MC34262Calculator> {
 	@Override
 	public LoggerFacade getLogger() {
 		return logger;
+	}
+
+	private boolean checkAndNotify(final boolean condition, final String messageId, final Object... parameters) throws LocalizationException {
+		if (!condition) {
+			getLogger().message(Severity.warning,localizer.getValue(messageId),parameters);
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 }

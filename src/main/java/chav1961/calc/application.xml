@@ -27,8 +27,13 @@
 	<app:menu id="navigator">
 		<app:submenu name="menu.elements" caption="menu.elements" tooltip="menu.ttElements">
 			<app:submenu name="menu.elements.coils" caption="menu.elements.coils" tooltip="menu.ttElements.coils">
-				<app:item name="menu.elements.coils.onelayer" caption="menu.elements.coils.onelayer" tooltip="menu.ttElements.coils.onelayer" action="elementsCoilsOneLayer"/>
-				<app:item name="menu.elements.coils.ringlayer" caption="menu.elements.coils.ringlayer" tooltip="menu.ttElements.coils.ringlayer" action="elementsCoilsRingLayer"/>
+				<app:item name="menu.elements.coils.onelayer" caption="menu.elements.coils.onelayer" tooltip="menu.ttElements.coils.onelayer" action="SingleCoilsService"/>
+				<app:item name="menu.elements.coils.ringlayer" caption="menu.elements.coils.ringlayer" tooltip="menu.ttElements.coils.ringlayer" action="RingCoilsService"/>
+			</app:submenu>
+		</app:submenu>
+		<app:submenu name="menu.schemes" caption="menu.schemes" tooltip="menu.ttSchemes">
+			<app:submenu name="menu.schemes.powerfactor" caption="menu.schemes.powerfactor" tooltip="menu.ttSchemes.powerfactor">
+				<app:item name="menu.schemes.powerfactor.mc34262" caption="menu.schemes.powerfactor.mc34262" tooltip="menu.ttSchemes.powerfactor.mc34262" action="MC34262Service"/>
 			</app:submenu>
 		</app:submenu>
 	</app:menu>

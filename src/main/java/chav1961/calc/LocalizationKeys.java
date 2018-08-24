@@ -63,4 +63,15 @@ public abstract class LocalizationKeys {
 	public static final String		SEARCH_USES = "search.uses";
 	public static final String		SEARCH_TAGS = "search.tags";
 	public static final String		SEARCH_SEE_ALSO = "search.seealso";
+
+	//
+	//	Formulas tags to use as cross-references
+	//
+	
+	public static final String		FORMULA_INDUCTANCE_ONE_LAYER_COIL = "formula.inductanceOneLayerCoil";
+	public static final String		FORMULA_NUMBER_OF_COILS_ONE_LAYER_COIL = "formula.numberOfCoilsOneLayerCoil";
+	public static final String 		FORMULA_INDUCTANCE_RING_COIL = "formula.inductanceRingCoil";
+	public static final String 		FORMULA_COILS_RING_COIL = "formula.coilsRingCoil";
+	public static final String 		FORMULA_INDUCTION_RING_COIL = "formula.inductionRingCoil";
+
 }

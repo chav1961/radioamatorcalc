@@ -1,2 +1,3 @@
 chav1961.calc.elements.coils.singlecoilsplugin.SingleCoilsService
 chav1961.calc.elements.coils.ringcoilsplugin.RingCoilsService
+chav1961.calc.schemes.powerfactor.mc34262plugin.MC34262Service

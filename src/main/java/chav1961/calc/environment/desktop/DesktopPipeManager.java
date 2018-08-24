@@ -89,7 +89,7 @@ public class DesktopPipeManager extends JDesktopPane implements LocaleChangeList
     		throw new IllegalArgumentException("Content can't be null");
     	}
     	else {
-        	final SmartContainer	sc = new SmartContainer(captionId,helpId,content,true);
+        	final SmartContainer	sc = new SmartContainer(localizer,captionId,helpId,content,true);
         	
         	sc.setName(name);
         	if (icon != null) {
@@ -106,14 +106,20 @@ public class DesktopPipeManager extends JDesktopPane implements LocaleChangeList
     private class SmartContainer extends JInternalFrame implements LocaleChangeListener {
 		private static final long serialVersionUID = 950696564256041602L;
 
+		private final Localizer		localizer;
 		private final String		captionId;
 		private final String		helpId;
 		private final JComponent	component;
-		
+
 		public SmartContainer(final String captionId, final String helpId, final JComponent component, final boolean resizable) throws LocalizationException {
+			this(DesktopPipeManager.this.localizer,captionId,helpId,component,resizable);
+    	}
+		
+		public SmartContainer(final Localizer localizer, final String captionId, final String helpId, final JComponent component, final boolean resizable) throws LocalizationException {
     	    super(localizer.getValue(captionId), resizable, true, false, true);
+    	    this.localizer = localizer;
     	    this.captionId = captionId;
-    	    this.helpId = captionId;
+    	    this.helpId = helpId;
     	    this.component = component;
     	    
     	    getContentPane().setLayout(new BorderLayout());
@@ -132,7 +138,7 @@ public class DesktopPipeManager extends JDesktopPane implements LocaleChangeList
     	}
 
 		@Override
-		public void localeChanged(Locale oldLocale, Locale newLocale) throws LocalizationException {
+		public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
 			fillLocalizedStrings(oldLocale,newLocale);
 			SwingUtils.refreshLocale(component,oldLocale,newLocale);
 		}

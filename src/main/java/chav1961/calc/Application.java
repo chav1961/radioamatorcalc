@@ -48,6 +48,7 @@ import chav1961.calc.environment.desktop.DesktopManager;
 import chav1961.calc.environment.pipe.PipeFactory;
 import chav1961.calc.environment.search.LuceneWrapper;
 import chav1961.calc.environment.search.SearchManager;
+import chav1961.calc.formulas.Utils;
 import chav1961.calc.interfaces.PipeInterface;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.PluginInterface.PluginInstance;
@@ -103,7 +104,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private PipeInterface					currentPipe = null;
 	private File							currentPipeFile = null;
 	private File							currentWorkingDir = new File("./");
-	
+
 	public Application(final XMLDescribedApplication xda, final Localizer parentLocalizer) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException {
 		if (xda == null) {
 			throw new NullPointerException("Application descriptor can't be null");
@@ -156,7 +157,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			final JSplitPane	split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 			
 			leftMenu = new SimpleNavigatorTree(localizer,xda.getEntity("navigator",JMenuBar.class,null));
-			leftMenu.addActionListener(SwingUtils.buildAnnotatedActionListener(this,(action)->{}));
+			leftMenu.addActionListener(SwingUtils.buildAnnotatedActionListener(this,(action)->{startPlugin(action);}));
 
 			desktopMgr = new DesktopManager(this,xda,localizer);
 			searchMgr = new SearchManager(this,xda,localizer);
@@ -465,25 +466,38 @@ public class Application extends JFrame implements LocaleChangeListener {
 		cardLayout.show(rightScreen,DESKTOP_WINDOW);			
 	}
 
-	@OnAction("elementsCoilsOneLayer")
-	private void elementsCoilsOneLayer() throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-		final PluginInterface	plugin = seekSPIPlugin("SingleCoilsService"); 
-		final PluginInstance	inst = plugin.newInstance(localizer,logger);
-		
-		inst.getComponent().setPreferredSize(new Dimension(450,200));
-		placePlugin(plugin,inst);
-	}
+//	@OnAction("elementsCoilsOneLayer")
+//	private void elementsCoilsOneLayer() throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+//		final PluginInterface	plugin = seekSPIPlugin("SingleCoilsService"); 
+//		final PluginInstance	inst = plugin.newInstance(localizer,logger);
+//		
+//		inst.getComponent().setPreferredSize(inst.getRecommendedSize());
+////		inst.getComponent().setPreferredSize(new Dimension(450,200));
+//		placePlugin(plugin,inst);
+//	}
+//	
+//	@OnAction("elementsCoilsRingLayer")
+//	private void elementsCoilsRingLayer() throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+//		final PluginInterface	plugin = seekSPIPlugin("RingCoilsService"); 
+//		final PluginInstance	inst = plugin.newInstance(localizer,logger);
+//		
+//		inst.getComponent().setPreferredSize(inst.getRecommendedSize());
+////		inst.getComponent().setPreferredSize(new Dimension(450,250));
+//		placePlugin(plugin,inst);
+//	}
+//	
+//
+//	@OnAction("schemesPowerfactorMc34262")
+//	private void schemesPowerfactorMc34262() throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+//		final PluginInterface	plugin = seekSPIPlugin("MC34262Service"); 
+//		final PluginInstance	inst = plugin.newInstance(localizer,logger);
+//		
+//		inst.getComponent().setPreferredSize(inst.getRecommendedSize());
+////		inst.getComponent().setPreferredSize(new Dimension(450,250));
+//		placePlugin(plugin,inst);
+//	}
 	
-	@OnAction("elementsCoilsRingLayer")
-	private void elementsCoilsRingLayer() throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-		final PluginInterface	plugin = seekSPIPlugin("RingCoilsService"); 
-		final PluginInstance	inst = plugin.newInstance(localizer,logger);
-		
-		inst.getComponent().setPreferredSize(new Dimension(450,250));
-		placePlugin(plugin,inst);
-	}
 	
-
 	@OnAction("builtin.languages:en")
 	private void selectEnglish() throws LocalizationException, NullPointerException {
 		localizer.setCurrentLocale(Locale.forLanguageTag("en"));
@@ -521,6 +535,20 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
+	private void startPlugin(final String pluginName) {
+		try{final PluginInterface	plugin = seekSPIPlugin(pluginName);
+		
+			if (plugin != null) {
+				final PluginInstance 	inst = plugin.newInstance(plugin.getLocalizerAssociated(localizer),logger);
+				
+				inst.getComponent().setPreferredSize(inst.getRecommendedSize());
+				placePlugin(plugin,inst);
+			}
+		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void placePlugin(final PluginInterface plugin, final PluginInstance component) throws LocalizationException {
 		desktopMgr.getPipeManager().newWindow(component.getLocalizerAssociated(),plugin.getPluginId(),plugin.getCaptionId(),plugin.getHelpId(),plugin.getIcon(),(JComponent)component);
 	}

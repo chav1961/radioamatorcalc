@@ -1,7 +1,9 @@
 package chav1961.calc.elements.coils.ringcoilsplugin;
 
+import chav1961.calc.LocalizationKeys;
 import chav1961.calc.elements.coils.CoilsCalculationType;
 import chav1961.calc.formulas.Utils;
+import chav1961.calc.interfaces.UseFormulas;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
@@ -20,7 +22,8 @@ import chav1961.purelib.ui.interfacers.Action;
  */
 
 @LocaleResourceLocation(Localizer.LOCALIZER_SCHEME+":prop:chav1961/calc/elements/coils/ringcoilsplugin/ringcoils")
-@Action(resource=@LocaleResource(value="calculate",tooltip="calculateTooltip"),actionString="calculate") 
+@Action(resource=@LocaleResource(value="calculate",tooltip="calculateTooltip"),actionString="calculate",simulateCheck=true) 
+@UseFormulas({LocalizationKeys.FORMULA_COILS_RING_COIL,LocalizationKeys.FORMULA_INDUCTANCE_RING_COIL})
 class RingCoilsCalculator implements FormManager<Object,RingCoilsCalculator> {
 	private static final String		MESSAGE_HEIGHT_POSITIVE = "heightPositive";
 	private static final String		MESSAGE_DIAMETER_POSITIVE = "diameterPositive";
@@ -135,7 +138,7 @@ class RingCoilsCalculator implements FormManager<Object,RingCoilsCalculator> {
 			case "calculate"	:
 				switch (calcType) {
 					case INDUCTANCE		:
-						inductance = (float) Utils.ringCoilsInductance(coils, outerDiameter, innerDiameter, height, permability);
+						inductance = (float) Utils.inductanceRingCoil(coils, outerDiameter, innerDiameter, height, permability);
 						break;
 					case NUMBER_OF_COILS:
 						if (outerDiameter/innerDiameter > 1.75) {
@@ -145,33 +148,14 @@ class RingCoilsCalculator implements FormManager<Object,RingCoilsCalculator> {
 							coils = (int) Math.sqrt(inductance / (0.0004f * permability * height * (outerDiameter - innerDiameter) / (outerDiameter + innerDiameter)));
 						}
 						
-						int 	restOfCoils = coils;
-						float 	currentInnerDiameter = innerDiameter - wireDiameter;
+						final float[]	forLength = Utils.wireLength4Ring(coils,wireDiameter,outerDiameter,innerDiameter,height);
 						
-						while (restOfCoils > 0 && currentInnerDiameter > 0) {
-							restOfCoils -= Math.PI * currentInnerDiameter / wireDiameter;
-							currentInnerDiameter -= wireDiameter;
-						}
-						
-						if (currentInnerDiameter < 0) {
+						if (forLength == null) {
 							getLogger().message(Severity.warning,localizer.getValue(MESSAGE_COILS_NONNEGATIVE),coils);
 							return RefreshMode.REJECT;
 						}
 						else {
-							float currentWireLength = 0.0f, currentCoilLength = 2 * ((outerDiameter - innerDiameter) + height) + 4 * wireDiameter;
-							
-							restOfCoils = coils;
-							currentInnerDiameter = innerDiameter - wireDiameter;
-
-							while (restOfCoils > 0 && currentInnerDiameter > 0) {
-								int coilsInLayer = (int) (Math.PI * currentInnerDiameter / wireDiameter);
-								
-								currentWireLength += currentCoilLength * coilsInLayer;
-								currentInnerDiameter -= wireDiameter;
-								restOfCoils -= coilsInLayer;
-								currentCoilLength += 4 * wireDiameter;
-							}
-							wireLength = currentWireLength;
+							wireLength = forLength[0];
 						}
 						break;
 					default: throw new UnsupportedOperationException("Calculation type ["+calcType+"] is not supported yet");
