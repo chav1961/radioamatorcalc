@@ -12,6 +12,7 @@ import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.ui.interfacers.FormManager;
 import chav1961.purelib.ui.interfacers.Format;
+import chav1961.purelib.ui.interfacers.FormManager.RefreshMode;
 import chav1961.purelib.ui.interfacers.Action;
 
 /**
@@ -29,27 +30,29 @@ class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator>
 	private static final String		MESSAGE_WIREDIAMETER_POSITIVE = "wirediameterPositive";
 	private static final String		MESSAGE_INDUCTANCE_NONNEGATIVE = "indictanceNonnegative";
 	private static final String		MESSAGE_COILS_NONNEGATIVE = "coilsNonnegative";
+
+	private static final String[]	FIELDS_ANNOTATED = chav1961.calc.environment.Utils.buildFieldsAnnotated(SingleCoilsCalculator.class); 
 	
 	private final Localizer			localizer;
 	private final LoggerFacade		logger;
 	
 @LocaleResource(value="length",tooltip="lengthTooltip")
-@Format("10.3m")
+@Format("10.3mspzn")
 	private float 					length = 0.0f;
 @LocaleResource(value="diameter",tooltip="diameterTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float					diameter = 0.0f;
 @LocaleResource(value="wireDiameter",tooltip="wireDiameterTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float					wireDiameter = 0.0f;
 @LocaleResource(value="calcType",tooltip="calcTypeTooltip")	
 @Format("10.3m")
 	private CoilsCalculationType	calcType = CoilsCalculationType.INDUCTANCE;
 @LocaleResource(value="inductance",tooltip="inductanceTooltip")	
-@Format("10.3")
+@Format("10.3s")
 	private float					inductance = 0.0f;
 @LocaleResource(value="coils",tooltip="coilsTooltip")	
-@Format("10.3")
+@Format("10.3s")
 	private float					coils = 0.0f;
 
 	SingleCoilsCalculator(final Localizer localizer,final LoggerFacade logger) {
@@ -58,43 +61,43 @@ class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator>
 	}
 	
 	@Override
-	public RefreshMode onRecord(final Action action, final SingleCoilsCalculator oldRecord, final Object oldId, final SingleCoilsCalculator newRecord, final Object newId) throws FlowException {
-		return RefreshMode.NONE;
+	public RefreshMode onRecord(final Action action, final SingleCoilsCalculator oldRecord, final Object oldId, final SingleCoilsCalculator newRecord, final Object newId) throws FlowException, LocalizationException {
+		switch (action) {
+			case CHECK	:
+				for (String field : FIELDS_ANNOTATED) {
+					if (onField(oldRecord,oldId,field,null) == RefreshMode.REJECT) {
+						return RefreshMode.REJECT;
+					}
+				}
+				return RefreshMode.NONE;
+			default 	:
+				return RefreshMode.NONE;
+		}
 	}
 
 	@Override
 	public RefreshMode onField(final SingleCoilsCalculator inst, final Object id, final String fieldName, final Object oldValue) throws FlowException, LocalizationException, IllegalArgumentException {
 		switch (fieldName) {
 			case "length"		:
-				if (length <= 0) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_LENGTH_POSITIVE),length);
-					return RefreshMode.REJECT;
-				}
-				break;
+				return checkAndNotify(length > 0,localizer.getValue(MESSAGE_LENGTH_POSITIVE),length) ? RefreshMode.NONE : RefreshMode.REJECT;
 			case "diameter"		:
-				if (diameter <= 0) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_DIAMETER_POSITIVE),diameter);
-					return RefreshMode.REJECT;
-				}
-				break;
+				return checkAndNotify(diameter > 0,localizer.getValue(MESSAGE_DIAMETER_POSITIVE),diameter) ? RefreshMode.NONE : RefreshMode.REJECT;
 			case "wireDiameter"	:
-				if (wireDiameter <= 0) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_WIREDIAMETER_POSITIVE),wireDiameter);
-					return RefreshMode.REJECT;
-				}
-				break;
+				return checkAndNotify(wireDiameter > 0,localizer.getValue(MESSAGE_WIREDIAMETER_POSITIVE),wireDiameter) ? RefreshMode.NONE : RefreshMode.REJECT;
 			case "inductance"	:
-				if (inductance < 0) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_INDUCTANCE_NONNEGATIVE),inductance);
+				if (calcType == CoilsCalculationType.NUMBER_OF_COILS) {
+					return checkAndNotify(inductance > 0,localizer.getValue(MESSAGE_INDUCTANCE_NONNEGATIVE),inductance) ? RefreshMode.NONE : RefreshMode.REJECT;
+				}
+				else {
 					return RefreshMode.REJECT;
 				}
-				break;
 			case "coils"		:
-				if (coils < 0) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_COILS_NONNEGATIVE),coils);
+				if (calcType == CoilsCalculationType.INDUCTANCE) {
+					return checkAndNotify(coils > 0,localizer.getValue(MESSAGE_COILS_NONNEGATIVE),coils) ? RefreshMode.NONE : RefreshMode.REJECT;
+				}
+				else {
 					return RefreshMode.REJECT;
 				}
-				break;
 			default :
 		}
 		return RefreshMode.NONE;
@@ -122,5 +125,15 @@ class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator>
 	@Override
 	public LoggerFacade getLogger() {
 		return logger;
+	}
+	
+	private boolean checkAndNotify(final boolean condition, final String messageId, final Object... parameters) throws LocalizationException {
+		if (!condition) {
+			getLogger().message(Severity.warning,localizer.getValue(messageId),parameters);
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 }

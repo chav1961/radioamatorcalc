@@ -9,7 +9,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +17,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.Locale;
 import java.util.ServiceLoader;
 import java.util.Timer;
@@ -48,7 +46,6 @@ import chav1961.calc.environment.desktop.DesktopManager;
 import chav1961.calc.environment.pipe.PipeFactory;
 import chav1961.calc.environment.search.LuceneWrapper;
 import chav1961.calc.environment.search.SearchManager;
-import chav1961.calc.formulas.Utils;
 import chav1961.calc.interfaces.PipeInterface;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.PluginInterface.PluginInstance;
@@ -89,7 +86,28 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private final CurrentSettings			settings;
 	private final Localizer					localizer;
 	private final JLabel					stateString = new JLabel();
-	private final LoggerFacade				logger;
+	private final LoggerFacade				logger = new AbstractLoggerFacade() {
+												@Override
+												protected void toLogger(final Severity level, final String text, final Throwable throwable) {
+													if (throwable != null) {
+														throwable.printStackTrace();
+													}
+													switch (level) {
+														case debug		: Application.this.message(DEBUG_FORMAT,text); break;
+														case error		: Application.this.message(ERROR_FORMAT,text); break;
+														case info		: Application.this.message(INFO_FORMAT,text); break;
+														case severe		: Application.this.message(SEVERE_FORMAT,text); break;
+														case trace		: Application.this.message(TRACE_FORMAT,text); break;
+														case warning	: Application.this.message(WARNING_FORMAT,text); break;
+														default	: throw new UnsupportedOperationException("Severity level ["+level+"] is not suported yet");
+													}
+												}
+												
+												@Override
+												protected AbstractLoggerFacade getAbstractLoggerFacade(final String mark, final Class<?> root) {
+													return this;
+												}
+											};
 	private final JMenuBar					menu;
 	private final SimpleNavigatorTree		leftMenu;
 	private final DesktopManager			desktopMgr;
@@ -113,33 +131,12 @@ public class Application extends JFrame implements LocaleChangeListener {
 			throw new NullPointerException("Localizer can't be null");
 		}
 		else {
+			
 			this.localizer = xda.getLocalizer();
 			final JPanel				statePanel = new JPanel();
 			
 			stateString.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 			statePanel.add(stateString);
-			this.logger = new AbstractLoggerFacade() {
-								@Override
-								protected void toLogger(final Severity level, final String text, final Throwable throwable) {
-									if (throwable != null) {
-										throwable.printStackTrace();
-									}
-									switch (level) {
-										case debug		: Application.this.message(DEBUG_FORMAT,text); break;
-										case error		: Application.this.message(ERROR_FORMAT,text); break;
-										case info		: Application.this.message(INFO_FORMAT,text); break;
-										case severe		: Application.this.message(SEVERE_FORMAT,text); break;
-										case trace		: Application.this.message(TRACE_FORMAT,text); break;
-										case warning	: Application.this.message(WARNING_FORMAT,text); break;
-										default	: throw new UnsupportedOperationException("Severity level ["+level+"] is not suported yet");
-									}
-								}
-								
-								@Override
-								protected AbstractLoggerFacade getAbstractLoggerFacade(final String mark, final Class<?> root) {
-									return this;
-								}
-							};
 			this.settings = new CurrentSettings(this.localizer,this.logger); 
 			
 			parentLocalizer.push(localizer);
@@ -160,7 +157,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			leftMenu.addActionListener(SwingUtils.buildAnnotatedActionListener(this,(action)->{startPlugin(action);}));
 
 			desktopMgr = new DesktopManager(this,xda,localizer);
-			searchMgr = new SearchManager(this,xda,localizer);
+			searchMgr = new SearchManager(this,xda,localizer,logger);
 			pipeFactory = new PipeFactory(this,localizer);
 			currentPipe = pipeFactory.newPipe(); 
 			
@@ -196,6 +193,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			});
 			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
 			this.lucene = buildIndex();
+			searchMgr.assignLiceneWrapper(this.lucene);
 		}
 	}
 
@@ -466,38 +464,6 @@ public class Application extends JFrame implements LocaleChangeListener {
 		cardLayout.show(rightScreen,DESKTOP_WINDOW);			
 	}
 
-//	@OnAction("elementsCoilsOneLayer")
-//	private void elementsCoilsOneLayer() throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-//		final PluginInterface	plugin = seekSPIPlugin("SingleCoilsService"); 
-//		final PluginInstance	inst = plugin.newInstance(localizer,logger);
-//		
-//		inst.getComponent().setPreferredSize(inst.getRecommendedSize());
-////		inst.getComponent().setPreferredSize(new Dimension(450,200));
-//		placePlugin(plugin,inst);
-//	}
-//	
-//	@OnAction("elementsCoilsRingLayer")
-//	private void elementsCoilsRingLayer() throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-//		final PluginInterface	plugin = seekSPIPlugin("RingCoilsService"); 
-//		final PluginInstance	inst = plugin.newInstance(localizer,logger);
-//		
-//		inst.getComponent().setPreferredSize(inst.getRecommendedSize());
-////		inst.getComponent().setPreferredSize(new Dimension(450,250));
-//		placePlugin(plugin,inst);
-//	}
-//	
-//
-//	@OnAction("schemesPowerfactorMc34262")
-//	private void schemesPowerfactorMc34262() throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-//		final PluginInterface	plugin = seekSPIPlugin("MC34262Service"); 
-//		final PluginInstance	inst = plugin.newInstance(localizer,logger);
-//		
-//		inst.getComponent().setPreferredSize(inst.getRecommendedSize());
-////		inst.getComponent().setPreferredSize(new Dimension(450,250));
-//		placePlugin(plugin,inst);
-//	}
-	
-	
 	@OnAction("builtin.languages:en")
 	private void selectEnglish() throws LocalizationException, NullPointerException {
 		localizer.setCurrentLocale(Locale.forLanguageTag("en"));

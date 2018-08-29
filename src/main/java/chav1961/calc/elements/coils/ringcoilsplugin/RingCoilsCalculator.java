@@ -33,6 +33,8 @@ class RingCoilsCalculator implements FormManager<Object,RingCoilsCalculator> {
 	private static final String		MESSAGE_INDUCTANCE_NONNEGATIVE = "indictanceNonnegative";
 	private static final String		MESSAGE_COILS_NONNEGATIVE = "coilsNonnegative";
 	
+	private static final String[]	FIELDS_ANNOTATED = chav1961.calc.environment.Utils.buildFieldsAnnotated(RingCoilsCalculator.class); 
+	
 	private final Localizer			localizer;
 	private final LoggerFacade		logger;
 	
@@ -70,66 +72,54 @@ class RingCoilsCalculator implements FormManager<Object,RingCoilsCalculator> {
 	}
 	
 	@Override
-	public RefreshMode onRecord(final Action action, final RingCoilsCalculator oldRecord, final Object oldId, final RingCoilsCalculator newRecord, final Object newId) throws FlowException {
-		return RefreshMode.NONE;
+	public RefreshMode onRecord(final Action action, final RingCoilsCalculator oldRecord, final Object oldId, final RingCoilsCalculator newRecord, final Object newId) throws FlowException, LocalizationException {
+		switch (action) {
+			case CHECK	:
+				for (String field : FIELDS_ANNOTATED) {
+					if (onField(oldRecord,oldId,field,null) == RefreshMode.REJECT) {
+						return RefreshMode.REJECT;
+					}
+				}
+				return RefreshMode.NONE;
+			default 	:
+				return RefreshMode.NONE;
+		}
 	}
 
 	@Override
 	public RefreshMode onField(final RingCoilsCalculator inst, final Object id, final String fieldName, final Object oldValue) throws FlowException, LocalizationException, IllegalArgumentException {
 		switch (fieldName) {
 			case "height"		:
-				if (height <= 0) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_HEIGHT_POSITIVE),height);
-					return RefreshMode.REJECT;
-				}
-				break;
+				return checkAndNotify(height > 0,localizer.getValue(MESSAGE_HEIGHT_POSITIVE),height) ? RefreshMode.NONE : RefreshMode.REJECT;
 			case "outerDiameter"		:
-				if (outerDiameter <= 0) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_DIAMETER_POSITIVE),outerDiameter);
-					return RefreshMode.REJECT;
-				}
-				else if (outerDiameter < innerDiameter) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_DIAMETER_INNER_GREATER),outerDiameter,innerDiameter);
-					return RefreshMode.REJECT;
-				}
-				break;
+				return checkAndNotify(outerDiameter > 0,localizer.getValue(MESSAGE_DIAMETER_POSITIVE),outerDiameter) ? 
+						(checkAndNotify(outerDiameter > innerDiameter,localizer.getValue(MESSAGE_DIAMETER_INNER_GREATER),outerDiameter,innerDiameter) ? RefreshMode.NONE : RefreshMode.REJECT)
+					: RefreshMode.REJECT;
 			case "innerDiameter"		:
-				if (innerDiameter <= 0) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_DIAMETER_POSITIVE),innerDiameter);
-					return RefreshMode.REJECT;
-				}
-				else if (outerDiameter < innerDiameter) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_DIAMETER_INNER_GREATER),outerDiameter,innerDiameter);
-					return RefreshMode.REJECT;
-				}
-				break;
+				return checkAndNotify(innerDiameter > 0,localizer.getValue(MESSAGE_DIAMETER_POSITIVE),innerDiameter) ? 
+						(checkAndNotify(outerDiameter > innerDiameter,localizer.getValue(MESSAGE_DIAMETER_INNER_GREATER),outerDiameter,innerDiameter) ? RefreshMode.NONE : RefreshMode.REJECT)
+					: RefreshMode.REJECT;
 			case "permability"		:
-				if (permability < 1) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_PERMABILITY_GREAT_ONE),permability);
-					return RefreshMode.REJECT;
-				}
-				break;
+				return checkAndNotify(permability > 1,localizer.getValue(MESSAGE_PERMABILITY_GREAT_ONE),permability) ? RefreshMode.NONE : RefreshMode.REJECT;
 			case "wireDiameter"	:
-				if (wireDiameter <= 0) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_WIREDIAMETER_POSITIVE),wireDiameter);
-					return RefreshMode.REJECT;
-				}
-				break;
+				return checkAndNotify(wireDiameter > 0,localizer.getValue(MESSAGE_WIREDIAMETER_POSITIVE),wireDiameter) ? RefreshMode.NONE : RefreshMode.REJECT;
 			case "inductance"	:
-				if (inductance < 0) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_INDUCTANCE_NONNEGATIVE),inductance);
+				if (calcType == CoilsCalculationType.NUMBER_OF_COILS) {
+					return checkAndNotify(inductance > 0,localizer.getValue(MESSAGE_INDUCTANCE_NONNEGATIVE),inductance) ? RefreshMode.NONE : RefreshMode.REJECT;
+				}
+				else {
 					return RefreshMode.REJECT;
 				}
-				break;
 			case "coils"		:
-				if (coils < 0) {
-					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_COILS_NONNEGATIVE),coils);
+				if (calcType == CoilsCalculationType.INDUCTANCE) {
+					return checkAndNotify(coils > 0,localizer.getValue(MESSAGE_COILS_NONNEGATIVE),coils) ? RefreshMode.NONE : RefreshMode.REJECT;
+				}
+				else {
 					return RefreshMode.REJECT;
 				}
-				break;
 			default :
+				return RefreshMode.NONE;
 		}
-		return RefreshMode.NONE;
 	}
 
 	@Override
@@ -169,5 +159,15 @@ class RingCoilsCalculator implements FormManager<Object,RingCoilsCalculator> {
 	@Override
 	public LoggerFacade getLogger() {
 		return logger;
+	}
+
+	private boolean checkAndNotify(final boolean condition, final String messageId, final Object... parameters) throws LocalizationException {
+		if (!condition) {
+			getLogger().message(Severity.warning,localizer.getValue(messageId),parameters);
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 }

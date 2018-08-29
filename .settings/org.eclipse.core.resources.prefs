@@ -11,6 +11,10 @@ encoding//src/main/java/chav1961/calc/schemes/powerfactor/mc34262plugin/MC34262_
 encoding//src/main/java/chav1961/calc/schemes/powerfactor/mc34262plugin/MC34262_ru.properties=UTF-8
 encoding//src/main/java/chav1961/calc/schemes/powerfactor/mc34262plugin/mc34262/help/en/MC34262.cre=UTF-8
 encoding//src/main/java/chav1961/calc/schemes/powerfactor/mc34262plugin/mc34262/help/ru/MC34262.cre=UTF-8
+encoding//src/main/java/chav1961/calc/schemes/stepdown/tps40200plugin/tps40200/help/en/TPS40200.cre=UTF-8
+encoding//src/main/java/chav1961/calc/schemes/stepdown/tps40200plugin/tps40200/help/ru/TPS40200.cre=UTF-8
+encoding//src/main/java/chav1961/calc/schemes/stepup/ucX84Xplugin/ucX84X/help/en/UCX84X.cre=UTF-8
+encoding//src/main/java/chav1961/calc/schemes/stepup/ucX84Xplugin/ucX84X/help/ru/UCX84X.cre=UTF-8
 encoding//src/main/resources/chav1961/calculator/i18n/i18n/help/en/aboutApplication.cre=UTF-8
 encoding//src/main/resources/chav1961/calculator/i18n/i18n/help/ru/aboutApplication.cre=UTF-8
 encoding//src/main/resources/chav1961/calculator/i18n/i18n_en.properties=UTF-8

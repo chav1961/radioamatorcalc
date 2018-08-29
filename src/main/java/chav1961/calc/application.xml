@@ -35,6 +35,14 @@
 			<app:submenu name="menu.schemes.powerfactor" caption="menu.schemes.powerfactor" tooltip="menu.ttSchemes.powerfactor">
 				<app:item name="menu.schemes.powerfactor.mc34262" caption="menu.schemes.powerfactor.mc34262" tooltip="menu.ttSchemes.powerfactor.mc34262" action="MC34262Service"/>
 			</app:submenu>
+			<app:submenu name="menu.schemes.stepup" caption="menu.schemes.stepup" tooltip="menu.ttSchemes.stepup">
+				<app:item name="menu.schemes.stepup.mc34063" caption="menu.schemes.stepup.mc34063" tooltip="menu.ttSchemes.stepup.mc34063" action="MC34063UpService"/>
+				<app:item name="menu.schemes.stepup.ucX84X" caption="menu.schemes.stepup.ucX84X" tooltip="menu.ttSchemes.stepup.ucX84X" action="UCX84XUpService"/>
+			</app:submenu>
+			<app:submenu name="menu.schemes.stepdown" caption="menu.schemes.stepdown" tooltip="menu.ttSchemes.stepdown">
+				<app:item name="menu.schemes.stepdown.mc34063" caption="menu.schemes.stepdown.mc34063" tooltip="menu.ttSchemes.stepdown.mc34063" action="MC34063DownService"/>
+				<app:item name="menu.schemes.stepdown.tps40200" caption="menu.schemes.stepdown.tps40200" tooltip="menu.ttSchemes.stepdown.tps40200" action="TPS40200Service"/>
+			</app:submenu>
 		</app:submenu>
 	</app:menu>
 	<app:menu id="desktopToolbar">

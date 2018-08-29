@@ -78,8 +78,13 @@ class SearchResult extends JPanel implements SearchComponent{
 		         public void hyperlinkUpdate(final HyperlinkEvent e) {
 		             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 		                 if (e instanceof HTMLFrameHyperlinkEvent) {
-		                	 try{InternalUtils.parseAndCall(localizer,SearchResult.this,listener,e.getURL().toURI());
+		                	try{InternalUtils.parseAndCall(localizer,SearchResult.this,listener,e.getURL().toURI());
 							} catch (URISyntaxException | LocalizationException exc) {
+							}
+		                 }
+		                 else {
+		                	try{InternalUtils.parseAndCall(localizer,SearchResult.this,listener,URI.create(e.getDescription()));
+							} catch (LocalizationException exc) {
 							}
 		                 }
 		             }

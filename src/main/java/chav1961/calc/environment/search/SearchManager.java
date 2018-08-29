@@ -1,40 +1,40 @@
 package chav1961.calc.environment.search;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GridLayout;
+import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.ServiceLoader;
 
-import javax.swing.BoxLayout;
 import javax.swing.JComponent;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JToolTip;
 import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
-import javax.swing.border.LineBorder;
+
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.analysis.ru.RussianAnalyzer;
 
 import chav1961.calc.Application;
 import chav1961.calc.LocalizationKeys;
-import chav1961.calc.elements.coils.singlecoilsplugin.SingleCoilsService;
 import chav1961.calc.environment.Constants;
+import chav1961.calc.environment.search.LuceneWrapper.URIAndScore;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.ui.swing.SmartToolTip;
@@ -48,11 +48,24 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 	private final Application				application;
 	private final XMLDescribedApplication	xda;
 	private final Localizer					localizer;
+	private final LoggerFacade				logger;
 	private final SearchString				toolBar;
-	private final ActionListener			toClose = new ActionListener() {
+	private final ActionListener			processKeys = new ActionListener() {
 												@Override
 												public void actionPerformed(ActionEvent e) {
-													closeContent();
+													switch (e.getActionCommand()) {
+														case "backward"		:
+															backward();
+															break;
+														case "forward"		:
+															forward();
+															break;
+														case "closeSearch"	:
+															closeContent();
+															break;
+														default :
+															throw new UnsupportedOperationException("Unknown action ["+e.getActionCommand()+"]");
+													}
 												}
 											};	
 	private final SearchListener			listener = new SearchListener(){
@@ -62,26 +75,42 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 												}
 										
 												@Override
+												public void tagClicked(SearchComponent current, String tagId, String tagText) {
+													processTag(current,tagId,tagText);
+												}
+												
+												@Override
 												public void linkClicked(final SearchComponent current, String pluginId) {
 													processLink(current,pluginId);
 												}
+
 											};
-	private final List<History>				history = new ArrayList<>();
+	private final History					history = new History();
+	private LuceneWrapper					wrapper;
 	private SearchResultAndNavigator		currentResult = null; 
 	
-	public SearchManager(final Application application, final XMLDescribedApplication xda, final Localizer localizer) throws NullPointerException, IllegalArgumentException, EnvironmentException {
+	public SearchManager(final Application application, final XMLDescribedApplication xda, final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, EnvironmentException {
 		setLayout(new BorderLayout());
 		this.application = application;
 		this.xda = xda;
 		this.localizer = localizer;
+		this.logger = logger;
 		
-		add(this.toolBar = new SearchString(localizer,toClose),BorderLayout.NORTH);
+		add(this.toolBar = new SearchString(localizer,processKeys),BorderLayout.NORTH);
+		add(this.history,BorderLayout.CENTER);
 		SwingUtils.assignActionListeners(toolBar,this);
-		SwingUtils.assignActionKey(this,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),toClose, "closeSearch");		
-		SwingUtils.assignActionKey(this.toolBar,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),toClose, "closeSearch");		
+		SwingUtils.assignActionKey(this,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),processKeys, "closeSearch");		
+		SwingUtils.assignActionKey(this.toolBar,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),processKeys, "closeSearch");		
+		SwingUtils.assignActionKey(this.history,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),processKeys, "closeSearch");		
+		SwingUtils.assignActionKey(this.history,KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,KeyEvent.ALT_MASK),processKeys, "backward");		
+		SwingUtils.assignActionKey(this.history,KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,KeyEvent.ALT_MASK),processKeys, "forward");		
 		fillLocalizedString(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
 	}
 
+	public void assignLiceneWrapper(final LuceneWrapper wrapper) {
+		this.wrapper = wrapper;
+	}
+	
 	@Override
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
 		fillLocalizedString(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
@@ -93,15 +122,14 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 		Iterable<PluginInterface> search(final String searchString);
 	}
 	
-	public void open(final String searchString, final SearchCallback callback) {
-	}
-
+	@OnAction("forward")
 	public void forward() {
-		
+		history.forward();
 	}
 	
+	@OnAction("backward")
 	public void backward() {
-		
+		history.backward();
 	}
 
 	public void focus() {
@@ -111,44 +139,75 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 	
 	@OnAction("closeSearch")
 	public void closeContent() {
+		history.clear();
 		application.unsearch();
 	}
 
 	@OnAction("enter")
 	private void startSearch() {
-		switch (localizer.currentLocale().getLocale().getLanguage()) {
-			case "ru" :
-				break;
-			case "en" :
-				break;
-			default :
-		}
 		if (currentResult != null) {
-			remove(currentResult);
+			history.clear();
 			currentResult.close();
 		}
-		try {
-			currentResult = new SearchResultAndNavigator(localizer,new PluginInterface[] {new SingleCoilsService()},10,listener);
-			SwingUtils.assignActionKey(currentResult,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),toClose,"closeSearch");		
-		} catch (LocalizationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		try{currentResult = search(LuceneWrapper.FIELD_CONTENT,toolBar.getQueryString());
+			history.append(currentResult);
+			revalidate();
+		} catch (IOException | LocalizationException e) {
+			logger.message(Severity.warning,e,"Error searching content...");
 		}
-		add(currentResult,BorderLayout.CENTER);
-		revalidate();
 	}
 	
-	
-	private void processLink(final SearchComponent current, final String pluginId) {
-	}
-
 	private void processFacet(final SearchComponent current, final String facetId, final String facetText) {
+		try{history.append(search(LuceneWrapper.FIELD_USES,facetText));
+		} catch (IOException | LocalizationException e) {
+			logger.message(Severity.warning,e,"Error searching content...");
+		}
+	}
+
+	private void processTag(final SearchComponent current, final String tagId, final String tagText) {
+		try{history.append(search(LuceneWrapper.FIELD_TAGS,tagText));
+		} catch (IOException | LocalizationException e) {
+			logger.message(Severity.warning,e,"Error searching content...");
+		}
+	}
+
+	private void processLink(final SearchComponent current, final String pluginId) {
+		try{history.append(search(LuceneWrapper.FIELD_SEEALSO,pluginId));
+		} catch (IOException | LocalizationException e) {
+			logger.message(Severity.warning,e,"Error searching content...");
+		}
+	}
+
+	private void fillLocalizedString(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
+		toolBar.localeChanged(oldLocale, newLocale);
+	}
+
+	private SearchResultAndNavigator search(final String searchFieldName, final String query) throws LocalizationException, IOException {
+		final List<PluginInterface>	found = new ArrayList<>();
+		final LangAndAnalyzer		laa;
+	
+		switch (localizer.currentLocale().getLocale().getLanguage()) {
+			case "ru" : 
+				laa = new LangAndAnalyzer("ru",new RussianAnalyzer());
+				break;
+			case "en" :
+				laa = new LangAndAnalyzer("en",new EnglishAnalyzer());
+				break;
+			default :
+				throw new UnsupportedOperationException("Lang ["+localizer.currentLocale().getLocale().getLanguage()+"] is not supported yet");
+		}
 		
+		for (URIAndScore item : wrapper.search(searchFieldName,laa.analyzer,query)) {
+			for (PluginInterface plugin : ServiceLoader.load(PluginInterface.class)) {
+				if (item.getURI().toString().equals(plugin.getPluginId())) {
+					found.add(plugin);
+					break;
+				}
+			}
+		}
+		return new SearchResultAndNavigator(localizer,found.toArray(new PluginInterface[found.size()]),10,listener);
 	}
-
-	private void fillLocalizedString(final Locale oldLocale, final Locale newLocale) {
-	}
-
+	
 	private static class SearchString extends JToolBar implements LocaleChangeListener {
 		private static final long 		serialVersionUID = -3837317681000458485L;
 
@@ -195,9 +254,11 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 	}
 	
 	
-	private static class SearchResultAndNavigator extends JPanel implements Closeable {
+	private static final String[]	PLACEMENT = {BorderLayout.NORTH, BorderLayout.SOUTH};
+	
+	private class SearchResultAndNavigator extends JPanel implements Closeable {
+		private static final long 		serialVersionUID = 3152240694102305176L;
 		private static final int		PAGE_LIST_LENGTH = 2;
-		private static final String[]	PLACEMENT = {BorderLayout.NORTH, BorderLayout.SOUTH};
 		
 		private final SearchListener	listener = new SearchListener(){
 											@Override
@@ -208,6 +269,12 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 											public void linkClicked(final SearchComponent current, final String pluginId) {
 												final String[]	parts = pluginId.split("\\#");
 												setCurrentPagetNumber(Integer.valueOf(parts[0]));
+											}
+
+											@Override
+											public void tagClicked(SearchComponent current, String tagId, String tagText) {
+												// TODO Auto-generated method stub
+												
 											}
 										};
 		private final Localizer			localizer;
@@ -228,6 +295,9 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 			buildPageUris(this.pageUris,this.totalPages,this.resultsPerPage);
 			fillNavigator();
 			fillCentral();
+			SwingUtils.assignActionKey(this,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),processKeys,"closeSearch");
+			SwingUtils.assignActionKey(this,KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,KeyEvent.ALT_MASK),processKeys, "backward");		
+			SwingUtils.assignActionKey(this,KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,KeyEvent.ALT_MASK),processKeys, "forward");		
 		}
 		
 		int getNumberOfPages() {
@@ -235,7 +305,7 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 		}
 		
 		int getCurrentPageNumber() {
-			return 0;
+			return currentPage;
 		}
 		
 		void setCurrentPagetNumber(final int newCurrentPageNumber) {
@@ -265,6 +335,9 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 				final SearchNavigator	navigator = new SearchNavigator(localizer,listener,found.length,startPageNumber,endPageNumer,getCurrentPageNumber(),pageUris);
 				
 				add(navigator,PLACEMENT[index]);
+				SwingUtils.assignActionKey(navigator,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),processKeys,"closeSearch");
+				SwingUtils.assignActionKey(navigator,KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,KeyEvent.ALT_MASK),processKeys, "backward");		
+				SwingUtils.assignActionKey(navigator,KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,KeyEvent.ALT_MASK),processKeys, "forward");		
 			}
 		}
 		
@@ -277,10 +350,18 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 				final JComponent	toAdd = new SearchResult(found[index].getLocalizerAssociated(localizer),found[index],parentListener,"dffddffd",0.0); 
 				
 				content.add(toAdd);
-				layout.putConstraint(SpringLayout.NORTH,toAdd,0,SpringLayout.NORTH,previous);
 				layout.putConstraint(SpringLayout.WEST,toAdd,0,SpringLayout.WEST,content);
 				layout.putConstraint(SpringLayout.EAST,toAdd,0,SpringLayout.EAST,content);
+				if (previous == content) {
+					layout.putConstraint(SpringLayout.NORTH,toAdd,0,SpringLayout.NORTH,previous);
+				}
+				else {
+					layout.putConstraint(SpringLayout.NORTH,toAdd,0,SpringLayout.SOUTH,previous);
+				}
 				previous = toAdd;
+				SwingUtils.assignActionKey(toAdd,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),processKeys,"closeSearch");
+				SwingUtils.assignActionKey(toAdd,KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,KeyEvent.ALT_MASK),processKeys, "backward");		
+				SwingUtils.assignActionKey(toAdd,KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,KeyEvent.ALT_MASK),processKeys, "forward");		
 			}
 			add(content,BorderLayout.CENTER);
 		}
@@ -296,7 +377,49 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 		}
 	}
 	
-	private static class History {
+	private class History extends JPanel {
+		private static final long serialVersionUID = 6878162862781229791L;
+
+		private final CardLayout	cl = new CardLayout();
+		private final List<String>	items = new ArrayList<>();
+		private int 				itemIndex = 0, currentIndex = -1;
 		
+		History() {
+			setLayout(cl);
+		}
+		
+		void append(final JPanel panel) {
+			final String	label = "label "+itemIndex++;
+			
+			add(panel,label);
+			items.add(label);
+			cl.show(this,label);
+			currentIndex = items.size()-1;
+			SwingUtils.assignActionKey(panel,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),processKeys,"closeSearch");
+			SwingUtils.assignActionKey(panel,KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,KeyEvent.ALT_MASK),processKeys, "backward");		
+			SwingUtils.assignActionKey(panel,KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,KeyEvent.ALT_MASK),processKeys, "forward");
+			this.requestFocusInWindow();
+		}
+		
+		void forward() {
+			if (currentIndex < items.size()-1) {
+				cl.show(this,items.get(++currentIndex));
+				this.requestFocusInWindow();
+			}
+		}
+		
+		void backward() {
+			if (currentIndex > 0) {
+				cl.show(this,items.get(--currentIndex));
+				this.requestFocusInWindow();
+			}
+		}
+
+		void clear() {
+			removeAll();
+			items.clear();
+			itemIndex = 0;
+			currentIndex = -1;
+		}
 	}
 }
