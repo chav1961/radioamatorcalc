@@ -46,7 +46,7 @@ class TPS40200Calculator implements FormManager<Object,TPS40200Calculator> {
 	private static final String[]	FIELDS_ANNOTATED = chav1961.calc.environment.Utils.buildFieldsAnnotated(TPS40200Calculator.class); 
 
 @LocaleResource(value="innerVoltage",tooltip="innerVoltageTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float					innerVoltage = 12.0f;
 @LocaleResource(value="outerVoltage",tooltip="outerVoltageTooltip")	
 @Format("10.3m")

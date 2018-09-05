@@ -103,10 +103,10 @@ public class UCX84XUpService implements PluginInterface {
 
 	@Override
 	public String[] getTagsIds(final Localizer parent) throws LocalizationException {
-		return new String[]{"UCX84XService.tag1","UCX84XService.tag2","UCX84XService.tag3","UCX84XService.tag4"
-						   ,"UCX84XService.tag5","UCX84XService.tag6","UCX84XService.tag7","UCX84XService.tag8"
-						   ,"UCX84XService.tag9","UCX84XService.tag10","UCX84XService.tag11","UCX84XService.tag12"
-						   ,"UCX84XService.tag13"};
+		return new String[]{"UCX84XUpService.tag1","UCX84XUpService.tag2","UCX84XUpService.tag3","UCX84XUpService.tag4"
+						   ,"UCX84XUpService.tag5","UCX84XUpService.tag6","UCX84XUpService.tag7","UCX84XUpService.tag8"
+						   ,"UCX84XUpService.tag9","UCX84XUpService.tag10","UCX84XUpService.tag11","UCX84XUpService.tag12"
+						   ,"UCX84XUpService.tag13"};
 	}
 
 	@Override
