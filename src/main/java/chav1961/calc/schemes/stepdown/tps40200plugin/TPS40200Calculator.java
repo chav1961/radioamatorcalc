@@ -49,28 +49,28 @@ class TPS40200Calculator implements FormManager<Object,TPS40200Calculator> {
 @Format("10.3ms")
 	private float					innerVoltage = 12.0f;
 @LocaleResource(value="outerVoltage",tooltip="outerVoltageTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float					outerVoltage = 24.0f;
 @LocaleResource(value="outerCurrent",tooltip="outerCurrentTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float					outerCurrent = 1.0f;
 @LocaleResource(value="permability",tooltip="permabilityTooltip")	
-@Format("4m")
+@Format("4ms")
 	private int						permability = 140;
 @LocaleResource(value="induction",tooltip="inductionTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float					induction = 0.7f;
 @LocaleResource(value="outerDiameter",tooltip="outerDiameterTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float 					outerDiameter = 0.0f;
 @LocaleResource(value="innerDiameter",tooltip="innerDiameterTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float 					innerDiameter = 0.0f;
 @LocaleResource(value="height",tooltip="heightTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float 					height = 0.0f;
 @LocaleResource(value="wireDiameter",tooltip="wireDiameterTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float 					wireDiameter = 0.0f;
 @LocaleResource(value="pulseCurrent",tooltip="pulseCurrentTooltip")	
 @Format("10.3r")
@@ -192,7 +192,7 @@ class TPS40200Calculator implements FormManager<Object,TPS40200Calculator> {
 
 	private boolean checkAndNotify(final boolean condition, final String messageId, final Object... parameters) throws LocalizationException {
 		if (!condition) {
-			getLogger().message(Severity.warning,localizer.getValue(messageId),parameters);
+			getLogger().message(Severity.warning,messageId,parameters);
 			return false;
 		}
 		else {

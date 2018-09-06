@@ -251,7 +251,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				}
 			}
 		} catch (IOException | HeadlessException | LocalizationException  e) {
-			message(e.getLocalizedMessage());
+			message(e,e.getLocalizedMessage());
 		}
 	}
 
@@ -263,7 +263,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				currentPipeFile = null;
 			}
 		} catch (IOException | HeadlessException | LocalizationException  e) {
-			message(e.getLocalizedMessage());
+			message(e,e.getLocalizedMessage());
 		}
 	}
 	
@@ -280,7 +280,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				}
 			}
 		} catch (IOException | HeadlessException | LocalizationException  e) {
-			message(e.getLocalizedMessage());
+			message(e,e.getLocalizedMessage());
 		}
 	}
 	
@@ -293,7 +293,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				saveCurrentPipe(currentPipe,currentPipeFile);
 			}
 		} catch (IOException | HeadlessException e) {
-			message(e.getLocalizedMessage());
+			message(e,e.getLocalizedMessage());
 		}
 	}
 	
@@ -308,7 +308,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				default : throw new UnsupportedOperationException("Unknown confirmation option!");
 			}
 		} catch (IOException | HeadlessException | LocalizationException  e) {
-			message(e.getLocalizedMessage());
+			message(e,e.getLocalizedMessage());
 		}
 	}
 
@@ -456,7 +456,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 		try{buildIndex();
 			message(localizer.getValue(LocalizationKeys.MESSAGE_REINDEXED));
 		} catch (LocalizationException | IOException e) {
-			message(e.getLocalizedMessage());
+			message(e,e.getLocalizedMessage());
 		}
 	}
 	
@@ -497,7 +497,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			JOptionPane.showMessageDialog(this,pane,localizer.getValue(LocalizationKeys.TITLE_HELP_ABOUT_APPLICATION),JOptionPane.PLAIN_MESSAGE,icon);
 		} catch (LocalizationException | MimeTypeParseException | IOException e) {
-			e.printStackTrace();
+			message(e,e.getLocalizedMessage());
 		}
 	}
 
@@ -511,7 +511,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				placePlugin(plugin,inst);
 			}
 		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
-			e.printStackTrace();
+			message(e,e.getLocalizedMessage());
 		}
 	}
 	
@@ -526,12 +526,25 @@ public class Application extends JFrame implements LocaleChangeListener {
 									stateString.setText("");			
 								}
 							};
-							
 		timer.purge();				
 		timer.schedule(tt,3000);
 		stateString.setText(parameters == null || parameters.length == 0 ? format : String.format(format,parameters));
 	}
 
+	private void message(final Throwable t, final String format, final Object... parameters) {
+		final TimerTask		tt = new TimerTask() {
+								@Override
+								public void run() {
+									stateString.setText("");			
+								}
+							};
+		t.printStackTrace();
+		timer.purge();				
+		timer.schedule(tt,3000);
+		stateString.setText(parameters == null || parameters.length == 0 ? format : String.format(format,parameters));
+		t.printStackTrace();
+	}
+	
 	static PluginInterface seekSPIPlugin(final String pluginName) {
 		for (PluginInterface item : ServiceLoader.load(PluginInterface.class)) {
 			if (pluginName.equals(item.getPluginId())) {

@@ -129,7 +129,7 @@ class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator>
 	
 	private boolean checkAndNotify(final boolean condition, final String messageId, final Object... parameters) throws LocalizationException {
 		if (!condition) {
-			getLogger().message(Severity.warning,localizer.getValue(messageId),parameters);
+			getLogger().message(Severity.warning,messageId,parameters);
 			return false;
 		}
 		else {

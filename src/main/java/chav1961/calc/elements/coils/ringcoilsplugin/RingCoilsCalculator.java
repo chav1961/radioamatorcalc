@@ -39,31 +39,31 @@ class RingCoilsCalculator implements FormManager<Object,RingCoilsCalculator> {
 	private final LoggerFacade		logger;
 	
 @LocaleResource(value="calcType",tooltip="calcTypeTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private CoilsCalculationType	calcType = CoilsCalculationType.INDUCTANCE;
 @LocaleResource(value="outerDiameter",tooltip="outerDiameterTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float					outerDiameter = 0.0f;
 @LocaleResource(value="innerDiameter",tooltip="innerDiameterTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float					innerDiameter = 0.0f;
 @LocaleResource(value="height",tooltip="heightTooltip")	
-@Format("10.3m")
+@Format("10.3ms")
 	private float					height = 0.0f;
 @LocaleResource(value="permability",tooltip="permabilityTooltip")	
-@Format("4m")
+@Format("4ms")
 	private int						permability = 1;
 @LocaleResource(value="inductance",tooltip="inductanceTooltip")	
-@Format("10.3")
+@Format("10.3s")
 	private float					inductance = 0.0f;
 @LocaleResource(value="wireDiameter",tooltip="wireDiameterTooltip")	
-@Format("10.3")
+@Format("10.3s")
 	private float					wireDiameter = 0.0f;
 @LocaleResource(value="coils",tooltip="coilsTooltip")	
-@Format("10")
+@Format("10s")
 	private int						coils = 0;
 @LocaleResource(value="wireLength",tooltip="wireLengthTooltip")	
-@Format("10.3")
+@Format("10.3s")
 	private float					wireLength = 0.0f;
 
 	RingCoilsCalculator(final Localizer localizer,final LoggerFacade logger) {
@@ -163,7 +163,7 @@ class RingCoilsCalculator implements FormManager<Object,RingCoilsCalculator> {
 
 	private boolean checkAndNotify(final boolean condition, final String messageId, final Object... parameters) throws LocalizationException {
 		if (!condition) {
-			getLogger().message(Severity.warning,localizer.getValue(messageId),parameters);
+			getLogger().message(Severity.warning,messageId,parameters);
 			return false;
 		}
 		else {

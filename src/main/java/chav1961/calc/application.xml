@@ -43,6 +43,10 @@
 				<app:item name="menu.schemes.stepdown.mc34063" caption="menu.schemes.stepdown.mc34063" tooltip="menu.ttSchemes.stepdown.mc34063" action="MC34063DownService"/>
 				<app:item name="menu.schemes.stepdown.tps40200" caption="menu.schemes.stepdown.tps40200" tooltip="menu.ttSchemes.stepdown.tps40200" action="TPS40200Service"/>
 			</app:submenu>
+			<app:submenu name="menu.schemes.transmitter" caption="menu.schemes.transmitter" tooltip="menu.ttSchemes.transmitter">
+				<app:item name="menu.schemes.transmitter.pcontour" caption="menu.schemes.transmitter.pcontour" tooltip="menu.ttSchemes.transmitter.pcontour" action="PContourService"/>
+				<app:item name="menu.schemes.transmitter.quartzfilter" caption="menu.schemes.transmitter.quartzfilter" tooltip="menu.ttSchemes.transmitter.quartzfilter" action="QuartzFilterService"/>
+			</app:submenu>
 		</app:submenu>
 	</app:menu>
 	<app:menu id="desktopToolbar">

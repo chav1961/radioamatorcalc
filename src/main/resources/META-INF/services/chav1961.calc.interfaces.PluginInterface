@@ -5,3 +5,5 @@ chav1961.calc.schemes.stepup.mc34063plugin.MC34063UpService
 chav1961.calc.schemes.stepup.ucX84Xplugin.UCX84XUpService
 chav1961.calc.schemes.stepdown.mc34063plugin.MC34063DownService
 chav1961.calc.schemes.stepdown.tps40200plugin.TPS40200Service
+chav1961.calc.schemes.transmitter.pcontourplugin.PContourService
+chav1961.calc.schemes.transmitter.quartzfilterplugin.QuartzFilterService
