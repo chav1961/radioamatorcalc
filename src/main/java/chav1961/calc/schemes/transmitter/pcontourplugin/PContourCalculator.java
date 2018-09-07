@@ -2,7 +2,6 @@ package chav1961.calc.schemes.transmitter.pcontourplugin;
 
 
 import chav1961.calc.LocalizationKeys;
-import chav1961.calc.formulas.Utils;
 import chav1961.calc.interfaces.UseFormulas;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
@@ -25,25 +24,19 @@ import chav1961.purelib.ui.interfacers.Format;
 @Action(resource=@LocaleResource(value="calculate",tooltip="calculateTooltip"),actionString="calculate",simulateCheck=true) 
 @UseFormulas({LocalizationKeys.FORMULA_NUMBER_OF_COILS_ONE_LAYER_COIL,LocalizationKeys.FORMULA_INDUCTANCE_ONE_LAYER_COIL})
 class PContourCalculator implements FormManager<Object,PContourCalculator> {
-//	private static final float		ETHA = 0.9f;
-//	private static final float		FREQUENCY = 25000f;
-//	private static final float		RIPPLE = 0.1f;
-//	private static final String		MESSAGE_INNER_VOLTAGE_POSITIVE = "innerVoltagePositive";
-//	private static final String		MESSAGE_OUTER_VOLTAGE_POSITIVE = "outerVoltagePositive";	
-//	private static final String		MESSAGE_OUTER_VOLTAGE_LESS_INNER = "outerVoltageLessInner";
-//	private static final String		MESSAGE_OUTER_CURRENT_POSITIVE = "outerCurrentPositive";
-//	private static final String		MESSAGE_SWITCHING_CYCLE_OUT_OF_RANGE = "switchingCycleOutOfRange";
-//	private static final String		MESSAGE_PERMABILITY_POSITIVE = "permabilityPositive";
-//	private static final String		MESSAGE_INDUCTION_POSITIVE = "inductionPositive";
-//	private static final String		MESSAGE_OUTER_DIAMETER_POSITIVE = "outerDiameterPositive";
-//	private static final String		MESSAGE_OUTER_DIAMETER_LESS_INNER = "outerDiameterLessInner";
-//	private static final String		MESSAGE_INNER_DIAMETER_POSITIVE = "innerDiameterPositive";
-//	private static final String		MESSAGE_HEIGHT_POSITIVE = "heightPositive";
-//	private static final String		MESSAGE_WIRE_DIAMETER_POSITIVE = "wireDiameterPositive";
-//	private static final String		MESSAGE_INDUCTION_TOO_STRONG = "inductionTooStrong";
-//	private static final String		MESSAGE_TOO_MANY_COILS = "tooManyCoils";
+	private static final String[]	FIELDS_ANNOTATED = chav1961.calc.environment.Utils.buildFieldsAnnotated(PContourCalculator.class);
+	private static final float		MAGIC = 530.6f;
+	private static final float		ROOT_2 = (float)Math.sqrt(2);
 
-	private static final String[]	FIELDS_ANNOTATED = chav1961.calc.environment.Utils.buildFieldsAnnotated(PContourCalculator.class); 
+	private static final String 	MESSAGE_INNER_VOLTAGE_POSITIVE = "innerVoltagePositive";
+	private static final String 	MESSAGE_INNER_CURRENT_POSITIVE = "innerCurrentPositive";
+	private static final String 	MESSAGE_INNER_RESISTANCE_POSITIVE = "innerResistancePositive";
+	private static final String 	MESSAGE_OUTER_RESISTANCE_POSITIVE = "outerResistancePositive";
+	private static final String 	MESSAGE_OUTER_POWER_POSITIVE = "outerPowerPositive";
+	private static final String 	MESSAGE_QUALITY_OUT_OF_RANGE = "qualityOutOfRange";
+	private static final String 	MESSAGE_MIN_FREQUENCY_POSITIVE = "minFrequencyPositive";
+	private static final String 	MESSAGE_MAX_FREQUENCY_POSITIVE = "maxFrequencyPositive"; 
+	private static final String 	MESSAGE_MIN_FREQUENCY_LESS_MAX = "maxFrequencyLessMin";
 
 @LocaleResource(value="contourType",tooltip="contourTypeTooltip")	
 @Format("1m")
@@ -60,6 +53,9 @@ class PContourCalculator implements FormManager<Object,PContourCalculator> {
 @LocaleResource(value="outerResistance",tooltip="outerResistanceTooltip")	
 @Format("10.3ms")
 	private float					outerResistance = 1.0f;
+@LocaleResource(value="outerPower",tooltip="outerPowerTooltip")	
+@Format("10.3ms")
+	private float					outerPower = 1.0f;
 @LocaleResource(value="quality",tooltip="qualityTooltip")	
 @Format("10.3ms")
 	private float					quality = 1.0f;
@@ -141,75 +137,111 @@ class PContourCalculator implements FormManager<Object,PContourCalculator> {
 
 	@Override
 	public RefreshMode onField(final PContourCalculator inst, final Object id, final String fieldName, final Object oldValue) throws FlowException, LocalizationException, IllegalArgumentException {
-//		switch (fieldName) {
-//			case "innerVoltage"		:
-//				return checkAndNotify(innerVoltage > 0,localizer.getValue(MESSAGE_INNER_VOLTAGE_POSITIVE),innerVoltage) ? 
-//						(checkAndNotify(outerVoltage > innerVoltage,localizer.getValue(MESSAGE_OUTER_VOLTAGE_LESS_INNER),outerVoltage,innerVoltage) ? RefreshMode.NONE : RefreshMode.REJECT)
-//					: RefreshMode.REJECT;
-//			case "outerVoltage"		:
-//				return checkAndNotify(outerVoltage > 0,localizer.getValue(MESSAGE_OUTER_VOLTAGE_POSITIVE),outerVoltage) ? 
-//						(checkAndNotify(outerVoltage > innerVoltage,localizer.getValue(MESSAGE_OUTER_VOLTAGE_LESS_INNER),outerVoltage,innerVoltage) ? RefreshMode.NONE : RefreshMode.REJECT)
-//					: RefreshMode.REJECT;
-//			case "outerCurrent"		:
-//				return checkAndNotify(outerCurrent > 0,localizer.getValue(MESSAGE_OUTER_CURRENT_POSITIVE),outerCurrent) ? RefreshMode.NONE : RefreshMode.REJECT;
-//			case "permability"		:
-//				return checkAndNotify(permability > 0,localizer.getValue(MESSAGE_PERMABILITY_POSITIVE),permability) ? RefreshMode.NONE : RefreshMode.REJECT;
-//			case "induction"		:
-//				return checkAndNotify(induction > 0,localizer.getValue(MESSAGE_INDUCTION_POSITIVE),induction) ? RefreshMode.NONE : RefreshMode.REJECT;
-//			case "outerDiameter"		:
-//				return checkAndNotify(outerDiameter > 0,localizer.getValue(MESSAGE_OUTER_DIAMETER_POSITIVE),outerDiameter) ? 
-//						(checkAndNotify(outerDiameter > innerDiameter,localizer.getValue(MESSAGE_OUTER_DIAMETER_LESS_INNER),outerDiameter,innerDiameter) ? RefreshMode.NONE : RefreshMode.REJECT)
-//					: RefreshMode.REJECT;
-//			case "innerDiameter"		:
-//				return checkAndNotify(innerDiameter > 0,localizer.getValue(MESSAGE_INNER_DIAMETER_POSITIVE),innerDiameter) ? 
-//						(checkAndNotify(outerDiameter > innerDiameter,localizer.getValue(MESSAGE_OUTER_DIAMETER_LESS_INNER),outerDiameter,innerDiameter) ? RefreshMode.NONE : RefreshMode.REJECT)
-//					: RefreshMode.REJECT;
-//			case "height"		:
-//				return checkAndNotify(height > 0,localizer.getValue(MESSAGE_HEIGHT_POSITIVE),height) ? RefreshMode.NONE : RefreshMode.REJECT;
-//			case "wireDiameter"		:
-//				return checkAndNotify(wireDiameter > 0,localizer.getValue(MESSAGE_WIRE_DIAMETER_POSITIVE),wireDiameter) ? RefreshMode.NONE : RefreshMode.REJECT;
-//			default :
-//				return RefreshMode.NONE;
-//		}
-		return RefreshMode.NONE;
+		switch (fieldName) {
+			case "innerVoltage"		:
+				return checkAndNotify(innerVoltage > 0,localizer.getValue(MESSAGE_INNER_VOLTAGE_POSITIVE),innerVoltage) ? RefreshMode.NONE : RefreshMode.REJECT;
+			case "innerCurrent"		:
+				return checkAndNotify(innerCurrent > 0,localizer.getValue(MESSAGE_INNER_CURRENT_POSITIVE),innerCurrent) ? RefreshMode.NONE : RefreshMode.REJECT;
+			case "innerResistance"	:
+				return checkAndNotify(innerResistance > 0,localizer.getValue(MESSAGE_INNER_RESISTANCE_POSITIVE),innerResistance) ? RefreshMode.NONE : RefreshMode.REJECT;
+			case "outerResistance"	:
+				return checkAndNotify(outerResistance > 0,localizer.getValue(MESSAGE_OUTER_RESISTANCE_POSITIVE),innerResistance) ? RefreshMode.NONE : RefreshMode.REJECT;
+			case "outerPower"		:
+				return checkAndNotify(outerPower > 0,localizer.getValue(MESSAGE_OUTER_POWER_POSITIVE),outerPower) ? RefreshMode.NONE : RefreshMode.REJECT;
+			case "quality"			:
+				return checkAndNotify(quality > 1 && quality < 50,localizer.getValue(MESSAGE_QUALITY_OUT_OF_RANGE),quality) ? RefreshMode.NONE : RefreshMode.REJECT;
+			case "minFrequency"		:
+				return checkAndNotify(minFrequency > 0,localizer.getValue(MESSAGE_MIN_FREQUENCY_POSITIVE),minFrequency) ? 
+						(checkAndNotify(maxFrequency > minFrequency,localizer.getValue(MESSAGE_MIN_FREQUENCY_LESS_MAX),minFrequency,maxFrequency) ? RefreshMode.NONE : RefreshMode.REJECT)
+					: RefreshMode.REJECT;
+			case "maxFrequency"		:
+				return checkAndNotify(minFrequency > 0,localizer.getValue(MESSAGE_MAX_FREQUENCY_POSITIVE),minFrequency) ? 
+						(checkAndNotify(maxFrequency > minFrequency,localizer.getValue(MESSAGE_MIN_FREQUENCY_LESS_MAX),minFrequency,maxFrequency) ? RefreshMode.NONE : RefreshMode.REJECT)
+					: RefreshMode.REJECT;
+			default :
+				return RefreshMode.NONE;
+		}
 	}
 
 	@Override
 	public RefreshMode onAction(final PContourCalculator inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
-//		switch (actionName) {
-//			case "calculate"	:
-//				final float	power = outerVoltage * outerCurrent;
-//				final float	dutyCycle = 1 - innerVoltage * ETHA / outerVoltage;
-//				final float	coilInductance = innerVoltage * (outerVoltage - innerVoltage) / (RIPPLE * FREQUENCY * outerVoltage); 
-//				final float peakCurrent = power / (innerVoltage * dutyCycle); 
-//				final int 	drosselCoils = Utils.coilsRingCoil(coilInductance,outerDiameter,innerDiameter,height,permability);
-//				final float currentInduction = Utils.inductionRingCoil(peakCurrent,drosselCoils,outerDiameter,innerDiameter,permability);
-//				
-//				if (currentInduction > induction) {
-//					getLogger().message(Severity.warning,localizer.getValue(MESSAGE_INDUCTION_TOO_STRONG),currentInduction,induction);
-//					return RefreshMode.NONE;
-//				}
-//				else {
-//					final int		secondCoils = (int) (outerVoltage < 40 ? 0 : (outerVoltage - innerVoltage - 40 ) / (innerVoltage - 40));
-//					final float[]	forLength1 = Utils.wireLength4Ring(drosselCoils,wireDiameter,outerDiameter,innerDiameter,height);
-//					final float[]	forLength2 = Utils.wireLength4Ring(secondCoils,wireDiameter,outerDiameter,innerDiameter,height);
-//					
-//					if (forLength1 == null) {
-//						getLogger().message(Severity.warning,localizer.getValue(MESSAGE_TOO_MANY_COILS));
-//						return RefreshMode.NONE;
-//					}
-//					else {
-//						pulseCurrent = peakCurrent;
-//						coils1 = drosselCoils;
-//						wireLength1 = forLength1[0] + 0.1f;
-//						coils2 = secondCoils;
-//						wireLength2 = secondCoils == 0 ? 0 : forLength2[0] + 0.1f;
-//					}
-//				}
-//				break;
-//			default :
-//				break;
-//		}
+		switch (actionName) {
+			case "calculate"	:
+				c1Min = 0.0f;		c1Max = 0.0f;
+				uC1 = 0.0f;			q1 = 0.0f;
+				c2 = 0.0f;			uC2 = 0.0f;
+				q2 = 0.0f;			c3Min = 0.0f;
+				c3Max = 0.0f;		uC3 = 0.0f;
+				q3 = 0.0f;			l1 = 0.0f;
+				i1 = 0.0f;			l2 = 0.0f;
+				i2 = 0.0f;
+				
+				switch (contourType) {
+					case SINGLE :
+						final float 	rGeomS = (float)Math.sqrt(innerResistance*outerResistance);
+						final float 	x1S = (innerResistance * quality + rGeomS) / (quality * quality - 1);
+						final float 	x3S = (outerResistance * quality + rGeomS) / (quality * quality - 1);
+						final float 	xL1S = x1S + x1S;
+						final float		fGeomS = (float)Math.sqrt(minFrequency*maxFrequency);
+						final float		lambdaGeomS = 300000 / fGeomS;
+						final float		c1S = MAGIC * lambdaGeomS / x1S;
+						final float		c3S = MAGIC * lambdaGeomS / x3S;
+						final float		deltaC1S = (float)Math.pow(maxFrequency/fGeomS,2);
+						final float		iFirstS = 2 * outerPower / innerVoltage;
+						final float		outerVoltageS = (float)Math.sqrt(outerPower * outerResistance);
+						final float		iC1S = ROOT_2 * innerVoltage / x1S, iC3S = outerVoltageS / x3S;
+						
+						c1Min = c1S * (1 - deltaC1S);
+						c1Max = c1S * (1 + deltaC1S);
+						c3Min = c3S * (1 - deltaC1S);
+						c3Max = c3S * (1 + deltaC1S);
+						l1 = (float) (xL1S / (2 * Math.PI * fGeomS));
+						i1 = (float)Math.sqrt(iFirstS * iFirstS + iC1S * iC1S);
+						q1 = ROOT_2 * innerVoltage * iC1S;
+						q3 = outerVoltageS * iC3S;
+						break;
+					case DOUBLE	:
+						final float 	rGeom = (float)Math.sqrt(innerResistance*outerResistance);
+						final float 	x1 = (innerResistance * quality + rGeom) / (quality * quality - 1);
+						final float 	x3 = (outerResistance * quality + rGeom) / (quality * quality - 1);
+						final float		x2 = x1 * x3 / rGeom;
+						final float 	xL1 = x1 + x2;
+						final float		xL2 = x2 + x3;
+						final float		fGeom = (float)Math.sqrt(minFrequency*maxFrequency);
+						final float		lambdaGeom = 300000 / fGeom;
+						final float		c1 = MAGIC * lambdaGeom / x1;
+						final float		c3 = MAGIC * lambdaGeom / x3;
+						final float		deltaC1 = (float)Math.pow(maxFrequency/fGeom,2) - 1;
+						final float		iFirst = 2 * outerPower / innerVoltage;
+						final float		outerVoltage = (float)Math.sqrt(outerPower * outerResistance);
+						
+						c1Min = c1 * (1 - deltaC1);
+						c1Max = c1 * (1 + deltaC1);
+						c2 = MAGIC * lambdaGeom / x2;
+						c3Min = c3 * (1 - deltaC1);
+						c3Max = c3 * (1 + deltaC1);
+						l1 = (float) (xL1 / (2 * Math.PI * fGeom));
+						l2 = (float) (xL2 / (2 * Math.PI * fGeom));
+						
+						final float		iC1 = ROOT_2 * innerVoltage / x1, iC3 = outerVoltage / x3;
+						final float		outerCurrent = outerVoltage / iC3;
+						
+						q1 = ROOT_2 * innerVoltage * iC1;
+						q3 = outerVoltage * iC3;
+						i1 = (float)Math.sqrt(iFirst * iFirst + iC1 * iC1);
+						i2 = (float)Math.sqrt(iC3 * iC3 + outerCurrent * outerCurrent);  
+
+						final float		iC2 = (float)Math.sqrt(i2 * i2 - i1 * i1);
+						final float		uC2 = iC2 * x2;
+						
+						q2 = uC2 * iC2;
+						break;
+					default : throw new UnsupportedOperationException("Contour type ["+contourType+"] is not supported");
+				}
+				break;
+			default :
+				break;
+		}
 		return RefreshMode.RECORD_ONLY;
 	}
 

@@ -113,14 +113,14 @@ public class PContourService implements PluginInterface {
 	
 	private static class PContour extends AutoBuiltForm<PContourCalculator> implements PluginInstance {
 		private static final long 		serialVersionUID = 2615737307529282959L;
-		private static final Dimension	RECOMMENDED_SIZE = new Dimension(450,560);
+		private static final Dimension	RECOMMENDED_SIZE = new Dimension(850,350);
 		
 		public PContour(final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
 			this(localizer,new PContourCalculator(localizer,logger));
 		}
 
 		protected PContour(final Localizer localizer, final PContourCalculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-			super(localizer,LEFT_ICON_RESOURCE,instance,instance);
+			super(localizer,LEFT_ICON_RESOURCE,instance,instance,2);
 		}
 
 		@Override
