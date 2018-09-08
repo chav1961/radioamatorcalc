@@ -70,6 +70,11 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 											};	
 	private final SearchListener			listener = new SearchListener(){
 												@Override
+												public void pluginClicked(SearchComponent current, String pluginId) {
+													processPlugin(current,pluginId);
+												}
+												
+												@Override
 												public void facetClicked(SearchComponent current, String facetId, String facetText) {
 													processFacet(current,facetId,facetText);
 												}
@@ -83,7 +88,6 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 												public void linkClicked(final SearchComponent current, String pluginId) {
 													processLink(current,pluginId);
 												}
-
 											};
 	private final History					history = new History();
 	private LuceneWrapper					wrapper;
@@ -155,6 +159,10 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 		} catch (IOException | LocalizationException e) {
 			logger.message(Severity.warning,e,"Error searching content...");
 		}
+	}
+	
+	private void processPlugin(final SearchComponent current, final String pluginId) {
+		application.expandPluginByItsId(pluginId);
 	}
 	
 	private void processFacet(final SearchComponent current, final String facetId, final String facetText) {
@@ -262,6 +270,10 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 		
 		private final SearchListener	listener = new SearchListener(){
 											@Override
+											public void pluginClicked(SearchComponent current, String pluginId) {
+											}
+											
+											@Override
 											public void facetClicked(final SearchComponent current, final String facetId, final String facetText) {
 											}
 								
@@ -273,8 +285,6 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 
 											@Override
 											public void tagClicked(SearchComponent current, String tagId, String tagText) {
-												// TODO Auto-generated method stub
-												
 											}
 										};
 		private final Localizer			localizer;
@@ -347,7 +357,8 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 			JComponent			previous = content;
 			
 			for (int index = getCurrentPageNumber()*resultsPerPage, maxIndex = Math.min((getCurrentPageNumber()+1)*resultsPerPage,found.length); index < maxIndex; index++) {
-				final JComponent	toAdd = new SearchResult(found[index].getLocalizerAssociated(localizer),found[index],parentListener,"dffddffd",0.0); 
+				final Localizer		associated = found[index].getLocalizerAssociated(localizer);
+				final JComponent	toAdd = new SearchResult(associated,found[index],parentListener,associated.getValue(found[index].getToolTipId()),0.0); 
 				
 				content.add(toAdd);
 				layout.putConstraint(SpringLayout.WEST,toAdd,0,SpringLayout.WEST,content);

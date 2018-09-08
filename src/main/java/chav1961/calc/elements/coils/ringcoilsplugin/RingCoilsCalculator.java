@@ -27,11 +27,11 @@ import chav1961.purelib.ui.interfacers.Action;
 class RingCoilsCalculator implements FormManager<Object,RingCoilsCalculator> {
 	private static final String		MESSAGE_HEIGHT_POSITIVE = "heightPositive";
 	private static final String		MESSAGE_DIAMETER_POSITIVE = "diameterPositive";
-	private static final String		MESSAGE_DIAMETER_INNER_GREATER = "diameterInnerGreater";
 	private static final String		MESSAGE_PERMABILITY_GREAT_ONE = "permabilityGreatOne";
 	private static final String		MESSAGE_WIREDIAMETER_POSITIVE = "wirediameterPositive";
 	private static final String		MESSAGE_INDUCTANCE_NONNEGATIVE = "indictanceNonnegative";
 	private static final String		MESSAGE_COILS_NONNEGATIVE = "coilsNonnegative";
+	private static final String		MESSAGE_NOT_IMPLEMENTED = "notImplemented";
 	
 	private static final String[]	FIELDS_ANNOTATED = chav1961.calc.environment.Utils.buildFieldsAnnotated(RingCoilsCalculator.class); 
 	
@@ -53,17 +53,17 @@ class RingCoilsCalculator implements FormManager<Object,RingCoilsCalculator> {
 @LocaleResource(value="permability",tooltip="permabilityTooltip")	
 @Format("4ms")
 	private int						permability = 1;
+@LocaleResource(value="wireDiameter",tooltip="wireDiameterTooltip")	
+@Format("10.3ms")
+	private float					wireDiameter = 0.0f;
 @LocaleResource(value="inductance",tooltip="inductanceTooltip")	
 @Format("10.3s")
 	private float					inductance = 0.0f;
-@LocaleResource(value="wireDiameter",tooltip="wireDiameterTooltip")	
-@Format("10.3s")
-	private float					wireDiameter = 0.0f;
 @LocaleResource(value="coils",tooltip="coilsTooltip")	
 @Format("10s")
 	private int						coils = 0;
 @LocaleResource(value="wireLength",tooltip="wireLengthTooltip")	
-@Format("10.3s")
+@Format("10.3r")
 	private float					wireLength = 0.0f;
 
 	RingCoilsCalculator(final Localizer localizer,final LoggerFacade logger) {
@@ -92,13 +92,31 @@ class RingCoilsCalculator implements FormManager<Object,RingCoilsCalculator> {
 			case "height"		:
 				return checkAndNotify(height > 0,localizer.getValue(MESSAGE_HEIGHT_POSITIVE),height) ? RefreshMode.NONE : RefreshMode.REJECT;
 			case "outerDiameter"		:
-				return checkAndNotify(outerDiameter > 0,localizer.getValue(MESSAGE_DIAMETER_POSITIVE),outerDiameter) ? 
-						(checkAndNotify(outerDiameter > innerDiameter,localizer.getValue(MESSAGE_DIAMETER_INNER_GREATER),outerDiameter,innerDiameter) ? RefreshMode.NONE : RefreshMode.REJECT)
-					: RefreshMode.REJECT;
+				if (checkAndNotify(outerDiameter > 0,localizer.getValue(MESSAGE_DIAMETER_POSITIVE),outerDiameter)) {
+					if (outerDiameter < innerDiameter) {
+						innerDiameter = outerDiameter;
+						return RefreshMode.RECORD_ONLY;
+					}
+					else {
+						return RefreshMode.NONE;
+					}
+				}
+				else {
+					return RefreshMode.REJECT;
+				}
 			case "innerDiameter"		:
-				return checkAndNotify(innerDiameter > 0,localizer.getValue(MESSAGE_DIAMETER_POSITIVE),innerDiameter) ? 
-						(checkAndNotify(outerDiameter > innerDiameter,localizer.getValue(MESSAGE_DIAMETER_INNER_GREATER),outerDiameter,innerDiameter) ? RefreshMode.NONE : RefreshMode.REJECT)
-					: RefreshMode.REJECT;
+				if (checkAndNotify(innerDiameter > 0,localizer.getValue(MESSAGE_DIAMETER_POSITIVE),innerDiameter)) {
+					if (outerDiameter < innerDiameter) {
+						outerDiameter = innerDiameter;
+						return RefreshMode.RECORD_ONLY;
+					}
+					else {
+						return RefreshMode.NONE;
+					}
+				}
+				else {
+					return RefreshMode.REJECT;
+				}
 			case "permability"		:
 				return checkAndNotify(permability > 1,localizer.getValue(MESSAGE_PERMABILITY_GREAT_ONE),permability) ? RefreshMode.NONE : RefreshMode.REJECT;
 			case "wireDiameter"	:
@@ -141,7 +159,7 @@ class RingCoilsCalculator implements FormManager<Object,RingCoilsCalculator> {
 						final float[]	forLength = Utils.wireLength4Ring(coils,wireDiameter,outerDiameter,innerDiameter,height);
 						
 						if (forLength == null) {
-							getLogger().message(Severity.warning,localizer.getValue(MESSAGE_COILS_NONNEGATIVE),coils);
+							getLogger().message(Severity.warning,localizer.getValue(MESSAGE_NOT_IMPLEMENTED),coils);
 							return RefreshMode.REJECT;
 						}
 						else {

@@ -140,7 +140,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			this.settings = new CurrentSettings(this.localizer,this.logger); 
 			
 			parentLocalizer.push(localizer);
-			parentLocalizer.addLocaleChangeListener(this);
+			localizer.addLocaleChangeListener(this);
 			
 			this.menu = xda.getEntity("mainmenu",JMenuBar.class,null); 
 			final JPanel	centerPanel = new JPanel(new BorderLayout()); 
@@ -204,6 +204,10 @@ public class Application extends JFrame implements LocaleChangeListener {
 		SwingUtils.refreshLocale(leftMenu,oldLocale, newLocale);
 		SwingUtils.refreshLocale(desktopMgr,oldLocale, newLocale);
 		SwingUtils.refreshLocale(searchMgr,oldLocale, newLocale);
+	}
+	
+	public void expandPluginByItsId(final String pluginId) {
+		leftMenu.findAndSelect(pluginId);
 	}
 	
 	private void fillLocalizedStrings(Locale oldLocale, Locale newLocale) throws LocalizationException {
@@ -516,6 +520,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	}
 	
 	private void placePlugin(final PluginInterface plugin, final PluginInstance component) throws LocalizationException {
+		unsearch();
 		desktopMgr.getPipeManager().newWindow(component.getLocalizerAssociated(),plugin.getPluginId(),plugin.getCaptionId(),plugin.getHelpId(),plugin.getIcon(),(JComponent)component);
 	}
 	

@@ -12,7 +12,7 @@ class InternalUtils {
 	static void parseAndCall(final Localizer localizer, final SearchComponent component,final SearchListener listener, final URI uri) throws LocalizationException {
 		switch (uri.getPath()) {
 			case Constants.PLUGIN_PATH	:
-				listener.linkClicked(component,uri.getFragment());
+				listener.pluginClicked(component,uri.getFragment());
 				break;
 			case Constants.USES_PATH		:
 				listener.facetClicked(component,uri.getFragment(),localizeAndEscape(localizer,uri.getFragment()));

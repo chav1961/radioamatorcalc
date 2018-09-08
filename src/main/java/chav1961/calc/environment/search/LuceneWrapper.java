@@ -140,19 +140,19 @@ public class LuceneWrapper {
 			
 			sb.setLength(0);
 			for (String value : plugin.getUsesIds(parent)) {
-				sb.append(localizer.getValue(value)).append("\n");
+				sb.append(localizer.containsKey(value) ? localizer.getValue(value) : value).append("\n");
 			}
 			doc.add(new TextField(FIELD_USES, sb.toString(), Field.Store.YES));
 			
 			sb.setLength(0);
 			for (String value : plugin.getTagsIds(parent)) {
-				sb.append(localizer.getValue(value)).append("\n");
+				sb.append(localizer.containsKey(value) ? localizer.getValue(value) : value).append("\n");
 			}
 			doc.add(new TextField(FIELD_TAGS, sb.toString(), Field.Store.YES));
 
 			sb.setLength(0);
 			for (String value : plugin.getSeeAlsoIds(parent)) {
-				sb.append(value).append("\n");
+				sb.append(localizer.containsKey(value) ? localizer.getValue(value) : value).append("\n");
 			}
 			doc.add(new TextField(FIELD_SEEALSO, sb.toString(), Field.Store.YES));
 			

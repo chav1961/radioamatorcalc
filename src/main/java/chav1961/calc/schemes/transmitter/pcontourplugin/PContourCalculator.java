@@ -36,7 +36,6 @@ class PContourCalculator implements FormManager<Object,PContourCalculator> {
 	private static final String 	MESSAGE_QUALITY_OUT_OF_RANGE = "qualityOutOfRange";
 	private static final String 	MESSAGE_MIN_FREQUENCY_POSITIVE = "minFrequencyPositive";
 	private static final String 	MESSAGE_MAX_FREQUENCY_POSITIVE = "maxFrequencyPositive"; 
-	private static final String 	MESSAGE_MIN_FREQUENCY_LESS_MAX = "maxFrequencyLessMin";
 
 @LocaleResource(value="contourType",tooltip="contourTypeTooltip")	
 @Format("1m")
@@ -49,22 +48,22 @@ class PContourCalculator implements FormManager<Object,PContourCalculator> {
 	private float					innerCurrent = 1.0f;
 @LocaleResource(value="innerResistance",tooltip="innerResistanceTooltip")	
 @Format("10.3ms")
-	private float					innerResistance = 1.0f;
+	private float					innerResistance = 75.0f;
 @LocaleResource(value="outerResistance",tooltip="outerResistanceTooltip")	
 @Format("10.3ms")
-	private float					outerResistance = 1.0f;
+	private float					outerResistance = 75.0f;
 @LocaleResource(value="outerPower",tooltip="outerPowerTooltip")	
 @Format("10.3ms")
 	private float					outerPower = 1.0f;
 @LocaleResource(value="quality",tooltip="qualityTooltip")	
 @Format("10.3ms")
-	private float					quality = 1.0f;
+	private float					quality = 2.0f;
 @LocaleResource(value="minFrequency",tooltip="minFrequencyTooltip")	
 @Format("10.3ms")
-	private float					minFrequency = 1.0f;
+	private float					minFrequency = 500.0f;
 @LocaleResource(value="maxFrequency",tooltip="maxFrequencyTooltip")	
 @Format("10.3ms")
-	private float					maxFrequency = 1.0f;
+	private float					maxFrequency = 500.0f;
 @LocaleResource(value="c1Min",tooltip="c1MinTooltip")	
 @Format("10.3r")
 	private float					c1Min = 0.0f;
@@ -151,13 +150,31 @@ class PContourCalculator implements FormManager<Object,PContourCalculator> {
 			case "quality"			:
 				return checkAndNotify(quality > 1 && quality < 50,localizer.getValue(MESSAGE_QUALITY_OUT_OF_RANGE),quality) ? RefreshMode.NONE : RefreshMode.REJECT;
 			case "minFrequency"		:
-				return checkAndNotify(minFrequency > 0,localizer.getValue(MESSAGE_MIN_FREQUENCY_POSITIVE),minFrequency) ? 
-						(checkAndNotify(maxFrequency > minFrequency,localizer.getValue(MESSAGE_MIN_FREQUENCY_LESS_MAX),minFrequency,maxFrequency) ? RefreshMode.NONE : RefreshMode.REJECT)
-					: RefreshMode.REJECT;
+				if (checkAndNotify(minFrequency > 0,localizer.getValue(MESSAGE_MIN_FREQUENCY_POSITIVE),minFrequency)) {
+					if (maxFrequency < minFrequency) {
+						maxFrequency = minFrequency;
+						return RefreshMode.RECORD_ONLY;
+					}
+					else {
+						return RefreshMode.NONE;
+					}
+				}
+				else {
+					return RefreshMode.REJECT;
+				}
 			case "maxFrequency"		:
-				return checkAndNotify(minFrequency > 0,localizer.getValue(MESSAGE_MAX_FREQUENCY_POSITIVE),minFrequency) ? 
-						(checkAndNotify(maxFrequency > minFrequency,localizer.getValue(MESSAGE_MIN_FREQUENCY_LESS_MAX),minFrequency,maxFrequency) ? RefreshMode.NONE : RefreshMode.REJECT)
-					: RefreshMode.REJECT;
+				if (checkAndNotify(maxFrequency > 0,localizer.getValue(MESSAGE_MAX_FREQUENCY_POSITIVE),maxFrequency)) {
+					if (maxFrequency < minFrequency) {
+						minFrequency = maxFrequency;
+						return RefreshMode.RECORD_ONLY;
+					}
+					else {
+						return RefreshMode.NONE;
+					}
+				}
+				else {
+					return RefreshMode.REJECT;
+				}
 			default :
 				return RefreshMode.NONE;
 		}
@@ -220,20 +237,22 @@ class PContourCalculator implements FormManager<Object,PContourCalculator> {
 						c2 = MAGIC * lambdaGeom / x2;
 						c3Min = c3 * (1 - deltaC1);
 						c3Max = c3 * (1 + deltaC1);
-						l1 = (float) (xL1 / (2 * Math.PI * fGeom));
-						l2 = (float) (xL2 / (2 * Math.PI * fGeom));
+						l1 = (float) (1000 * xL1 / (2 * Math.PI * fGeom));
+						l2 = (float) (1000 * xL2 / (2 * Math.PI * fGeom));
 						
-						final float		iC1 = ROOT_2 * innerVoltage / x1, iC3 = outerVoltage / x3;
-						final float		outerCurrent = outerVoltage / iC3;
+						final float		iC1 = innerVoltage / (ROOT_2 * x1), iC3 = outerVoltage / x3;
+						final float		outerCurrent = outerVoltage / outerResistance;
 						
-						q1 = ROOT_2 * innerVoltage * iC1;
+						q1 = innerVoltage * iC1 / ROOT_2;
 						q3 = outerVoltage * iC3;
 						i1 = (float)Math.sqrt(iFirst * iFirst + iC1 * iC1);
 						i2 = (float)Math.sqrt(iC3 * iC3 + outerCurrent * outerCurrent);  
 
 						final float		iC2 = (float)Math.sqrt(i2 * i2 - i1 * i1);
-						final float		uC2 = iC2 * x2;
 						
+						uC1 = iC1 * x1;
+						uC2 = iC2 * x2;						
+						uC3 = iC3 * x3;
 						q2 = uC2 * iC2;
 						break;
 					default : throw new UnsupportedOperationException("Contour type ["+contourType+"] is not supported");

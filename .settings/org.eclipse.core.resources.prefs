@@ -15,6 +15,10 @@ encoding//src/main/java/chav1961/calc/schemes/stepdown/tps40200plugin/tps40200/h
 encoding//src/main/java/chav1961/calc/schemes/stepdown/tps40200plugin/tps40200/help/ru/TPS40200.cre=UTF-8
 encoding//src/main/java/chav1961/calc/schemes/stepup/ucX84Xplugin/ucX84X/help/en/UCX84X.cre=UTF-8
 encoding//src/main/java/chav1961/calc/schemes/stepup/ucX84Xplugin/ucX84X/help/ru/UCX84X.cre=UTF-8
+encoding//src/main/java/chav1961/calc/schemes/transmitter/pcontourplugin/PContour_en.properties=UTF-8
+encoding//src/main/java/chav1961/calc/schemes/transmitter/pcontourplugin/PContour_ru.properties=UTF-8
+encoding//src/main/java/chav1961/calc/schemes/transmitter/pcontourplugin/pcontour/help/en/PContour.cre=UTF-8
+encoding//src/main/java/chav1961/calc/schemes/transmitter/pcontourplugin/pcontour/help/ru/PContour.cre=UTF-8
 encoding//src/main/resources/chav1961/calculator/i18n/i18n/help/en/aboutApplication.cre=UTF-8
 encoding//src/main/resources/chav1961/calculator/i18n/i18n/help/ru/aboutApplication.cre=UTF-8
 encoding//src/main/resources/chav1961/calculator/i18n/i18n_en.properties=UTF-8

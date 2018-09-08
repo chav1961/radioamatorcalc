@@ -1,2 +1,14 @@
-=== URA!
-ldflkl;dfk
+=== P-contour calculation
+
+Program implements calculation methodic is described [[http://radon.org.ua/index.php?option=com_content&view=article&id=7449&catid=37|here]].
+
+Calculation results are:
+
+* capacities of all the capacitors in the contour
+* peak voltage on all the capacitors
+* reactive power on all the capacitors
+* inductance of all the coils in the contour 
+* peak currents of all the coils in the contour
+
+Using these results, you can select appropriative capacitors for the P-contour, and calculate constructive parameters of the coils
+ 

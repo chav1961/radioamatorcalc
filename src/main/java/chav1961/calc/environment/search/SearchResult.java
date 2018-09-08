@@ -24,7 +24,7 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 class SearchResult extends JPanel implements SearchComponent{
 	private static final long 		serialVersionUID = 1L;	
 	private static final String		LEFT_FORMAT = "<html><body><img src=\"%1$s\"><br><hr><b>%2$f</b></body></html>";
-	private static final String		CENTER_FORMAT = "<html><body><h2><img src=\"%1$s\">%2$s</h2><p>%3$s</p><hr><p><b>%4$s :</b>%5$s</p><p><b>%6$s :</b>%7$s</p><p><b>%8$s :</b>%9$s</p></body></html>";
+	private static final String		CENTER_FORMAT = "<html><body><h2><img src=\"%1$s\"><a href=\""+Constants.PLUGIN_PATH+"#%2$s\">%3$s</a></h2><p>%4$s</p><hr><p><b>%5$s :</b>%6$s</p><p><b>%7$s :</b>%8$s</p><p><b>%9$s :</b>%10$s</p></body></html>";
 	private static final String		USES_FORMAT = " <a href=\""+Constants.USES_PATH+"#%1$s\">%2$s</a>";
 	private static final String		TAGS_FORMAT = " <a href=\""+Constants.TAGS_PATH+"#%1$s\">%2$s</a>";
 	private static final String		SEE_ALSO_FORMAT = " <a href=\""+Constants.SEE_ALSO_PATH+"#%1$s\">%2$s</a>";
@@ -63,6 +63,7 @@ class SearchResult extends JPanel implements SearchComponent{
 
 			final String 	centerText = String.format(CENTER_FORMAT
 											,pluginInterface.getMiniIconURL()
+											,pluginInterface.getPluginId()
 											,InternalUtils.localizeAndEscape(localizer,pluginInterface.getCaptionId())
 											,fragment
 											,InternalUtils.localizeAndEscape(localizer,LocalizationKeys.SEARCH_USES)
