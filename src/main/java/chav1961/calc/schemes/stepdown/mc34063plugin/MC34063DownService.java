@@ -99,7 +99,7 @@ public class MC34063DownService implements PluginInterface {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
 		}
-		return inner.getLabelIds();
+		return inner.getModifiableLabelIds();
 	}
 
 	@Override

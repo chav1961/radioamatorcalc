@@ -98,12 +98,12 @@ public class PContourService implements PluginInterface {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
 		}
-		return inner.getLabelIds();
+		return inner.getModifiableLabelIds();
 	}
 
 	@Override
 	public String[] getTagsIds(final Localizer parent) throws LocalizationException {
-		return new String[]{"PContourService.tag1"};
+		return new String[]{"PContourService.tag1","PContourService.tag2","PContourService.tag3"};
 	}
 
 	@Override

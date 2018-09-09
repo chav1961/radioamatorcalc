@@ -59,6 +59,7 @@ public abstract class LocalizationKeys {
 	public static final String		SEARCH_LABEL = "search.label";
 	public static final String		SEARCH_TOOLTIP = "search.tooltip";
 	public static final String		SEARCH_FOUND = "search.found";
+	public static final String		SEARCH_NOT_FOUND = "search.notfound";
 	
 	public static final String		SEARCH_USES = "search.uses";
 	public static final String		SEARCH_TAGS = "search.tags";

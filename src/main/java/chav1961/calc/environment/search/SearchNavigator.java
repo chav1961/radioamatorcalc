@@ -21,6 +21,9 @@ class SearchNavigator extends JPanel implements SearchComponent {
 	private static final long 		serialVersionUID = 1L;
 	private static final String		LEFT_FORMAT = "<html><head></head><body><font size=16>%1$d %2$s</font></body></html>";
 	private static final String		CENTER_FORMAT = "<html><head></head><body><font size=16>%1$s %2$s %3$s</font></body></html>";
+	private static final String		CENTER_THEONLY_FORMAT = "<html><head></head><body><font size=16>%1$s</font></body></html>";
+	private static final String		CENTER_SHORT_FORMAT = "<html><head></head><body><font size=16>%1$s %2$s</font></body></html>";
+	private static final String		CENTER_NOT_FOUND_FORMAT = "<html><head></head><body><font size=16 color=red>%1$s</font></body></html>";
 	private static final String		REF_FORMAT = " <a href=\"%1$s\">%2$s</a>";
 	private static final String		CURRENT_REF_FORMAT = " <b>%2$s</b>";
 
@@ -50,11 +53,18 @@ class SearchNavigator extends JPanel implements SearchComponent {
 			add(centerPane,BorderLayout.CENTER);
 			
 			if (totalResults > 0) {
-				centerPane.setText(String.format(CENTER_FORMAT
-							,toRef(content[0],1,false)
-							,buildRefList(content,startIndex,endIndex,currentIndex)
-							,toRef(content[content.length-1],1,false)
-							));
+				if (totalResults == 1) {
+					centerPane.setText(String.format(CENTER_THEONLY_FORMAT
+						,toRef(content[0],1,false)
+						));
+				}
+				else {
+					centerPane.setText(String.format(CENTER_FORMAT
+								,toRef(content[0],1,false)
+								,buildRefList(content,startIndex,endIndex,currentIndex)
+								,toRef(content[content.length-1],1,false)
+								));
+				}
 				
 				centerPane.addHyperlinkListener(new HyperlinkListener(){
 			         public void hyperlinkUpdate(final HyperlinkEvent e) {
@@ -69,6 +79,7 @@ class SearchNavigator extends JPanel implements SearchComponent {
 				});
 			}
 			else {
+				centerPane.setText(String.format(CENTER_NOT_FOUND_FORMAT,localizer.getValue(LocalizationKeys.SEARCH_NOT_FOUND)));
 			}
 		}
 	}

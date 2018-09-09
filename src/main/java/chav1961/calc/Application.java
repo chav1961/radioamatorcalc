@@ -2,6 +2,7 @@ package chav1961.calc;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
@@ -17,6 +18,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URISyntaxException;
 import java.util.Locale;
 import java.util.ServiceLoader;
 import java.util.Timer;
@@ -38,6 +40,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.lucene.store.FSDirectory;
@@ -498,6 +502,17 @@ public class Application extends JFrame implements LocaleChangeListener {
 			pane.setEditable(false);
 			pane.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 			pane.setPreferredSize(new Dimension(300,300));
+			pane.addHyperlinkListener(new HyperlinkListener() {
+								@Override
+								public void hyperlinkUpdate(final HyperlinkEvent e) {
+									if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+										try{Desktop.getDesktop().browse(e.getURL().toURI());
+										} catch (URISyntaxException | IOException exc) {
+											exc.printStackTrace();
+										}
+									}
+								}
+			});
 			
 			JOptionPane.showMessageDialog(this,pane,localizer.getValue(LocalizationKeys.TITLE_HELP_ABOUT_APPLICATION),JOptionPane.PLAIN_MESSAGE,icon);
 		} catch (LocalizationException | MimeTypeParseException | IOException e) {

@@ -2,6 +2,7 @@ package chav1961.calc.environment.search;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -191,7 +192,7 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 	}
 
 	private SearchResultAndNavigator search(final String searchFieldName, final String query) throws LocalizationException, IOException {
-		final List<PluginInterface>	found = new ArrayList<>();
+		final List<PluginAndScore>	found = new ArrayList<>();
 		final LangAndAnalyzer		laa;
 	
 		switch (localizer.currentLocale().getLocale().getLanguage()) {
@@ -208,12 +209,27 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 		for (URIAndScore item : wrapper.search(searchFieldName,laa.analyzer,query)) {
 			for (PluginInterface plugin : ServiceLoader.load(PluginInterface.class)) {
 				if (item.getURI().toString().equals(plugin.getPluginId())) {
-					found.add(plugin);
+					found.add(new PluginAndScore(plugin,item));
 					break;
 				}
 			}
 		}
-		return new SearchResultAndNavigator(localizer,found.toArray(new PluginInterface[found.size()]),10,listener);
+		return new SearchResultAndNavigator(localizer,found.toArray(new PluginAndScore[found.size()]),10,listener);
+	}
+
+	static class PluginAndScore {
+		final PluginInterface	plugin;
+		final URIAndScore		score;
+		
+		PluginAndScore(PluginInterface plugin, URIAndScore score) {
+			this.plugin = plugin;
+			this.score = score;
+		}
+
+		@Override
+		public String toString() {
+			return "PluginAndScore [plugin=" + plugin + ", score=" + score + "]";
+		} 
 	}
 	
 	private static class SearchString extends JToolBar implements LocaleChangeListener {
@@ -261,7 +277,6 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 		}
 	}
 	
-	
 	private static final String[]	PLACEMENT = {BorderLayout.NORTH, BorderLayout.SOUTH};
 	
 	private class SearchResultAndNavigator extends JPanel implements Closeable {
@@ -288,13 +303,13 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 											}
 										};
 		private final Localizer			localizer;
-		private final PluginInterface[]	found;
+		private final PluginAndScore[]	found;
 		private final int				totalPages, resultsPerPage;
 		private final URI[]				pageUris;	
 		private final SearchListener	parentListener;
 		private int						currentPage = 0;
 		
-		SearchResultAndNavigator(final Localizer localizer, final PluginInterface[] found, final int resultsPerPage, final SearchListener parentListener) throws LocalizationException {
+		SearchResultAndNavigator(final Localizer localizer, final PluginAndScore[] found, final int resultsPerPage, final SearchListener parentListener) throws LocalizationException {
 			setLayout(new BorderLayout());
 			this.localizer = localizer;
 			this.found = found.clone();
@@ -355,12 +370,15 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 			final SpringLayout	layout = new SpringLayout();
 			final JPanel		content = new JPanel(layout);
 			JComponent			previous = content;
+			List<Dimension>		sizes = new ArrayList<>(); 
 			
 			for (int index = getCurrentPageNumber()*resultsPerPage, maxIndex = Math.min((getCurrentPageNumber()+1)*resultsPerPage,found.length); index < maxIndex; index++) {
-				final Localizer		associated = found[index].getLocalizerAssociated(localizer);
-				final JComponent	toAdd = new SearchResult(associated,found[index],parentListener,associated.getValue(found[index].getToolTipId()),0.0); 
+				final Localizer		associated = found[index].plugin.getLocalizerAssociated(localizer);
+				final String		fragment = found[index].score.getFragment();
+				final JComponent	toAdd = new SearchResult(associated,found[index],parentListener,fragment != null ? fragment : associated.getValue(found[index].plugin.getToolTipId()),found[index].score.getScore()); 
 				
 				content.add(toAdd);
+				sizes.add(toAdd.getPreferredSize());
 				layout.putConstraint(SpringLayout.WEST,toAdd,0,SpringLayout.WEST,content);
 				layout.putConstraint(SpringLayout.EAST,toAdd,0,SpringLayout.EAST,content);
 				if (previous == content) {
@@ -372,9 +390,25 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 				previous = toAdd;
 				SwingUtils.assignActionKey(toAdd,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),processKeys,"closeSearch");
 				SwingUtils.assignActionKey(toAdd,KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,KeyEvent.ALT_MASK),processKeys, "backward");		
-				SwingUtils.assignActionKey(toAdd,KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,KeyEvent.ALT_MASK),processKeys, "forward");		
+				SwingUtils.assignActionKey(toAdd,KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,KeyEvent.ALT_MASK),processKeys, "forward");
 			}
-			add(content,BorderLayout.CENTER);
+			layout.putConstraint(SpringLayout.SOUTH,previous,0,SpringLayout.SOUTH,content);
+			
+			int		preferredX = 0, preferredY = 0, preferredWidth = SearchManager.this.getWidth();
+			
+			for(Dimension item : sizes) {
+				if (item.width > preferredX) {
+					preferredX = item.width;
+				}
+				if (item.width > preferredWidth) {
+					preferredY += item.height * item.width / preferredWidth;
+				}
+				else {
+					preferredY += item.height;
+				}
+			}
+			content.setPreferredSize(new Dimension(Math.min(preferredX,preferredWidth-30),preferredY));
+			add(new JScrollPane(content),BorderLayout.CENTER);
 		}
 
 		@Override

@@ -98,7 +98,7 @@ public class MC34262Service implements PluginInterface {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
 		}
-		return inner.getLabelIds();
+		return inner.getModifiableLabelIds();
 	}
 
 	@Override

@@ -98,7 +98,7 @@ public class TPS40200Service implements PluginInterface {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
 		}
-		return inner.getLabelIds();
+		return inner.getModifiableLabelIds();
 	}
 
 	@Override

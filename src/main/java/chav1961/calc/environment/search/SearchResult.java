@@ -17,6 +17,7 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 import chav1961.calc.LocalizationKeys;
 import chav1961.calc.environment.Constants;
+import chav1961.calc.environment.search.SearchManager.PluginAndScore;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.i18n.interfaces.Localizer;
@@ -32,11 +33,11 @@ class SearchResult extends JPanel implements SearchComponent{
 	private final Localizer			localizer;
 	private final SearchListener	listener;
 	
-	SearchResult(final Localizer localizer, final PluginInterface pluginInterface, final SearchListener listener, final String fragment, final double rating) throws LocalizationException {
+	SearchResult(final Localizer localizer, final PluginAndScore found, final SearchListener listener, final String fragment, final double rating) throws LocalizationException {
 		if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null");
 		}
-		else if (pluginInterface == null) {
+		else if (found == null) {
 			throw new NullPointerException("Plugin interface can't be null");
 		}
 		else if (listener == null) {
@@ -55,23 +56,23 @@ class SearchResult extends JPanel implements SearchComponent{
 			leftPane.setEditable(false);
 			leftPane.setBackground(Constants.LEFT_PANE_COLOR);
 			add(leftPane,BorderLayout.WEST);
-			leftPane.setText(String.format(LEFT_FORMAT,pluginInterface.getLeftIconURL(),rating));
+			leftPane.setText(String.format(LEFT_FORMAT,found.plugin.getLeftIconURL(),rating));
 			
 			centerPane.setEditable(false);
 			centerPane.setBackground(Constants.CENTER_PANE_COLOR);
 			add(centerPane,BorderLayout.CENTER);
 
 			final String 	centerText = String.format(CENTER_FORMAT
-											,pluginInterface.getMiniIconURL()
-											,pluginInterface.getPluginId()
-											,InternalUtils.localizeAndEscape(localizer,pluginInterface.getCaptionId())
+											,found.plugin.getMiniIconURL()
+											,found.plugin.getPluginId()
+											,InternalUtils.localizeAndEscape(localizer,found.plugin.getCaptionId())
 											,fragment
 											,InternalUtils.localizeAndEscape(localizer,LocalizationKeys.SEARCH_USES)
-											,buildUses(pluginInterface)
+											,buildUses(found.plugin)
 											,InternalUtils.localizeAndEscape(localizer,LocalizationKeys.SEARCH_TAGS)
-											,buildTags(pluginInterface)
+											,buildTags(found.plugin)
 											,InternalUtils.localizeAndEscape(localizer,LocalizationKeys.SEARCH_SEE_ALSO)
-											,buildSeeAlso(pluginInterface)
+											,buildSeeAlso(found.plugin)
 										);
 			centerPane.setText(centerText);
 			
@@ -99,6 +100,7 @@ class SearchResult extends JPanel implements SearchComponent{
 		char				splitter = ' ';
 		
 		for (String item : pluginInterface.getUsesIds(localizer)) {
+			
 			sb.append(splitter).append(String.format(USES_FORMAT,item,InternalUtils.localizeAndEscape(localizer,item)));
 			splitter = ',';
 		}
