@@ -31,6 +31,10 @@
 				<app:item name="menu.elements.coils.ringlayer" caption="menu.elements.coils.ringlayer" tooltip="menu.ttElements.coils.ringlayer" action="RingCoilsService"/>
 			</app:submenu>
 		</app:submenu>
+		<app:submenu name="menu.components" caption="menu.components" tooltip="menu.ttComponents">
+			<app:item name="menu.components.lccontour" caption="menu.components.lccontour" tooltip="menu.ttComponents.lccontour" action="LCContourService"/>
+			<app:item name="menu.components.rcgenerator" caption="menu.components.rcgenerator" tooltip="menu.ttComponents.rcgenerator" action="RCGeneratorService"/>
+		</app:submenu>
 		<app:submenu name="menu.schemes" caption="menu.schemes" tooltip="menu.ttSchemes">
 			<app:submenu name="menu.schemes.powerfactor" caption="menu.schemes.powerfactor" tooltip="menu.ttSchemes.powerfactor">
 				<app:item name="menu.schemes.powerfactor.mc34262" caption="menu.schemes.powerfactor.mc34262" tooltip="menu.ttSchemes.powerfactor.mc34262" action="MC34262Service"/>
@@ -47,6 +51,10 @@
 				<app:item name="menu.schemes.transmitter.pcontour" caption="menu.schemes.transmitter.pcontour" tooltip="menu.ttSchemes.transmitter.pcontour" action="PContourService"/>
 				<app:item name="menu.schemes.transmitter.quartzfilter" caption="menu.schemes.transmitter.quartzfilter" tooltip="menu.ttSchemes.transmitter.quartzfilter" action="QuartzFilterService"/>
 			</app:submenu>
+		</app:submenu>
+		<app:submenu name="menu.pipes" caption="menu.pipes" tooltip="menu.ttPipes">
+			<app:item name="menu.pipes.startnode" caption="menu.pipes.startnode" tooltip="menu.ttPipes.Startnode" action="StartNode"/>
+			<app:item name="menu.pipes.terminalnode" caption="menu.pipes.terminalnode" tooltip="menu.ttPipes.terminalnode" action="TerminalNode"/>
 		</app:submenu>
 	</app:menu>
 	<app:menu id="desktopToolbar">

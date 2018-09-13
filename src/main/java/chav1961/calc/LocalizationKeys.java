@@ -43,15 +43,12 @@ public abstract class LocalizationKeys {
 	public static final String		TITLE_HELP_ABOUT_APPLICATION = "title.help.aboutApplication";
 	public static final String		TITLE_APPLICATION = "title.Application";
 
-	public static final String		SINGLECOILS_CAPTION = "SingleCoils.caption";
-	public static final String		SINGLECOILS_TOOLTIP = "SingleCoils.tooltip";
-	public static final String		SINGLECOILS_HELP = "SingleCoils.help";
-	
 	public static final String		ROOT = "root";
 	public static final String		ROOT_TOOLTIP = "root.tooltip";
 	
 	public static final String		DESKTOP_TOOLBAR_CLOSEALL = "desktop.toolbar.closeAll";
 	public static final String		DESKTOP_TOOLBAR_CLOSEALL_TOOLTIP = "desktop.toolbar.closeAllTT";
+	public static final String		DESKTOP_STATE_NAME_LABEL = "desktop.state.nameLabel";
 
 	public static final String		SEARCH_TOOLBAR_CLOSE = "search.toolbar.close";
 	public static final String		SEARCH_TOOLBAR_CLOSE_TOOLTIP = "search.toolbar.closeTT";
@@ -75,4 +72,24 @@ public abstract class LocalizationKeys {
 	public static final String 		FORMULA_COILS_RING_COIL = "formula.coilsRingCoil";
 	public static final String 		FORMULA_INDUCTION_RING_COIL = "formula.inductionRingCoil";
 
+	//
+	//	Pipe tags to use in the pipes
+	//
+	
+	public static final String		PIPE_CALCULATION_SUCCESS = "pipe.calculationSuccess";
+	public static final String		PIPE_CALCULATION_FAILED = "pipe.calculationFailed";
+	public static final String		PIPE_PARAMETER_NAME = "pipe.parameterName";
+	public static final String		PIPE_PARAMETER_TYPE = "pipe.parameterType";
+
+	//
+	//	Pipe items localization
+	//
+
+	public static final String		PIPE_START_COMMENT = "pipe.start.comment";
+	
+	public static final String		PIPE_TERMINAL_NODE_TYPE = "pipe.terminal.nodetype";
+	public static final String		PIPE_TERMINAL_NODE_TYPE_SUCCESS = "pipe.terminal.nodetype.success";
+	public static final String		PIPE_TERMINAL_NODE_TYPE_FAILED = "pipe.terminal.nodetype.failed";
+	public static final String		PIPE_TERMINAL_FORMAT = "pipe.terminal.format";
+	public static final String		PIPE_TERMINAL_PARAMETERS = "pipe.terminal.parameters";
 }

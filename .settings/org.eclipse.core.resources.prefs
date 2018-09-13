@@ -1,4 +1,17 @@
 eclipse.preferences.version=1
+encoding//src/main/java/chav1961/calc/components/lccontourplugin/ContourCalculationType.java=UTF-8
+encoding//src/main/java/chav1961/calc/components/lccontourplugin/LCContourCalculator.java=UTF-8
+encoding//src/main/java/chav1961/calc/components/lccontourplugin/LCContourService.java=UTF-8
+encoding//src/main/java/chav1961/calc/components/lccontourplugin/lccontour_en.properties=UTF-8
+encoding//src/main/java/chav1961/calc/components/lccontourplugin/lccontour_ru.properties=UTF-8
+encoding//src/main/java/chav1961/calc/components/rcgeneratorplugin/GeneratorCalculationType.java=UTF-8
+encoding//src/main/java/chav1961/calc/components/rcgeneratorplugin/GeneratorType.java=UTF-8
+encoding//src/main/java/chav1961/calc/components/rcgeneratorplugin/RCGeneratorCalculator.java=UTF-8
+encoding//src/main/java/chav1961/calc/components/rcgeneratorplugin/RCGeneratorService.java=UTF-8
+encoding//src/main/java/chav1961/calc/components/rcgeneratorplugin/rcgenerator/help/en/RCGenerator.cre=UTF-8
+encoding//src/main/java/chav1961/calc/components/rcgeneratorplugin/rcgenerator/help/ru/RCGenerator.cre=UTF-8
+encoding//src/main/java/chav1961/calc/components/rcgeneratorplugin/rcgenerator_en.properties=UTF-8
+encoding//src/main/java/chav1961/calc/components/rcgeneratorplugin/rcgenerator_ru.properties=UTF-8
 encoding//src/main/java/chav1961/calc/elements/coils/ringcoilsplugin/ringcoils/help/en/ringCoils.cre=UTF-8
 encoding//src/main/java/chav1961/calc/elements/coils/ringcoilsplugin/ringcoils/help/ru/ringCoils.cre=UTF-8
 encoding//src/main/java/chav1961/calc/elements/coils/ringcoilsplugin/ringcoils_en.properties=UTF-8

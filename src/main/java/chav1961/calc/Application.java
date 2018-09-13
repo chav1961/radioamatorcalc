@@ -48,6 +48,8 @@ import org.apache.lucene.store.FSDirectory;
 
 import chav1961.calc.environment.desktop.DesktopManager;
 import chav1961.calc.environment.pipe.PipeFactory;
+import chav1961.calc.environment.pipe.controls.StartNode;
+import chav1961.calc.environment.pipe.controls.TerminalNode;
 import chav1961.calc.environment.search.LuceneWrapper;
 import chav1961.calc.environment.search.SearchManager;
 import chav1961.calc.interfaces.PipeInterface;
@@ -320,6 +322,30 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
+	@OnAction("StartNode")
+	private void newStartNode() {
+		try{final PluginInterface	plugin = new StartNode(localizer);
+			final PluginInstance	inst = plugin.newInstance(localizer, logger);
+			
+			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
+			placePlugin(plugin,inst);
+		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+			message(e,e.getLocalizedMessage());
+		}
+	}
+	
+	@OnAction("TerminalNode")
+	private void newTerminalNode() {
+		try{final PluginInterface	plugin = new TerminalNode(localizer, false);
+			final PluginInstance	inst = plugin.newInstance(localizer, logger);
+			
+			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
+			placePlugin(plugin,inst);
+		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+			message(e,e.getLocalizedMessage());
+		}
+	}
+	
 	private boolean accuratelyClosePipe() throws HeadlessException, LocalizationException, IllegalArgumentException, IOException {
 		if (currentPipe != null) {
 			if (currentPipe.isModified()) {
@@ -529,7 +555,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 				placePlugin(plugin,inst);
 			}
-		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+		} catch (LocalizationException | SyntaxException | ContentException | IOException | RuntimeException e) {
 			message(e,e.getLocalizedMessage());
 		}
 	}

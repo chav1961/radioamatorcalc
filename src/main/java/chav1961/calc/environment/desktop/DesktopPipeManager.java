@@ -1,10 +1,16 @@
 package chav1961.calc.environment.desktop;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.beans.PropertyVetoException;
 import java.util.Locale;
 
@@ -13,7 +19,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
 
+import chav1961.calc.LocalizationKeys;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
@@ -109,6 +120,9 @@ public class DesktopPipeManager extends JDesktopPane implements LocaleChangeList
 		private final Localizer		localizer;
 		private final String		captionId;
 		private final String		helpId;
+		private final JPanel		statePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		private final JLabel		nameLabel = new JLabel();
+		private final JTextField	nameField = new JTextField();
 		private final JComponent	component;
 
 		public SmartContainer(final String captionId, final String helpId, final JComponent component, final boolean resizable) throws LocalizationException {
@@ -123,7 +137,24 @@ public class DesktopPipeManager extends JDesktopPane implements LocaleChangeList
     	    this.component = component;
     	    
     	    getContentPane().setLayout(new BorderLayout());
+    	    nameField.setColumns(20);
+    	    nameField.setText("Node"+openFrameCount);
+    	    nameField.addFocusListener(new FocusListener(){
+				@Override
+				public void focusGained(FocusEvent e) {
+				}
+
+				@Override
+				public void focusLost(FocusEvent e) {
+					component.setName(nameField.getText());
+				}
+			});
+    	    statePanel.add(nameLabel);
+    	    statePanel.add(nameField);
+    	    statePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+    	    statePanel.setBackground(Color.GRAY);
     	    getContentPane().add(component,BorderLayout.CENTER);
+    	    getContentPane().add(statePanel,BorderLayout.SOUTH);
     	    pack();
     	    openFrameCount++;
        	    setLocation(CHILD_X_OFFSET*openFrameCount, CHILD_X_OFFSET*openFrameCount);
@@ -135,6 +166,7 @@ public class DesktopPipeManager extends JDesktopPane implements LocaleChangeList
 				@Override public void componentHidden(ComponentEvent e) {revalidateContent();}
 			});
     	    SwingUtils.assignHelpKey(component,localizer,helpId);
+			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
     	}
 
 		@Override
@@ -145,6 +177,7 @@ public class DesktopPipeManager extends JDesktopPane implements LocaleChangeList
 
 		private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
 			setTitle(localizer.getValue(captionId));
+			nameLabel.setText(localizer.getValue(LocalizationKeys.DESKTOP_STATE_NAME_LABEL));
 		}   
     }
 }
