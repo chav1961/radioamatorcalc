@@ -5,8 +5,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
@@ -20,12 +22,14 @@ import javax.swing.SpringLayout;
 import chav1961.calc.LocalizationKeys;
 import chav1961.calc.environment.pipe.PipeParameterWrapper;
 import chav1961.calc.environment.pipe.SelfDefinedPipeParametersModel;
+import chav1961.calc.interfaces.PipeInstanceControlInterface;
 import chav1961.calc.interfaces.PluginInterface.PluginInstance;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
@@ -35,7 +39,7 @@ import chav1961.purelib.ui.swing.MicroTableEditor;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.MicroTableEditor.EditorRepresentation;
 
-public class StartContent extends JPanel implements LocaleChangeListener, PluginInstance, FormManager<Integer,PipeParameterWrapper> {
+public class StartContent extends JPanel implements LocaleChangeListener, PluginInstance, FormManager<Integer,PipeParameterWrapper>, PipeInstanceControlInterface {
 	private static final long serialVersionUID = -3268088997213112095L;
 	private static final List<PipeParameterWrapper>	EMPTY_CONTENT = new ArrayList<>();
 
@@ -72,7 +76,7 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
 			this.mte = new MicroTableEditor(localizer,EditorRepresentation.EDITED_LIST);
 			this.model = new SelfDefinedPipeParametersModel(content,(key)->{return createParameter();});
-			this.mteComponent = mte.build(this,model,new String[]{LocalizationKeys.PIPE_PARAMETER_NAME},List.class,content,EMPTY_CONTENT);
+			this.mteComponent = mte.build(this,model,null,new String[]{"pluginFieldName","pluginFieldtype"});
 			
 			final JPanel 		commentPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			
@@ -84,7 +88,7 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 			add(commentPanel,BorderLayout.NORTH);
 			add(mteComponent,BorderLayout.CENTER);
 			
-			filLocalizationStrings();
+			fillLocalizationStrings();
 		}
 	}
 	
@@ -110,25 +114,48 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 
 	@Override
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-		filLocalizationStrings();
+		fillLocalizationStrings();
 	}
 
 	@Override
 	public RefreshMode onRecord(final Action action, final PipeParameterWrapper oldRecord, final Integer oldId, final PipeParameterWrapper newRecord, final Integer newId) throws FlowException, LocalizationException {
 		// TODO Auto-generated method stub
-		return null;
+		switch (action) {
+			case CHANGE		:
+				return RefreshMode.RECORD_ONLY;
+			case CHECK		:
+				final Set<String>	names = new HashSet<>();
+				
+				for (PipeParameterWrapper item : content) {
+					if (names.contains(item.getPluginFieldName())) {
+						getLogger().message(Severity.error,LocalizationKeys.PIPE_START_MESSAGE_DUPLICATE_FIELD,item.getPluginFieldName());
+						return RefreshMode.REJECT;
+					}
+					else {
+						names.add(item.getPluginFieldName());
+					}
+				}
+				return RefreshMode.NONE;
+			case DELETE		:
+				return RefreshMode.TOTAL;
+			case DUPLICATE	:
+				return RefreshMode.TOTAL;
+			case INSERT		:
+				return RefreshMode.TOTAL;
+			default:
+				throw new UnsupportedOperationException("Action ["+action+"] is not supported yet");
+		}
 	}
 
 	@Override
 	public RefreshMode onField(final PipeParameterWrapper inst, final Integer id, final String fieldName, final Object oldValue) throws FlowException, LocalizationException {
 		// TODO Auto-generated method stub
-		return null;
+		return RefreshMode.FIELD_ONLY;
 	}
 
 	@Override
 	public RefreshMode onAction(final PipeParameterWrapper inst, final Integer id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
-		// TODO Auto-generated method stub
-		return null;
+		return RefreshMode.NONE;
 	}
 
 	@Override
@@ -136,10 +163,32 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 		return logger;
 	}
 
-	private void filLocalizationStrings() throws LocalizationException, IllegalArgumentException {
+	private void fillLocalizationStrings() throws LocalizationException, IllegalArgumentException {
 		nodeComment.setText(localizer.getValue(LocalizationKeys.PIPE_START_COMMENT));
+		if (mteComponent instanceof LocaleChangeListener) {
+			((LocaleChangeListener)mteComponent).localeChanged(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
+		}
 	}
 
+
+	@Override
+	public Object getValue(final FieldDescriptor desc) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValue(final FieldDescriptor desc, final Object value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean execute(final String action) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 	private PipeParameterWrapper createParameter() {
 		return new PipeParameterWrapper(pluginId,"","parameter",String.class){
 			@Override

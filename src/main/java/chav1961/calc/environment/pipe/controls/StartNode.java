@@ -6,6 +6,7 @@ import java.net.URL;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import chav1961.calc.environment.Constants;
 import chav1961.calc.interfaces.PipeControlInterface;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -42,7 +43,7 @@ public class StartNode implements PipeControlInterface, PluginInterface {
 
 	@Override
 	public String getPluginId() {
-		return "Pipe.StartNode";
+		return Constants.PIPE_START_NODE;
 	}
 
 	@Override
@@ -128,23 +129,5 @@ public class StartNode implements PipeControlInterface, PluginInterface {
 	public String[] getActions() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public Object getValue(final FieldDescriptor desc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setValue(final FieldDescriptor desc, final Object value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean execute(final String action) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

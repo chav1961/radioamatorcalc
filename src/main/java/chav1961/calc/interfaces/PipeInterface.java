@@ -6,6 +6,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
 
+import chav1961.calc.interfaces.PluginInterface.PluginInstance;
+import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.interfaces.ModifiableEntity;
 
 public interface PipeInterface extends Closeable, ModifiableEntity {
@@ -14,6 +16,7 @@ public interface PipeInterface extends Closeable, ModifiableEntity {
 		int getFieldType();
 		Object getGetterAndSetter();
 	}
+	
 	public interface DataLinkDescription {
 		String getLinkId();
 		String getSource();
@@ -22,6 +25,7 @@ public interface PipeInterface extends Closeable, ModifiableEntity {
 		Object calculate();
 		Object getCargoAssociated();
 	}
+	
 	public interface ControlLinkDescription {
 		String getLinkId();
 		String getSource();
@@ -31,6 +35,7 @@ public interface PipeInterface extends Closeable, ModifiableEntity {
 		boolean isReady();
 		Object getCargoAssociated();
 	}
+	
 	public interface ContentDescription {
 		String[] getComponentIds();
 		boolean contains(String componentId);
@@ -41,6 +46,7 @@ public interface PipeInterface extends Closeable, ModifiableEntity {
 		ControlLinkDescription getControlLink(String linkId);
 		Object getCargoAssociated();
 	}
+	
 	String getPipeNameId();
 	String getPipeCaptionId();
 	URI getPipeLocation() throws IOException;
@@ -52,6 +58,9 @@ public interface PipeInterface extends Closeable, ModifiableEntity {
 	ContentDescription getContentDescription();
 	void serialize(Writer writer) throws IOException;
 	void deserialize(Reader reader) throws IOException;
+	
+	Iterable<PluginInterface> getPluginsRequired();
+	Iterable<PluginInstance> getPluginInstanceUsed();
 	boolean isReadyToPlay();
-	void play() throws IOException;
+	void play() throws IOException, FlowException;
 }

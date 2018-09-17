@@ -10,18 +10,17 @@ import java.util.Locale;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.LocalizationKeys;
+import chav1961.calc.interfaces.PipeInstanceControlInterface;
 import chav1961.calc.interfaces.PluginInterface.PluginInstance;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
@@ -31,7 +30,7 @@ import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
 import chav1961.purelib.ui.FormFieldFormat;
 import chav1961.purelib.ui.swing.SwingUtils;
 
-public class TerminalContent extends JPanel implements LocaleChangeListener, PluginInstance {
+public class TerminalContent extends JPanel implements LocaleChangeListener, PluginInstance, PipeInstanceControlInterface {
 	private static final long serialVersionUID = -1860587528233881285L;
 	
 	private final JLabel				nodeType = new JLabel("");
@@ -152,4 +151,19 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 	@Override
 	public void close() {
 	}
+
+	@Override
+	public Object getValue(final FieldDescriptor desc) {
+		return null;
+	}
+
+	@Override
+	public void setValue(final FieldDescriptor desc, final Object value) {
+	}
+
+	@Override
+	public boolean execute(final String action) {
+		return false;
+	}
+
 }

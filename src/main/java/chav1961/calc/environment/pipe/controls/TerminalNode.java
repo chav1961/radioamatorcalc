@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
 import chav1961.calc.LocalizationKeys;
+import chav1961.calc.environment.Constants;
 import chav1961.calc.interfaces.PipeControlInterface;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -68,27 +69,13 @@ public class TerminalNode implements PipeControlInterface, PluginInterface {
 	}
 
 	@Override
-	public Object getValue(final FieldDescriptor desc) {
-		return null;
-	}
-
-	@Override
-	public void setValue(final FieldDescriptor desc, final Object value) {
-	}
-
-	@Override
-	public boolean execute(final String action) {
-		return false;
-	}
-
-	@Override
 	public PluginInstance newInstance(final Localizer localizer, final LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
 		return new TerminalContent(localizer);
 	}
 
 	@Override
 	public String getPluginId() {
-		return "Pipe.TerminalNode";
+		return Constants.PIPE_TERMINAL_NODE;
 	}
 
 	@Override

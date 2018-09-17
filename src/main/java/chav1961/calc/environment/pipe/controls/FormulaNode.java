@@ -6,6 +6,7 @@ import java.net.URL;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import chav1961.calc.environment.Constants;
 import chav1961.calc.interfaces.PipeControlInterface;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -37,13 +38,12 @@ public class FormulaNode implements PipeControlInterface, PluginInterface {
 
 	@Override
 	public PluginInstance newInstance(Localizer localizer, LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return new FormulaContent(getPluginId(),localizer,logger);
 	}
 
 	@Override
 	public String getPluginId() {
-		return "Pipe.FormulaNode";
+		return Constants.PIPE_FORMULA_NODE;
 	}
 
 	@Override
@@ -129,23 +129,5 @@ public class FormulaNode implements PipeControlInterface, PluginInterface {
 	public String[] getActions() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public Object getValue(final FieldDescriptor desc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setValue(final FieldDescriptor desc, final Object value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean execute(String action) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

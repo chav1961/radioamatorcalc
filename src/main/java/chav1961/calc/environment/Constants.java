@@ -11,4 +11,9 @@ public class Constants {
 	public static final String		USES_PATH = "uses";
 	public static final String		TAGS_PATH = "tags";
 	public static final String		SEE_ALSO_PATH = "seealso";
+	
+	public static final String		PIPE_START_NODE = "Pipe.StartNode"; 
+	public static final String		PIPE_TERMINAL_NODE = "Pipe.TerminalNode"; 
+	public static final String		PIPE_FORMULA_NODE = "Pipe.FormulaNode"; 
+	public static final String		PIPE_SWITCH_NODE = "Pipe.SwitchNode"; 
 }

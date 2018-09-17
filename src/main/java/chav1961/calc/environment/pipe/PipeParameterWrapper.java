@@ -1,9 +1,20 @@
 package chav1961.calc.environment.pipe;
 
+import chav1961.purelib.i18n.interfaces.LocaleResource;
+import chav1961.purelib.ui.interfacers.Format;
+
 public class PipeParameterWrapper {
+@LocaleResource(value="pipe.pluginId",tooltip="pipe.pluginIdTooltip")	
+@Format("10ms")
 	private String		pluginId;
+@LocaleResource(value="pipe.pluginInstanceName",tooltip="pipe.pluginInstanceNameTooltip")	
+@Format("10ms")
 	private String		pluginInstanceName;
+@LocaleResource(value="pipe.pluginFieldName",tooltip="pipe.pluginFieldNameTooltip")	
+@Format("10ms")
 	private String		pluginFieldName;
+@LocaleResource(value="pipe.pluginFieldtype",tooltip="pipe.pluginFieldtypeTooltip")	
+@Format("10ms")
 	private Class<?>	pluginFieldtype;
 	
 	public PipeParameterWrapper(final String pluginId, final String pluginInstanceName, final String pluginFieldName, final Class<?> pluginFieldtype) {

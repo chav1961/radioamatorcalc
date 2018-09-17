@@ -8,7 +8,6 @@ import chav1961.calc.interfaces.PipeInterface;
 import chav1961.purelib.i18n.interfaces.Localizer;
 
 public class PipeFactory {
-
 	private final Application	application;
 	private final Localizer		localizer;
 	

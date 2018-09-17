@@ -1,42 +1,43 @@
 package chav1961.calc.environment.pipe.controls;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.GridLayout;
 import java.util.Locale;
 
-import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 
-import chav1961.calc.environment.pipe.PipeParameterWrapper;
+import chav1961.calc.LocalizationKeys;
+import chav1961.calc.interfaces.PipeInstanceControlInterface;
 import chav1961.calc.interfaces.PluginInterface.PluginInstance;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.ui.FormFieldFormat;
 import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
+import chav1961.purelib.ui.FormFieldFormat;
 import chav1961.purelib.ui.swing.SwingUtils;
 
-public class SwitchContent extends JPanel implements LocaleChangeListener, PluginInstance {
+public class SwitchContent extends JPanel implements LocaleChangeListener, PluginInstance, PipeInstanceControlInterface {
 	private static final long serialVersionUID = -3268088997213112095L;
 
 	private final JLabel						nodeComment = new JLabel("");
 	private final JTextField					commentControl;
-	private final JPanel						forList = new JPanel(new BorderLayout());
-	private final JList<Object>					parametersControl;
-	private final ButtonGroup					group = new ButtonGroup(); 
+	private final JLabel						nodeExpression = new JLabel("");
+	private final JTextField					expressionControl;
+	private final JCheckBox						askBeforeControl;
 	
 	private final Localizer						localizer;
 	private FieldDescriptor						fdComment;
 	private String								comment = "";
-	private FieldDescriptor						fdParameters;
-	private final List<PipeParameterWrapper>	parameters = new ArrayList<>();
+	private FieldDescriptor						fdExpression;
+	private String								expression = "";
+	private FieldDescriptor						fdAskBefore;
+	private boolean								askBefore = false;
 	
 	public SwitchContent(final Localizer localizer) throws LocalizationException, IllegalArgumentException, NullPointerException, SyntaxException {
 		if (localizer == null) {
@@ -46,8 +47,34 @@ public class SwitchContent extends JPanel implements LocaleChangeListener, Plugi
 			this.localizer = localizer; 
 			this.fdComment = FieldDescriptor.newInstance("comment",new FormFieldFormat("30ms"),this.getClass());
 			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
-			this.fdParameters = FieldDescriptor.newInstance("comment",new FormFieldFormat("30ms"),this.getClass());
-			this.parametersControl = (JList)SwingUtils.prepareCellEditorComponent(localizer,fdParameters,parameters);
+			this.fdExpression = FieldDescriptor.newInstance("expression",new FormFieldFormat("30ms"),this.getClass());
+			this.expressionControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdExpression,expression);
+			this.fdAskBefore = FieldDescriptor.newInstance("askBefore",new FormFieldFormat("1"),this.getClass());
+			this.askBeforeControl = (JCheckBox) SwingUtils.prepareCellEditorComponent(localizer,fdAskBefore,askBefore);
+			
+			final JPanel		leftPanel = new JPanel(new GridLayout(2,1,2,2)), rightPanel = new JPanel(new GridLayout(2,1,2,2));
+			
+			leftPanel.add(nodeComment);
+			leftPanel.add(nodeExpression);
+			rightPanel.add(commentControl);
+			rightPanel.add(expressionControl);
+			
+			final SpringLayout	springLayout = new SpringLayout(); 
+			
+			setLayout(springLayout);
+			add(leftPanel);
+			add(rightPanel);
+			add(askBeforeControl);
+			springLayout.putConstraint(SpringLayout.NORTH,leftPanel,0,SpringLayout.NORTH,this);
+			springLayout.putConstraint(SpringLayout.NORTH,rightPanel,0,SpringLayout.NORTH,this);
+			springLayout.putConstraint(SpringLayout.WEST,leftPanel,0,SpringLayout.WEST,this);
+			springLayout.putConstraint(SpringLayout.EAST,rightPanel,0,SpringLayout.EAST,this);
+			springLayout.putConstraint(SpringLayout.WEST,rightPanel,5,SpringLayout.EAST,leftPanel);
+			springLayout.putConstraint(SpringLayout.SOUTH,leftPanel,0,SpringLayout.SOUTH,rightPanel);
+			springLayout.putConstraint(SpringLayout.NORTH,askBeforeControl,5,SpringLayout.SOUTH,rightPanel);
+			springLayout.putConstraint(SpringLayout.WEST,askBeforeControl,0,SpringLayout.WEST,this);
+			springLayout.putConstraint(SpringLayout.EAST,askBeforeControl,0,SpringLayout.EAST,this);
+			
 			fillLocalizationStrings();
 		}
 	}
@@ -59,21 +86,19 @@ public class SwitchContent extends JPanel implements LocaleChangeListener, Plugi
 
 	@Override
 	public Dimension getRecommendedSize() {
-		return new Dimension(200,200);
+		return new Dimension(400,120);
 	}
 
 
 	@Override
 	public Localizer getLocalizerAssociated() throws LocalizationException {
-		// TODO Auto-generated method stub
-		return null;
+		return localizer;
 	}
 
 
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
-		
 	}
 
 
@@ -82,8 +107,32 @@ public class SwitchContent extends JPanel implements LocaleChangeListener, Plugi
 		fillLocalizationStrings();
 	}
 
-	private void fillLocalizationStrings() {
+
+	@Override
+	public Object getValue(final FieldDescriptor desc) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValue(final FieldDescriptor desc, final Object value) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean execute(final String action) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
+	private void fillLocalizationStrings() throws LocalizationException {
+		nodeComment.setText(localizer.getValue(LocalizationKeys.PIPE_SWITCH_COMMENT));
+		commentControl.setToolTipText(localizer.getValue(LocalizationKeys.PIPE_SWITCH_COMMENT_TOOLTIP));
+		nodeExpression.setText(localizer.getValue(LocalizationKeys.PIPE_SWITCH_EXPRESION));
+		expressionControl.setToolTipText(localizer.getValue(LocalizationKeys.PIPE_SWITCH_EXPRESION_TOOLTIP));
+		askBeforeControl.setText(localizer.getValue(LocalizationKeys.PIPE_SWITCH_ASKBEFORE));
+		askBeforeControl.setToolTipText(localizer.getValue(LocalizationKeys.PIPE_SWITCH_ASKBEFORE_TOOLTIP));
 	}
 }

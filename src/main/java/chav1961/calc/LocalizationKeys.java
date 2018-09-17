@@ -81,11 +81,34 @@ public abstract class LocalizationKeys {
 	public static final String		PIPE_PARAMETER_NAME = "pipe.parameterName";
 	public static final String		PIPE_PARAMETER_TYPE = "pipe.parameterType";
 
+	public static final String		PIPE_PLUGIN_ID = "pipe.pluginId"; 
+	public static final String		PIPE_PLUGIN_ID_TOOLTIP = "pipe.pluginIdTooltip";
+	public static final String		PIPE_PLUGIN_INSTANCE = "pipe.pluginInstanceName";
+	public static final String		PIPE_PLUGIN_INSTANCE_TOOLTIP = "pipe.pluginInstanceNameTooltip"; 
+	public static final String		PIPE_PLUGIN_FIELD = "pipe.pluginFieldName";
+	public static final String		PIPE_PLUGIN_FIELD_TOOLTIP = "pipe.pluginFieldNameTooltip";
+	public static final String		PIPE_PLUGIN_FIELD_TYPE = "pipe.pluginFieldtype";
+	public static final String		PIPE_PLUGIN_FIELD_TYPE_TOOLTIP = "pipe.pluginFieldtypeTooltip"; 	
+	
+	
 	//
 	//	Pipe items localization
 	//
 
 	public static final String		PIPE_START_COMMENT = "pipe.start.comment";
+	public static final String		PIPE_START_MESSAGE_DUPLICATE_FIELD = "StartNode.message.duplicateField";
+	
+	public static final String		PIPE_FORMULA_COMMENT = "pipe.formula.comment";
+	public static final String		PIPE_FORMULA_COMMENT_TOOLTIP = "pipe.formula.comment.tooltip";
+	public static final String		PIPE_FORMULA_EXPRESION = "pipe.formula.expression";
+	public static final String		PIPE_FORMULA_EXPRESION_TOOLTIP = "pipe.formula.expression.tooltip";
+
+	public static final String		PIPE_SWITCH_COMMENT = "pipe.switch.comment";
+	public static final String		PIPE_SWITCH_COMMENT_TOOLTIP = "pipe.switch.comment.tooltip";
+	public static final String		PIPE_SWITCH_EXPRESION = "pipe.switch.expression";
+	public static final String		PIPE_SWITCH_EXPRESION_TOOLTIP = "pipe.switch.expression.tooltip";
+	public static final String		PIPE_SWITCH_ASKBEFORE = "pipe.switch.askbefore";
+	public static final String		PIPE_SWITCH_ASKBEFORE_TOOLTIP = "pipe.switch.askbefore.tooltip";
 	
 	public static final String		PIPE_TERMINAL_NODE_TYPE = "pipe.terminal.nodetype";
 	public static final String		PIPE_TERMINAL_NODE_TYPE_SUCCESS = "pipe.terminal.nodetype.success";
