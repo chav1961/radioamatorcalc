@@ -70,7 +70,7 @@ public class TerminalNode implements PipeControlInterface, PluginInterface {
 
 	@Override
 	public PluginInstance newInstance(final Localizer localizer, final LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		return new TerminalContent(localizer);
+		return new TerminalContent(this,localizer);
 	}
 
 	@Override

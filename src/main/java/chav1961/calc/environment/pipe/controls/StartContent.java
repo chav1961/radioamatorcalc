@@ -20,9 +20,10 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import chav1961.calc.LocalizationKeys;
-import chav1961.calc.environment.pipe.PipeParameterWrapper;
+import chav1961.calc.environment.PipeParameterWrapper;
 import chav1961.calc.environment.pipe.SelfDefinedPipeParametersModel;
 import chav1961.calc.interfaces.PipeInstanceControlInterface;
+import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.PluginInterface.PluginInstance;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
@@ -52,15 +53,15 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 	private final SelfDefinedPipeParametersModel	model;
 	private final ButtonGroup						group = new ButtonGroup(); 
 	
-	private final String							pluginId;
+	private final StartNode 						owner;
 	private final Localizer							localizer;
 	private final LoggerFacade						logger;
 	private FieldDescriptor							fdComment;
 	private String									comment = "";
 	
-	public StartContent(final String pluginId, final Localizer localizer, final LoggerFacade logger) throws LocalizationException, IllegalArgumentException, NullPointerException, SyntaxException, ContentException {
-		if (pluginId == null || pluginId.isEmpty()) {
-			throw new IllegalArgumentException("Plugin id can't be null or empty");
+	public StartContent(final StartNode owner, final Localizer localizer, final LoggerFacade logger) throws LocalizationException, NullPointerException, SyntaxException, ContentException {
+		if (owner == null) {
+			throw new NullPointerException("Plugin instance owner can't be null");
 		}
 		else if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null");
@@ -69,7 +70,7 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 			throw new NullPointerException("Logger can't be null");
 		}
 		else {
-			this.pluginId = pluginId; 
+			this.owner = owner; 
 			this.localizer = localizer; 
 			this.logger = logger; 
 			this.fdComment = FieldDescriptor.newInstance("comment",new FormFieldFormat("30ms"),this.getClass());
@@ -102,6 +103,12 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 		return new Dimension(450,400);
 	}
 
+	@Override
+	public PluginInterface getPluginDescriptor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public Localizer getLocalizerAssociated() throws LocalizationException {
 		return localizer;
@@ -190,7 +197,7 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 	}
 	
 	private PipeParameterWrapper createParameter() {
-		return new PipeParameterWrapper(pluginId,"","parameter",String.class){
+		return new PipeParameterWrapper(owner.getPluginId(),"","parameter",String.class){
 			@Override
 			public String getPluginInstanceName() {
 				return StartContent.this.getName();

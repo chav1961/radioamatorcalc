@@ -38,7 +38,7 @@ public class FormulaNode implements PipeControlInterface, PluginInterface {
 
 	@Override
 	public PluginInstance newInstance(Localizer localizer, LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		return new FormulaContent(getPluginId(),localizer,logger);
+		return new FormulaContent(this,localizer,logger);
 	}
 
 	@Override

@@ -35,7 +35,7 @@ public class PContourService implements PluginInterface {
 	
 	@Override
 	public synchronized PluginInstance newInstance(final Localizer localizer, final LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		return new PContour(localizer,new PContourCalculator(localizer,logger)); 
+		return new PContour(this,localizer,new PContourCalculator(localizer,logger)); 
 	}
 	
 	@Override
@@ -93,7 +93,7 @@ public class PContourService implements PluginInterface {
 	@Override
 	public synchronized String[] getUsesIds(final Localizer parent) throws LocalizationException {
 		if (inner == null) {
-			try{inner = new PContour(parent,new SystemErrLoggerFacade());
+			try{inner = new PContour(this,parent,new SystemErrLoggerFacade());
 			} catch (SyntaxException | ContentException | IOException e) {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
@@ -115,12 +115,15 @@ public class PContourService implements PluginInterface {
 		private static final long 		serialVersionUID = 2615737307529282959L;
 		private static final Dimension	RECOMMENDED_SIZE = new Dimension(800,310);
 		
-		public PContour(final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-			this(localizer,new PContourCalculator(localizer,logger));
+		private final PluginInterface 	owner; 
+		
+		public PContour(final PluginInterface owner, final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+			this(owner,localizer,new PContourCalculator(localizer,logger));
 		}
 
-		protected PContour(final Localizer localizer, final PContourCalculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+		protected PContour(final PluginInterface owner, final Localizer localizer, final PContourCalculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
 			super(localizer,LEFT_ICON_RESOURCE,instance,instance,2);
+			this.owner = owner;
 		}
 
 		@Override
@@ -131,6 +134,11 @@ public class PContourService implements PluginInterface {
 		@Override
 		public Dimension getRecommendedSize() {
 			return RECOMMENDED_SIZE;
+		}
+
+		@Override
+		public PluginInterface getPluginDescriptor() {
+			return owner;
 		}
 	}
 }

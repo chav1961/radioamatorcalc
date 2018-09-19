@@ -34,7 +34,7 @@ public class SingleCoilsService implements PluginInterface {
 	
 	@Override
 	public synchronized PluginInstance newInstance(final Localizer localizer, final LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		return new SingleCoils(localizer,new SingleCoilsCalculator(localizer,logger)); 
+		return new SingleCoils(this,localizer,new SingleCoilsCalculator(localizer,logger)); 
 	}
 	
 	@Override
@@ -92,7 +92,7 @@ public class SingleCoilsService implements PluginInterface {
 	@Override
 	public synchronized String[] getUsesIds(final Localizer parent) throws LocalizationException {
 		if (inner == null) {
-			try{inner = new SingleCoils(parent,new SystemErrLoggerFacade());
+			try{inner = new SingleCoils(this,parent,new SystemErrLoggerFacade());
 			} catch (SyntaxException | ContentException | IOException e) {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
@@ -114,12 +114,15 @@ public class SingleCoilsService implements PluginInterface {
 		private static final long 		serialVersionUID = 2615737307529282959L;
 		private static final Dimension	RECOMMENDED_SIZE = new Dimension(450,200);
 		
-		public SingleCoils(final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-			this(localizer,new SingleCoilsCalculator(localizer,logger));
+		private final PluginInterface 	owner; 
+		
+		public SingleCoils(final PluginInterface owner, final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+			this(owner,localizer,new SingleCoilsCalculator(localizer,logger));
 		}
 
-		protected SingleCoils(final Localizer localizer, final SingleCoilsCalculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+		protected SingleCoils(final PluginInterface owner, final Localizer localizer, final SingleCoilsCalculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
 			super(localizer,LEFT_ICON_RESOURCE,instance,instance);
+			this.owner = owner;
 		}
 
 		@Override
@@ -130,6 +133,11 @@ public class SingleCoilsService implements PluginInterface {
 		@Override
 		public Dimension getRecommendedSize() {
 			return RECOMMENDED_SIZE;
+		}
+
+		@Override
+		public PluginInterface getPluginDescriptor() {
+			return owner;
 		}
 	}
 }

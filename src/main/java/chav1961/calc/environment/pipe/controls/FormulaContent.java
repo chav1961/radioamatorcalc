@@ -16,8 +16,9 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import chav1961.calc.LocalizationKeys;
-import chav1961.calc.environment.pipe.PipeParameterWrapper;
+import chav1961.calc.environment.PipeParameterWrapper;
 import chav1961.calc.interfaces.PipeInstanceControlInterface;
+import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.PluginInterface.PluginInstance;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
@@ -36,7 +37,7 @@ public class FormulaContent extends JPanel implements LocaleChangeListener, Plug
 	private final JLabel						nodeFormula = new JLabel("");
 	private final JTextField					formulaControl;
 	
-	private final String						pluginId;
+	private final FormulaNode					owner;
 	private final Localizer						localizer;
 	private final LoggerFacade					logger;
 	private final FieldDescriptor				fdComment;
@@ -44,9 +45,9 @@ public class FormulaContent extends JPanel implements LocaleChangeListener, Plug
 	private final FieldDescriptor				fdFormula;
 	private final String						formula = "";
 	
-	public FormulaContent(final String pluginId, final Localizer localizer, final LoggerFacade logger) throws LocalizationException, IllegalArgumentException, NullPointerException, SyntaxException {
-		if (pluginId == null || pluginId.isEmpty()) {
-			throw new IllegalArgumentException("Plugin id can't be null or empty");
+	public FormulaContent(final FormulaNode owner, final Localizer localizer, final LoggerFacade logger) throws LocalizationException, NullPointerException, SyntaxException {
+		if (owner == null) {
+			throw new NullPointerException("Plugin instance owner can't be null");
 		}
 		else if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null");
@@ -55,7 +56,7 @@ public class FormulaContent extends JPanel implements LocaleChangeListener, Plug
 			throw new NullPointerException("Logger can't be null");
 		}
 		else {
-			this.pluginId = pluginId;
+			this.owner = owner;
 			this.localizer = localizer;
 			this.logger = logger;
 			this.fdComment = FieldDescriptor.newInstance("comment",new FormFieldFormat("30ms"),this.getClass());
@@ -104,6 +105,11 @@ public class FormulaContent extends JPanel implements LocaleChangeListener, Plug
 	}
 
 	@Override
+	public PluginInterface getPluginDescriptor() {
+		return owner;
+	}
+	
+	@Override
 	public void close() {
 		// TODO Auto-generated method stub
 	}
@@ -112,8 +118,7 @@ public class FormulaContent extends JPanel implements LocaleChangeListener, Plug
 	public void localeChanged(Locale oldLocale, Locale newLocale) throws LocalizationException {
 		fillLocalizationStrings();
 	}
-
-
+	
 	@Override
 	public Object getValue(final FieldDescriptor desc) {
 		// TODO Auto-generated method stub
@@ -138,4 +143,5 @@ public class FormulaContent extends JPanel implements LocaleChangeListener, Plug
 		nodeFormula.setText(localizer.getValue(LocalizationKeys.PIPE_FORMULA_EXPRESION));
 		formulaControl.setToolTipText(localizer.getValue(LocalizationKeys.PIPE_FORMULA_EXPRESION_TOOLTIP));
 	}
+
 }

@@ -16,6 +16,7 @@ import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 
 public interface PluginInterface {
 	public interface PluginInstance extends AutoCloseable, LocaleChangeListener {
+		PluginInterface getPluginDescriptor();
 		JComponent getComponent();
 		Dimension getRecommendedSize();
 		Localizer getLocalizerAssociated() throws LocalizationException;

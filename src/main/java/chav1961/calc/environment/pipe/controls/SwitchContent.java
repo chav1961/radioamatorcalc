@@ -13,6 +13,7 @@ import javax.swing.SpringLayout;
 
 import chav1961.calc.LocalizationKeys;
 import chav1961.calc.interfaces.PipeInstanceControlInterface;
+import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.PluginInterface.PluginInstance;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
@@ -31,6 +32,7 @@ public class SwitchContent extends JPanel implements LocaleChangeListener, Plugi
 	private final JTextField					expressionControl;
 	private final JCheckBox						askBeforeControl;
 	
+	private final SwitchNode 					owner; 
 	private final Localizer						localizer;
 	private FieldDescriptor						fdComment;
 	private String								comment = "";
@@ -39,11 +41,15 @@ public class SwitchContent extends JPanel implements LocaleChangeListener, Plugi
 	private FieldDescriptor						fdAskBefore;
 	private boolean								askBefore = false;
 	
-	public SwitchContent(final Localizer localizer) throws LocalizationException, IllegalArgumentException, NullPointerException, SyntaxException {
-		if (localizer == null) {
+	public SwitchContent(final SwitchNode owner, final Localizer localizer) throws LocalizationException, IllegalArgumentException, NullPointerException, SyntaxException {
+		if (owner == null) {
+			throw new NullPointerException("Plugin instance owner can't be null");
+		}
+		else if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null");
 		}
 		else {
+			this.owner = owner; 
 			this.localizer = localizer; 
 			this.fdComment = FieldDescriptor.newInstance("comment",new FormFieldFormat("30ms"),this.getClass());
 			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
@@ -86,9 +92,13 @@ public class SwitchContent extends JPanel implements LocaleChangeListener, Plugi
 
 	@Override
 	public Dimension getRecommendedSize() {
-		return new Dimension(400,120);
+		return new Dimension(450,80);
 	}
 
+	@Override
+	public PluginInterface getPluginDescriptor() {
+		return owner;
+	}
 
 	@Override
 	public Localizer getLocalizerAssociated() throws LocalizationException {
@@ -135,4 +145,5 @@ public class SwitchContent extends JPanel implements LocaleChangeListener, Plugi
 		askBeforeControl.setText(localizer.getValue(LocalizationKeys.PIPE_SWITCH_ASKBEFORE));
 		askBeforeControl.setToolTipText(localizer.getValue(LocalizationKeys.PIPE_SWITCH_ASKBEFORE_TOOLTIP));
 	}
+
 }

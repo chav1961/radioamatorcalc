@@ -21,6 +21,7 @@ import javax.swing.border.TitledBorder;
 
 import chav1961.calc.LocalizationKeys;
 import chav1961.calc.interfaces.PipeInstanceControlInterface;
+import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.PluginInterface.PluginInstance;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
@@ -42,6 +43,7 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 	private final JList<Object>			formatParametersControl;
 	private final ButtonGroup			group = new ButtonGroup(); 
 	
+	private final TerminalNode			owner;
 	private final Localizer				localizer;
 	private String						format;
 	private final FieldDescriptor		fdFormat; 
@@ -49,11 +51,15 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 	private final FieldDescriptor		fdParameters; 
 	private boolean						success;
 	
-	public TerminalContent(final Localizer localizer) throws LocalizationException, IllegalArgumentException, NullPointerException, SyntaxException {
-		if (localizer == null) {
+	public TerminalContent(final TerminalNode owner, final Localizer localizer) throws LocalizationException, IllegalArgumentException, NullPointerException, SyntaxException {
+		if (owner == null) {
+			throw new NullPointerException("Plugin instance owner can't be null");
+		}
+		else if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null");
 		}
 		else {
+			this.owner = owner; 
 			this.localizer = localizer; 
 			this.fdFormat = FieldDescriptor.newInstance("format",new FormFieldFormat("10.3ms"),this.getClass()); 
 			this.fdParameters = FieldDescriptor.newInstance("parameters",new FormFieldFormat("10.3m"),this.getClass()); 
@@ -144,6 +150,11 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 	}
 
 	@Override
+	public PluginInterface getPluginDescriptor() {
+		return owner;
+	}
+	
+	@Override
 	public Localizer getLocalizerAssociated() throws LocalizationException {
 		return localizer;
 	}
@@ -165,5 +176,4 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 	public boolean execute(final String action) {
 		return false;
 	}
-
 }

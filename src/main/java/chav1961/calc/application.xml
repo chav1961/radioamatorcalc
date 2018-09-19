@@ -56,6 +56,8 @@
 			<app:item name="menu.pipes.startnode" caption="menu.pipes.startnode" tooltip="menu.ttPipes.Startnode" action="StartNode"/>
 			<app:item name="menu.pipes.formulanode" caption="menu.pipes.formulanode" tooltip="menu.ttPipes.formulanode" action="FormulaNode"/>
 			<app:item name="menu.pipes.switchnode" caption="menu.pipes.switchnode" tooltip="menu.ttPipes.switchnode" action="SwitchNode"/>
+			<app:item name="menu.pipes.mapnode" caption="menu.pipes.mapnode" tooltip="menu.ttPipes.mapnode" action="MapNode"/>
+			<app:item name="menu.pipes.reducenode" caption="menu.pipes.reducenode" tooltip="menu.ttPipes.reducenode" action="ReduceNode"/>
 			<app:item name="menu.pipes.terminalnode" caption="menu.pipes.terminalnode" tooltip="menu.ttPipes.terminalnode" action="TerminalNode"/>
 		</app:submenu>
 	</app:menu>

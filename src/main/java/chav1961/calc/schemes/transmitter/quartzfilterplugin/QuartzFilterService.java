@@ -23,19 +23,19 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
 
 public class QuartzFilterService implements PluginInterface {
-	private static final URL		LEFT_ICON_RESOURCE = QUartzFilter.class.getResource("QuartzFilter.png");
-	private static final URL		MINI_ICON_RESOURCE = QUartzFilter.class.getResource("QuartzFilterIcon.png");
+	private static final URL		LEFT_ICON_RESOURCE = QuartzFilter.class.getResource("QuartzFilter.png");
+	private static final URL		MINI_ICON_RESOURCE = QuartzFilter.class.getResource("QuartzFilterIcon.png");
 	private static final Icon		ICON = new ImageIcon(MINI_ICON_RESOURCE);
 	private static final String[]	RECOMMENDED_PATH = {"menu.schemes","transmitter", "QuartzFilter"};
 
-	private QUartzFilter					inner = null;
+	private QuartzFilter					inner = null;
 	
 	public QuartzFilterService() {
 	}
 	
 	@Override
 	public synchronized PluginInstance newInstance(final Localizer localizer, final LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		return new QUartzFilter(localizer,new QuartzFilterCalculator(localizer,logger)); 
+		return new QuartzFilter(this,localizer,new QuartzFilterCalculator(localizer,logger)); 
 	}
 	
 	@Override
@@ -93,7 +93,7 @@ public class QuartzFilterService implements PluginInterface {
 	@Override
 	public synchronized String[] getUsesIds(final Localizer parent) throws LocalizationException {
 		if (inner == null) {
-			try{inner = new QUartzFilter(parent,new SystemErrLoggerFacade());
+			try{inner = new QuartzFilter(this,parent,new SystemErrLoggerFacade());
 			} catch (SyntaxException | ContentException | IOException e) {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
@@ -111,15 +111,15 @@ public class QuartzFilterService implements PluginInterface {
 		return Utils.extractFormulas(QuartzFilterCalculator.class);
 	}	
 	
-	private static class QUartzFilter extends AutoBuiltForm<QuartzFilterCalculator> implements PluginInstance {
+	private static class QuartzFilter extends AutoBuiltForm<QuartzFilterCalculator> implements PluginInstance {
 		private static final long 		serialVersionUID = 2615737307529282959L;
 		private static final Dimension	RECOMMENDED_SIZE = new Dimension(450,360);
 		
-		public QUartzFilter(final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-			this(localizer,new QuartzFilterCalculator(localizer,logger));
+		public QuartzFilter(final PluginInterface owner, final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+			this(owner,localizer,new QuartzFilterCalculator(localizer,logger));
 		}
 
-		protected QUartzFilter(final Localizer localizer, final QuartzFilterCalculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+		protected QuartzFilter(final PluginInterface owner, final Localizer localizer, final QuartzFilterCalculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
 			super(localizer,LEFT_ICON_RESOURCE,instance,instance);
 		}
 
@@ -131,6 +131,12 @@ public class QuartzFilterService implements PluginInterface {
 		@Override
 		public Dimension getRecommendedSize() {
 			return RECOMMENDED_SIZE;
+		}
+
+		@Override
+		public PluginInterface getPluginDescriptor() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

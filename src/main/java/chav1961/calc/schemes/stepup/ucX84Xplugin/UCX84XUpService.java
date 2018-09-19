@@ -35,7 +35,7 @@ public class UCX84XUpService implements PluginInterface {
 	
 	@Override
 	public synchronized PluginInstance newInstance(final Localizer localizer, final LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		return new UCX84X(localizer,new UCX84XCalculator(localizer,logger)); 
+		return new UCX84X(this,localizer,new UCX84XCalculator(localizer,logger)); 
 	}
 	
 	@Override
@@ -93,7 +93,7 @@ public class UCX84XUpService implements PluginInterface {
 	@Override
 	public synchronized String[] getUsesIds(final Localizer parent) throws LocalizationException {
 		if (inner == null) {
-			try{inner = new UCX84X(parent,new SystemErrLoggerFacade());
+			try{inner = new UCX84X(this,parent,new SystemErrLoggerFacade());
 			} catch (SyntaxException | ContentException | IOException e) {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
@@ -118,12 +118,15 @@ public class UCX84XUpService implements PluginInterface {
 		private static final long 		serialVersionUID = 2615737307529282959L;
 		private static final Dimension	RECOMMENDED_SIZE = new Dimension(450,360);
 		
-		public UCX84X(final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-			this(localizer,new UCX84XCalculator(localizer,logger));
+		private final PluginInterface 	owner; 
+		
+		public UCX84X(final PluginInterface owner, final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+			this(owner,localizer,new UCX84XCalculator(localizer,logger));
 		}
 
-		protected UCX84X(final Localizer localizer, final UCX84XCalculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+		protected UCX84X(final PluginInterface owner, final Localizer localizer, final UCX84XCalculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
 			super(localizer,LEFT_ICON_RESOURCE,instance,instance);
+			this.owner = owner;
 		}
 
 		@Override
@@ -134,6 +137,11 @@ public class UCX84XUpService implements PluginInterface {
 		@Override
 		public Dimension getRecommendedSize() {
 			return RECOMMENDED_SIZE;
+		}
+
+		@Override
+		public PluginInterface getPluginDescriptor() {
+			return owner;
 		}
 	}
 }

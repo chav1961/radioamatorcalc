@@ -1,4 +1,4 @@
-package chav1961.calc.environment.pipe;
+package chav1961.calc.environment;
 
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.ui.interfacers.Format;

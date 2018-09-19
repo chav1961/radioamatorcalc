@@ -39,7 +39,7 @@ public class SwitchNode implements PipeControlInterface, PluginInterface {
 
 	@Override
 	public PluginInstance newInstance(Localizer localizer, LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		return new SwitchContent(localizer);
+		return new SwitchContent(this,localizer);
 	}
 
 	@Override
