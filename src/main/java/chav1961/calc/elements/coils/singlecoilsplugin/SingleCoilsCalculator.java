@@ -2,6 +2,7 @@ package chav1961.calc.elements.coils.singlecoilsplugin;
 
 import chav1961.calc.LocalizationKeys;
 import chav1961.calc.elements.coils.CoilsCalculationType;
+import chav1961.calc.formulas.Utils;
 import chav1961.calc.interfaces.UseFormulas;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
@@ -52,8 +53,8 @@ class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator>
 @Format("10.3s")
 	private float					inductance = 0.0f;
 @LocaleResource(value="coils",tooltip="coilsTooltip")	
-@Format("10.3s")
-	private float					coils = 0.0f;
+@Format("10s")
+	private int						coils = 0;
 
 	SingleCoilsCalculator(final Localizer localizer,final LoggerFacade logger) {
 		this.localizer = localizer;
@@ -109,10 +110,10 @@ class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator>
 			case "calculate"	:
 				switch (calcType) {
 					case INDUCTANCE		:
-						inductance = 0.1f * diameter * coils * coils / (length/diameter + 0.44f);
+						inductance = Utils.inductanceOneLayerCoil(coils,diameter,length,wireDiameter);
 						break;
 					case NUMBER_OF_COILS:
-						coils = (float) (Math.sqrt(5 * inductance * (90 * diameter + 200 * length))/(10*diameter));
+						coils = Utils.numberOfCoilsOneLayerCoil(inductance,diameter,length,wireDiameter);
 						break;
 					default: throw new UnsupportedOperationException("Calculation type ["+calcType+"] is not supported yet");
 				}
