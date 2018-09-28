@@ -48,7 +48,11 @@ import org.apache.lucene.store.FSDirectory;
 
 import chav1961.calc.environment.desktop.DesktopManager;
 import chav1961.calc.environment.pipe.PipeFactory;
+import chav1961.calc.environment.pipe.controls.FormulaNode;
+import chav1961.calc.environment.pipe.controls.MapNode;
+import chav1961.calc.environment.pipe.controls.ReduceNode;
 import chav1961.calc.environment.pipe.controls.StartNode;
+import chav1961.calc.environment.pipe.controls.SwitchNode;
 import chav1961.calc.environment.pipe.controls.TerminalNode;
 import chav1961.calc.environment.search.LuceneWrapper;
 import chav1961.calc.environment.search.SearchManager;
@@ -333,6 +337,54 @@ public class Application extends JFrame implements LocaleChangeListener {
 			message(e,e.getLocalizedMessage());
 		}
 	}
+
+	@OnAction("FormulaNode")
+	private void newFormulaNode() {
+		try{final PluginInterface	plugin = new FormulaNode(localizer);
+			final PluginInstance	inst = plugin.newInstance(localizer, logger);
+			
+			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
+			placePlugin(plugin,inst);
+		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+			message(e,e.getLocalizedMessage());
+		}
+	}
+	
+	@OnAction("SwitchNode")
+	private void newSwitchNode() {
+		try{final PluginInterface	plugin = new SwitchNode(localizer);
+			final PluginInstance	inst = plugin.newInstance(localizer, logger);
+			
+			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
+			placePlugin(plugin,inst);
+		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+			message(e,e.getLocalizedMessage());
+		}
+	}
+
+	@OnAction("MapNode")
+	private void newMapNode() {
+		try{final PluginInterface	plugin = new MapNode(localizer);
+			final PluginInstance	inst = plugin.newInstance(localizer, logger);
+			
+			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
+			placePlugin(plugin,inst);
+		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+			message(e,e.getLocalizedMessage());
+		}
+	}
+
+	@OnAction("ReduceNode")
+	private void newReduceNode() {
+		try{final PluginInterface	plugin = new ReduceNode(localizer);
+			final PluginInstance	inst = plugin.newInstance(localizer, logger);
+			
+			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
+			placePlugin(plugin,inst);
+		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+			message(e,e.getLocalizedMessage());
+		}
+	}
 	
 	@OnAction("TerminalNode")
 	private void newTerminalNode() {
@@ -562,7 +614,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	
 	private void placePlugin(final PluginInterface plugin, final PluginInstance component) throws LocalizationException {
 		unsearch();
-		desktopMgr.getPipeManager().newWindow(component.getLocalizerAssociated(),plugin.getPluginId(),plugin.getCaptionId(),plugin.getHelpId(),plugin.getIcon(),(JComponent)component);
+		desktopMgr.getPipeManager().newWindow(false,component.getLocalizerAssociated(),plugin.getPluginId(),plugin.getCaptionId(),plugin.getHelpId(),plugin.getIcon(),(JComponent)component);
 	}
 	
 	private void message(final String format, final Object... parameters) {

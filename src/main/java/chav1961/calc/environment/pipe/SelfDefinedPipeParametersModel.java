@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import chav1961.calc.environment.PipeParameterWrapper;
 import chav1961.purelib.basic.exceptions.ContentException;
 
 public class SelfDefinedPipeParametersModel extends AbstractPipeParametersModel {
@@ -45,7 +46,10 @@ public class SelfDefinedPipeParametersModel extends AbstractPipeParametersModel 
 			final int	index = getIndexById(id);
 			
 			if (index < 0) {
-				return toCreate.newInstance(id.intValue());
+				final PipeParameterWrapper	inst = toCreate.newInstance(id.intValue()); 
+				
+				content.add(new PipeParameterWrapperAndKey(inst,id.intValue()));
+				return inst;
 			}
 			else {
 				throw new IllegalArgumentException("Attempt to create instance failed: dupliacate key ["+id+"] in the content");
@@ -71,6 +75,8 @@ public class SelfDefinedPipeParametersModel extends AbstractPipeParametersModel 
 				newContent.setPluginInstanceName(oldContent.getPluginInstanceName());
 				newContent.setPluginFieldName(oldContent.getPluginFieldName());
 				newContent.setPluginFieldType(oldContent.getPluginFieldType());
+				
+				content.add(new PipeParameterWrapperAndKey(newContent,newId.intValue()));
 				return newContent;
 			}
 			else {

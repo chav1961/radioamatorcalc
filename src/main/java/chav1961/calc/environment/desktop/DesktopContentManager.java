@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -12,6 +13,8 @@ import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.beans.PropertyVetoException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.swing.Icon;
@@ -25,12 +28,16 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 
 import chav1961.calc.LocalizationKeys;
+import chav1961.calc.environment.Constants;
+import chav1961.calc.environment.PipeParameterWrapper;
+import chav1961.calc.environment.pipe.controls.StartNode;
+import chav1961.calc.environment.pipe.controls.TerminalNode;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.ui.swing.SwingUtils;
 
-public class DesktopPipeManager extends JDesktopPane implements LocaleChangeListener {
+public class DesktopContentManager extends JDesktopPane implements LocaleChangeListener {
 	private static final long 		serialVersionUID = -954797073311928063L;
 	private static final int 		CHILD_X_OFFSET = 25;
 	private static final int 		CHILD_Y_OFFSET = 25;
@@ -39,7 +46,7 @@ public class DesktopPipeManager extends JDesktopPane implements LocaleChangeList
 	
 	private final Localizer			localizer;
 	
-	public DesktopPipeManager(final Localizer localizer) {
+	public DesktopContentManager(final Localizer localizer) {
 		if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null"); 
 		}
@@ -80,9 +87,9 @@ public class DesktopPipeManager extends JDesktopPane implements LocaleChangeList
         revalidate();
     }        
 
-    public void newWindow(final Localizer localizer, final String name, final String captionId, final String helpId, final Icon icon, final JComponent content) throws LocalizationException {
-    	if (name == null || name.isEmpty()) {
-    		throw new IllegalArgumentException("Window name can't be null or empty");
+    public void newWindow(final boolean usePipe, final Localizer localizer, final String pluginId, final String captionId, final String helpId, final Icon icon, final JComponent content) throws LocalizationException {
+    	if (pluginId == null || pluginId.isEmpty()) {
+    		throw new IllegalArgumentException("Plugin id can't be null or empty");
     	}
     	else if (captionId == null || captionId.isEmpty()) {
     		throw new IllegalArgumentException("Caption id can't be null or empty");
@@ -100,9 +107,8 @@ public class DesktopPipeManager extends JDesktopPane implements LocaleChangeList
     		throw new IllegalArgumentException("Content can't be null");
     	}
     	else {
-        	final SmartContainer	sc = new SmartContainer(localizer,captionId,helpId,content,true);
+        	final SmartContainer	sc = new SmartContainer(usePipe,localizer,pluginId,captionId,helpId,content,true);
         	
-        	sc.setName(name);
         	if (icon != null) {
         		sc.setFrameIcon(icon);
         	}
@@ -120,41 +126,65 @@ public class DesktopPipeManager extends JDesktopPane implements LocaleChangeList
 		private final Localizer		localizer;
 		private final String		captionId;
 		private final String		helpId;
-		private final JPanel		statePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		private final JLabel		nameLabel = new JLabel();
-		private final JTextField	nameField = new JTextField();
+//		private final JLabel		nameLabel = new JLabel();
+//		private final JTextField	nameField = new JTextField();
 		private final JComponent	component;
+		private final List<PipeParameterWrapper>	parametersAssociated = new ArrayList<>();
 
-		public SmartContainer(final String captionId, final String helpId, final JComponent component, final boolean resizable) throws LocalizationException {
-			this(DesktopPipeManager.this.localizer,captionId,helpId,component,resizable);
-    	}
+//		public SmartContainer(final String pluginId, final String captionId, final String helpId, final JComponent component, final boolean resizable) throws LocalizationException {
+//			this(DesktopContentManager.this.localizer,pluginId,captionId,helpId,component,resizable);
+//    	}
 		
-		public SmartContainer(final Localizer localizer, final String captionId, final String helpId, final JComponent component, final boolean resizable) throws LocalizationException {
+		public SmartContainer(final boolean usePipe, final Localizer localizer, final String pluginId, final String captionId, final String helpId, final JComponent component, final boolean resizable) throws LocalizationException {
     	    super(localizer.getValue(captionId), resizable, true, false, true);
+
+//    	    final JPanel			statePanel = new JPanel(new BorderLayout()); 
+//    	    final JPanel			innerStatePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    	    
     	    this.localizer = localizer;
     	    this.captionId = captionId;
     	    this.helpId = helpId;
     	    this.component = component;
     	    
     	    getContentPane().setLayout(new BorderLayout());
-    	    nameField.setColumns(20);
-    	    nameField.setText("Node"+openFrameCount);
-    	    nameField.addFocusListener(new FocusListener(){
-				@Override
-				public void focusGained(FocusEvent e) {
-				}
-
-				@Override
-				public void focusLost(FocusEvent e) {
-					component.setName(nameField.getText());
-				}
-			});
-    	    statePanel.add(nameLabel);
-    	    statePanel.add(nameField);
-    	    statePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-    	    statePanel.setBackground(Color.GRAY);
+//    	    nameField.setColumns(20);
+//    	    nameField.setText("Node"+openFrameCount);
+//    	    nameField.addFocusListener(new FocusListener(){
+//				@Override
+//				public void focusGained(FocusEvent e) {
+//				}
+//
+//				@Override
+//				public void focusLost(FocusEvent e) {
+//					component.setName(nameField.getText());
+//				}
+//			});
+//    	    setName(nameField.getText());
+//    	    innerStatePanel.add(nameLabel);
+//    	    innerStatePanel.add(nameField);
+//    	    innerStatePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+//    	    innerStatePanel.setBackground(Color.GRAY);
+//
+//    	    final JPanel	tempLeft = new JPanel(new GridLayout(1,2));
+//    	    
+//    	    tempLeft.add(new JLabel(pluginId.equals(Constants.PIPE_START_NODE) ? LEFT_SOURCE : LEFT_ORDINAL));
+//    	    tempLeft.add(new JLabel(LEFT_ADVANCED));
+//    	    statePanel.add(tempLeft,BorderLayout.WEST);
+//    	    
+//    	    if (pluginId.equals(Constants.PIPE_SWITCH_NODE)) {
+//    	    	final JPanel	tempRight = new JPanel(new GridLayout(1,2));
+//    	    	
+//    	    	tempRight.add(new JLabel(RIGHT_TRUE));
+//    	    	tempRight.add(new JLabel(RIGHT_FALSE));
+//    	    	statePanel.add(tempRight,BorderLayout.EAST);
+//    	    }
+//    	    else {
+//        	    statePanel.add(new JLabel(pluginId.equals(Constants.PIPE_TERMINAL_NODE) ? RIGHT_TERMINAL : RIGHT_ORDINAL),BorderLayout.EAST);
+//    	    }
+//    	    statePanel.add(innerStatePanel,BorderLayout.CENTER);
+    	    
     	    getContentPane().add(component,BorderLayout.CENTER);
-    	    getContentPane().add(statePanel,BorderLayout.SOUTH);
+//    	    getContentPane().add(statePanel,BorderLayout.SOUTH);
     	    pack();
     	    openFrameCount++;
        	    setLocation(CHILD_X_OFFSET*openFrameCount, CHILD_X_OFFSET*openFrameCount);
@@ -175,9 +205,13 @@ public class DesktopPipeManager extends JDesktopPane implements LocaleChangeList
 			SwingUtils.refreshLocale(component,oldLocale,newLocale);
 		}
 
+		public List<PipeParameterWrapper> getParametersAssociated() {
+			return parametersAssociated;
+		}
+		
 		private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
 			setTitle(localizer.getValue(captionId));
-			nameLabel.setText(localizer.getValue(LocalizationKeys.DESKTOP_STATE_NAME_LABEL));
+//			nameLabel.setText(localizer.getValue(LocalizationKeys.DESKTOP_STATE_NAME_LABEL));
 		}   
     }
 }

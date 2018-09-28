@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import chav1961.calc.environment.PipeParameterWrapper;
 import chav1961.purelib.basic.exceptions.ContentException;
 
 public class ExistentPipeParametersModel extends AbstractPipeParametersModel {

@@ -25,7 +25,7 @@ public class DesktopManager extends JPanel implements LocaleChangeListener {
 	private final XMLDescribedApplication	xda;
 	private final Localizer					localizer;
 	private final JToolBar					tool;
-	private final DesktopPipeManager		mgr; 
+	private final DesktopContentManager		mgr; 
 	
 	public DesktopManager(final Application application, final XMLDescribedApplication xda, final Localizer localizer) throws NullPointerException, IllegalArgumentException, EnvironmentException {
 		super(new BorderLayout());
@@ -37,7 +37,7 @@ public class DesktopManager extends JPanel implements LocaleChangeListener {
 			this.xda = xda; 
 			this.localizer = localizer;
 			
-			final JScrollPane	pane = new JScrollPane(this.mgr = new DesktopPipeManager(localizer)); 
+			final JScrollPane	pane = new JScrollPane(this.mgr = new DesktopContentManager(localizer)); 
 			
 			tool = xda.getEntity("desktopToolbar",JToolBar.class,null); 
 			
@@ -55,7 +55,7 @@ public class DesktopManager extends JPanel implements LocaleChangeListener {
 		SwingUtils.refreshLocale(mgr,oldLocale, newLocale);
 	}
 	
-	public DesktopPipeManager getPipeManager() {
+	public DesktopContentManager getPipeManager() {
 		return mgr;
 	}
 	

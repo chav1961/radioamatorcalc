@@ -7,6 +7,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import chav1961.calc.environment.Constants;
 import chav1961.calc.interfaces.PipeControlInterface;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -38,13 +39,12 @@ public class SwitchNode implements PipeControlInterface, PluginInterface {
 
 	@Override
 	public PluginInstance newInstance(Localizer localizer, LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return new SwitchContent(this,localizer);
 	}
 
 	@Override
 	public String getPluginId() {
-		return "Pipe.SwitchNode";
+		return Constants.PIPE_SWITCH_NODE;
 	}
 
 	@Override
@@ -131,23 +131,4 @@ public class SwitchNode implements PipeControlInterface, PluginInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public Object getValue(final FieldDescriptor desc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setValue(final FieldDescriptor desc, final Object value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean execute(final String action) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

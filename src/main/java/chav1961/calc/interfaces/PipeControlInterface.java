@@ -9,7 +9,4 @@ public interface PipeControlInterface {
 	FieldDescriptor[] getInnerControls();
 	FieldDescriptor[] getOuterControls();
 	String[] getActions();
-	Object getValue(FieldDescriptor desc);
-	void setValue(FieldDescriptor desc, Object value);
-	boolean execute(String action);
 }

@@ -10,18 +10,18 @@ import java.util.Locale;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.LocalizationKeys;
+import chav1961.calc.interfaces.PipeInstanceControlInterface;
+import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.PluginInterface.PluginInstance;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
@@ -31,7 +31,7 @@ import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
 import chav1961.purelib.ui.FormFieldFormat;
 import chav1961.purelib.ui.swing.SwingUtils;
 
-public class TerminalContent extends JPanel implements LocaleChangeListener, PluginInstance {
+public class TerminalContent extends JPanel implements LocaleChangeListener, PluginInstance, PipeInstanceControlInterface {
 	private static final long serialVersionUID = -1860587528233881285L;
 	
 	private final JLabel				nodeType = new JLabel("");
@@ -43,6 +43,7 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 	private final JList<Object>			formatParametersControl;
 	private final ButtonGroup			group = new ButtonGroup(); 
 	
+	private final TerminalNode			owner;
 	private final Localizer				localizer;
 	private String						format;
 	private final FieldDescriptor		fdFormat; 
@@ -50,11 +51,15 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 	private final FieldDescriptor		fdParameters; 
 	private boolean						success;
 	
-	public TerminalContent(final Localizer localizer) throws LocalizationException, IllegalArgumentException, NullPointerException, SyntaxException {
-		if (localizer == null) {
+	public TerminalContent(final TerminalNode owner, final Localizer localizer) throws LocalizationException, IllegalArgumentException, NullPointerException, SyntaxException {
+		if (owner == null) {
+			throw new NullPointerException("Plugin instance owner can't be null");
+		}
+		else if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null");
 		}
 		else {
+			this.owner = owner; 
 			this.localizer = localizer; 
 			this.fdFormat = FieldDescriptor.newInstance("format",new FormFieldFormat("10.3ms"),this.getClass()); 
 			this.fdParameters = FieldDescriptor.newInstance("parameters",new FormFieldFormat("10.3m"),this.getClass()); 
@@ -145,11 +150,30 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 	}
 
 	@Override
+	public PluginInterface getPluginDescriptor() {
+		return owner;
+	}
+	
+	@Override
 	public Localizer getLocalizerAssociated() throws LocalizationException {
 		return localizer;
 	}
 
 	@Override
 	public void close() {
+	}
+
+	@Override
+	public Object getValue(final FieldDescriptor desc) {
+		return null;
+	}
+
+	@Override
+	public void setValue(final FieldDescriptor desc, final Object value) {
+	}
+
+	@Override
+	public boolean execute(final String action) {
+		return false;
 	}
 }

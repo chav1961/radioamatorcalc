@@ -1,7 +1,5 @@
 package chav1961.calc.schemes.stepdown.mc34063plugin;
 
-
-
 import java.awt.Dimension;
 
 import java.io.IOException;
@@ -36,7 +34,7 @@ public class MC34063DownService implements PluginInterface {
 	
 	@Override
 	public synchronized PluginInstance newInstance(final Localizer localizer, final LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		return new MC34063(localizer,new MC34063Calculator(localizer,logger)); 
+		return new MC34063(this,localizer,new MC34063Calculator(localizer,logger)); 
 	}
 	
 	@Override
@@ -94,7 +92,7 @@ public class MC34063DownService implements PluginInterface {
 	@Override
 	public synchronized String[] getUsesIds(final Localizer parent) throws LocalizationException {
 		if (inner == null) {
-			try{inner = new MC34063(parent,new SystemErrLoggerFacade());
+			try{inner = new MC34063(this,parent,new SystemErrLoggerFacade());
 			} catch (SyntaxException | ContentException | IOException e) {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
@@ -116,12 +114,15 @@ public class MC34063DownService implements PluginInterface {
 		private static final long 		serialVersionUID = 2615737307529282959L;
 		private static final Dimension	RECOMMENDED_SIZE = new Dimension(450,360);
 		
-		public MC34063(final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-			this(localizer,new MC34063Calculator(localizer,logger));
+		private final PluginInterface 	owner;
+		
+		public MC34063(final PluginInterface owner, final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+			this(owner,localizer,new MC34063Calculator(localizer,logger));
 		}
 
-		protected MC34063(final Localizer localizer, final MC34063Calculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+		protected MC34063(final PluginInterface owner, final Localizer localizer, final MC34063Calculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
 			super(localizer,LEFT_ICON_RESOURCE,instance,instance);
+			this.owner = owner;
 		}
 
 		@Override
@@ -132,6 +133,12 @@ public class MC34063DownService implements PluginInterface {
 		@Override
 		public Dimension getRecommendedSize() {
 			return RECOMMENDED_SIZE;
+		}
+
+		@Override
+		public PluginInterface getPluginDescriptor() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

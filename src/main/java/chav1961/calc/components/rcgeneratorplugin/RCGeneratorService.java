@@ -34,7 +34,7 @@ public class RCGeneratorService implements PluginInterface {
 	
 	@Override
 	public synchronized PluginInstance newInstance(final Localizer localizer, final LoggerFacade logger) throws LocalizationException, SyntaxException, ContentException, IOException {
-		return new RCGenerator(localizer,new RCGeneratorCalculator(localizer,logger)); 
+		return new RCGenerator(this,localizer,new RCGeneratorCalculator(localizer,logger)); 
 	}
 	
 	@Override
@@ -93,7 +93,7 @@ public class RCGeneratorService implements PluginInterface {
 	@Override
 	public synchronized String[] getUsesIds(final Localizer parent) throws LocalizationException {
 		if (inner == null) {
-			try{inner = new RCGenerator(parent,new SystemErrLoggerFacade());
+			try{inner = new RCGenerator(this,parent,new SystemErrLoggerFacade());
 			} catch (SyntaxException | ContentException | IOException e) {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
@@ -116,12 +116,15 @@ public class RCGeneratorService implements PluginInterface {
 		private static final long 		serialVersionUID = 2615737307529282959L;
 		private static final Dimension	RECOMMENDED_SIZE = new Dimension(400,150);
 		
-		public RCGenerator(final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
-			this(localizer,new RCGeneratorCalculator(localizer,logger));
+		private final PluginInterface	owner; 
+		
+		public RCGenerator(final PluginInterface owner, final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+			this(owner,localizer,new RCGeneratorCalculator(localizer,logger));
 		}
 
-		protected RCGenerator(final Localizer localizer, final RCGeneratorCalculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
+		protected RCGenerator(final PluginInterface owner, final Localizer localizer, final RCGeneratorCalculator instance) throws NullPointerException, IllegalArgumentException, LocalizationException, SyntaxException, ContentException, IOException {
 			super(localizer,LEFT_ICON_RESOURCE,instance,instance);
+			this.owner = owner;
 		}
 
 		@Override
@@ -132,6 +135,11 @@ public class RCGeneratorService implements PluginInterface {
 		@Override
 		public Dimension getRecommendedSize() {
 			return RECOMMENDED_SIZE;
+		}
+
+		@Override
+		public PluginInterface getPluginDescriptor() {
+			return owner;
 		}
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import chav1961.calc.environment.PipeParameterWrapper;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.ui.interfacers.FormModel;
 
