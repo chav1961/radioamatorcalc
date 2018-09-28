@@ -72,7 +72,7 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
 			this.mte = new MicroTableEditor(localizer,EditorRepresentation.EDITED_LIST);
 			this.model = new SelfDefinedPipeParametersModel(content,(key)->{return createParameter();});
-			this.mteComponent = mte.build(this,model,new String[]{LocalizationKeys.PIPE_PARAMETER_NAME},List.class,content,EMPTY_CONTENT);
+			this.mteComponent = mte.build(this,model,null);
 			
 			final JPanel 		commentPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			
