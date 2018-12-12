@@ -13,7 +13,7 @@ import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.ui.interfacers.FormManager;
 import chav1961.purelib.ui.interfacers.Format;
-import chav1961.purelib.ui.interfacers.FormManager.RefreshMode;
+import chav1961.purelib.ui.interfacers.RefreshMode;
 import chav1961.purelib.ui.interfacers.Action;
 
 /**

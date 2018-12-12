@@ -36,7 +36,6 @@
 	    <github.global.server>github</github.global.server>
 	</properties>
 
-  
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -83,6 +82,10 @@
 		    <id>lucene query parser</id>
 		    <url>https://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser/</url>
 		</repository>	    
+        <repository>
+            <id>Jar-plugin</id>
+            <url>https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin</url>
+        </repository>
 	</repositories>
 
   	<distributionManagement>
@@ -94,7 +97,7 @@
 	</distributionManagement>
   
      <build>
-       <finalName>purelib.navigator-0.0.1</finalName>
+       <finalName>radioamatorcalc-0.0.1</finalName>
         <resources>
             <resource>
                 <directory>src/main/java</directory>

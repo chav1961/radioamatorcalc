@@ -36,6 +36,7 @@ import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
 import chav1961.purelib.ui.FormFieldFormat;
 import chav1961.purelib.ui.interfacers.FormManager;
+import chav1961.purelib.ui.interfacers.RefreshMode;
 import chav1961.purelib.ui.swing.MicroTableEditor;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.MicroTableEditor.EditorRepresentation;
