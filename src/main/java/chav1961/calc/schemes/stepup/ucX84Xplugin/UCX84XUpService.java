@@ -94,7 +94,7 @@ public class UCX84XUpService implements PluginInterface {
 	public synchronized String[] getUsesIds(final Localizer parent) throws LocalizationException {
 		if (inner == null) {
 			try{inner = new UCX84X(this,parent,new SystemErrLoggerFacade());
-			} catch (SyntaxException | ContentException | IOException e) {
+			} catch (ContentException | IOException e) {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
 		}

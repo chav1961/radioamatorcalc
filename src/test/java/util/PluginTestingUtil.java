@@ -1,5 +1,6 @@
 package util;
 
+
 import java.lang.reflect.Field;
 
 import org.junit.Assert;
@@ -10,7 +11,7 @@ import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.i18n.PureLibLocalizer;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.ui.interfacers.FormManager;
-import chav1961.purelib.ui.interfacers.FormManager.RefreshMode;
+import chav1961.purelib.ui.interfacers.RefreshMode;
 
 public class PluginTestingUtil {
 	public static void verifyPluginDescriptor(final PluginInterface pi) {

@@ -22,6 +22,7 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.ui.interfacers.Action;
 import chav1961.purelib.ui.interfacers.FormManager;
 import chav1961.purelib.ui.interfacers.Format;
+import chav1961.purelib.ui.interfacers.RefreshMode;
 
 @Action(resource=@LocaleResource(value="settings.save",tooltip="settings.save.tooltip"),actionString="OK") 
 @Action(resource=@LocaleResource(value="settings.reset",tooltip="settings.reset.tooltip"),actionString="reset") 

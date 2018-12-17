@@ -93,7 +93,7 @@ public class MC34063DownService implements PluginInterface {
 	public synchronized String[] getUsesIds(final Localizer parent) throws LocalizationException {
 		if (inner == null) {
 			try{inner = new MC34063(this,parent,new SystemErrLoggerFacade());
-			} catch (SyntaxException | ContentException | IOException e) {
+			} catch (ContentException | IOException e) {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
 		}
