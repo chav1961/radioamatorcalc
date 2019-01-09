@@ -29,7 +29,7 @@ class RCGeneratorCalculator implements FormManager<Object,RCGeneratorCalculator>
 	
 	private static final String[]	FIELDS_ANNOTATED = chav1961.calc.environment.Utils.buildFieldsAnnotated(RCGeneratorCalculator.class);
 	private static final String 	MESSAGE_FREQUENCY_POSITIVE = "frequencyPositive";
-	private static final String 	MESSAGE_INDUCTANCE_POSITIVE = "inductancePositive";
+	private static final String 	MESSAGE_RESISTANCE_POSITIVE = "resistancePositive";
 	private static final String 	MESSAGE_CAPACITY_POSITIVE = "capacityPositive";
 	
 	private final Localizer			localizer;
@@ -83,7 +83,7 @@ class RCGeneratorCalculator implements FormManager<Object,RCGeneratorCalculator>
 				}
 			case "resistance"	:
 				if (calcType == GeneratorCalculationType.C_BY_FREQ_R || calcType == GeneratorCalculationType.FREQ_BY_R_C) {
-					return checkAndNotify(resistance > 0,localizer.getValue(MESSAGE_INDUCTANCE_POSITIVE),resistance) ? RefreshMode.NONE : RefreshMode.REJECT;
+					return checkAndNotify(resistance > 0,localizer.getValue(MESSAGE_RESISTANCE_POSITIVE),resistance) ? RefreshMode.NONE : RefreshMode.REJECT;
 				}
 				else {
 					return RefreshMode.NONE;

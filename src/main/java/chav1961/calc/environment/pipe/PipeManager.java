@@ -131,7 +131,7 @@ class PipeManager implements PipeInterface, LocaleChangeListener {
 			try(final JsonStaxParser	parser = new JsonStaxParser(reader)) {
 				
 				fillFromSerialized(serializer.deserialize(parser));
-			} catch (ContentException | SyntaxException | LocalizationException e) {
+			} catch (ContentException | LocalizationException e) {
 				throw new IOException(e);
 			}
 		}

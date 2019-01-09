@@ -1,5 +1,6 @@
 package chav1961.calc.elements.coils.singlecoilsplugin;
 
+
 import chav1961.calc.LocalizationKeys;
 import chav1961.calc.elements.coils.CoilsCalculationType;
 import chav1961.calc.formulas.Utils;

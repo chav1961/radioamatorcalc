@@ -333,7 +333,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 			placePlugin(plugin,inst);
-		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+		} catch (LocalizationException | ContentException | IOException e) {
 			message(e,e.getLocalizedMessage());
 		}
 	}
@@ -345,7 +345,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 			placePlugin(plugin,inst);
-		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+		} catch (LocalizationException | ContentException | IOException e) {
 			message(e,e.getLocalizedMessage());
 		}
 	}
@@ -357,7 +357,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 			placePlugin(plugin,inst);
-		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+		} catch (LocalizationException | ContentException | IOException e) {
 			message(e,e.getLocalizedMessage());
 		}
 	}
@@ -369,7 +369,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 			placePlugin(plugin,inst);
-		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+		} catch (LocalizationException | ContentException | IOException e) {
 			message(e,e.getLocalizedMessage());
 		}
 	}
@@ -381,7 +381,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 			placePlugin(plugin,inst);
-		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+		} catch (LocalizationException | ContentException | IOException e) {
 			message(e,e.getLocalizedMessage());
 		}
 	}
@@ -393,7 +393,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 			placePlugin(plugin,inst);
-		} catch (LocalizationException | SyntaxException | ContentException | IOException e) {
+		} catch (LocalizationException | ContentException | IOException e) {
 			message(e,e.getLocalizedMessage());
 		}
 	}
@@ -607,7 +607,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 				placePlugin(plugin,inst);
 			}
-		} catch (LocalizationException | SyntaxException | ContentException | IOException | RuntimeException e) {
+		} catch (LocalizationException | ContentException | IOException | RuntimeException e) {
 			message(e,e.getLocalizedMessage());
 		}
 	}

@@ -94,7 +94,7 @@ public class TPS40200Service implements PluginInterface {
 	public synchronized String[] getUsesIds(final Localizer parent) throws LocalizationException {
 		if (inner == null) {
 			try{inner = new TPS40200(this,parent,new SystemErrLoggerFacade());
-			} catch (SyntaxException | ContentException | IOException e) {
+			} catch (ContentException | IOException e) {
 				throw new LocalizationException(e.getLocalizedMessage(),e);
 			}
 		}
