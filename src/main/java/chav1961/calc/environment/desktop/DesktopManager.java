@@ -14,8 +14,8 @@ import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
+import chav1961.purelib.ui.XMLDescribedApplication;
 import chav1961.purelib.ui.swing.SwingUtils;
-import chav1961.purelib.ui.swing.XMLDescribedApplication;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 
 public class DesktopManager extends JPanel implements LocaleChangeListener {

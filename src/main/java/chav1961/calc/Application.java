@@ -70,13 +70,13 @@ import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.PureLibLocalizer;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
+import chav1961.purelib.ui.XMLDescribedApplication;
 import chav1961.purelib.ui.swing.AnnotatedActionListener;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
 import chav1961.purelib.ui.swing.LocalizedDialog;
 import chav1961.purelib.ui.swing.LocalizedFileChooser;
 import chav1961.purelib.ui.swing.SimpleNavigatorTree;
 import chav1961.purelib.ui.swing.SwingUtils;
-import chav1961.purelib.ui.swing.XMLDescribedApplication;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 
 public class Application extends JFrame implements LocaleChangeListener {
