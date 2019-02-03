@@ -38,9 +38,9 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 	private final JRadioButton			successControl = new JRadioButton();
 	private final JRadioButton			failControl = new JRadioButton();
 	private final JLabel				nodeFormat = new JLabel("");
-	private final JTextField			formatStringControl;
+	private final JTextField			formatStringControl = null;
 	private final JPanel				forList = new JPanel(new BorderLayout());
-	private final JList<Object>			formatParametersControl;
+	private final JList<Object>			formatParametersControl = null;
 	private final ButtonGroup			group = new ButtonGroup(); 
 	
 	private final TerminalNode			owner;
@@ -66,8 +66,8 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 			group.add(successControl);
 			group.add(failControl);
 			group.setSelected(failControl.getModel(),true);
-			this.formatStringControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdFormat,null);
-			this.formatParametersControl = (JList<Object>) SwingUtils.prepareCellEditorComponent(localizer,fdParameters,null);
+//			this.formatStringControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdFormat,null);
+//			this.formatParametersControl = (JList<Object>) SwingUtils.prepareCellEditorComponent(localizer,fdParameters,null);
 			
 			final SpringLayout	springLayout = new SpringLayout(); 
 			final JPanel		forButtons = new JPanel(new FlowLayout(FlowLayout.LEFT,5,0));
@@ -78,9 +78,9 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 			forLeft.add(nodeType);
 			forLeft.add(nodeFormat);
 			forRight.add(forButtons);
-			forRight.add(formatStringControl);
-			forList.add(formatParametersControl,BorderLayout.CENTER);
-			formatParametersControl.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+//			forRight.add(formatStringControl);
+//			forList.add(formatParametersControl,BorderLayout.CENTER);
+//			formatParametersControl.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 			
 			setLayout(springLayout);
 			add(forLeft);

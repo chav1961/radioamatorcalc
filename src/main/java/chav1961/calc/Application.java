@@ -73,8 +73,6 @@ import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.ui.XMLDescribedApplication;
 import chav1961.purelib.ui.swing.AnnotatedActionListener;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
-import chav1961.purelib.ui.swing.LocalizedDialog;
-import chav1961.purelib.ui.swing.LocalizedFileChooser;
 import chav1961.purelib.ui.swing.SimpleNavigatorTree;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
@@ -181,7 +179,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			centerPanel.add(split,BorderLayout.CENTER);
 			
-			SwingUtils.assignHelpKey((JPanel)getContentPane(),localizer,LocalizationKeys.HELP_ABOUT_APPLICATION);
+//			SwingUtils.assignHelpKey((JPanel)getContentPane(),localizer,LocalizationKeys.HELP_ABOUT_APPLICATION);
 			SwingUtils.assignActionKey((JPanel)getContentPane()
 						,KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_DOWN_MASK)
 						,new AnnotatedActionListener<Application>(this)
@@ -430,77 +428,79 @@ public class Application extends JFrame implements LocaleChangeListener {
 	}
 
 	private int askFile2Load() throws LocalizationException {
-		final LocalizedFileChooser	chooser = new LocalizedFileChooser(localizer);
-		
-		chooser.setCurrentDirectory(currentWorkingDir);
-		chooser.setAcceptAllFileFilterUsed(false);
-		chooser.setFileFilter(new FileFilter() {
-			@Override
-			public String getDescription() {
-				try{return localizer.getValue(LocalizationKeys.CONFIRM_FILEFILTER_PIPE);
-				} catch (LocalizationException e) {
-					return LocalizationKeys.CONFIRM_FILEFILTER_PIPE;
-				}
-			}
-			
-			@Override
-			public boolean accept(final File f) {
-				return f.getName().endsWith(".pipe");
-			}
-		});
-		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		chooser.setMultiSelectionEnabled(false);
-		chooser.setApproveButtonText(localizer.getValue(LocalizationKeys.CONFIRM_BUTTON_OPEN));
-		chooser.setApproveButtonToolTipText(localizer.getValue(LocalizationKeys.CONFIRM_BUTTON_OPEN_TOOLTIP));
-		chooser.setLocale(localizer.currentLocale().getLocale());
-		if (currentPipeFile != null) {
-			chooser.setSelectedFile(currentPipeFile);
-		}
-		
-		final int	rc = chooser.showOpenDialog(this);
-		
-		if (rc == JFileChooser.APPROVE_OPTION) {
-			currentWorkingDir = chooser.getCurrentDirectory();
-			currentPipeFile = chooser.getSelectedFile();
-		}
-		return rc;
+//		final LocalizedFileChooser	chooser = new LocalizedFileChooser(localizer);
+//		
+//		chooser.setCurrentDirectory(currentWorkingDir);
+//		chooser.setAcceptAllFileFilterUsed(false);
+//		chooser.setFileFilter(new FileFilter() {
+//			@Override
+//			public String getDescription() {
+//				try{return localizer.getValue(LocalizationKeys.CONFIRM_FILEFILTER_PIPE);
+//				} catch (LocalizationException e) {
+//					return LocalizationKeys.CONFIRM_FILEFILTER_PIPE;
+//				}
+//			}
+//			
+//			@Override
+//			public boolean accept(final File f) {
+//				return f.getName().endsWith(".pipe");
+//			}
+//		});
+//		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//		chooser.setMultiSelectionEnabled(false);
+//		chooser.setApproveButtonText(localizer.getValue(LocalizationKeys.CONFIRM_BUTTON_OPEN));
+//		chooser.setApproveButtonToolTipText(localizer.getValue(LocalizationKeys.CONFIRM_BUTTON_OPEN_TOOLTIP));
+//		chooser.setLocale(localizer.currentLocale().getLocale());
+//		if (currentPipeFile != null) {
+//			chooser.setSelectedFile(currentPipeFile);
+//		}
+//		
+//		final int	rc = chooser.showOpenDialog(this);
+//		
+//		if (rc == JFileChooser.APPROVE_OPTION) {
+//			currentWorkingDir = chooser.getCurrentDirectory();
+//			currentPipeFile = chooser.getSelectedFile();
+//		}
+//		return rc;
+		return 0;
 	}
 	
 	private int askFile2Save() throws LocalizationException, IllegalArgumentException {
-		final LocalizedFileChooser	chooser = new LocalizedFileChooser(localizer);
-		
-		chooser.setCurrentDirectory(currentWorkingDir);
-		chooser.setAcceptAllFileFilterUsed(false);
-		chooser.setFileFilter(new FileFilter() {
-			@Override
-			public String getDescription() {
-				try{return localizer.getValue(LocalizationKeys.CONFIRM_FILEFILTER_PIPE);
-				} catch (LocalizationException e) {
-					return LocalizationKeys.CONFIRM_FILEFILTER_PIPE;
-				}
-			}
-			
-			@Override
-			public boolean accept(final File f) {
-				return f.getName().endsWith(".pipe");
-			}
-		});
-		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		chooser.setMultiSelectionEnabled(false);
-		chooser.setApproveButtonText(localizer.getValue(LocalizationKeys.CONFIRM_BUTTON_SAVE));
-		chooser.setApproveButtonToolTipText(localizer.getValue(LocalizationKeys.CONFIRM_BUTTON_SAVE_TOOLTIP));
-		chooser.setLocale(localizer.currentLocale().getLocale());
-		if (currentPipeFile != null) {
-			chooser.setSelectedFile(currentPipeFile);
-		}
-		
-		final int	rc = chooser.showSaveDialog(this);
-		
-		if (rc == JFileChooser.APPROVE_OPTION) {
-			currentWorkingDir = chooser.getCurrentDirectory();
-			currentPipeFile = chooser.getSelectedFile();
-		}
-		return rc;
+//		final LocalizedFileChooser	chooser = new LocalizedFileChooser(localizer);
+//		
+//		chooser.setCurrentDirectory(currentWorkingDir);
+//		chooser.setAcceptAllFileFilterUsed(false);
+//		chooser.setFileFilter(new FileFilter() {
+//			@Override
+//			public String getDescription() {
+//				try{return localizer.getValue(LocalizationKeys.CONFIRM_FILEFILTER_PIPE);
+//				} catch (LocalizationException e) {
+//					return LocalizationKeys.CONFIRM_FILEFILTER_PIPE;
+//				}
+//			}
+//			
+//			@Override
+//			public boolean accept(final File f) {
+//				return f.getName().endsWith(".pipe");
+//			}
+//		});
+//		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//		chooser.setMultiSelectionEnabled(false);
+//		chooser.setApproveButtonText(localizer.getValue(LocalizationKeys.CONFIRM_BUTTON_SAVE));
+//		chooser.setApproveButtonToolTipText(localizer.getValue(LocalizationKeys.CONFIRM_BUTTON_SAVE_TOOLTIP));
+//		chooser.setLocale(localizer.currentLocale().getLocale());
+//		if (currentPipeFile != null) {
+//			chooser.setSelectedFile(currentPipeFile);
+//		}
+//		
+//		final int	rc = chooser.showSaveDialog(this);
+//		
+//		if (rc == JFileChooser.APPROVE_OPTION) {
+//			currentWorkingDir = chooser.getCurrentDirectory();
+//			currentPipeFile = chooser.getSelectedFile();
+//		}
+//		return rc;
+		return 0;
 	}
 
 	private PipeInterface loadPipe(final File file) throws IOException {
@@ -562,11 +562,11 @@ public class Application extends JFrame implements LocaleChangeListener {
 
 	@OnAction("settings")
 	private void settings() throws LocalizationException, SyntaxException, ContentException {
-		try(final AutoBuiltForm<CurrentSettings>	form = new AutoBuiltForm<CurrentSettings>(localizer,settings,settings)) {
-			
-			form.setPreferredSize(new Dimension(300,150));
-			LocalizedDialog.askParameters((JComponent)this.getContentPane(),localizer,LocalizationKeys.SETTINGS_CAPTION,LocalizationKeys.SETTINGS_HELP,form);
-		}		
+//		try(final AutoBuiltForm<CurrentSettings>	form = new AutoBuiltForm<CurrentSettings>(localizer,settings,settings)) {
+//			
+//			form.setPreferredSize(new Dimension(300,150));
+//			LocalizedDialog.askParameters((JComponent)this.getContentPane(),localizer,LocalizationKeys.SETTINGS_CAPTION,LocalizationKeys.SETTINGS_HELP,form);
+//		}		
 	}
 	
 	@OnAction("helpAbout")

@@ -39,7 +39,6 @@ import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.ui.XMLDescribedApplication;
-import chav1961.purelib.ui.swing.SmartToolTip;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 
@@ -237,12 +236,7 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 
 		private final Localizer			localizer;
 		private final JLabel			searchLabel = new JLabel();
-		private final JTextField		searchQuery = new JTextField() { private static final long serialVersionUID = 1L;
-											@Override
-											public JToolTip createToolTip() {
-												return new SmartToolTip(localizer,this);
-											}
-										};
+		private final JTextField		searchQuery = new JTextField();
 		
 		SearchString(final Localizer localizer, final ActionListener toClose) throws LocalizationException {
 			this.localizer = localizer;

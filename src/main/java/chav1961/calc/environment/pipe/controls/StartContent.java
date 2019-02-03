@@ -37,21 +37,18 @@ import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
 import chav1961.purelib.ui.FormFieldFormat;
 import chav1961.purelib.ui.interfacers.FormManager;
 import chav1961.purelib.ui.interfacers.RefreshMode;
-import chav1961.purelib.ui.swing.MicroTableEditor;
 import chav1961.purelib.ui.swing.SwingUtils;
-import chav1961.purelib.ui.swing.MicroTableEditor.EditorRepresentation;
 
 public class StartContent extends JPanel implements LocaleChangeListener, PluginInstance, FormManager<Integer,PipeParameterWrapper>, PipeInstanceControlInterface {
 	private static final long serialVersionUID = -3268088997213112095L;
 	private static final List<PipeParameterWrapper>	EMPTY_CONTENT = new ArrayList<>();
 
 	private final JLabel							nodeComment = new JLabel("");
-	private final JTextField						commentControl;
+	private final JTextField						commentControl = null;
 	private final JPanel							forList = new JPanel(new BorderLayout());
-	private final MicroTableEditor					mte;
-	private final JComponent						mteComponent;
+	private final JComponent						mteComponent = null;
 	private final List<PipeParameterWrapper>		content = new ArrayList<>();
-	private final SelfDefinedPipeParametersModel	model;
+	private final SelfDefinedPipeParametersModel	model = null;
 	private final ButtonGroup						group = new ButtonGroup(); 
 	
 	private final StartNode 						owner;
@@ -75,20 +72,20 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 			this.localizer = localizer; 
 			this.logger = logger; 
 			this.fdComment = FieldDescriptor.newInstance("comment",new FormFieldFormat("30ms"),this.getClass());
-			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
-			this.mte = new MicroTableEditor(localizer,EditorRepresentation.EDITED_LIST);
-			this.model = new SelfDefinedPipeParametersModel(content,(key)->{return createParameter();});
-			this.mteComponent = mte.build(this,model,null,new String[]{"pluginFieldName","pluginFieldtype"});
+//			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
+//			this.mte = new MicroTableEditor(localizer,EditorRepresentation.EDITED_LIST);
+//			this.model = new SelfDefinedPipeParametersModel(content,(key)->{return createParameter();});
+//			this.mteComponent = mte.build(this,model,null,new String[]{"pluginFieldName","pluginFieldtype"});
 			
 			final JPanel 		commentPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			
 			setLayout(new BorderLayout());
 			commentPanel.add(nodeComment);
-			commentPanel.add(commentControl);
-			commentControl.setColumns(30);
+//			commentPanel.add(commentControl);
+	//		commentControl.setColumns(30);
 			
 			add(commentPanel,BorderLayout.NORTH);
-			add(mteComponent,BorderLayout.CENTER);
+		//	add(mteComponent,BorderLayout.CENTER);
 			
 			fillLocalizationStrings();
 		}

@@ -195,7 +195,7 @@ public class DesktopContentManager extends JDesktopPane implements LocaleChangeL
 				@Override public void componentMoved(ComponentEvent e) {revalidateContent();}
 				@Override public void componentHidden(ComponentEvent e) {revalidateContent();}
 			});
-    	    SwingUtils.assignHelpKey(component,localizer,helpId);
+ //   	    SwingUtils.assignHelpKey(component,localizer,helpId);
 			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
     	}
 

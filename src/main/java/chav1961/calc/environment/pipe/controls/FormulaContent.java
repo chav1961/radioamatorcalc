@@ -33,9 +33,9 @@ public class FormulaContent extends JPanel implements LocaleChangeListener, Plug
 	private static final long serialVersionUID = -3268088997213112095L;
 
 	private final JLabel						nodeComment = new JLabel("");
-	private final JTextField					commentControl;
+	private final JTextField					commentControl = null;
 	private final JLabel						nodeFormula = new JLabel("");
-	private final JTextField					formulaControl;
+	private final JTextField					formulaControl = null;
 	
 	private final FormulaNode					owner;
 	private final Localizer						localizer;
@@ -60,18 +60,18 @@ public class FormulaContent extends JPanel implements LocaleChangeListener, Plug
 			this.localizer = localizer;
 			this.logger = logger;
 			this.fdComment = FieldDescriptor.newInstance("comment",new FormFieldFormat("30ms"),this.getClass());
-			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
+//			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
 			this.fdFormula = FieldDescriptor.newInstance("formula",new FormFieldFormat("60ms"),this.getClass());
-			this.formulaControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdFormula,formula);
+//			this.formulaControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdFormula,formula);
 			
 			final JPanel		leftPanel = new JPanel(new GridLayout(2,1,2,2)), rightPanel = new JPanel(new GridLayout(2,1,2,2)); 
 			
 			leftPanel.add(nodeComment);
 			leftPanel.add(nodeFormula);
-			rightPanel.add(commentControl);
-			commentControl.setColumns(30);
-			rightPanel.add(formulaControl);
-			formulaControl.setColumns(50);
+//			rightPanel.add(commentControl);
+//			commentControl.setColumns(30);
+//			rightPanel.add(formulaControl);
+//			formulaControl.setColumns(50);
 			
 			final SpringLayout	springLayout = new SpringLayout();
 			

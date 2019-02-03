@@ -112,7 +112,7 @@ public class SingleCoilsService implements PluginInterface {
 	
 	private static class SingleCoils extends AutoBuiltForm<SingleCoilsCalculator> implements PluginInstance {
 		private static final long 		serialVersionUID = 2615737307529282959L;
-		private static final Dimension	RECOMMENDED_SIZE = new Dimension(450,200);
+		private static final Dimension	RECOMMENDED_SIZE = new Dimension(550,200);
 		
 		private final PluginInterface 	owner; 
 		

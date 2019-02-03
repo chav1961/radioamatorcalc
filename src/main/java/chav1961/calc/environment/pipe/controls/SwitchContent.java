@@ -27,10 +27,10 @@ public class SwitchContent extends JPanel implements LocaleChangeListener, Plugi
 	private static final long serialVersionUID = -3268088997213112095L;
 
 	private final JLabel						nodeComment = new JLabel("");
-	private final JTextField					commentControl;
+	private final JTextField					commentControl = null;
 	private final JLabel						nodeExpression = new JLabel("");
-	private final JTextField					expressionControl;
-	private final JCheckBox						askBeforeControl;
+	private final JTextField					expressionControl = null;
+	private final JCheckBox						askBeforeControl = null;
 	
 	private final SwitchNode 					owner; 
 	private final Localizer						localizer;
@@ -52,34 +52,34 @@ public class SwitchContent extends JPanel implements LocaleChangeListener, Plugi
 			this.owner = owner; 
 			this.localizer = localizer; 
 			this.fdComment = FieldDescriptor.newInstance("comment",new FormFieldFormat("30ms"),this.getClass());
-			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
+//			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
 			this.fdExpression = FieldDescriptor.newInstance("expression",new FormFieldFormat("30ms"),this.getClass());
-			this.expressionControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdExpression,expression);
+	//		this.expressionControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdExpression,expression);
 			this.fdAskBefore = FieldDescriptor.newInstance("askBefore",new FormFieldFormat("1"),this.getClass());
-			this.askBeforeControl = (JCheckBox) SwingUtils.prepareCellEditorComponent(localizer,fdAskBefore,askBefore);
+		//	this.askBeforeControl = (JCheckBox) SwingUtils.prepareCellEditorComponent(localizer,fdAskBefore,askBefore);
 			
 			final JPanel		leftPanel = new JPanel(new GridLayout(2,1,2,2)), rightPanel = new JPanel(new GridLayout(2,1,2,2));
 			
 			leftPanel.add(nodeComment);
 			leftPanel.add(nodeExpression);
-			rightPanel.add(commentControl);
-			rightPanel.add(expressionControl);
+//			rightPanel.add(commentControl);
+	//		rightPanel.add(expressionControl);
 			
 			final SpringLayout	springLayout = new SpringLayout(); 
 			
 			setLayout(springLayout);
 			add(leftPanel);
 			add(rightPanel);
-			add(askBeforeControl);
+//			add(askBeforeControl);
 			springLayout.putConstraint(SpringLayout.NORTH,leftPanel,0,SpringLayout.NORTH,this);
 			springLayout.putConstraint(SpringLayout.NORTH,rightPanel,0,SpringLayout.NORTH,this);
 			springLayout.putConstraint(SpringLayout.WEST,leftPanel,0,SpringLayout.WEST,this);
 			springLayout.putConstraint(SpringLayout.EAST,rightPanel,0,SpringLayout.EAST,this);
 			springLayout.putConstraint(SpringLayout.WEST,rightPanel,5,SpringLayout.EAST,leftPanel);
 			springLayout.putConstraint(SpringLayout.SOUTH,leftPanel,0,SpringLayout.SOUTH,rightPanel);
-			springLayout.putConstraint(SpringLayout.NORTH,askBeforeControl,5,SpringLayout.SOUTH,rightPanel);
-			springLayout.putConstraint(SpringLayout.WEST,askBeforeControl,0,SpringLayout.WEST,this);
-			springLayout.putConstraint(SpringLayout.EAST,askBeforeControl,0,SpringLayout.EAST,this);
+//			springLayout.putConstraint(SpringLayout.NORTH,askBeforeControl,5,SpringLayout.SOUTH,rightPanel);
+	//		springLayout.putConstraint(SpringLayout.WEST,askBeforeControl,0,SpringLayout.WEST,this);
+		//	springLayout.putConstraint(SpringLayout.EAST,askBeforeControl,0,SpringLayout.EAST,this);
 			
 			fillLocalizationStrings();
 		}

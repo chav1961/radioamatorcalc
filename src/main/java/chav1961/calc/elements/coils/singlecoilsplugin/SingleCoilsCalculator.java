@@ -24,6 +24,7 @@ import chav1961.purelib.ui.interfacers.Action;
  */
 
 @LocaleResourceLocation(Localizer.LOCALIZER_SCHEME+":prop:chav1961/calc/elements/coils/singlecoilsplugin/singlecoils")
+@LocaleResource(value="SingleCoilsService.caption",tooltip="SingleCoilsService.tooltip")
 @Action(resource=@LocaleResource(value="calculate",tooltip="calculateTooltip"),actionString="calculate",simulateCheck=true) 
 @UseFormulas({LocalizationKeys.FORMULA_NUMBER_OF_COILS_ONE_LAYER_COIL,LocalizationKeys.FORMULA_INDUCTANCE_ONE_LAYER_COIL})
 class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator> {
@@ -39,7 +40,7 @@ class SingleCoilsCalculator implements FormManager<Object,SingleCoilsCalculator>
 	private final LoggerFacade		logger;
 	
 @LocaleResource(value="length",tooltip="lengthTooltip")
-@Format("10.3mspzn")
+@Format("10.3mpzn")
 	private float 					length = 0.0f;
 @LocaleResource(value="diameter",tooltip="diameterTooltip")	
 @Format("10.3ms")

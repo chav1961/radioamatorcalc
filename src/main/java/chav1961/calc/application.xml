@@ -25,13 +25,13 @@
 		</app:submenu>
 	</app:menu>
 	<app:menu id="navigator">
-		<app:submenu name="menu.elements" caption="menu.elements" tooltip="menu.ttElements">
-			<app:submenu name="menu.elements.coils" caption="menu.elements.coils" tooltip="menu.ttElements.coils">
+<!--  		<app:submenu name="menu.elements" caption="menu.elements" tooltip="menu.ttElements">
+			<app:submenu name="menu.elements.coils" caption="menu.elements.coils" tooltip="menu.ttElements.coils"> --> 
 				<app:item name="menu.elements.coils.onelayer" caption="menu.elements.coils.onelayer" tooltip="menu.ttElements.coils.onelayer" action="SingleCoilsService"/>
-				<app:item name="menu.elements.coils.ringlayer" caption="menu.elements.coils.ringlayer" tooltip="menu.ttElements.coils.ringlayer" action="RingCoilsService"/>
-			</app:submenu>
-		</app:submenu>
-		<app:submenu name="menu.components" caption="menu.components" tooltip="menu.ttComponents">
+<!--  				<app:item name="menu.elements.coils.ringlayer" caption="menu.elements.coils.ringlayer" tooltip="menu.ttElements.coils.ringlayer" action="RingCoilsService"/>  --> 
+<!--  			</app:submenu>
+		</app:submenu> -->
+<!--		<app:submenu name="menu.components" caption="menu.components" tooltip="menu.ttComponents">
 			<app:item name="menu.components.lccontour" caption="menu.components.lccontour" tooltip="menu.ttComponents.lccontour" action="LCContourService"/>
 			<app:item name="menu.components.rcgenerator" caption="menu.components.rcgenerator" tooltip="menu.ttComponents.rcgenerator" action="RCGeneratorService"/>
 		</app:submenu>
@@ -59,7 +59,7 @@
 			<app:item name="menu.pipes.mapnode" caption="menu.pipes.mapnode" tooltip="menu.ttPipes.mapnode" action="MapNode"/>
 			<app:item name="menu.pipes.reducenode" caption="menu.pipes.reducenode" tooltip="menu.ttPipes.reducenode" action="ReduceNode"/>
 			<app:item name="menu.pipes.terminalnode" caption="menu.pipes.terminalnode" tooltip="menu.ttPipes.terminalnode" action="TerminalNode"/>
-		</app:submenu>
+ 		</app:submenu> -->
 	</app:menu>
 	<app:menu id="desktopToolbar">
 		<app:item name="desktop.toolbar.closeAll" caption="desktop.toolbar.closeAll" tooltip="desktop.toolbar.closeAllTT" icon="root://chav1961.calc.Application/chav1961/calc/closeAll.png" action="closeAll"/>
