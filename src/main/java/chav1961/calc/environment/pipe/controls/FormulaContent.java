@@ -25,8 +25,6 @@ import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.ui.FormFieldFormat;
-import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
 import chav1961.purelib.ui.swing.SwingUtils;
 
 public class FormulaContent extends JPanel implements LocaleChangeListener, PluginInstance, PipeInstanceControlInterface {
@@ -40,9 +38,7 @@ public class FormulaContent extends JPanel implements LocaleChangeListener, Plug
 	private final FormulaNode					owner;
 	private final Localizer						localizer;
 	private final LoggerFacade					logger;
-	private final FieldDescriptor				fdComment;
 	private final String						comment = "";
-	private final FieldDescriptor				fdFormula;
 	private final String						formula = "";
 	
 	public FormulaContent(final FormulaNode owner, final Localizer localizer, final LoggerFacade logger) throws LocalizationException, NullPointerException, SyntaxException {
@@ -59,9 +55,7 @@ public class FormulaContent extends JPanel implements LocaleChangeListener, Plug
 			this.owner = owner;
 			this.localizer = localizer;
 			this.logger = logger;
-			this.fdComment = FieldDescriptor.newInstance("comment",new FormFieldFormat("30ms"),this.getClass());
 //			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
-			this.fdFormula = FieldDescriptor.newInstance("formula",new FormFieldFormat("60ms"),this.getClass());
 //			this.formulaControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdFormula,formula);
 			
 			final JPanel		leftPanel = new JPanel(new GridLayout(2,1,2,2)), rightPanel = new JPanel(new GridLayout(2,1,2,2)); 
@@ -119,18 +113,6 @@ public class FormulaContent extends JPanel implements LocaleChangeListener, Plug
 		fillLocalizationStrings();
 	}
 	
-	@Override
-	public Object getValue(final FieldDescriptor desc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setValue(final FieldDescriptor desc, final Object value) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	@Override
 	public boolean execute(String action) {
 		// TODO Auto-generated method stub

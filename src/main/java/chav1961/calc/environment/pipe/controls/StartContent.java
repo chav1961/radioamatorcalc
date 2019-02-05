@@ -33,8 +33,6 @@ import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
-import chav1961.purelib.ui.FormFieldFormat;
 import chav1961.purelib.ui.interfacers.FormManager;
 import chav1961.purelib.ui.interfacers.RefreshMode;
 import chav1961.purelib.ui.swing.SwingUtils;
@@ -54,7 +52,6 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 	private final StartNode 						owner;
 	private final Localizer							localizer;
 	private final LoggerFacade						logger;
-	private FieldDescriptor							fdComment;
 	private String									comment = "";
 	
 	public StartContent(final StartNode owner, final Localizer localizer, final LoggerFacade logger) throws LocalizationException, NullPointerException, SyntaxException, ContentException {
@@ -71,7 +68,6 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 			this.owner = owner; 
 			this.localizer = localizer; 
 			this.logger = logger; 
-			this.fdComment = FieldDescriptor.newInstance("comment",new FormFieldFormat("30ms"),this.getClass());
 //			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
 //			this.mte = new MicroTableEditor(localizer,EditorRepresentation.EDITED_LIST);
 //			this.model = new SelfDefinedPipeParametersModel(content,(key)->{return createParameter();});
@@ -173,19 +169,6 @@ public class StartContent extends JPanel implements LocaleChangeListener, Plugin
 		if (mteComponent instanceof LocaleChangeListener) {
 			((LocaleChangeListener)mteComponent).localeChanged(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
 		}
-	}
-
-
-	@Override
-	public Object getValue(final FieldDescriptor desc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setValue(final FieldDescriptor desc, final Object value) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

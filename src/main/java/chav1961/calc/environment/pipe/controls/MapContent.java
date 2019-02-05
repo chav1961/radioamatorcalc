@@ -27,8 +27,6 @@ import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
-import chav1961.purelib.ui.FormFieldFormat;
 import chav1961.purelib.ui.swing.SwingUtils;
 
 public class MapContent extends JPanel implements LocaleChangeListener, PluginInstance, PipeInstanceControlInterface {
@@ -82,15 +80,6 @@ public class MapContent extends JPanel implements LocaleChangeListener, PluginIn
 
 	@Override
 	public void close() {
-	}
-
-	@Override
-	public Object getValue(final FieldDescriptor desc) {
-		return null;
-	}
-
-	@Override
-	public void setValue(final FieldDescriptor desc, final Object value) {
 	}
 
 	@Override

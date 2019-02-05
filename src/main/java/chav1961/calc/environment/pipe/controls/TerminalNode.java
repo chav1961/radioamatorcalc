@@ -18,7 +18,6 @@ import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.interfaces.Localizer;
-import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
 import chav1961.purelib.ui.swing.SwingUtils;
 
 public class TerminalNode implements PipeControlInterface, PluginInterface {
@@ -26,7 +25,6 @@ public class TerminalNode implements PipeControlInterface, PluginInterface {
 	private static final URL				MINI_ICON_RESOURCE = TerminalNode.class.getResource("TerminalNodeIcon.png");
 	private static final Icon				ICON = new ImageIcon(MINI_ICON_RESOURCE);
 	private static final String[]			RECOMMENDED_PATH = {"menu.pipe","terminal"};
-	private static final FieldDescriptor[] 	EMPTY_FIELD_LIST = new FieldDescriptor[0]; 
 	private static final String[] 			EMPTY_ACTION_LIST = new String[0];
 	
 	private final Localizer					localizer;
@@ -46,21 +44,6 @@ public class TerminalNode implements PipeControlInterface, PluginInterface {
 	@Override
 	public boolean hasField(final String fieldName) {
 		return false;
-	}
-
-	@Override
-	public FieldDescriptor getFieldDescriptor(final String fieldName) {
-		return null;
-	}
-
-	@Override
-	public FieldDescriptor[] getInnerControls() {
-		return EMPTY_FIELD_LIST;
-	}
-
-	@Override
-	public FieldDescriptor[] getOuterControls() {
-		return EMPTY_FIELD_LIST;
 	}
 
 	@Override

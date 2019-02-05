@@ -14,7 +14,6 @@ import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.interfaces.Localizer;
-import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
 
 public class FormulaNode implements PipeControlInterface, PluginInterface {
 	private static final long serialVersionUID = -8768571970349291284L;
@@ -22,7 +21,6 @@ public class FormulaNode implements PipeControlInterface, PluginInterface {
 	private static final URL				MINI_ICON_RESOURCE = TerminalNode.class.getResource("FormulaNodeIcon.png");
 	private static final Icon				ICON = new ImageIcon(MINI_ICON_RESOURCE);
 	private static final String[]			RECOMMENDED_PATH = {"menu.pipe","formula"};
-	private static final FieldDescriptor[] 	EMPTY_FIELD_LIST = new FieldDescriptor[0]; 
 	private static final String[] 			EMPTY_ACTION_LIST = new String[0];
 
 	private final Localizer	localizer;
@@ -105,24 +103,6 @@ public class FormulaNode implements PipeControlInterface, PluginInterface {
 	public boolean hasField(final String fieldName) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public FieldDescriptor getFieldDescriptor(final String fieldName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public FieldDescriptor[] getInnerControls() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public FieldDescriptor[] getOuterControls() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

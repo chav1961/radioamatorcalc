@@ -14,7 +14,6 @@ import chav1961.calc.interfaces.PluginInterface.PluginInstance;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
 
 public class PluginPipeContainer extends JPanel implements LocaleChangeListener, PluginInstance, PipeInstanceControlInterface {
 	private static final long 		serialVersionUID = -3089113084663928823L;
@@ -32,27 +31,6 @@ public class PluginPipeContainer extends JPanel implements LocaleChangeListener,
 		}
 	}
 	
-	@Override
-	public Object getValue(final FieldDescriptor desc) {
-		if (desc == null) {
-			throw new NullPointerException("Field descriptor can't be null");
-		}
-		else {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
-
-	@Override
-	public void setValue(final FieldDescriptor desc, final Object value) {
-		if (desc == null) {
-			throw new NullPointerException("Field descriptor can't be null");
-		}
-		else {
-			// TODO Auto-generated method stub
-		}
-	}
-
 	@Override
 	public boolean execute(final String action) {
 		// TODO Auto-generated method stub

@@ -2,6 +2,7 @@ package chav1961.calc.environment.desktop;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.net.URI;
 import java.util.Locale;
 
 import javax.swing.JInternalFrame;
@@ -14,7 +15,8 @@ import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.ui.XMLDescribedApplication;
+import chav1961.purelib.model.interfaces.ContentMetadataInterface;
+import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 
@@ -22,12 +24,12 @@ public class DesktopManager extends JPanel implements LocaleChangeListener {
 	private static final long serialVersionUID = 813296081208498667L;
 
 	private final Application				application;
-	private final XMLDescribedApplication	xda;
+	private final ContentMetadataInterface	xda;
 	private final Localizer					localizer;
 	private final JToolBar					tool;
 	private final DesktopContentManager		mgr; 
 	
-	public DesktopManager(final Application application, final XMLDescribedApplication xda, final Localizer localizer) throws NullPointerException, IllegalArgumentException, EnvironmentException {
+	public DesktopManager(final Application application, final ContentMetadataInterface xda, final Localizer localizer) throws NullPointerException, IllegalArgumentException, EnvironmentException {
 		super(new BorderLayout());
 		if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null"); 
@@ -39,7 +41,7 @@ public class DesktopManager extends JPanel implements LocaleChangeListener {
 			
 			final JScrollPane	pane = new JScrollPane(this.mgr = new DesktopContentManager(localizer)); 
 			
-			tool = xda.getEntity("desktopToolbar",JToolBar.class,null); 
+			this.tool = SwingModelUtils.toToolbar(xda.byUIPath(URI.create("ui:/navigation.top.desktopToolbar")),JToolBar.class); 
 			
 			SwingUtils.assignActionListeners(tool,this);
 			add(pane,BorderLayout.CENTER);

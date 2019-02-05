@@ -13,7 +13,6 @@ import chav1961.calc.interfaces.PluginInterface.PluginInstance;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.ModifiableEntity;
-import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
 
 public interface PipeInterface extends Closeable, ModifiableEntity {
 	public interface DataLinkDescription {

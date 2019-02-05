@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
 import java.util.ServiceLoader;
@@ -67,13 +68,16 @@ import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.PureLibLocalizer;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.ui.XMLDescribedApplication;
+import chav1961.purelib.model.ContentModelFactory;
+import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.ui.swing.AnnotatedActionListener;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
 import chav1961.purelib.ui.swing.SimpleNavigatorTree;
+import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 
@@ -131,7 +135,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private File							currentPipeFile = null;
 	private File							currentWorkingDir = new File("./");
 
-	public Application(final XMLDescribedApplication xda, final Localizer parentLocalizer) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException {
+	public Application(final ContentMetadataInterface xda, final Localizer parentLocalizer) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException {
 		if (xda == null) {
 			throw new NullPointerException("Application descriptor can't be null");
 		}
@@ -140,7 +144,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 		else {
 			
-			this.localizer = xda.getLocalizer();
+			this.localizer = LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated());
 			final JPanel				statePanel = new JPanel();
 			
 			stateString.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -150,7 +154,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			parentLocalizer.push(localizer);
 			localizer.addLocaleChangeListener(this);
 			
-			this.menu = xda.getEntity("mainmenu",JMenuBar.class,null); 
+			this.menu = SwingModelUtils.toMenuEntity(xda.byUIPath(URI.create("ui:/navigation.top.mainMenu")),JMenuBar.class); 
 			final JPanel	centerPanel = new JPanel(new BorderLayout()); 
 			
 			SwingUtils.assignActionListeners(this.menu,this);
@@ -161,7 +165,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 
 			final JSplitPane	split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 			
-			leftMenu = new SimpleNavigatorTree(localizer,xda.getEntity("navigator",JMenuBar.class,null));
+			leftMenu = new SimpleNavigatorTree(localizer,SwingModelUtils.toMenuEntity(xda.byUIPath(URI.create("ui:/navigation.top.navigator")),JMenuBar.class));
 			leftMenu.addActionListener(SwingUtils.buildAnnotatedActionListener(this,(action)->{startPlugin(action);}));
 
 			desktopMgr = new DesktopManager(this,xda,localizer);
@@ -656,7 +660,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	public static void main(final String[] args) throws IOException, EnvironmentException, FlowException {
 		try(final InputStream				is = Application.class.getResourceAsStream("application.xml");
 			final Localizer					localizer = new PureLibLocalizer()) {
-			final XMLDescribedApplication	xda = new XMLDescribedApplication(is,new SystemErrLoggerFacade());
+			final ContentMetadataInterface	xda = ContentModelFactory.forXmlDescription(is);
 			
 			new Application(xda,localizer).setVisible(true);
 		}

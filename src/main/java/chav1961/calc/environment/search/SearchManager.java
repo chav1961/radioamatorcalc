@@ -38,7 +38,7 @@ import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.ui.XMLDescribedApplication;
+import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 
@@ -46,7 +46,7 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 	private static final long 				serialVersionUID = 1308755467124786226L;
 	
 	private final Application				application;
-	private final XMLDescribedApplication	xda;
+	private final ContentMetadataInterface	xda;
 	private final Localizer					localizer;
 	private final LoggerFacade				logger;
 	private final SearchString				toolBar;
@@ -93,7 +93,7 @@ public class SearchManager extends JPanel implements LocaleChangeListener {
 	private LuceneWrapper					wrapper;
 	private SearchResultAndNavigator		currentResult = null; 
 	
-	public SearchManager(final Application application, final XMLDescribedApplication xda, final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, EnvironmentException {
+	public SearchManager(final Application application, final ContentMetadataInterface xda, final Localizer localizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, EnvironmentException {
 		setLayout(new BorderLayout());
 		this.application = application;
 		this.xda = xda;

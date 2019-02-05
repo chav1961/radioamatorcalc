@@ -1,5 +1,6 @@
 package chav1961.calc.environment.pipe.controls;
 
+
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.Locale;
@@ -19,8 +20,6 @@ import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
-import chav1961.purelib.ui.FormFieldFormat;
 import chav1961.purelib.ui.swing.SwingUtils;
 
 public class SwitchContent extends JPanel implements LocaleChangeListener, PluginInstance, PipeInstanceControlInterface {
@@ -34,11 +33,8 @@ public class SwitchContent extends JPanel implements LocaleChangeListener, Plugi
 	
 	private final SwitchNode 					owner; 
 	private final Localizer						localizer;
-	private FieldDescriptor						fdComment;
 	private String								comment = "";
-	private FieldDescriptor						fdExpression;
 	private String								expression = "";
-	private FieldDescriptor						fdAskBefore;
 	private boolean								askBefore = false;
 	
 	public SwitchContent(final SwitchNode owner, final Localizer localizer) throws LocalizationException, IllegalArgumentException, NullPointerException, SyntaxException {
@@ -51,11 +47,8 @@ public class SwitchContent extends JPanel implements LocaleChangeListener, Plugi
 		else {
 			this.owner = owner; 
 			this.localizer = localizer; 
-			this.fdComment = FieldDescriptor.newInstance("comment",new FormFieldFormat("30ms"),this.getClass());
 //			this.commentControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdComment,comment);
-			this.fdExpression = FieldDescriptor.newInstance("expression",new FormFieldFormat("30ms"),this.getClass());
 	//		this.expressionControl = (JTextField) SwingUtils.prepareCellEditorComponent(localizer,fdExpression,expression);
-			this.fdAskBefore = FieldDescriptor.newInstance("askBefore",new FormFieldFormat("1"),this.getClass());
 		//	this.askBeforeControl = (JCheckBox) SwingUtils.prepareCellEditorComponent(localizer,fdAskBefore,askBefore);
 			
 			final JPanel		leftPanel = new JPanel(new GridLayout(2,1,2,2)), rightPanel = new JPanel(new GridLayout(2,1,2,2));
@@ -115,19 +108,6 @@ public class SwitchContent extends JPanel implements LocaleChangeListener, Plugi
 	@Override
 	public void localeChanged(Locale oldLocale, Locale newLocale) throws LocalizationException {
 		fillLocalizationStrings();
-	}
-
-
-	@Override
-	public Object getValue(final FieldDescriptor desc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setValue(final FieldDescriptor desc, final Object value) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

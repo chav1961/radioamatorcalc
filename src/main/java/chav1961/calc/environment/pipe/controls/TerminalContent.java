@@ -1,5 +1,6 @@
 package chav1961.calc.environment.pipe.controls;
 
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -27,8 +28,6 @@ import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.ui.AbstractLowLevelFormFactory.FieldDescriptor;
-import chav1961.purelib.ui.FormFieldFormat;
 import chav1961.purelib.ui.swing.SwingUtils;
 
 public class TerminalContent extends JPanel implements LocaleChangeListener, PluginInstance, PipeInstanceControlInterface {
@@ -46,9 +45,7 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 	private final TerminalNode			owner;
 	private final Localizer				localizer;
 	private String						format;
-	private final FieldDescriptor		fdFormat; 
 	private final List<Object>			parameters = new ArrayList<>();
-	private final FieldDescriptor		fdParameters; 
 	private boolean						success;
 	
 	public TerminalContent(final TerminalNode owner, final Localizer localizer) throws LocalizationException, IllegalArgumentException, NullPointerException, SyntaxException {
@@ -61,8 +58,6 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 		else {
 			this.owner = owner; 
 			this.localizer = localizer; 
-			this.fdFormat = FieldDescriptor.newInstance("format",new FormFieldFormat("10.3ms"),this.getClass()); 
-			this.fdParameters = FieldDescriptor.newInstance("parameters",new FormFieldFormat("10.3m"),this.getClass()); 
 			group.add(successControl);
 			group.add(failControl);
 			group.setSelected(failControl.getModel(),true);
@@ -161,15 +156,6 @@ public class TerminalContent extends JPanel implements LocaleChangeListener, Plu
 
 	@Override
 	public void close() {
-	}
-
-	@Override
-	public Object getValue(final FieldDescriptor desc) {
-		return null;
-	}
-
-	@Override
-	public void setValue(final FieldDescriptor desc, final Object value) {
 	}
 
 	@Override
