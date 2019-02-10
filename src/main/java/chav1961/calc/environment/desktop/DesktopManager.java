@@ -41,7 +41,7 @@ public class DesktopManager extends JPanel implements LocaleChangeListener {
 			
 			final JScrollPane	pane = new JScrollPane(this.mgr = new DesktopContentManager(localizer)); 
 			
-			this.tool = SwingModelUtils.toToolbar(xda.byUIPath(URI.create("ui:/navigation.top.desktopToolbar")),JToolBar.class); 
+			this.tool = SwingModelUtils.toToolbar(xda.byUIPath(URI.create("ui:/model/navigation.top.desktopToolbar")),JToolBar.class); 
 			
 			SwingUtils.assignActionListeners(tool,this);
 			add(pane,BorderLayout.CENTER);

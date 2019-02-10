@@ -23,7 +23,6 @@ import java.net.URISyntaxException;
 import java.util.Locale;
 import java.util.ServiceLoader;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
@@ -33,7 +32,6 @@ import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -43,7 +41,6 @@ import javax.swing.KeyStroke;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.filechooser.FileFilter;
 
 import org.apache.lucene.store.FSDirectory;
 
@@ -60,7 +57,8 @@ import chav1961.calc.environment.search.SearchManager;
 import chav1961.calc.interfaces.PipeInterface;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.PluginInterface.PluginInstance;
-import chav1961.purelib.basic.AbstractLoggerFacade;
+import chav1961.purelib.basic.ArgParser;
+import chav1961.purelib.basic.NullLoggerFacade;
 import chav1961.purelib.basic.SystemErrLoggerFacade;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
@@ -68,6 +66,8 @@ import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
+import chav1961.purelib.fsys.FileSystemOnFile;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.PureLibLocalizer;
 import chav1961.purelib.i18n.interfaces.Localizer;
@@ -75,51 +75,23 @@ import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.ui.swing.AnnotatedActionListener;
-import chav1961.purelib.ui.swing.AutoBuiltForm;
 import chav1961.purelib.ui.swing.SimpleNavigatorTree;
 import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
+import chav1961.purelib.ui.swing.useful.JFileContentManipulator;
+import chav1961.purelib.ui.swing.useful.JStateString;
 
 public class Application extends JFrame implements LocaleChangeListener {
 	private static final long 				serialVersionUID = -2663340436788182341L;
 
-	
-	private static final String				TRACE_FORMAT = "<html><body><font color=grey>%1$s</font></body></html>"; 
-	private static final String				DEBUG_FORMAT = "<html><body><font color=grey>%1$s</font></body></html>"; 
-	private static final String				INFO_FORMAT = "<html><body><font color=black>%1$s</font></body></html>"; 
-	private static final String				WARNING_FORMAT = "<html><body><font color=blue>%1$s</font></body></html>"; 
-	private static final String				ERROR_FORMAT = "<html><body><font color=red>%1$s</font></body></html>"; 
-	private static final String				SEVERE_FORMAT = "<html><body><font color=red><b>%1$s</b></font></body></html>"; 
 
 	private static final String				DESKTOP_WINDOW = "DesktopWindow";
 	private static final String				SEARCH_WINDOW = "SearchWindow";
 
 	private final CurrentSettings			settings;
 	private final Localizer					localizer;
-	private final JLabel					stateString = new JLabel();
-	private final LoggerFacade				logger = new AbstractLoggerFacade() {
-												@Override
-												protected void toLogger(final Severity level, final String text, final Throwable throwable) {
-													if (throwable != null) {
-														throwable.printStackTrace();
-													}
-													switch (level) {
-														case debug		: Application.this.message(DEBUG_FORMAT,text); break;
-														case error		: Application.this.message(ERROR_FORMAT,text); break;
-														case info		: Application.this.message(INFO_FORMAT,text); break;
-														case severe		: Application.this.message(SEVERE_FORMAT,text); break;
-														case trace		: Application.this.message(TRACE_FORMAT,text); break;
-														case warning	: Application.this.message(WARNING_FORMAT,text); break;
-														default	: throw new UnsupportedOperationException("Severity level ["+level+"] is not suported yet");
-													}
-												}
-												
-												@Override
-												protected AbstractLoggerFacade getAbstractLoggerFacade(final String mark, final Class<?> root) {
-													return this;
-												}
-											};
+	private final LoggerFacade				logger;
 	private final JMenuBar					menu;
 	private final SimpleNavigatorTree		leftMenu;
 	private final DesktopManager			desktopMgr;
@@ -130,48 +102,54 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private final CardLayout				cardLayout = new CardLayout(); 
 	private final JPanel					rightScreen = new JPanel(cardLayout);
 	private final Timer						timer = new Timer(true);
+	private final JStateString				stateString;
+	private final JFileContentManipulator	contentManipulator;
 	
 	private PipeInterface					currentPipe = null;
 	private File							currentPipeFile = null;
 	private File							currentWorkingDir = new File("./");
 
-	public Application(final ContentMetadataInterface xda, final Localizer parentLocalizer) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException {
+	public Application(final ContentMetadataInterface xda, final Localizer parentLocalizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException {
 		if (xda == null) {
 			throw new NullPointerException("Application descriptor can't be null");
 		}
 		else if (parentLocalizer == null) {
 			throw new NullPointerException("Localizer can't be null");
 		}
+		else if (logger == null) {
+			throw new NullPointerException("Logger can't be null");
+		}
 		else {
-			
 			this.localizer = LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated());
-			final JPanel				statePanel = new JPanel();
-			
-			stateString.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-			statePanel.add(stateString);
-			this.settings = new CurrentSettings(this.localizer,this.logger); 
+			this.logger = logger;
+			this.stateString = new JStateString(this.localizer,10);
+			this.settings = new CurrentSettings(this.localizer,this.logger);
 			
 			parentLocalizer.push(localizer);
 			localizer.addLocaleChangeListener(this);
 			
-			this.menu = SwingModelUtils.toMenuEntity(xda.byUIPath(URI.create("ui:/navigation.top.mainMenu")),JMenuBar.class); 
+			this.menu = SwingModelUtils.toMenuEntity(xda.byUIPath(URI.create("ui:/model/navigation.top.mainmenu")),JMenuBar.class); 
 			final JPanel	centerPanel = new JPanel(new BorderLayout()); 
 			
 			SwingUtils.assignActionListeners(this.menu,this);
 			getContentPane().add(this.menu,BorderLayout.NORTH);
 			centerPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 			getContentPane().add(centerPanel,BorderLayout.CENTER);
-			getContentPane().add(statePanel,BorderLayout.SOUTH);
+			getContentPane().add(stateString,BorderLayout.SOUTH);
 
 			final JSplitPane	split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 			
-			leftMenu = new SimpleNavigatorTree(localizer,SwingModelUtils.toMenuEntity(xda.byUIPath(URI.create("ui:/navigation.top.navigator")),JMenuBar.class));
+			leftMenu = new SimpleNavigatorTree(localizer,SwingModelUtils.toMenuEntity(xda.byUIPath(URI.create("ui:/model/navigation.top.navigator")),JMenuBar.class));
 			leftMenu.addActionListener(SwingUtils.buildAnnotatedActionListener(this,(action)->{startPlugin(action);}));
 
 			desktopMgr = new DesktopManager(this,xda,localizer);
 			searchMgr = new SearchManager(this,xda,localizer,logger);
 			pipeFactory = new PipeFactory(this,localizer);
 			currentPipe = pipeFactory.newPipe(); 
+			this.contentManipulator = new JFileContentManipulator(new FileSystemOnFile(URI.create("file://./")),this.localizer
+												,()->{return new InputStream() {@Override public int read() throws IOException {return -1;}};}
+												,()->{return new OutputStream() {@Override public void write(int b) throws IOException {}};}
+												);
 			
 			rightScreen.add(desktopMgr,DESKTOP_WINDOW);
 			rightScreen.add(searchMgr,SEARCH_WINDOW);
@@ -245,7 +223,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 		return result;
 	}
 
-	@OnAction("cleanDektop")
+	@OnAction("action:/cleanDektop")
 	private void cleanDesktop() {
 		try{if (accuratelyClosePipe()) {
 				switch (JOptionPane.showOptionDialog(this,localizer.getValue(LocalizationKeys.CONFIRM_CLEAR_DESKTOP_MESSAGE)
@@ -267,68 +245,72 @@ public class Application extends JFrame implements LocaleChangeListener {
 				}
 			}
 		} catch (IOException | HeadlessException | LocalizationException  e) {
-			message(e,e.getLocalizedMessage());
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 
-	@OnAction("newPipe")
+	@OnAction("action:/newPipe")
 	private void newPipe() {
-		try{if (accuratelyClosePipe()) {
-				desktopMgr.closeContent();
-				currentPipe = pipeFactory.newPipe();
-				currentPipeFile = null;
-			}
-		} catch (IOException | HeadlessException | LocalizationException  e) {
-			message(e,e.getLocalizedMessage());
+		try{contentManipulator.newFile();
+//		try{if (accuratelyClosePipe()) {
+//				desktopMgr.closeContent();
+//				currentPipe = pipeFactory.newPipe();
+//				currentPipeFile = null;
+//			}
+		} catch (IOException e) {
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 	
-	@OnAction("loadPipe")
+	@OnAction("action:/loadPipe")
 	private void loadPipe() {
-		try{if (accuratelyClosePipe()) {
-				switch (askFile2Load()) {
-					case JFileChooser.APPROVE_OPTION	:
-						currentPipe = loadPipe(currentPipeFile);
-						break;
-					case JFileChooser.CANCEL_OPTION		:
-						return;
-					default : throw new UnsupportedOperationException("Unknown confirmation option!");
-				}
-			}
-		} catch (IOException | HeadlessException | LocalizationException  e) {
-			message(e,e.getLocalizedMessage());
+		try {contentManipulator.openFile();
+//		try{if (accuratelyClosePipe()) {
+//				switch (askFile2Load()) {
+//					case JFileChooser.APPROVE_OPTION	:
+//						currentPipe = loadPipe(currentPipeFile);
+//						break;
+//					case JFileChooser.CANCEL_OPTION		:
+//						return;
+//					default : throw new UnsupportedOperationException("Unknown confirmation option!");
+//				}
+//			}
+		} catch (IOException e) {
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 	
-	@OnAction("savePipe")
+	@OnAction("action:/savePipe")
 	private void savePipe() {
-		try{if (currentPipeFile == null) {
-				savePipeAs();
-			}
-			else {
-				saveCurrentPipe(currentPipe,currentPipeFile);
-			}
+		try {contentManipulator.saveFile();
+//		try{if (currentPipeFile == null) {
+//				savePipeAs();
+//			}
+//			else {
+//				saveCurrentPipe(currentPipe,currentPipeFile);
+//			}
 		} catch (IOException | HeadlessException e) {
-			message(e,e.getLocalizedMessage());
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 	
-	@OnAction("savePipeAs")
+	@OnAction("action:/savePipeAs")
 	private void savePipeAs() {
-		try{switch (askFile2Save()) {
-				case JFileChooser.APPROVE_OPTION	:
-					saveCurrentPipe(currentPipe,currentPipeFile);
-					break;
-				case JFileChooser.CANCEL_OPTION		:
-					return;
-				default : throw new UnsupportedOperationException("Unknown confirmation option!");
-			}
-		} catch (IOException | HeadlessException | LocalizationException  e) {
-			message(e,e.getLocalizedMessage());
+		try {contentManipulator.saveFileAs();
+//		try{switch (askFile2Save()) {
+//				case JFileChooser.APPROVE_OPTION	:
+//					saveCurrentPipe(currentPipe,currentPipeFile);
+//					break;
+//				case JFileChooser.CANCEL_OPTION		:
+//					return;
+//				default : throw new UnsupportedOperationException("Unknown confirmation option!");
+//			}
+		} catch (IOException e) {
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 
-	@OnAction("StartNode")
+	@OnAction("action:/StartNode")
 	private void newStartNode() {
 		try{final PluginInterface	plugin = new StartNode(localizer);
 			final PluginInstance	inst = plugin.newInstance(localizer, logger);
@@ -336,11 +318,11 @@ public class Application extends JFrame implements LocaleChangeListener {
 			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 			placePlugin(plugin,inst);
 		} catch (LocalizationException | ContentException | IOException e) {
-			message(e,e.getLocalizedMessage());
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 
-	@OnAction("FormulaNode")
+	@OnAction("action:/FormulaNode")
 	private void newFormulaNode() {
 		try{final PluginInterface	plugin = new FormulaNode(localizer);
 			final PluginInstance	inst = plugin.newInstance(localizer, logger);
@@ -348,11 +330,11 @@ public class Application extends JFrame implements LocaleChangeListener {
 			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 			placePlugin(plugin,inst);
 		} catch (LocalizationException | ContentException | IOException e) {
-			message(e,e.getLocalizedMessage());
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 	
-	@OnAction("SwitchNode")
+	@OnAction("action:/SwitchNode")
 	private void newSwitchNode() {
 		try{final PluginInterface	plugin = new SwitchNode(localizer);
 			final PluginInstance	inst = plugin.newInstance(localizer, logger);
@@ -360,11 +342,11 @@ public class Application extends JFrame implements LocaleChangeListener {
 			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 			placePlugin(plugin,inst);
 		} catch (LocalizationException | ContentException | IOException e) {
-			message(e,e.getLocalizedMessage());
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 
-	@OnAction("MapNode")
+	@OnAction("action:/MapNode")
 	private void newMapNode() {
 		try{final PluginInterface	plugin = new MapNode(localizer);
 			final PluginInstance	inst = plugin.newInstance(localizer, logger);
@@ -372,11 +354,11 @@ public class Application extends JFrame implements LocaleChangeListener {
 			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 			placePlugin(plugin,inst);
 		} catch (LocalizationException | ContentException | IOException e) {
-			message(e,e.getLocalizedMessage());
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 
-	@OnAction("ReduceNode")
+	@OnAction("action:/ReduceNode")
 	private void newReduceNode() {
 		try{final PluginInterface	plugin = new ReduceNode(localizer);
 			final PluginInstance	inst = plugin.newInstance(localizer, logger);
@@ -384,11 +366,11 @@ public class Application extends JFrame implements LocaleChangeListener {
 			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 			placePlugin(plugin,inst);
 		} catch (LocalizationException | ContentException | IOException e) {
-			message(e,e.getLocalizedMessage());
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 	
-	@OnAction("TerminalNode")
+	@OnAction("action:/TerminalNode")
 	private void newTerminalNode() {
 		try{final PluginInterface	plugin = new TerminalNode(localizer, false);
 			final PluginInstance	inst = plugin.newInstance(localizer, logger);
@@ -396,7 +378,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			inst.getComponent().setPreferredSize(inst.getRecommendedSize());
 			placePlugin(plugin,inst);
 		} catch (LocalizationException | ContentException | IOException e) {
-			message(e,e.getLocalizedMessage());
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 	
@@ -523,30 +505,38 @@ public class Application extends JFrame implements LocaleChangeListener {
 	}
 
 	
-	@OnAction("exit")
+	@OnAction("action:/exit")
 	private void exitApplication () {
-		if (desktopMgr.getPipeManager().getComponentCount() > 0) {
+		try{//if (contentManipulator.saveFile()) {
+//				if (desktopMgr.getPipeManager().getComponentCount() > 0) {
+//					setVisible(false);
+//					dispose();
+//				}
+//				else {
+//					setVisible(false);
+//					dispose();
+//				}
+			//}
+			contentManipulator.close();
 			setVisible(false);
 			dispose();
-		}
-		else {
-			setVisible(false);
-			dispose();
+		} catch (IOException e) {
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 
-	@OnAction("find")
+	@OnAction("action:/find")
 	public void search() {
 		cardLayout.show(rightScreen,SEARCH_WINDOW);
 		searchMgr.focus();
 	}
 
-	@OnAction("index")
+	@OnAction("action:/index")
 	public void buildSearchIndex() {
 		try{buildIndex();
-			message(localizer.getValue(LocalizationKeys.MESSAGE_REINDEXED));
+			stateString.message(Severity.info,localizer.getValue(LocalizationKeys.MESSAGE_REINDEXED));
 		} catch (LocalizationException | IOException e) {
-			message(e,e.getLocalizedMessage());
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 	
@@ -564,7 +554,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 		localizer.setCurrentLocale(Locale.forLanguageTag("ru"));
 	}
 
-	@OnAction("settings")
+	@OnAction("action:/settings")
 	private void settings() throws LocalizationException, SyntaxException, ContentException {
 //		try(final AutoBuiltForm<CurrentSettings>	form = new AutoBuiltForm<CurrentSettings>(localizer,settings,settings)) {
 //			
@@ -573,7 +563,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 //		}		
 	}
 	
-	@OnAction("helpAbout")
+	@OnAction("action:/helpAbout")
 	private void showAboutScreen() {
 		try{final JEditorPane 	pane = new JEditorPane("text/html",null);
 			final Icon			icon = new ImageIcon(this.getClass().getResource("avatar.jpg"));
@@ -598,7 +588,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			JOptionPane.showMessageDialog(this,pane,localizer.getValue(LocalizationKeys.TITLE_HELP_ABOUT_APPLICATION),JOptionPane.PLAIN_MESSAGE,icon);
 		} catch (LocalizationException | MimeTypeParseException | IOException e) {
-			message(e,e.getLocalizedMessage());
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 
@@ -612,7 +602,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				placePlugin(plugin,inst);
 			}
 		} catch (LocalizationException | ContentException | IOException | RuntimeException e) {
-			message(e,e.getLocalizedMessage());
+			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
 	
@@ -621,31 +611,6 @@ public class Application extends JFrame implements LocaleChangeListener {
 		desktopMgr.getPipeManager().newWindow(false,component.getLocalizerAssociated(),plugin.getPluginId(),plugin.getCaptionId(),plugin.getHelpId(),plugin.getIcon(),(JComponent)component);
 	}
 	
-	private void message(final String format, final Object... parameters) {
-		final TimerTask		tt = new TimerTask() {
-								@Override
-								public void run() {
-									stateString.setText("");			
-								}
-							};
-		timer.purge();				
-		timer.schedule(tt,3000);
-		stateString.setText(parameters == null || parameters.length == 0 ? format : String.format(format,parameters));
-	}
-
-	private void message(final Throwable t, final String format, final Object... parameters) {
-		final TimerTask		tt = new TimerTask() {
-								@Override
-								public void run() {
-									stateString.setText("");			
-								}
-							};
-		t.printStackTrace();
-		timer.purge();				
-		timer.schedule(tt,3000);
-		stateString.setText(parameters == null || parameters.length == 0 ? format : String.format(format,parameters));
-		t.printStackTrace();
-	}
 	
 	static PluginInterface seekSPIPlugin(final String pluginName) {
 		for (PluginInterface item : ServiceLoader.load(PluginInterface.class)) {
@@ -657,12 +622,25 @@ public class Application extends JFrame implements LocaleChangeListener {
 	}
 	
 	
-	public static void main(final String[] args) throws IOException, EnvironmentException, FlowException {
+	public static void main(final String[] args) throws IOException, EnvironmentException, FlowException, ContentException {
+		final ArgParser		parser = new ApplicationArgParser().parse(args); 
+		
 		try(final InputStream				is = Application.class.getResourceAsStream("application.xml");
-			final Localizer					localizer = new PureLibLocalizer()) {
+			final Localizer					localizer = new PureLibLocalizer();
+			final LoggerFacade				logger = parser.getValue("debug",boolean.class) ? new SystemErrLoggerFacade() : new NullLoggerFacade()) {
 			final ContentMetadataInterface	xda = ContentModelFactory.forXmlDescription(is);
 			
-			new Application(xda,localizer).setVisible(true);
+			new Application(xda,localizer,logger).setVisible(true);
+		}
+	}
+	
+	private static class ApplicationArgParser extends ArgParser {
+		private static final ArgParser.AbstractArg[]	KEYS = {
+					new BooleanArg("debug", false, "turn on debugging trace", false)
+				};
+		
+		ApplicationArgParser() {
+			super(KEYS);
 		}
 	}
 }

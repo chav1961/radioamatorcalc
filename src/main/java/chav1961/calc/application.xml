@@ -17,6 +17,8 @@
 			<app:item name="menu.tools.find" caption="menu.find" tooltip="menu.ttFind" action="find"/>
 			<app:item name="menu.tools.index" caption="menu.index" tooltip="menu.ttIndex" action="index"/>
 			<app:separator/>
+			<app:item name="menu.tools.addpdf" caption="menu.addPdf" tooltip="menu.ttAddPdf" action="addPdf"/>
+			<app:separator/>
 			<app:builtinSubmenu name="builtin.languages" caption="menu.languages" tooltip="menu.ttLanguages"/>
 			<app:item name="menu.tools.settings" caption="menu.settings" tooltip="menu.ttSettings" action="settings"/>
 		</app:submenu>
