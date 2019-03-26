@@ -19,10 +19,10 @@ import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.Localizer;
-import chav1961.purelib.ui.interfacers.Action;
-import chav1961.purelib.ui.interfacers.FormManager;
-import chav1961.purelib.ui.interfacers.Format;
-import chav1961.purelib.ui.interfacers.RefreshMode;
+import chav1961.purelib.ui.interfaces.Action;
+import chav1961.purelib.ui.interfaces.FormManager;
+import chav1961.purelib.ui.interfaces.Format;
+import chav1961.purelib.ui.interfaces.RefreshMode;
 
 @Action(resource=@LocaleResource(value="settings.save",tooltip="settings.save.tooltip"),actionString="OK") 
 @Action(resource=@LocaleResource(value="settings.reset",tooltip="settings.reset.tooltip"),actionString="reset") 

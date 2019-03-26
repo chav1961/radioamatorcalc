@@ -1,7 +1,7 @@
 package chav1961.calc.environment;
 
 import chav1961.purelib.i18n.interfaces.LocaleResource;
-import chav1961.purelib.ui.interfacers.Format;
+import chav1961.purelib.ui.interfaces.Format;
 
 /**
  * <p>This class is a wrapper for the plugin parameters</p>
