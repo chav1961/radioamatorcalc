@@ -9,7 +9,7 @@ import java.util.List;
 
 import chav1961.calc.environment.PipeParameterWrapper;
 import chav1961.purelib.basic.exceptions.ContentException;
-import chav1961.purelib.ui.interfacers.FormModel;
+import chav1961.purelib.ui.interfaces.FormModel;
 
 public abstract class AbstractPipeParametersModel implements FormModel<Integer,PipeParameterWrapper>, Closeable {
 	protected final List<PipeParameterWrapperAndKey>		content = new ArrayList<>();

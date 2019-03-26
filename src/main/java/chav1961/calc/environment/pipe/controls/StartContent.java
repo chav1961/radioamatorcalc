@@ -33,8 +33,8 @@ import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.ui.interfacers.FormManager;
-import chav1961.purelib.ui.interfacers.RefreshMode;
+import chav1961.purelib.ui.interfaces.FormManager;
+import chav1961.purelib.ui.interfaces.RefreshMode;
 import chav1961.purelib.ui.swing.SwingUtils;
 
 public class StartContent extends JPanel implements LocaleChangeListener, PluginInstance, FormManager<Integer,PipeParameterWrapper>, PipeInstanceControlInterface {
