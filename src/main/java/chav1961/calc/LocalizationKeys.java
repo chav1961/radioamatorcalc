@@ -39,6 +39,7 @@ public abstract class LocalizationKeys {
 	public static final String		CONFIRM_FILEFILTER_PIPE = "confirm.fileFilter.pipe";
 	
 	public static final String		MESSAGE_REINDEXED = "message.reindexed";
+	public static final String		MESSAGE_PDF_INDEXED = "message.pdf.indexed";
 	
 	public static final String		TITLE_HELP_ABOUT_APPLICATION = "title.help.aboutApplication";
 	public static final String		TITLE_APPLICATION = "title.Application";

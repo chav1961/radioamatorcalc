@@ -19,6 +19,7 @@ import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
+import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.ui.interfaces.Action;
 import chav1961.purelib.ui.interfaces.FormManager;
@@ -28,6 +29,8 @@ import chav1961.purelib.ui.interfaces.RefreshMode;
 @Action(resource=@LocaleResource(value="settings.save",tooltip="settings.save.tooltip"),actionString="OK") 
 @Action(resource=@LocaleResource(value="settings.reset",tooltip="settings.reset.tooltip"),actionString="reset") 
 @Action(resource=@LocaleResource(value="settings.cancel",tooltip="settings.cancel.tooltip"),actionString="cancel") 
+@LocaleResourceLocation(Localizer.LOCALIZER_SCHEME+":prop:chav1961/calculator/i18n/i18n")
+@LocaleResource(value="menu.settings",tooltip="menu.ttSettings")
 public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 	public static final String	SETTINGS_LOCATION = "./.radioamatorcalc";
 	
@@ -60,14 +63,8 @@ public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 		else {
 			this.localizer = localizer;
 			this.logger = logger;
-			onAction(this,null,"reset",null);
+			onAction(this,null,"app:action:/CurrentSettings.reset",null);
 		}
-	}
-
-	
-	@Override
-	public RefreshMode onRecord(final Action action, final CurrentSettings oldRecord, final Object oldId, final CurrentSettings newRecord, final Object newId) throws FlowException, LocalizationException {
-		return RefreshMode.NONE;
 	}
 	
 	@Override
@@ -78,13 +75,13 @@ public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 	@Override
 	public RefreshMode onAction(final CurrentSettings inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
-			case "OK"		:
+			case "app:action:/CurrentSettings.OK"		:
 				saveCurrent();
 				return RefreshMode.NONE;
-			case "reset"	:
+			case "app:action:/CurrentSettings.reset"	:
 				loadLastSaved();
 				return RefreshMode.RECORD_ONLY;
-			case "cancel"	:
+			case "app:action:/CurrentSettings.cancel"	:
 				loadLastSaved();
 				return RefreshMode.NONE;
 			default : throw new UnsupportedOperationException("Operation ["+actionName+"] is not supported yet");
