@@ -227,9 +227,8 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
-	
 	public static void main(final String[] args) throws IOException, EnvironmentException, FlowException, ContentException {
-		final ArgParser		parser = new ApplicationArgParser().parse(args); 
+		final ArgParser		parser = new ApplicationArgParser().parse(args);
 		
 		try(final InputStream				is = Application.class.getResourceAsStream("application.xml");
 			final Localizer					localizer = new PureLibLocalizer();
