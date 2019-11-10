@@ -1,5 +1,6 @@
 package chav1961.calc;
 
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Desktop;
@@ -29,9 +30,11 @@ import javax.activation.MimeTypeParseException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -45,14 +48,17 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.lucene.store.FSDirectory;
 
+import chav1961.calc.interfaces.PluginInterface;
+import chav1961.calc.plugins.calc.contour.ContourPlugin;
+import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.purelib.basic.ArgParser;
 import chav1961.purelib.basic.NullLoggerFacade;
+import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.SystemErrLoggerFacade;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
-import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.fsys.FileSystemOnFile;
@@ -63,7 +69,6 @@ import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.ui.swing.AnnotatedActionListener;
-import chav1961.purelib.ui.swing.AutoBuiltForm;
 import chav1961.purelib.ui.swing.SimpleNavigatorTree;
 import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
@@ -85,7 +90,9 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private final SimpleNavigatorTree		leftMenu;
 	private final File						luceneDir = new File("./lucene");
 	private final CardLayout				cardLayout = new CardLayout(); 
-	private final JPanel					rightScreen = new JPanel(cardLayout);
+	private final JPanel					rightScreen = new JPanel();//(cardLayout);
+	private final JDesktopPane   			desktopPane = new JDesktopPane();
+//	private final JDesktopPane   			searchPane = new JDesktopPane();
 	private final Timer						timer = new Timer(true);
 	private final JStateString				stateString;
 	private final JFileContentManipulator	contentManipulator;
@@ -125,15 +132,18 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			leftMenu = new SimpleNavigatorTree(localizer,SwingModelUtils.toMenuEntity(xda.byUIPath(URI.create("ui:/model/navigation.top.navigator")),JMenuBar.class));
 
+			leftMenu.addActionListener((e)->{callPlugin(e.getActionCommand());});
+			
 			this.contentManipulator = new JFileContentManipulator(new FileSystemOnFile(URI.create("file://./")),this.localizer
 												,()->{return new InputStream() {@Override public int read() throws IOException {return -1;}};}
 												,()->{return new OutputStream() {@Override public void write(int b) throws IOException {}};}
 												);
-			
-			cardLayout.show(rightScreen,DESKTOP_WINDOW);			
+//			rightScreen.add(DESKTOP_WINDOW,desktopPane);
+//			rightScreen.add(desktopPane);
 			
 			split.setLeftComponent(new JScrollPane(leftMenu));
-			split.setRightComponent(rightScreen);
+			split.setRightComponent(desktopPane);
+//			split.setRightComponent(rightScreen);
 			split.setDividerLocation(200);
 			
 			centerPanel.add(split,BorderLayout.CENTER);
@@ -158,7 +168,30 @@ public class Application extends JFrame implements LocaleChangeListener {
 				@Override public void windowDeactivated(WindowEvent e) {}
 			});
 			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
+
+			pack();
+//			cardLayout.show(rightScreen,DESKTOP_WINDOW);
 		}
+	}
+
+	private void callPlugin(final String actionCommand) {
+		final URI	actionURI = URI.create(PluginInterface.PLUGIN_SCHEME+":"+actionCommand);
+		
+		for (PluginInterface item : ServiceLoader.load(PluginInterface.class)) {
+			if (item.canServe(actionURI)) {
+				try{final Object			inst = item.newIstance(stateString);
+					final SVGPluginFrame	frame = new SVGPluginFrame(localizer, inst);
+				        
+					 frame.setVisible(true);
+				     desktopPane.add(frame);
+					 frame.setSelected(true);
+				} catch (java.beans.PropertyVetoException | ContentException e) {
+					stateString.message(Severity.error,e,"Error creating plugin window: "+e.getLocalizedMessage());
+				}
+				return;
+			}			
+		}
+		stateString.message(Severity.error,"No any plugin found for ["+actionCommand+"]");
 	}
 
 	@Override
@@ -227,7 +260,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
-	public static void main(final String[] args) throws IOException, EnvironmentException, FlowException, ContentException {
+	public static void main(final String[] args) throws IOException, EnvironmentException, FlowException, ContentException, HeadlessException, URISyntaxException {
 		final ArgParser		parser = new ApplicationArgParser().parse(args);
 		
 		try(final InputStream				is = Application.class.getResourceAsStream("application.xml");
@@ -236,6 +269,22 @@ public class Application extends JFrame implements LocaleChangeListener {
 			final ContentMetadataInterface	xda = ContentModelFactory.forXmlDescription(is);
 			
 			new Application(xda,localizer,logger).setVisible(true);
+			
+//			final MyClass					myClass = new MyClass();
+//			final AutoBuiltForm<MyClass>	abf = new AutoBuiltForm<>(PureLibSettings.PURELIB_LOCALIZER, myClass
+//												, new FormManager<Object,MyClass>(){
+//													@Override
+//													public RefreshMode onField(MyClass inst, Object id, String fieldName, Object oldValue) throws FlowException, LocalizationException {
+//														return RefreshMode.DEFAULT;
+//													}
+//
+//													@Override
+//													public LoggerFacade getLogger() {
+//														return PureLibSettings.SYSTEM_ERR_LOGGER;
+//													}});
+//			final InnerSVGPluginWindow<MyClass>	w = new InnerSVGPluginWindow<>(Application.class.getResource("svgtest.SVG").toURI(),abf); 
+//			
+//			JOptionPane.showMessageDialog(null,w);
 		}
 	}
 	

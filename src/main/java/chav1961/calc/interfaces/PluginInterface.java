@@ -2,18 +2,11 @@ package chav1961.calc.interfaces;
 
 import java.net.URI;
 
-import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.basic.interfaces.LoggerFacade;
 
-public interface PluginInterface {
-	public interface CalculationModeDescriptor {
-		String getName();
-		String getDescription();
-		URI[] getInputParameters();
-		URI[] getOutputParameters();
-		String getFormula();
-	}	
+public interface PluginInterface<T> {
+	String PLUGIN_SCHEME = "calc";
 	
-	String getPluginName();
-	URI getPluginNavigatorPath();
-	ContentNodeMetadata getPluginModel();
+	boolean canServe(URI plugin);
+	T newIstance(LoggerFacade facade);
 }
