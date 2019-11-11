@@ -7,7 +7,7 @@ import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 
 public class ContourFactory implements PluginInterface<ContourPlugin>{
-	private static final URI	PLUGIN_URI = URI.create(PLUGIN_SCHEME+":action:/ContourCalculator"); 
+	private static final URI	PLUGIN_URI = URI.create(PLUGIN_SCHEME+":ContourCalculator:/"); 
 
 	@Override
 	public boolean canServe(final URI plugin) {

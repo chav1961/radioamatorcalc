@@ -69,6 +69,7 @@ public class SVGPluginFrame<T> extends JInternalFrame implements LocaleChangeLis
         	final PluginProperties	pp = instance.getClass().getAnnotation(PluginProperties.class);
         	
         	this.localizer = localizer;
+        	this.windowId = ++openFrameCount;
 			try{final FormManager<Object,T>	wrapper = new FormManagerWrapper<>((FormManager<Object,T>)instance, ()-> {refresh();}); 
 				
 				abf = new AutoBuiltForm<T>(localizer, instance, wrapper);
@@ -129,7 +130,6 @@ public class SVGPluginFrame<T> extends JInternalFrame implements LocaleChangeLis
 					}
 				});
 	        	
-	        	this.windowId = ++openFrameCount;
 			} catch (IllegalArgumentException | LocalizationException | NullPointerException |  IOException | URISyntaxException exc) {
 				throw new ContentException(exc);
 			}

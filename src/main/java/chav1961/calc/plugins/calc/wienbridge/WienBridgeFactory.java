@@ -7,7 +7,7 @@ import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 
 public class WienBridgeFactory implements PluginInterface<WienBridgePlugin>{
-	private static final URI	PLUGIN_URI = URI.create(PLUGIN_SCHEME+":action:/WinBridgeCalculator"); 
+	private static final URI	PLUGIN_URI = URI.create(PLUGIN_SCHEME+":WienBridgeCalculator:/"); 
 
 	@Override
 	public boolean canServe(final URI plugin) {

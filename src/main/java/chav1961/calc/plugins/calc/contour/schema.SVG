@@ -2,7 +2,7 @@
 <!-- Created with "sPlan" (http://www.abacom-online.de) -->
 <svg version="1.1" baseProfile="full"
 xmlns="http://www.w3.org/2000/svg"
-width="489" height="290">
+width="477" height="260">
 <title>schema</title>
 <defs>
 <style type="text/css">
@@ -14,17 +14,25 @@ circle {stroke-linecap:round; stroke-linejoin:round}
 ]]>
 </style>
 </defs>
-<polyline points="266.56 40.00 266.56 80.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
-<polyline points="266.56 160.00 266.56 200.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
-<path fill="none" stroke="rgb(0,0,0)" stroke-width="2" d=" M 266.56 100.00 Q 266.56 100.00 267.54 99.90 Q 268.51 99.81 269.45 99.52 Q 270.39 99.24 271.25 98.78 Q 272.12 98.31 272.87 97.69 Q 273.63 97.07 274.25 96.31 Q 274.87 95.56 275.34 94.69 Q 275.80 93.83 276.08 92.89 Q 276.37 91.95 276.46 90.98 Q 276.56 90.00 276.46 89.02 Q 276.37 88.05 276.08 87.11 Q 275.80 86.17 275.34 85.31 Q 274.87 84.44 274.25 83.69 Q 273.63 82.93 272.87 82.31 Q 272.12 81.69 271.25 81.22 Q 270.39 80.76 269.45 80.48 Q 268.51 80.19 267.54 80.10 Q 266.56 80.00 266.56 80.00 L 266.56 80.00" />
-<path fill="none" stroke="rgb(0,0,0)" stroke-width="2" d=" M 266.56 120.00 Q 266.56 120.00 267.54 119.90 Q 268.51 119.81 269.45 119.52 Q 270.39 119.24 271.25 118.78 Q 272.12 118.31 272.87 117.69 Q 273.63 117.07 274.25 116.31 Q 274.87 115.56 275.34 114.69 Q 275.80 113.83 276.08 112.89 Q 276.37 111.95 276.46 110.98 Q 276.56 110.00 276.46 109.02 Q 276.37 108.05 276.08 107.11 Q 275.80 106.17 275.34 105.31 Q 274.87 104.44 274.25 103.69 Q 273.63 102.93 272.87 102.31 Q 272.12 101.69 271.25 101.22 Q 270.39 100.76 269.45 100.48 Q 268.51 100.19 267.54 100.10 Q 266.56 100.00 266.56 100.00 L 266.56 100.00" />
-<path fill="none" stroke="rgb(0,0,0)" stroke-width="2" d=" M 266.56 140.00 Q 266.56 140.00 267.54 139.90 Q 268.51 139.81 269.45 139.52 Q 270.39 139.24 271.25 138.78 Q 272.12 138.31 272.87 137.69 Q 273.63 137.07 274.25 136.31 Q 274.87 135.56 275.34 134.69 Q 275.80 133.83 276.08 132.89 Q 276.37 131.95 276.46 130.98 Q 276.56 130.00 276.46 129.02 Q 276.37 128.05 276.08 127.11 Q 275.80 126.17 275.34 125.31 Q 274.87 124.44 274.25 123.69 Q 273.63 122.93 272.87 122.31 Q 272.12 121.69 271.25 121.22 Q 270.39 120.76 269.45 120.48 Q 268.51 120.19 267.54 120.10 Q 266.56 120.00 266.56 120.00 L 266.56 120.00" />
-<path fill="none" stroke="rgb(0,0,0)" stroke-width="2" d=" M 266.56 160.00 Q 266.56 160.00 267.54 159.90 Q 268.51 159.81 269.45 159.52 Q 270.39 159.24 271.25 158.78 Q 272.12 158.31 272.87 157.69 Q 273.63 157.07 274.25 156.31 Q 274.87 155.56 275.34 154.69 Q 275.80 153.83 276.08 152.89 Q 276.37 151.95 276.46 150.98 Q 276.56 150.00 276.46 149.02 Q 276.37 148.05 276.08 147.11 Q 275.80 146.17 275.34 145.31 Q 274.87 144.44 274.25 143.69 Q 273.63 142.93 272.87 142.31 Q 272.12 141.69 271.25 141.22 Q 270.39 140.76 269.45 140.48 Q 268.51 140.19 267.54 140.10 Q 266.56 140.00 266.56 140.00 L 266.56 140.00" />
-<text x="286.56" y="109.00" font-family ="ARIAL" font-size ="17pt" font-weight="normal" font-style="normal" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${inductance} &#181;H</text>
-<polyline points="186.56 90.00 186.56 120.00 206.56 120.00 166.56 120.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
-<polyline points="206.56 130.00 166.56 130.00 186.56 130.00 186.56 160.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
-<text x="40.00" y="109.00" font-family ="Arial" font-size ="17pt" font-weight="normal" font-style="italic" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${capacity} pF</text>
-<polyline points="266.56 200.00 186.56 200.00 186.56 160.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
-<polyline points="266.56 40.00 186.56 40.00 186.56 90.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
-<text x="166.56" y="242.00" font-family ="Arial" font-size ="28pt" font-weight="normal" font-style="normal" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${frequency} kHz</text>
+<polyline points="186.56 70.00 186.56 100.00 206.56 100.00 166.56 100.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="206.56 110.00 166.56 110.00 186.56 110.00 186.56 140.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<text x="40.00" y="89.00" font-family ="Arial" font-size ="17pt" font-weight="normal" font-style="italic" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${capacity} pF</text>
+<text x="166.56" y="212.00" font-family ="Arial" font-size ="28pt" font-weight="normal" font-style="normal" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${frequency} kHz</text>
+<path fill="rgb(255,255,255)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 227 80 L 247 80 247 130 227 130 227 80" />
+<polyline points="236.56 60.00 236.56 80.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="236.56 130.00 236.56 150.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<text x="249.56" y="125.00" font-family ="Arial" font-size ="17pt" font-weight="normal" font-style="italic" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${resistance} kOhm</text>
+<path fill="rgb(0,0,0)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 267 40 L 267 40 267 80 267 80 267 40" />
+<polyline points="276.56 60.00 306.56 60.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<path fill="rgb(0,0,0)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 277 40 L 277 40 277 80 277 80 277 40" />
+<polyline points="236.56 60.00 266.56 60.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<path fill="rgb(255,255,255)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 327 50 L 377 50 377 70 327 70 327 50" />
+<polyline points="306.56 60.00 326.56 60.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="376.56 60.00 396.56 60.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<circle cx="237" cy="60" r="6" fill="rgb(0,0,0)" stroke="none" stroke-width="2" />
+<circle cx="237" cy="150" r="6" fill="rgb(0,0,0)" stroke="none" stroke-width="2" />
+<polyline points="236.56 150.00 236.56 180.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="216.56 180.00 256.56 180.00" fill="none" stroke="rgb(0,0,0)" stroke-width="4" />
+<polyline points="236.56 150.00 186.56 150.00 186.56 140.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="186.56 70.00 186.56 60.00 236.56 60.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
 </svg>

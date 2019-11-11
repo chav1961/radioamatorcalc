@@ -175,7 +175,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	}
 
 	private void callPlugin(final String actionCommand) {
-		final URI	actionURI = URI.create(PluginInterface.PLUGIN_SCHEME+":"+actionCommand);
+		final URI	actionURI = URI.create(PluginInterface.PLUGIN_SCHEME+":"+URI.create(actionCommand).getSchemeSpecificPart().substring(1)+":/");
 		
 		for (PluginInterface item : ServiceLoader.load(PluginInterface.class)) {
 			if (item.canServe(actionURI)) {
