@@ -3,15 +3,10 @@ package chav1961.calc.utils;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Base64;
 import java.util.Locale;
 
@@ -25,10 +20,7 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicDesktopIconUI;
 
-import chav1961.calc.Application;
 import chav1961.calc.interfaces.PluginProperties;
-import chav1961.calc.plugins.calc.contour.ContourPlugin;
-import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
@@ -36,7 +28,6 @@ import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.ui.interfaces.FormManager;
 import chav1961.purelib.ui.interfaces.RefreshMode;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
@@ -106,7 +97,7 @@ public class SVGPluginFrame<T> extends JInternalFrame implements LocaleChangeLis
 					abf.setPreferredSize(new Dimension(pp.width() - pp.leftWidth(),pp.height()));
 				}
 				
-	        	setLocation(X_OFFSET*(openFrameCount % OFFSET_REPEAT), X_OFFSET*(openFrameCount % OFFSET_REPEAT));
+	        	setLocation(X_OFFSET*(openFrameCount % OFFSET_REPEAT), Y_OFFSET*(openFrameCount % OFFSET_REPEAT));
 	        	setResizable(pp.resizable());
 	
 	        	if (!pp.pluginIconURI().isEmpty()) {

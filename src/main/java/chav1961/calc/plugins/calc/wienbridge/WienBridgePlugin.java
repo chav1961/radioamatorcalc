@@ -15,7 +15,7 @@ import chav1961.purelib.ui.interfaces.RefreshMode;
 import chav1961.purelib.ui.interfaces.Action;
 
 @LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
-@LocaleResource(value="chav1961.calc.plugins.calc.wienbridge",tooltip="chav1961.calc.plugins.calc.wienbridge.tt",help="help.aboutApplication")
+@LocaleResource(value="menu.curcuits.wienbridge",tooltip="menu.curcuits.wienbridge.tt",help="help.aboutApplication")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.wienbridge.button.freq",tooltip="chav1961.calc.plugins.calc.wienbridge.button.freq.tt"),actionString="calcFreq")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.wienbridge.button.res",tooltip="chav1961.calc.plugins.calc.wienbridge.button.res.tt"),actionString="calcRes")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.wienbridge.button.cap",tooltip="chav1961.calc.plugins.calc.wienbridge.button.cap.tt"),actionString="calcCap")
