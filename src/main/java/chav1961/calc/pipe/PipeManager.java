@@ -10,6 +10,7 @@ import java.util.Locale;
 import javax.swing.JDesktopPane;
 import javax.swing.JToolBar;
 
+import chav1961.calc.interfaces.DragMode;
 import chav1961.calc.interfaces.PipeContainerInterface;
 import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -26,10 +27,6 @@ import chav1961.purelib.ui.swing.SwingModelUtils;
 public class PipeManager extends JDesktopPane implements Closeable, LocaleChangeListener {
 	private static final long serialVersionUID = 1L;
 
-	private enum DragMode {
-		NONE, CONTROLS, LINKS
-	}
-	
 	private final LoggerFacade				logger;
 	private final Localizer					localizer;
 	private final ContentMetadataInterface	cmi;
