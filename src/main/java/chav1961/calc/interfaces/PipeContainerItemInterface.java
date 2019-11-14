@@ -1,5 +1,6 @@
 package chav1961.calc.interfaces;
 
+import java.awt.Rectangle;
 import java.net.URI;
 
 public interface PipeContainerItemInterface {
@@ -7,8 +8,10 @@ public interface PipeContainerItemInterface {
 		FIELD, CONTROL
 	}
 	ContainerItemType getType();
-	boolean canUseAsSource();
-	boolean canUseAsTarget();
+	Rectangle getLocation();
+	URI getItemURI();
+	boolean canUseAsSource(DragMode mode);
+	boolean canUseAsTarget(DragMode mode);
 	int getIncomingLinkCount();
 	int getOutgoingLinkCount();
 	Iterable<PipeContainerItemInterface> getIncomingLinks();
