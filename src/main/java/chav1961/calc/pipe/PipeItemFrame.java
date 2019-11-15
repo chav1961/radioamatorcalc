@@ -59,18 +59,22 @@ class PipeItemFrame<T> extends JInternalFrame implements LocaleChangeListener, P
 	}
 
 	@Override
+	public boolean hasComponentAt(int x, int y) {
+		return false;
+	}
+	
+	@Override
+	public PipeContainerItemInterface at(int x, int y) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
 	public ContentMetadataInterface getModel() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	public boolean hasComponentAt(int x, int y) {
-		return false;
-	}
-	
-	public PipeContainerItemInterface at(int x, int y) {
-		return null;
-	}
 	
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) {
 		

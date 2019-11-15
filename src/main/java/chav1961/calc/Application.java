@@ -48,7 +48,10 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.lucene.store.FSDirectory;
 
+import chav1961.calc.interfaces.ContentClassificator.ContentType;
 import chav1961.calc.interfaces.PluginInterface;
+import chav1961.calc.pipe.DragDropGlass;
+import chav1961.calc.pipe.PipeManager;
 import chav1961.calc.plugins.calc.contour.ContourPlugin;
 import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.purelib.basic.ArgParser;
@@ -91,11 +94,12 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private final File						luceneDir = new File("./lucene");
 	private final CardLayout				cardLayout = new CardLayout(); 
 	private final JPanel					rightScreen = new JPanel();//(cardLayout);
-	private final JDesktopPane   			desktopPane = new JDesktopPane();
+	private final PipeManager   			desktopPane;// = new JDesktopPane();
 //	private final JDesktopPane   			searchPane = new JDesktopPane();
 	private final Timer						timer = new Timer(true);
 	private final JStateString				stateString;
 	private final JFileContentManipulator	contentManipulator;
+	private final DragDropGlass				glass;
 	
 	private File							currentPipeFile = null;
 	private File							currentWorkingDir = new File("./");
@@ -115,6 +119,10 @@ public class Application extends JFrame implements LocaleChangeListener {
 			this.logger = logger;
 			this.stateString = new JStateString(this.localizer,10);
 			this.settings = new CurrentSettings(this.localizer,this.logger);
+			this.desktopPane = new PipeManager(localizer,logger);
+			this.glass = new DragDropGlass(this,(x,y)->this.desktopPane.classify(x,y),()->this.desktopPane.iterator());
+
+			setGlassPane(glass);
 			
 			parentLocalizer.push(localizer);
 			localizer.addLocaleChangeListener(this);
@@ -147,6 +155,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			split.setDividerLocation(200);
 			
 			centerPanel.add(split,BorderLayout.CENTER);
+			
 			
 			SwingUtils.assignActionKey((JPanel)getContentPane()
 						,KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_DOWN_MASK)
