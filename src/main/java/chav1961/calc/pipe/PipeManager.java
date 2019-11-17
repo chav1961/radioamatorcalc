@@ -50,8 +50,6 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 
 	private final LoggerFacade				logger;
 	private final Localizer					localizer;
-	private final ContentMetadataInterface	cmi;
-	private final JToolBar					toolbar;
 	private final List<PipeItemFrame<?>>	frames = new ArrayList<>();
 	private final List<PipeLink>			links = new ArrayList<>();
 	private final ReentrantReadWriteLock	lock = new ReentrantReadWriteLock();
@@ -65,11 +63,7 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		}
 		else {
 			this.logger = logger;
-			try(final InputStream	is = this.getClass().getResourceAsStream("pipe.xml")) {
-				this.cmi = ContentModelFactory.forXmlDescription(is);
-			}
-			this.localizer = localizer.push(LocalizerFactory.getLocalizer(cmi.getRoot().getLocalizerAssociated()));
-			this.toolbar = SwingModelUtils.toToolbar(cmi.byUIPath(URI.create("")),JToolBar.class);
+			this.localizer = localizer;
 		}
 	}
 	

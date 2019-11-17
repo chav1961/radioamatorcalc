@@ -40,6 +40,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.HyperlinkEvent;
@@ -93,9 +94,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private final SimpleNavigatorTree		leftMenu;
 	private final File						luceneDir = new File("./lucene");
 	private final CardLayout				cardLayout = new CardLayout(); 
-	private final JPanel					rightScreen = new JPanel();//(cardLayout);
-	private final PipeManager   			desktopPane;// = new JDesktopPane();
-//	private final JDesktopPane   			searchPane = new JDesktopPane();
+	private final PipeManager   			desktopPane;
 	private final Timer						timer = new Timer(true);
 	private final JStateString				stateString;
 	private final JFileContentManipulator	contentManipulator;
@@ -146,12 +145,15 @@ public class Application extends JFrame implements LocaleChangeListener {
 												,()->{return new InputStream() {@Override public int read() throws IOException {return -1;}};}
 												,()->{return new OutputStream() {@Override public void write(int b) throws IOException {}};}
 												);
-//			rightScreen.add(DESKTOP_WINDOW,desktopPane);
-//			rightScreen.add(desktopPane);
+
+			final JPanel	rightPane = new JPanel(new BorderLayout());
+			final JToolBar	bar = SwingModelUtils.toToolbar(xda.byUIPath(URI.create("ui:/model/navigation.top.desktopToolbar")), JToolBar.class);
+			
+			rightPane.add(bar,BorderLayout.NORTH);
+			rightPane.add(desktopPane,BorderLayout.CENTER);
 			
 			split.setLeftComponent(new JScrollPane(leftMenu));
-			split.setRightComponent(desktopPane);
-//			split.setRightComponent(rightScreen);
+			split.setRightComponent(rightPane);
 			split.setDividerLocation(200);
 			
 			centerPanel.add(split,BorderLayout.CENTER);
