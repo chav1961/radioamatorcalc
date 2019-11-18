@@ -1,8 +1,7 @@
-package chav1961.calc.pipe;
+package chav1961.calc.windows;
 
 import java.awt.Component;
 import java.awt.Point;
-import java.awt.dnd.DropTarget;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,17 +17,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
-import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import chav1961.calc.interfaces.ContentClassificator;
 import chav1961.calc.interfaces.ContentEnumerator;
 import chav1961.calc.interfaces.DragMode;
-import chav1961.calc.interfaces.PipeContainerInterface;
 import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
+import chav1961.calc.windows.DragDropGlass.DragNotification;
 import chav1961.calc.interfaces.PipeContainerItemInterface;
 import chav1961.calc.interfaces.PipeItemDropTarget;
-import chav1961.calc.pipe.DragDropGlass.DragNotification;
 import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.SequenceIterator;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -36,14 +33,10 @@ import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
-import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
-import chav1961.purelib.model.ContentModelFactory;
-import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.model.interfaces.NodeMetadataOwner;
-import chav1961.purelib.ui.swing.SwingModelUtils;
 
 public class PipeManager extends JDesktopPane implements Closeable, LocaleChangeListener, ContentClassificator, ContentEnumerator, DragNotification {
 	private static final long serialVersionUID = 1L;

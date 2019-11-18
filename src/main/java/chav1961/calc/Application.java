@@ -3,6 +3,7 @@ package chav1961.calc;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -19,6 +20,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
@@ -35,11 +37,14 @@ import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.border.EtchedBorder;
@@ -51,10 +56,12 @@ import org.apache.lucene.store.FSDirectory;
 
 import chav1961.calc.interfaces.ContentClassificator.ContentType;
 import chav1961.calc.interfaces.PluginInterface;
-import chav1961.calc.pipe.DragDropGlass;
-import chav1961.calc.pipe.PipeManager;
+import chav1961.calc.interfaces.TabContent;
 import chav1961.calc.plugins.calc.contour.ContourPlugin;
 import chav1961.calc.utils.SVGPluginFrame;
+import chav1961.calc.windows.DragDropGlass;
+import chav1961.calc.windows.PipeManager;
+import chav1961.calc.windows.WorkbenchTab;
 import chav1961.purelib.basic.ArgParser;
 import chav1961.purelib.basic.NullLoggerFacade;
 import chav1961.purelib.basic.PureLibSettings;
@@ -63,11 +70,14 @@ import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.exceptions.PreparationException;
+import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.fsys.FileSystemOnFile;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.PureLibLocalizer;
+import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
@@ -77,6 +87,7 @@ import chav1961.purelib.ui.swing.SimpleNavigatorTree;
 import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
+import chav1961.purelib.ui.swing.useful.JCloseableTab;
 import chav1961.purelib.ui.swing.useful.JFileContentManipulator;
 import chav1961.purelib.ui.swing.useful.JStateString;
 
@@ -93,17 +104,15 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private final JMenuBar					menu;
 	private final SimpleNavigatorTree		leftMenu;
 	private final File						luceneDir = new File("./lucene");
-	private final CardLayout				cardLayout = new CardLayout(); 
-	private final PipeManager   			desktopPane;
+	private final JTabbedPane				tabs = new JTabbedPane();
 	private final Timer						timer = new Timer(true);
 	private final JStateString				stateString;
 	private final JFileContentManipulator	contentManipulator;
-	private final DragDropGlass				glass;
 	
 	private File							currentPipeFile = null;
 	private File							currentWorkingDir = new File("./");
 
-	public Application(final ContentMetadataInterface xda, final Localizer parentLocalizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException {
+	public Application(final ContentMetadataInterface xda, final Localizer parentLocalizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException, SyntaxException, PreparationException, ContentException {
 		if (xda == null) {
 			throw new NullPointerException("Application descriptor can't be null");
 		}
@@ -118,10 +127,6 @@ public class Application extends JFrame implements LocaleChangeListener {
 			this.logger = logger;
 			this.stateString = new JStateString(this.localizer,10);
 			this.settings = new CurrentSettings(this.localizer,this.logger);
-			this.desktopPane = new PipeManager(localizer,logger);
-			this.glass = new DragDropGlass(this,(x,y)->this.desktopPane.classify(x,y),()->this.desktopPane.iterator());
-
-			setGlassPane(glass);
 			
 			parentLocalizer.push(localizer);
 			localizer.addLocaleChangeListener(this);
@@ -146,18 +151,16 @@ public class Application extends JFrame implements LocaleChangeListener {
 												,()->{return new OutputStream() {@Override public void write(int b) throws IOException {}};}
 												);
 
-			final JPanel	rightPane = new JPanel(new BorderLayout());
-			final JToolBar	bar = SwingModelUtils.toToolbar(xda.byUIPath(URI.create("ui:/model/navigation.top.desktopToolbar")), JToolBar.class);
-			
-			rightPane.add(bar,BorderLayout.NORTH);
-			rightPane.add(desktopPane,BorderLayout.CENTER);
-			
 			split.setLeftComponent(new JScrollPane(leftMenu));
-			split.setRightComponent(rightPane);
+			split.setRightComponent(tabs);
 			split.setDividerLocation(200);
 			
 			centerPanel.add(split,BorderLayout.CENTER);
+
+			final WorkbenchTab	wbt = new WorkbenchTab(localizer,stateString,xda);
+			final ContentMetadataInterface wbm = ContentModelFactory.forAnnotatedClass(WorkbenchTab.class);
 			
+			placeTab(tabs,wbt,false);
 			
 			SwingUtils.assignActionKey((JPanel)getContentPane()
 						,KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_DOWN_MASK)
@@ -194,7 +197,8 @@ public class Application extends JFrame implements LocaleChangeListener {
 					final SVGPluginFrame	frame = new SVGPluginFrame(localizer, inst);
 				        
 					 frame.setVisible(true);
-				     desktopPane.add(frame);
+					 ((WorkbenchTab)tabs.getSelectedComponent()).placePlugin(frame);
+//				     desktopPane.add(frame);
 					 frame.setSelected(true);
 				} catch (java.beans.PropertyVetoException | ContentException e) {
 					stateString.message(Severity.error,e,"Error creating plugin window: "+e.getLocalizedMessage());
@@ -241,7 +245,6 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
-	
 	@OnAction("action:/helpAbout")
 	private void showAboutScreen() {
 		try{final JEditorPane 	pane = new JEditorPane("text/html",null);
@@ -271,6 +274,28 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
+	private void placeTab(final JTabbedPane pane, final JPanel tab, final boolean canClose) throws MalformedURLException, LocalizationException, SyntaxException, ContentException {
+//		final Class<?>					tabClass = tab.getClass();
+//		final ContentMetadataInterface 	model = ContentModelFactory.forAnnotatedClass(tabClass);
+		final JCloseableTab				label = ((TabContent)tab).getTab();
+		final JPopupMenu				menu = ((TabContent)tab).getPopupMenu();
+		
+		if (menu != null) {
+			label.associate(pane, tab, menu);
+		}
+		else {
+			label.associate(pane, tab);
+		}
+		label.setCloseEnable(canClose);
+		pane.addTab("???",tab);
+		for (int index = 0, maxIndex = pane.getComponentCount(); index < maxIndex; index++) {
+			if (pane.getComponent(index) == tab) {
+				pane.setTabComponentAt(index,label);
+				break;
+			}
+		}
+	}
+
 	public static void main(final String[] args) throws IOException, EnvironmentException, FlowException, ContentException, HeadlessException, URISyntaxException {
 		final ArgParser		parser = new ApplicationArgParser().parse(args);
 		
@@ -280,22 +305,6 @@ public class Application extends JFrame implements LocaleChangeListener {
 			final ContentMetadataInterface	xda = ContentModelFactory.forXmlDescription(is);
 			
 			new Application(xda,localizer,logger).setVisible(true);
-			
-//			final MyClass					myClass = new MyClass();
-//			final AutoBuiltForm<MyClass>	abf = new AutoBuiltForm<>(PureLibSettings.PURELIB_LOCALIZER, myClass
-//												, new FormManager<Object,MyClass>(){
-//													@Override
-//													public RefreshMode onField(MyClass inst, Object id, String fieldName, Object oldValue) throws FlowException, LocalizationException {
-//														return RefreshMode.DEFAULT;
-//													}
-//
-//													@Override
-//													public LoggerFacade getLogger() {
-//														return PureLibSettings.SYSTEM_ERR_LOGGER;
-//													}});
-//			final InnerSVGPluginWindow<MyClass>	w = new InnerSVGPluginWindow<>(Application.class.getResource("svgtest.SVG").toURI(),abf); 
-//			
-//			JOptionPane.showMessageDialog(null,w);
 		}
 	}
 	

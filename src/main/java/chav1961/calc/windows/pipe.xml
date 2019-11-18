@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app:root xmlns:app="http://ui.purelib.chav1961/">
+	<app:i18n location="i18n:prop:chav1961/calculator/i18n/i18n"/>
+	<app:menu id="mainmenu">
+		<app:submenu name="menu.file" caption="menu.file" tooltip="menu.ttFile">
+			<app:item name="menu.file.cleandesktop" caption="menu.cleanDesktop" tooltip="menu.ttCleanDesktop" action="cleanDektop"/>
+			<app:separator/>
+		</app:submenu>
+	</app:menu>
+</app:root>

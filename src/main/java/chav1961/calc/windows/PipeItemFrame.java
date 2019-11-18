@@ -1,4 +1,4 @@
-package chav1961.calc.pipe;
+package chav1961.calc.windows;
 
 import java.util.Locale;
 

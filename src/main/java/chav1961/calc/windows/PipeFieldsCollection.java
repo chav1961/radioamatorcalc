@@ -1,4 +1,4 @@
-package chav1961.calc.pipe;
+package chav1961.calc.windows;
 
 import chav1961.calc.interfaces.PipeContainerValueInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
