@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <app:root xmlns:app="http://ui.purelib.chav1961/">
 	<app:i18n location="i18n:prop:chav1961/calculator/i18n/i18n"/>
-	<app:menu id="mainmenu">
-		<app:submenu name="menu.file" caption="menu.file" tooltip="menu.ttFile">
-			<app:item name="menu.file.cleandesktop" caption="menu.cleanDesktop" tooltip="menu.ttCleanDesktop" action="cleanDektop"/>
+	<app:menu id="workbenchMenu">
+		<app:item name="workbenchMenu.iconifyAll" caption="workbenchMenu.iconifyAll" tooltip="workbenchMenu.iconifyAll.tt" action="iconifyAll"/>
+		<app:item name="workbenchMenu.closeAll" caption="workbenchMenu.closeAll" tooltip="workbenchMenu.closeAll.tt" action="closeAll"/>
+	</app:menu>
+	<app:menu id="pipeMenu">
+		<app:submenu name="pipeMenu.new" caption="pipeMenu.new" tooltip="pipeMenu.new.tt">
+			<app:item name="pipeMenu.new.initial" caption="pipeMenu.new.initial" tooltip="pipeMenu.new.initial.tt" action="newInitial"/>
 			<app:separator/>
+			<app:item name="pipeMenu.new.conditional" caption="pipeMenu.new.conditional" tooltip="pipeMenu.new.conditional.tt" action="newConditional"/>
+			<app:item name="pipeMenu.new.calc" caption="pipeMenu.new.calc" tooltip="pipeMenu.new.calc.tt" action="newCalc"/>
+			<app:item name="pipeMenu.new.dialog" caption="pipeMenu.new.dialog" tooltip="pipeMenu.new.dialog.tt" action="newDialog"/>
+			<app:separator/>
+			<app:item name="pipeMenu.new.terminal" caption="pipeMenu.new.terminal" tooltip="pipeMenu.new.terminal.tt" action="newTerminal"/>
 		</app:submenu>
+		<app:separator/>
+		<app:item name="pipeMenu.clean" caption="pipeMenu.clean" tooltip="pipeMenu.clean.tt" action="cleanPipe"/>
+		<app:item name="pipeMenu.validate" caption="pipeMenu.validate" tooltip="pipeMenu.validate.tt" action="validatePipe"/>
 	</app:menu>
 </app:root>

@@ -2,21 +2,31 @@ package chav1961.calc.windows;
 
 import java.awt.BorderLayout;
 import java.beans.PropertyVetoException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.Locale;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import javax.swing.text.html.parser.ContentModel;
 
+import chav1961.calc.LocalizationKeys;
 import chav1961.calc.interfaces.TabContent;
 import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.purelib.basic.exceptions.ContentException;
+import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.PreparationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.basic.subscribable.SubscribableInt;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
@@ -28,42 +38,51 @@ import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 import chav1961.purelib.ui.swing.useful.JCloseableTab;
+import chav1961.purelib.ui.swing.useful.JLocalizedOptionPane;
 
 @LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
 @LocaleResource(value = "chav1961.calc.workbench", tooltip = "chav1961.calc.workbench.tt", icon = "root:/WorkbenchTab!")
-@Action(resource=@LocaleResource(value="chav1961.calc.workbench.action.iconifyAll",tooltip="chav1961.calc.workbench.action.iconifyAll.tt"),actionString="iconifyAll")
-@Action(resource=@LocaleResource(value="chav1961.calc.workbench.action.closeAll",tooltip="chav1961.calc.workbench.action.closeAll.tt"),actionString="removeAll")
 public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeListener, TabContent {
 	private static final long serialVersionUID = 1L;
 
+	public final SubscribableInt			pluginCount = new SubscribableInt(); 
+	public final SubscribableInt			iconifiedCount = new SubscribableInt(); 
+	
 	private final JDesktopPane				pane = new JDesktopPane();
 	private final Localizer					localizer;
 	private final LoggerFacade				logger;
-	private final ContentMetadataInterface	model;
 	private final ContentMetadataInterface	ownModel;
+	private final ContentMetadataInterface	xmlModel;
 	private final JCloseableTab				tab;
 	private final JPopupMenu				popup;
 	
 	@LocaleResource(value="chav1961.calc.workbench",tooltip="chav1961.calc.workbench.tt")
 	private final boolean field = false;
 	
-	public WorkbenchTab(final Localizer localizer, final LoggerFacade logger, final ContentMetadataInterface model) throws SyntaxException, LocalizationException, ContentException {
+	public WorkbenchTab(final Localizer localizer, final LoggerFacade logger) throws SyntaxException, LocalizationException, ContentException {
 		if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null");
 		}
 		else if (logger == null) {
 			throw new NullPointerException("Logger can't be null");
 		}
-		else if (model == null) {
-			throw new NullPointerException("Content model can't be null");
-		}
 		else {
 			this.localizer = localizer;
 			this.logger = logger;
-			this.model = model;
 			this.ownModel = ContentModelFactory.forAnnotatedClass(this.getClass());
+			try(final InputStream	is = this.getClass().getResourceAsStream("pipe.xml")) {
+				this.xmlModel = ContentModelFactory.forXmlDescription(is);
+			} catch (IOException | EnvironmentException e) {
+				throw new ContentException(e);
+			}
 			this.tab = new JCloseableTab(localizer,this.ownModel.getRoot());
-			this.popup = SwingModelUtils.actionToMenuEntity(ownModel.getRoot(),JPopupMenu.class);
+			this.popup = SwingModelUtils.toMenuEntity(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.workbenchMenu")),JPopupMenu.class);
+
+			pluginCount.addListener((oldValue,newValue)->{
+				((JMenuItem)SwingUtils.findComponentByName(popup,"workbenchMenu.closeAll")).setEnabled(newValue != 0);
+				iconifiedCount.refresh();
+			});
+			iconifiedCount.addListener((oldValue,newValue)->((JMenuItem)SwingUtils.findComponentByName(popup,"workbenchMenu.iconifyAll")).setEnabled(newValue < pluginCount.get()));
 			
 			setLayout(new BorderLayout());
 			add(pane,BorderLayout.CENTER);
@@ -91,27 +110,59 @@ public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeL
 	}
 	
 	public <T> void placePlugin(final SVGPluginFrame<T> frame) throws ContentException {
+		frame.addInternalFrameListener(new InternalFrameListener() {
+			@Override public void internalFrameOpened(InternalFrameEvent e) {}
+			@Override public void internalFrameDeactivated(InternalFrameEvent e) {}
+			@Override public void internalFrameClosing(InternalFrameEvent e) {
+				
+			}
+			@Override public void internalFrameActivated(InternalFrameEvent e) {}
+			
+			@Override 
+			public void internalFrameIconified(InternalFrameEvent e) {
+				iconifiedCount.set(iconifiedCount.get()+1);
+			}
+			
+			@Override
+			public void internalFrameDeiconified(InternalFrameEvent e) {
+				iconifiedCount.set(iconifiedCount.get()-1);
+			}
+			
+			@Override
+			public void internalFrameClosed(InternalFrameEvent e) {
+				pluginCount.set(pluginCount.get()-1);
+				if (frame.isIcon()) {
+					iconifiedCount.set(iconifiedCount.get()-1);
+				}
+			}
+		});
 		frame.setVisible(true);
 		pane.add(frame);
+		pluginCount.set(pluginCount.get()+1);
 		try{frame.setSelected(true);
 		} catch (PropertyVetoException e) {
 			throw new ContentException(e);
 		}
 	}
 	
-	@OnAction("action:/WorkbenchTab.iconifyAll")
+	@OnAction("action:/iconifyAll")
 	public void iconifyAll() {
 		for (JInternalFrame item : pane.getAllFrames()) {
 			if (item.isIconifiable()) {
 				pane.getDesktopManager().iconifyFrame(item);
 			}
 		}
+		iconifiedCount.set(pluginCount.get());
 	}
 
-	@OnAction("action:/WorkbenchTab.removeAll")
-	public void removeAll() {
-		for (JInternalFrame item : pane.getAllFrames()) {
-			pane.getDesktopManager().closeFrame(item);
+	@OnAction("action:/closeAll")
+	public void closeAll() throws LocalizationException {
+		if (new JLocalizedOptionPane(localizer).confirm(this, LocalizationKeys.CONFIRM_CLEAR_DESKTOP_MESSAGE, LocalizationKeys.CONFIRM_CLEAR_DESKTOP_CAPTION, JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+			for (JInternalFrame item : pane.getAllFrames()) {
+				pane.getDesktopManager().closeFrame(item);
+			}
+			iconifiedCount.set(0);
+			pluginCount.set(0);
 		}
 	}
 }

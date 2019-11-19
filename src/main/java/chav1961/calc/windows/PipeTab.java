@@ -9,6 +9,7 @@ import java.util.Locale;
 import javax.swing.JDesktopPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JToolBar;
 
 import chav1961.calc.interfaces.TabContent;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -24,6 +25,7 @@ import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
+import chav1961.purelib.ui.swing.interfaces.OnAction;
 import chav1961.purelib.ui.swing.useful.JCloseableTab;
 
 @LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
@@ -34,28 +36,24 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	private final JDesktopPane				pane = new JDesktopPane();
 	private final Localizer					localizer;
 	private final LoggerFacade				logger;
-	private final ContentMetadataInterface	model;
 	private final ContentMetadataInterface	ownModel, xmlModel;
 	private final JCloseableTab				tab;
 	private final JPopupMenu				popup;
+	private final JToolBar					toolbar;
 
 	@LocaleResource(value="chav1961.calc.workbench",tooltip="chav1961.calc.workbench.tt")
 	private final boolean field = false;
 	
-	public PipeTab(final Localizer localizer, final LoggerFacade logger, final ContentMetadataInterface model) throws SyntaxException, LocalizationException, ContentException {
+	public PipeTab(final Localizer localizer, final LoggerFacade logger) throws SyntaxException, LocalizationException, ContentException {
 		if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null");
 		}
 		else if (logger == null) {
 			throw new NullPointerException("Logger can't be null");
 		}
-		else if (model == null) {
-			throw new NullPointerException("Content model can't be null");
-		}
 		else {
 			this.localizer = localizer;
 			this.logger = logger;
-			this.model = model;
 			this.ownModel = ContentModelFactory.forAnnotatedClass(this.getClass());
 			
 			try(final InputStream	is = this.getClass().getResourceAsStream("pipe.xml")) {
@@ -65,10 +63,13 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			}
 			
 			this.tab = new JCloseableTab(localizer,this.ownModel.getRoot());
-			this.popup = SwingModelUtils.toMenuEntity(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.mainmenu")),JPopupMenu.class);
+			this.popup = SwingModelUtils.toMenuEntity(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.pipeMenu")),JPopupMenu.class);
 			SwingUtils.assignActionListeners(this.popup,this);
+			this.toolbar = SwingModelUtils.toToolbar(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.pipeMenu")),JToolBar.class);
+			SwingUtils.assignActionListeners(this.toolbar,this);
 			
 			setLayout(new BorderLayout());
+			add(toolbar,BorderLayout.NORTH);
 			add(pane,BorderLayout.CENTER);
 		}
 	}
@@ -93,6 +94,11 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	@Override
 	public void close() throws Exception {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	@OnAction("action:/newInitial")
+	private void newInitial() {
 		
 	}
 }

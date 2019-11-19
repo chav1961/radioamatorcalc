@@ -7,6 +7,8 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -23,6 +25,8 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ServiceLoader;
 import java.util.Timer;
@@ -39,6 +43,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -47,6 +52,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -61,6 +67,7 @@ import chav1961.calc.plugins.calc.contour.ContourPlugin;
 import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.calc.windows.DragDropGlass;
 import chav1961.calc.windows.PipeManager;
+import chav1961.calc.windows.PipeTab;
 import chav1961.calc.windows.WorkbenchTab;
 import chav1961.purelib.basic.ArgParser;
 import chav1961.purelib.basic.NullLoggerFacade;
@@ -108,7 +115,9 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private final Timer						timer = new Timer(true);
 	private final JStateString				stateString;
 	private final JFileContentManipulator	contentManipulator;
-	
+	private final WorkbenchTab				wbt;
+	private final List<PipeTab>				pipes = new ArrayList<>();
+			
 	private File							currentPipeFile = null;
 	private File							currentWorkingDir = new File("./");
 
@@ -132,9 +141,10 @@ public class Application extends JFrame implements LocaleChangeListener {
 			localizer.addLocaleChangeListener(this);
 			
 			this.menu = SwingModelUtils.toMenuEntity(xda.byUIPath(URI.create("ui:/model/navigation.top.mainmenu")),JMenuBar.class); 
+			SwingUtils.assignActionListeners(this.menu,this);
+			
 			final JPanel	centerPanel = new JPanel(new BorderLayout()); 
 			
-			SwingUtils.assignActionListeners(this.menu,this);
 			getContentPane().add(this.menu,BorderLayout.NORTH);
 			centerPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 			getContentPane().add(centerPanel,BorderLayout.CENTER);
@@ -157,9 +167,9 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			centerPanel.add(split,BorderLayout.CENTER);
 
-			final WorkbenchTab	wbt = new WorkbenchTab(localizer,stateString,xda);
-			final ContentMetadataInterface wbm = ContentModelFactory.forAnnotatedClass(WorkbenchTab.class);
-			
+			wbt = new WorkbenchTab(localizer,stateString);			
+			wbt.pluginCount.addListener((oldValue,newValue)->((JMenuItem)SwingUtils.findComponentByName(menu,"menu.file.cleandesktop")).setEnabled(newValue != 0));
+			wbt.pluginCount.refresh();
 			placeTab(tabs,wbt,false);
 			
 			SwingUtils.assignActionKey((JPanel)getContentPane()
@@ -182,9 +192,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				@Override public void windowDeactivated(WindowEvent e) {}
 			});
 			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
-
 			pack();
-//			cardLayout.show(rightScreen,DESKTOP_WINDOW);
 		}
 	}
 
@@ -224,6 +232,25 @@ public class Application extends JFrame implements LocaleChangeListener {
 		setTitle(localizer.getValue(LocalizationKeys.TITLE_APPLICATION));
 	}
 
+	@OnAction("action:/cleanDektop")
+	private void cleanDesktop() {
+		try{
+			wbt.closeAll();
+		} catch (LocalizationException e) {
+			stateString.message(Severity.error,e.getLocalizedMessage());
+		}
+	}	
+
+	@OnAction("action:/newPipe")
+	private void newPipe() {
+		try{
+			final PipeTab	pipe = new PipeTab(localizer,logger);
+			
+			placeTab(tabs,pipe,true);
+		} catch (LocalizationException | ContentException | MalformedURLException e) {
+			stateString.message(Severity.error,e.getLocalizedMessage());
+		}
+	}
 	
 	@OnAction("action:/exit")
 	private void exitApplication () {
@@ -275,10 +302,8 @@ public class Application extends JFrame implements LocaleChangeListener {
 	}
 
 	private void placeTab(final JTabbedPane pane, final JPanel tab, final boolean canClose) throws MalformedURLException, LocalizationException, SyntaxException, ContentException {
-//		final Class<?>					tabClass = tab.getClass();
-//		final ContentMetadataInterface 	model = ContentModelFactory.forAnnotatedClass(tabClass);
-		final JCloseableTab				label = ((TabContent)tab).getTab();
-		final JPopupMenu				menu = ((TabContent)tab).getPopupMenu();
+		final JCloseableTab	label = ((TabContent)tab).getTab();
+		final JPopupMenu	menu = ((TabContent)tab).getPopupMenu();
 		
 		if (menu != null) {
 			label.associate(pane, tab, menu);
@@ -287,13 +312,8 @@ public class Application extends JFrame implements LocaleChangeListener {
 			label.associate(pane, tab);
 		}
 		label.setCloseEnable(canClose);
-		pane.addTab("???",tab);
-		for (int index = 0, maxIndex = pane.getComponentCount(); index < maxIndex; index++) {
-			if (pane.getComponent(index) == tab) {
-				pane.setTabComponentAt(index,label);
-				break;
-			}
-		}
+		pane.addTab("",tab);
+		pane.setTabComponentAt(pane.getTabCount()-1,label);
 	}
 
 	public static void main(final String[] args) throws IOException, EnvironmentException, FlowException, ContentException, HeadlessException, URISyntaxException {
@@ -310,8 +330,8 @@ public class Application extends JFrame implements LocaleChangeListener {
 	
 	private static class ApplicationArgParser extends ArgParser {
 		private static final ArgParser.AbstractArg[]	KEYS = {
-					new BooleanArg("debug", false, "turn on debugging trace", false)
-				};
+			new BooleanArg("debug", false, "turn on debugging trace", false)
+		};
 		
 		ApplicationArgParser() {
 			super(KEYS);

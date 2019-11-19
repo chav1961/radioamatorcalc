@@ -1,5 +1,6 @@
 package chav1961.calc.windows;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Point;
 import java.io.Closeable;
@@ -17,6 +18,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import chav1961.calc.interfaces.ContentClassificator;
@@ -33,21 +37,37 @@ import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
+import chav1961.purelib.basic.subscribable.SubscribableBoolean;
+import chav1961.purelib.basic.subscribable.SubscribableInt;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.ui.swing.SwingModelUtils;
+import chav1961.purelib.ui.swing.SwingUtils;
+import chav1961.purelib.ui.swing.interfaces.OnAction;
+import chav1961.purelib.ui.swing.useful.JCloseableTab;
+import chav1961.purelib.model.ContentModelFactory;
+import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.NodeMetadataOwner;
 
 public class PipeManager extends JDesktopPane implements Closeable, LocaleChangeListener, ContentClassificator, ContentEnumerator, DragNotification {
 	private static final long serialVersionUID = 1L;
 
+	private final JDesktopPane				pane = new JDesktopPane();
 	private final LoggerFacade				logger;
 	private final Localizer					localizer;
+	private final ContentMetadataInterface	ownModel;
+	private final ContentMetadataInterface	xmlModel;
 	private final List<PipeItemFrame<?>>	frames = new ArrayList<>();
 	private final List<PipeLink>			links = new ArrayList<>();
 	private final ReentrantReadWriteLock	lock = new ReentrantReadWriteLock();
+	private final JCloseableTab				tab;
+	private final JPopupMenu				popup;
+	private final JToolBar					toolbar;
+	private final SubscribableInt			pluginCount = new SubscribableInt(); 
+	private final SubscribableBoolean		hasInitial = new SubscribableBoolean(); 
 	
-	public PipeManager(final Localizer localizer, final LoggerFacade logger) throws IOException, EnvironmentException {
+	public PipeManager(final Localizer localizer, final LoggerFacade logger) throws IOException, EnvironmentException, ContentException {
 		if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null");
 		}
@@ -55,8 +75,26 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 			throw new NullPointerException("Logger can't be null");
 		}
 		else {
-			this.logger = logger;
 			this.localizer = localizer;
+			this.logger = logger;
+			this.ownModel = ContentModelFactory.forAnnotatedClass(this.getClass());
+			try(final InputStream	is = this.getClass().getResourceAsStream("pipe.xml")) {
+				this.xmlModel = ContentModelFactory.forXmlDescription(is);
+			} catch (IOException | EnvironmentException e) {
+				throw new ContentException(e);
+			}
+			this.tab = new JCloseableTab(localizer,this.ownModel.getRoot());
+			this.popup = SwingModelUtils.toMenuEntity(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.pipeMenu")),JPopupMenu.class);
+			this.toolbar = SwingModelUtils.toToolbar(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.pipeMenu")),JToolBar.class);
+
+			pluginCount.addListener((oldValue,newValue)->{((JMenuItem)SwingUtils.findComponentByName(popup,"pipeMenu.clean")).setEnabled(newValue != 0);});
+			hasInitial.addListener((oldValue,newValue)->{((JMenuItem)SwingUtils.findComponentByName(popup,"pipeMenu.new.initial")).setEnabled(newValue);});
+			
+			pluginCount.refresh();
+			
+			setLayout(new BorderLayout());
+			add(toolbar,BorderLayout.NORTH);
+			add(pane,BorderLayout.CENTER);
 		}
 	}
 	
@@ -200,6 +238,16 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		// TODO Auto-generated method stub
 		
 	}
+
+	@OnAction("action:/cleanPipe")
+	public void clean(final LoggerFacade facade) {
+		
+	}
+
+	@OnAction("action:/validatePipe")
+	public boolean validatePipe() {
+		return validatePipe(logger);
+	}	
 	
 	public boolean validatePipe(final LoggerFacade facade) {
 		// TODO Auto-generated method stub
