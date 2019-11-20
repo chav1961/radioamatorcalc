@@ -1,7 +1,9 @@
 package chav1961.calc.windows;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -11,8 +13,12 @@ import javax.swing.JDesktopPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 
+import chav1961.calc.interfaces.MetadataTarget;
 import chav1961.calc.interfaces.TabContent;
+import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
@@ -24,18 +30,24 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
+import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.model.interfaces.NodeMetadataOwner;
 import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
+import chav1961.purelib.ui.swing.useful.DnDManager;
+import chav1961.purelib.ui.swing.useful.DnDManager.DnDInterface;
+import chav1961.purelib.ui.swing.useful.DnDManager.DnDMode;
 import chav1961.purelib.ui.swing.useful.JCloseableTab;
 
 @LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
 @LocaleResource(value = "chav1961.calc.pipe", tooltip = "chav1961.calc.pipe.tt", icon = "root:/WorkbenchTab!")
-public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListener, TabContent {
+public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListener, TabContent, DnDInterface {
 	private static final long 				serialVersionUID = 1L;
 	private static final String				MODIFICATION_MARK = "*";
 
 	private final JDesktopPane				pane = new JDesktopPane();
+	private final DnDManager				dndManager;
 	private final Localizer					localizer;
 	private final LoggerFacade				logger;
 	private final ContentMetadataInterface	ownModel, xmlModel;
@@ -60,6 +72,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			this.localizer = localizer;
 			this.logger = logger;
 			this.ownModel = ContentModelFactory.forAnnotatedClass(this.getClass());
+			this.dndManager = new DnDManager(pane,this);
 			
 			localizer.associateValue(this.getClass().getAnnotation(LocaleResource.class).value(),()->new Object[] {isModified ? MODIFICATION_MARK : "",pipeName});
 			
@@ -99,10 +112,86 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 
 	@Override
 	public void close() throws Exception {
+		dndManager.close();
+	}
+
+	@Override
+	public Class<?> getSourceClass(final DnDMode currentMode, final Component component, final int x, final int y) {
+		if (component instanceof NodeMetadataOwner) {
+			return ContentNodeMetadata.class;
+		}
+		else {
+			return null;
+		}
+	}
+
+	@Override
+	public Object getSource(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo) { 
+		if (from instanceof NodeMetadataOwner) {
+			return ((NodeMetadataOwner)from).getNodeMetadata();
+		}
+		else {
+			return null;
+		}
+	}
+
+	@Override
+	public boolean canReceive(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo, final Class<?> contentClass) {
+		return ContentNodeMetadata.class.isAssignableFrom(contentClass) && (from instanceof NodeMetadataOwner) && (to instanceof MetadataTarget); 
+	}
+
+	@Override
+	public void track(final DnDMode currentMode, final Component from, final int xFromAbsolute, final int yFromAbsolute, final Component to, final int xToAbsolute, final int yToAbsolute) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
+	public void complete(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo, final Object content) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void putPlugin(final Object plugin) throws ContentException {
+		final SVGPluginFrame	frame = new SVGPluginFrame(localizer, plugin);
+	        
+		frame.setVisible(true);
+		frame.addInternalFrameListener(new InternalFrameListener() {
+				@Override public void internalFrameOpened(InternalFrameEvent e) {}
+				@Override public void internalFrameDeactivated(InternalFrameEvent e) {}
+				@Override public void internalFrameClosing(InternalFrameEvent e) {
+					
+				}
+				@Override public void internalFrameActivated(InternalFrameEvent e) {}
+				
+				@Override 
+				public void internalFrameIconified(InternalFrameEvent e) {
+//					iconifiedCount.set(iconifiedCount.get()+1);
+				}
+				
+				@Override
+				public void internalFrameDeiconified(InternalFrameEvent e) {
+	//				iconifiedCount.set(iconifiedCount.get()-1);
+				}
+				
+				@Override
+				public void internalFrameClosed(InternalFrameEvent e) {
+//					pluginCount.set(pluginCount.get()-1);
+//					if (frame.isIcon()) {
+//						iconifiedCount.set(iconifiedCount.get()-1);
+//					}
+				}
+		});
+		frame.setVisible(true);
+		pane.add(frame);
+//			pluginCount.set(pluginCount.get()+1);
+		try{frame.setSelected(true);
+		} catch (PropertyVetoException e) {
+			throw new ContentException(e);
+		}
+	}
+	
+	
 	@OnAction("action:/pipeMenu.new")
 	private void showPopup() {
 		final Container	btn = SwingUtils.findComponentByName(popup,xmlModel.byUIPath(URI.create("ui:/model/navigation.top.pipeMenu/navigation.node.pipeMenu.new")).getName());
@@ -151,9 +240,10 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		// TODO Auto-generated method stub
 		
 	}
-	
+
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) {
 		// TODO Auto-generated method stub
 		
 	}
+
 }
