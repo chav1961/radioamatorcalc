@@ -287,7 +287,7 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 	}
 	
 	public boolean start(final LoggerFacade facade) throws ContentException {
-		if (!validatePipe(PureLibSettings.NULL_LOGGER)) {
+		if (!validatePipe(PureLibSettings.CURRENT_LOGGER)) {
 			facade.message(Severity.warning,"Start rejected because there are problems in the pipe. Validate it!");
 			return false;
 		}

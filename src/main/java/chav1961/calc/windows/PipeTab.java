@@ -3,6 +3,13 @@ package chav1961.calc.windows;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,25 +17,36 @@ import java.net.URI;
 import java.util.Locale;
 
 import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import chav1961.calc.interfaces.MetadataTarget;
 import chav1961.calc.interfaces.TabContent;
+import chav1961.calc.pipe.CalcPipeFrame;
+import chav1961.calc.pipe.ConditionalPipeFrame;
+import chav1961.calc.pipe.DialogPipeFrame;
+import chav1961.calc.pipe.InitialPipeFrame;
+import chav1961.calc.pipe.TerminalPipeFrame;
+import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
+import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.model.interfaces.NodeMetadataOwner;
@@ -46,6 +64,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	private static final long 				serialVersionUID = 1L;
 	private static final String				MODIFICATION_MARK = "*";
 
+	private final JScrollPane				scroll;
 	private final JDesktopPane				pane = new JDesktopPane();
 	private final DnDManager				dndManager;
 	private final Localizer					localizer;
@@ -55,6 +74,8 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	private final JPopupMenu				popup;
 	private final JToolBar					toolbar;
 
+	private boolean							pressed = false;
+	private Point							pressedPoint;
 	private boolean							isModified = false;			
 	private String							pipeName = "<new>";
 
@@ -90,7 +111,41 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			
 			setLayout(new BorderLayout());
 			add(toolbar,BorderLayout.NORTH);
-			add(pane,BorderLayout.CENTER);
+			
+			scroll = new JScrollPane(pane);
+			pane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
+			add(scroll,BorderLayout.CENTER);
+			
+			pane.addMouseListener(new MouseListener() {
+				@Override public void mouseExited(MouseEvent e) {}
+				@Override public void mouseEntered(MouseEvent e) {}
+				@Override public void mouseClicked(MouseEvent e) {}
+				
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					pressed = false;
+				}
+				
+				@Override
+				public void mousePressed(MouseEvent e) {
+					pressed = true;
+					pressedPoint = e.getPoint();
+				}
+			});
+			pane.addMouseMotionListener(new MouseMotionListener() {
+				@Override public void mouseMoved(MouseEvent e) {}
+				
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					final Point	currentVP = scroll.getViewport().getViewPosition();
+					
+					int 	x = e.getPoint().x-pressedPoint.x, y = e.getPoint().y-pressedPoint.y;
+
+					currentVP.translate(-x,-y);
+					pressedPoint = e.getPoint();
+					scroll.getViewport().setViewPosition(currentVP);
+				}
+			});
 			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
 		}
 	}
@@ -126,7 +181,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	}
 
 	@Override
-	public Object getSource(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo) { 
+	public Object getSource(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo) {
 		if (from instanceof NodeMetadataOwner) {
 			return ((NodeMetadataOwner)from).getNodeMetadata();
 		}
@@ -182,6 +237,20 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 //					}
 				}
 		});
+		frame.addComponentListener(new ComponentListener() {
+			@Override public void componentShown(ComponentEvent e) {}
+			@Override public void componentHidden(ComponentEvent e) {}
+			
+			@Override 
+			public void componentResized(ComponentEvent e) {
+				resizeDesktopPane();
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				resizeDesktopPane();
+			}
+		});
 		frame.setVisible(true);
 		pane.add(frame);
 //			pluginCount.set(pluginCount.get()+1);
@@ -196,7 +265,10 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	private void showPopup() {
 		final Container	btn = SwingUtils.findComponentByName(popup,xmlModel.byUIPath(URI.create("ui:/model/navigation.top.pipeMenu/navigation.node.pipeMenu.new")).getName());
 		
-		getPopupMenu().show(btn,btn.getWidth()/2,btn.getHeight()/2);
+		try{
+			getPopupMenu().show(btn,btn.getWidth()/2,btn.getHeight()/2);
+		} catch (java.awt.IllegalComponentStateException e) {
+		}
 	}
 
 	@OnAction("action:/cleanPipe")
@@ -213,32 +285,61 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	
 	@OnAction("action:/newInitial")
 	private void newInitial() {
-		// TODO Auto-generated method stub
+		final ContentNodeMetadata	initial = new MutableContentNodeMetadata("initial",Object.class,"./initial",URI.create(localizer.getLocalizerId()),"initial", null, null, null, URI.create("app:action:/start")); 
 		
+		try{
+			putPlugin(new InitialPipeFrame(localizer, initial));
+		} catch (ContentException e) {
+			logger.message(Severity.error,e,e.getLocalizedMessage());
+		}
 	}
 
 	@OnAction("action:/newConditional")
 	private void newConditional() {
-		// TODO Auto-generated method stub
+		final ContentNodeMetadata	inner = new MutableContentNodeMetadata("inner",Object.class,"./inner",URI.create(localizer.getLocalizerId()),"inner", null, null, null, URI.create("app:action:/inner")); 
+		final ContentNodeMetadata	onTrue = new MutableContentNodeMetadata("onTrue",Object.class,"./ontrue",URI.create(localizer.getLocalizerId()),"ontrue", null, null, null, URI.create("app:action:/ontrue")); 
+		final ContentNodeMetadata	onFalse = new MutableContentNodeMetadata("onFalse",Object.class,"./onfalse",URI.create(localizer.getLocalizerId()),"onfalse", null, null, null, URI.create("app:action:/onfalse")); 
 		
+		try{
+			putPlugin(new ConditionalPipeFrame(localizer, inner, onTrue, onFalse));
+		} catch (ContentException e) {
+			logger.message(Severity.error,e,e.getLocalizedMessage());
+		}
 	}
 	
 	@OnAction("action:/newCalc")
 	private void newCalc() {
-		// TODO Auto-generated method stub
+		final ContentNodeMetadata	inner = new MutableContentNodeMetadata("inner",Object.class,"./inner",URI.create(localizer.getLocalizerId()),"inner", null, null, null, URI.create("app:action:/inner")); 
+		final ContentNodeMetadata	outer = new MutableContentNodeMetadata("outer",Object.class,"./outer",URI.create(localizer.getLocalizerId()),"outer", null, null, null, URI.create("app:action:/outer")); 
 		
+		try{
+			putPlugin(new CalcPipeFrame(localizer, inner, outer));
+		} catch (ContentException e) {
+			logger.message(Severity.error,e,e.getLocalizedMessage());
+		}
 	}
 
 	@OnAction("action:/newDialog")
 	private void newDialog() {
-		// TODO Auto-generated method stub
+		final ContentNodeMetadata	inner = new MutableContentNodeMetadata("inner",Object.class,"./inner",URI.create(localizer.getLocalizerId()),"inner", null, null, null, URI.create("app:action:/inner")); 
+		final ContentNodeMetadata	outer = new MutableContentNodeMetadata("outer",Object.class,"./outer",URI.create(localizer.getLocalizerId()),"outer", null, null, null, URI.create("app:action:/outer")); 
 		
+		try{
+			putPlugin(new DialogPipeFrame(localizer, inner, outer));
+		} catch (ContentException e) {
+			logger.message(Severity.error,e,e.getLocalizedMessage());
+		}
 	}
 
 	@OnAction("action:/newTerminal")
 	private void newTerminal() {
-		// TODO Auto-generated method stub
+		final ContentNodeMetadata	terminal = new MutableContentNodeMetadata("terminal",Object.class,"./terminal",URI.create(localizer.getLocalizerId()),"terminal", null, null, null, URI.create("app:action:/stop")); 
 		
+		try{
+			putPlugin(new TerminalPipeFrame(localizer, terminal));
+		} catch (ContentException e) {
+			logger.message(Severity.error,e,e.getLocalizedMessage());
+		}
 	}
 
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) {
@@ -246,4 +347,71 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		
 	}
 
+	private void putPlugin(final PipePluginFrame<?> frame) throws ContentException {
+		frame.setVisible(true);
+		frame.addInternalFrameListener(new InternalFrameListener() {
+				@Override public void internalFrameOpened(InternalFrameEvent e) {}
+				@Override public void internalFrameDeactivated(InternalFrameEvent e) {}
+				@Override public void internalFrameClosing(InternalFrameEvent e) {
+					
+				}
+				@Override public void internalFrameActivated(InternalFrameEvent e) {}
+				
+				@Override 
+				public void internalFrameIconified(InternalFrameEvent e) {
+				}
+				
+				@Override
+				public void internalFrameDeiconified(InternalFrameEvent e) {
+				}
+				
+				@Override
+				public void internalFrameClosed(InternalFrameEvent e) {
+//					pluginCount.set(pluginCount.get()-1);
+				}
+		});
+		frame.addComponentListener(new ComponentListener() {
+			@Override public void componentShown(ComponentEvent e) {}
+			@Override public void componentHidden(ComponentEvent e) {}
+			
+			@Override 
+			public void componentResized(ComponentEvent e) {
+				resizeDesktopPane();
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				resizeDesktopPane();
+			}
+		});
+		frame.setVisible(true);
+		pane.add(frame);
+//			pluginCount.set(pluginCount.get()+1);
+		try{frame.setSelected(true);
+		} catch (PropertyVetoException e) {
+			throw new ContentException(e);
+		}
+	}
+	
+	private void resizeDesktopPane() {
+		int		x = pane.getPreferredSize().width, y = pane.getPreferredSize().height;
+		int		xOld = x, yOld = y;
+		
+		for (JInternalFrame item : pane.getAllFrames()) {
+			final Point	pt = new Point(item.getWidth(),item.getHeight());
+			
+			SwingUtilities.convertPointToScreen(pt,item);
+			SwingUtilities.convertPointFromScreen(pt,pane);
+			
+			x = Math.max(x,pt.x);
+			y = Math.max(y,pt.y);
+		}
+		
+		if (x > xOld || y > yOld) {
+			final Dimension	newSize = new Dimension(x > xOld ? x+30 : x, y > yOld ? y+30 : y);
+
+			pane.setPreferredSize(newSize);
+			scroll.revalidate();
+		}
+	}
 }

@@ -185,7 +185,7 @@ public class MutableLocalizer extends AbstractLocalizer {
 		final Locale[]	currentLocale = new Locale[1];
 		
 		try(final InputStream	is = isGetter.getContent()) {
-			XMLUtils.walkDownXML(XMLUtils.validateAndLoadXML(is,XMLUtils.getPurelibXSD(XSDCollection.XMLLocalizerContent),PureLibSettings.NULL_LOGGER).getDocumentElement(), (mode,node)->{
+			XMLUtils.walkDownXML(XMLUtils.validateAndLoadXML(is,XMLUtils.getPurelibXSD(XSDCollection.XMLLocalizerContent),PureLibSettings.CURRENT_LOGGER).getDocumentElement(), (mode,node)->{
 				switch (mode) {
 					case ENTER	:
 						switch (node.getNodeName()) {

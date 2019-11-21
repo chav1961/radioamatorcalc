@@ -1,6 +1,11 @@
 package chav1961.calc.windows;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,9 +18,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
-import javax.swing.text.html.parser.ContentModel;
 
 import chav1961.calc.LocalizationKeys;
 import chav1961.calc.interfaces.TabContent;
@@ -23,7 +29,6 @@ import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
-import chav1961.purelib.basic.exceptions.PreparationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.subscribable.SubscribableInt;
@@ -33,7 +38,6 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
-import chav1961.purelib.ui.interfaces.Action;
 import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
@@ -48,6 +52,7 @@ public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeL
 	public final SubscribableInt			pluginCount = new SubscribableInt(); 
 	public final SubscribableInt			iconifiedCount = new SubscribableInt(); 
 	
+	private final JScrollPane				scroll;
 	private final JDesktopPane				pane = new JDesktopPane();
 	private final Localizer					localizer;
 	private final LoggerFacade				logger;
@@ -85,7 +90,9 @@ public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeL
 			iconifiedCount.addListener((oldValue,newValue)->((JMenuItem)SwingUtils.findComponentByName(popup,"workbenchMenu.iconifyAll")).setEnabled(newValue < pluginCount.get()));
 			
 			setLayout(new BorderLayout());
-			add(pane,BorderLayout.CENTER);
+			pane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
+			scroll = new JScrollPane(pane); 
+			add(scroll,BorderLayout.CENTER);
 		}
 	}
 
@@ -136,6 +143,20 @@ public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeL
 				}
 			}
 		});
+		frame.addComponentListener(new ComponentListener() {
+			@Override public void componentShown(ComponentEvent e) {}
+			@Override public void componentHidden(ComponentEvent e) {}
+			
+			@Override 
+			public void componentResized(ComponentEvent e) {
+				resizeDesktopPane();
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				resizeDesktopPane();
+			}
+		});
 		frame.setVisible(true);
 		pane.add(frame);
 		pluginCount.set(pluginCount.get()+1);
@@ -163,6 +184,28 @@ public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeL
 			}
 			iconifiedCount.set(0);
 			pluginCount.set(0);
+		}
+	}
+	
+	private void resizeDesktopPane() {
+		int		x = pane.getPreferredSize().width, y = pane.getPreferredSize().height;
+		int		xOld = x, yOld = y;
+		
+		for (JInternalFrame item : pane.getAllFrames()) {
+			final Point	pt = new Point(item.getWidth(),item.getHeight());
+			
+			SwingUtilities.convertPointToScreen(pt,item);
+			SwingUtilities.convertPointFromScreen(pt,pane);
+			
+			x = Math.max(x,pt.x);
+			y = Math.max(y,pt.y);
+		}
+		
+		if (x > xOld || y > yOld) {
+			final Dimension	newSize = new Dimension(x > xOld ? x+30 : x, y > yOld ? y+30 : y);
+
+			pane.setPreferredSize(newSize);
+			scroll.revalidate();
 		}
 	}
 }
