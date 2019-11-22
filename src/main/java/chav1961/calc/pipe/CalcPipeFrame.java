@@ -12,6 +12,8 @@ import java.util.Locale;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
@@ -34,9 +36,14 @@ import chav1961.purelib.ui.swing.useful.JStateString;
 
 @LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
 @LocaleResource(value="chav1961.calc.pipe.calc.caption",tooltip="chav1961.calc.pipe.calc.caption.tt",help="help.aboutApplication")
-@PluginProperties(width=600,height=150,pluginIconURI="calcFrameIcon.png",desktopIconURI="calcDesktopIcon.png")
+@PluginProperties(width=600,height=250,pluginIconURI="calcFrameIcon.png",desktopIconURI="calcDesktopIcon.png")
 public class CalcPipeFrame extends PipePluginFrame<Object> {
 	private static final 					long serialVersionUID = 1L;
+	
+	private static final String				TABS_FIELDS_TITLE = "chav1961.calc.pipe.calc.tabs.fields";	
+	private static final String				TABS_FIELDS_TITLE_TT = "chav1961.calc.pipe.calc.tabs.fields.tt";	
+	private static final String				TABS_EXPRESSIONS_TITLE = "chav1961.calc.pipe.calc.tabs.expressions";	
+	private static final String				TABS_EXPRESSIONS_TITLE_TT = "chav1961.calc.pipe.calc.tabs.expressions.tt";	
 	private static final String				SOURCE_FIELDS_TITLE = "chav1961.calc.pipe.calc.fields.source"; 
 	private static final String				SOURCE_FIELDS_TITLE_TT = "chav1961.calc.pipe.calc.fields.source.tt"; 
 	private static final String				TARGET_FIELDS_TITLE = "chav1961.calc.pipe.calc.fields.target"; 
@@ -51,7 +58,9 @@ public class CalcPipeFrame extends PipePluginFrame<Object> {
 	private final ModelItemListContainer	sourceFields; 
 	private final TitledBorder				sourceFieldsTitle = new TitledBorder(new LineBorder(Color.BLACK)); 
 	private final ModelItemListContainer	targetFields; 
-	private final TitledBorder				targetFieldsTitle = new TitledBorder(new LineBorder(Color.BLACK)); 
+	private final TitledBorder				targetFieldsTitle = new TitledBorder(new LineBorder(Color.BLACK));
+	private final JTextArea					expression = new JTextArea();
+	private final JTabbedPane				tabs = new JTabbedPane(); 
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductanñe",tooltip="chav1961.calc.plugins.calc.contour.inductanñe.tt")
 	@Format("9.2pz")
 	public float temp = 0;
@@ -85,7 +94,12 @@ public class CalcPipeFrame extends PipePluginFrame<Object> {
 				centerPanel.add(pane1);
 				centerPanel.add(pane2);
 				
-				add(centerPanel,BorderLayout.CENTER);
+				tabs.addTab("",centerPanel);
+				tabs.addTab("",new JScrollPane(expression));
+				tabs.setSelectedIndex(0);
+				
+				add(tabs,BorderLayout.CENTER);
+				
 				add(bottom,BorderLayout.SOUTH);
 				SwingUtils.assignActionKey(sourceFields,SwingUtils.KS_HELP,(e)->{showHelp(e.getActionCommand());},mdi.getRoot().getHelpId());
 				SwingUtils.assignActionKey(targetFields,SwingUtils.KS_HELP,(e)->{showHelp(e.getActionCommand());},mdi.getRoot().getHelpId());
@@ -165,5 +179,10 @@ public class CalcPipeFrame extends PipePluginFrame<Object> {
 		sourceFields.setToolTipText(localizer.getValue(SOURCE_FIELDS_TITLE_TT));
 		targetFieldsTitle.setTitle(localizer.getValue(TARGET_FIELDS_TITLE));
 		targetFields.setToolTipText(localizer.getValue(TARGET_FIELDS_TITLE_TT));
+
+		tabs.setTitleAt(0,localizer.getValue(TABS_FIELDS_TITLE));
+		tabs.setToolTipTextAt(0,localizer.getValue(TABS_FIELDS_TITLE_TT));
+		tabs.setTitleAt(1,localizer.getValue(TABS_EXPRESSIONS_TITLE));
+		tabs.setToolTipTextAt(1,localizer.getValue(TABS_EXPRESSIONS_TITLE_TT));
 	}
 }

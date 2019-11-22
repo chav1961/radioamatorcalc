@@ -42,6 +42,7 @@ import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 import chav1961.purelib.ui.swing.useful.JCloseableTab;
+import chav1961.purelib.ui.swing.useful.JExtendedScrollPane;
 import chav1961.purelib.ui.swing.useful.JLocalizedOptionPane;
 
 @LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
@@ -91,7 +92,7 @@ public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeL
 			
 			setLayout(new BorderLayout());
 			pane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
-			scroll = new JScrollPane(pane); 
+			scroll = new JExtendedScrollPane(pane,true); 
 			add(scroll,BorderLayout.CENTER);
 		}
 	}

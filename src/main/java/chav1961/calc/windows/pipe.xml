@@ -6,7 +6,7 @@
 		<app:item name="workbenchMenu.closeAll" caption="workbenchMenu.closeAll" tooltip="workbenchMenu.closeAll.tt" action="closeAll"/>
 	</app:menu>
 	<app:menu id="pipeMenu">
-		<app:submenu name="pipeMenu.new" caption="pipeMenu.new" tooltip="pipeMenu.new.tt">
+		<app:submenu name="pipeMenu.new" caption="pipeMenu.new" tooltip="pipeMenu.new.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/newIcon.png">
 			<app:item name="pipeMenu.new.initial" caption="pipeMenu.new.initial" tooltip="pipeMenu.new.initial.tt" action="newInitial"/>
 			<app:separator/>
 			<app:item name="pipeMenu.new.conditional" caption="pipeMenu.new.conditional" tooltip="pipeMenu.new.conditional.tt" action="newConditional"/>
@@ -16,7 +16,7 @@
 			<app:item name="pipeMenu.new.terminal" caption="pipeMenu.new.terminal" tooltip="pipeMenu.new.terminal.tt" action="newTerminal"/>
 		</app:submenu>
 		<app:separator/>
-		<app:item name="pipeMenu.clean" caption="pipeMenu.clean" tooltip="pipeMenu.clean.tt" action="cleanPipe"/>
-		<app:item name="pipeMenu.validate" caption="pipeMenu.validate" tooltip="pipeMenu.validate.tt" action="validatePipe"/>
+		<app:item name="pipeMenu.clean" caption="pipeMenu.clean" tooltip="pipeMenu.clean.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/clearAllIcon.png" action="cleanPipe"/>
+		<app:item name="pipeMenu.validate" caption="pipeMenu.validate" tooltip="pipeMenu.validate.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/validateIcon.png" action="validatePipe"/>
 	</app:menu>
 </app:root>

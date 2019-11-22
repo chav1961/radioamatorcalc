@@ -9,8 +9,11 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
@@ -33,11 +36,15 @@ import chav1961.purelib.ui.swing.useful.JStateString;
 
 @LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
 @LocaleResource(value="chav1961.calc.pipe.terminal.caption",tooltip="chav1961.calc.pipe.terminal.caption.tt",help="help.aboutApplication")
-@PluginProperties(width=500,height=150,pluginIconURI="terminalFrameIcon.png",desktopIconURI="terminalDesktopIcon.png")
+@PluginProperties(width=500,height=200,pluginIconURI="terminalFrameIcon.png",desktopIconURI="terminalDesktopIcon.png")
 public class TerminalPipeFrame extends PipePluginFrame<Object> {
 	private static final 					long serialVersionUID = 1L;
 	private static final String				FIELDS_TITLE = "chav1961.calc.pipe.terminal.fields"; 
 	private static final String				FIELDS_TITLE_TT = "chav1961.calc.pipe.terminal.fields.tt"; 
+	private static final String				MESSAGE_TITLE = "chav1961.calc.pipe.terminal.message"; 
+	private static final String				MESSAGE_TITLE_TT = "chav1961.calc.pipe.terminal.message.tt"; 
+	private static final String				FAILURE_TITLE = "chav1961.calc.pipe.terminal.failure"; 
+	private static final String				FAILURE_TITLE_TT = "chav1961.calc.pipe.terminal.failure.tt"; 
 	
 	private final ContentMetadataInterface	mdi;
 	private final Localizer					localizer;
@@ -46,6 +53,9 @@ public class TerminalPipeFrame extends PipePluginFrame<Object> {
 	private final List<ContentNodeMetadata>	controls = new ArrayList<>();
 	private final ModelItemListContainer	fields; 
 	private final TitledBorder				fieldsTitle = new TitledBorder(new LineBorder(Color.BLACK)); 
+	private final JCheckBox					terminalFailure = new JCheckBox();
+	private final JLabel					terminalLabel = new JLabel();
+	private final JTextField				terminalMessage = new JTextField();
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductanñe",tooltip="chav1961.calc.plugins.calc.contour.inductanñe.tt")
 	@Format("9.2pz")
 	public float temp = 0;
@@ -63,13 +73,19 @@ public class TerminalPipeFrame extends PipePluginFrame<Object> {
 				this.fields = new ModelItemListContainer();
 				
 				final JPanel	bottom = new JPanel(new BorderLayout());
+				final JPanel	top = new JPanel(new BorderLayout(5,5));
 				
 				bottom.add(state,BorderLayout.CENTER);
 				bottom.add(targetControl,BorderLayout.WEST);
+
+				top.add(terminalLabel,BorderLayout.WEST);
+				top.add(terminalMessage,BorderLayout.CENTER);
+				top.add(terminalFailure,BorderLayout.EAST);
 				
 				final JScrollPane	pane = new JScrollPane(fields); 
 				
 				pane.setBorder(fieldsTitle);
+				add(top,BorderLayout.NORTH);
 				add(pane,BorderLayout.CENTER);
 				add(bottom,BorderLayout.SOUTH);
 				SwingUtils.assignActionKey(fields,SwingUtils.KS_HELP,(e)->{showHelp(e.getActionCommand());},mdi.getRoot().getHelpId());
@@ -139,5 +155,9 @@ public class TerminalPipeFrame extends PipePluginFrame<Object> {
 		}
 		fieldsTitle.setTitle(localizer.getValue(FIELDS_TITLE));
 		fields.setToolTipText(localizer.getValue(FIELDS_TITLE_TT));
+		terminalLabel.setText(localizer.getValue(MESSAGE_TITLE));
+		terminalMessage.setToolTipText(localizer.getValue(MESSAGE_TITLE_TT));
+		terminalFailure.setText(localizer.getValue(FAILURE_TITLE));
+		terminalFailure.setToolTipText(localizer.getValue(FAILURE_TITLE_TT));
 	}
 }

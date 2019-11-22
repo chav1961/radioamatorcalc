@@ -2,26 +2,17 @@ package chav1961.calc;
 
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,13 +26,8 @@ import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JDesktopPane;
 import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -50,28 +36,18 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.filechooser.FileFilter;
 
-import org.apache.lucene.store.FSDirectory;
-
-import chav1961.calc.interfaces.ContentClassificator.ContentType;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.TabContent;
-import chav1961.calc.plugins.calc.contour.ContourPlugin;
 import chav1961.calc.utils.SVGPluginFrame;
-import chav1961.calc.windows.DragDropGlass;
-import chav1961.calc.windows.PipeManager;
 import chav1961.calc.windows.PipeTab;
 import chav1961.calc.windows.WorkbenchTab;
 import chav1961.purelib.basic.ArgParser;
 import chav1961.purelib.basic.NullLoggerFacade;
-import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.SystemErrLoggerFacade;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
@@ -84,7 +60,6 @@ import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.fsys.FileSystemOnFile;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.PureLibLocalizer;
-import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
@@ -100,7 +75,6 @@ import chav1961.purelib.ui.swing.useful.JStateString;
 
 public class Application extends JFrame implements LocaleChangeListener {
 	private static final long 				serialVersionUID = -2663340436788182341L;
-
 
 	private static final String				DESKTOP_WINDOW = "DesktopWindow";
 	private static final String				SEARCH_WINDOW = "SearchWindow";

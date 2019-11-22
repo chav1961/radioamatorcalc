@@ -57,13 +57,18 @@ import chav1961.purelib.ui.swing.useful.DnDManager;
 import chav1961.purelib.ui.swing.useful.DnDManager.DnDInterface;
 import chav1961.purelib.ui.swing.useful.DnDManager.DnDMode;
 import chav1961.purelib.ui.swing.useful.JCloseableTab;
+import chav1961.purelib.ui.swing.useful.JExtendedScrollPane;
 
 @LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
 @LocaleResource(value = "chav1961.calc.pipe", tooltip = "chav1961.calc.pipe.tt", icon = "root:/WorkbenchTab!")
 public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListener, TabContent, DnDInterface {
 	private static final long 				serialVersionUID = 1L;
 	private static final String				MODIFICATION_MARK = "*";
-
+	private static final String				PIPE_SOURCE_TT = "chav1961.calc.pipe.screen.source.tt";	
+	private static final String				PIPE_TARGET_TT = "chav1961.calc.pipe.screen.target.tt";	
+	private static final String				PIPE_TRUE_TT = "chav1961.calc.pipe.screen.true.tt";	
+	private static final String				PIPE_FALSE_TT = "chav1961.calc.pipe.screen.false.tt";	
+	
 	private final JScrollPane				scroll;
 	private final JDesktopPane				pane = new JDesktopPane();
 	private final DnDManager				dndManager;
@@ -112,40 +117,10 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			setLayout(new BorderLayout());
 			add(toolbar,BorderLayout.NORTH);
 			
-			scroll = new JScrollPane(pane);
+			scroll = new JExtendedScrollPane(pane,true);
 			pane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 			add(scroll,BorderLayout.CENTER);
 			
-			pane.addMouseListener(new MouseListener() {
-				@Override public void mouseExited(MouseEvent e) {}
-				@Override public void mouseEntered(MouseEvent e) {}
-				@Override public void mouseClicked(MouseEvent e) {}
-				
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					pressed = false;
-				}
-				
-				@Override
-				public void mousePressed(MouseEvent e) {
-					pressed = true;
-					pressedPoint = e.getPoint();
-				}
-			});
-			pane.addMouseMotionListener(new MouseMotionListener() {
-				@Override public void mouseMoved(MouseEvent e) {}
-				
-				@Override
-				public void mouseDragged(MouseEvent e) {
-					final Point	currentVP = scroll.getViewport().getViewPosition();
-					
-					int 	x = e.getPoint().x-pressedPoint.x, y = e.getPoint().y-pressedPoint.y;
-
-					currentVP.translate(-x,-y);
-					pressedPoint = e.getPoint();
-					scroll.getViewport().setViewPosition(currentVP);
-				}
-			});
 			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
 		}
 	}
@@ -285,7 +260,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	
 	@OnAction("action:/newInitial")
 	private void newInitial() {
-		final ContentNodeMetadata	initial = new MutableContentNodeMetadata("initial",Object.class,"./initial",URI.create(localizer.getLocalizerId()),"initial", null, null, null, URI.create("app:action:/start")); 
+		final ContentNodeMetadata	initial = new MutableContentNodeMetadata("initial",Object.class,"./initial",URI.create(localizer.getLocalizerId()),PIPE_SOURCE_TT, PIPE_SOURCE_TT, null, null, URI.create("app:action:/start"),null); 
 		
 		try{
 			putPlugin(new InitialPipeFrame(localizer, initial));
@@ -296,9 +271,9 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 
 	@OnAction("action:/newConditional")
 	private void newConditional() {
-		final ContentNodeMetadata	inner = new MutableContentNodeMetadata("inner",Object.class,"./inner",URI.create(localizer.getLocalizerId()),"inner", null, null, null, URI.create("app:action:/inner")); 
-		final ContentNodeMetadata	onTrue = new MutableContentNodeMetadata("onTrue",Object.class,"./ontrue",URI.create(localizer.getLocalizerId()),"ontrue", null, null, null, URI.create("app:action:/ontrue")); 
-		final ContentNodeMetadata	onFalse = new MutableContentNodeMetadata("onFalse",Object.class,"./onfalse",URI.create(localizer.getLocalizerId()),"onfalse", null, null, null, URI.create("app:action:/onfalse")); 
+		final ContentNodeMetadata	inner = new MutableContentNodeMetadata("inner",Object.class,"./inner",URI.create(localizer.getLocalizerId()),PIPE_TARGET_TT, PIPE_TARGET_TT, null, null, URI.create("app:action:/inner"),null); 
+		final ContentNodeMetadata	onTrue = new MutableContentNodeMetadata("onTrue",Object.class,"./ontrue",URI.create(localizer.getLocalizerId()),PIPE_TRUE_TT, PIPE_TRUE_TT, null, null, URI.create("app:action:/ontrue"),null); 
+		final ContentNodeMetadata	onFalse = new MutableContentNodeMetadata("onFalse",Object.class,"./onfalse",URI.create(localizer.getLocalizerId()),PIPE_FALSE_TT, PIPE_FALSE_TT, null, null, URI.create("app:action:/onfalse"),null); 
 		
 		try{
 			putPlugin(new ConditionalPipeFrame(localizer, inner, onTrue, onFalse));
@@ -309,8 +284,8 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	
 	@OnAction("action:/newCalc")
 	private void newCalc() {
-		final ContentNodeMetadata	inner = new MutableContentNodeMetadata("inner",Object.class,"./inner",URI.create(localizer.getLocalizerId()),"inner", null, null, null, URI.create("app:action:/inner")); 
-		final ContentNodeMetadata	outer = new MutableContentNodeMetadata("outer",Object.class,"./outer",URI.create(localizer.getLocalizerId()),"outer", null, null, null, URI.create("app:action:/outer")); 
+		final ContentNodeMetadata	inner = new MutableContentNodeMetadata("inner",Object.class,"./inner",URI.create(localizer.getLocalizerId()),PIPE_TARGET_TT, PIPE_TARGET_TT, null, null, URI.create("app:action:/inner"),null); 
+		final ContentNodeMetadata	outer = new MutableContentNodeMetadata("outer",Object.class,"./outer",URI.create(localizer.getLocalizerId()),PIPE_SOURCE_TT, PIPE_SOURCE_TT, null, null, URI.create("app:action:/outer"),null); 
 		
 		try{
 			putPlugin(new CalcPipeFrame(localizer, inner, outer));
@@ -321,8 +296,8 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 
 	@OnAction("action:/newDialog")
 	private void newDialog() {
-		final ContentNodeMetadata	inner = new MutableContentNodeMetadata("inner",Object.class,"./inner",URI.create(localizer.getLocalizerId()),"inner", null, null, null, URI.create("app:action:/inner")); 
-		final ContentNodeMetadata	outer = new MutableContentNodeMetadata("outer",Object.class,"./outer",URI.create(localizer.getLocalizerId()),"outer", null, null, null, URI.create("app:action:/outer")); 
+		final ContentNodeMetadata	inner = new MutableContentNodeMetadata("inner",Object.class,"./inner",URI.create(localizer.getLocalizerId()),PIPE_TARGET_TT, PIPE_TARGET_TT, null, null, URI.create("app:action:/inner"),null); 
+		final ContentNodeMetadata	outer = new MutableContentNodeMetadata("outer",Object.class,"./outer",URI.create(localizer.getLocalizerId()),PIPE_SOURCE_TT, PIPE_SOURCE_TT, null, null, URI.create("app:action:/outer"),null); 
 		
 		try{
 			putPlugin(new DialogPipeFrame(localizer, inner, outer));
@@ -333,7 +308,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 
 	@OnAction("action:/newTerminal")
 	private void newTerminal() {
-		final ContentNodeMetadata	terminal = new MutableContentNodeMetadata("terminal",Object.class,"./terminal",URI.create(localizer.getLocalizerId()),"terminal", null, null, null, URI.create("app:action:/stop")); 
+		final ContentNodeMetadata	terminal = new MutableContentNodeMetadata("terminal",Object.class,"./terminal",URI.create(localizer.getLocalizerId()),PIPE_TARGET_TT, PIPE_TARGET_TT, null, null, URI.create("app:action:/stop"),null); 
 		
 		try{
 			putPlugin(new TerminalPipeFrame(localizer, terminal));
