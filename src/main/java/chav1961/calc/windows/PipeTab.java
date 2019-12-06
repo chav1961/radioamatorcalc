@@ -70,8 +70,9 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	private static final String				PIPE_FALSE_TT = "chav1961.calc.pipe.screen.false.tt";	
 	
 	private final JScrollPane				scroll;
-	private final JDesktopPane				pane = new JDesktopPane();
+//	private final JDesktopPane				pane = new JDesktopPane();
 	private final DnDManager				dndManager;
+	private final PipeManager				pipeManager;
 	private final Localizer					localizer;
 	private final LoggerFacade				logger;
 	private final ContentMetadataInterface	ownModel, xmlModel;
@@ -98,7 +99,13 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			this.localizer = localizer;
 			this.logger = logger;
 			this.ownModel = ContentModelFactory.forAnnotatedClass(this.getClass());
-			this.dndManager = new DnDManager(pane,this);
+			try{
+				this.pipeManager = new PipeManager(localizer,logger,ownModel);
+			} catch (EnvironmentException | IOException e) {
+				throw new ContentException(e);
+			}
+//			this.dndManager = new DnDManager(pane,this);
+			this.dndManager = new DnDManager(pipeManager,this);
 			
 			localizer.associateValue(this.getClass().getAnnotation(LocaleResource.class).value(),()->new Object[] {isModified ? MODIFICATION_MARK : "",pipeName});
 			
@@ -117,8 +124,10 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			setLayout(new BorderLayout());
 			add(toolbar,BorderLayout.NORTH);
 			
-			scroll = new JExtendedScrollPane(pane,true);
-			pane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
+			scroll = new JExtendedScrollPane(pipeManager,true);
+//			scroll = new JExtendedScrollPane(pane,true);
+			pipeManager.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
+//			pane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 			add(scroll,BorderLayout.CENTER);
 			
 			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
@@ -142,6 +151,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 
 	@Override
 	public void close() throws Exception {
+		pipeManager.close();
 		dndManager.close();
 	}
 
@@ -227,7 +237,8 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			}
 		});
 		frame.setVisible(true);
-		pane.add(frame);
+		pipeManager.add(frame);
+//		pane.add(frame);
 //			pluginCount.set(pluginCount.get()+1);
 		try{frame.setSelected(true);
 		} catch (PropertyVetoException e) {
@@ -360,7 +371,8 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			}
 		});
 		frame.setVisible(true);
-		pane.add(frame);
+		pipeManager.add(frame);
+//		pane.add(frame);
 //			pluginCount.set(pluginCount.get()+1);
 		try{frame.setSelected(true);
 		} catch (PropertyVetoException e) {
@@ -369,14 +381,17 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	}
 	
 	private void resizeDesktopPane() {
-		int		x = pane.getPreferredSize().width, y = pane.getPreferredSize().height;
+		int		x = pipeManager.getPreferredSize().width, y = pipeManager.getPreferredSize().height;
+//		int		x = pane.getPreferredSize().width, y = pane.getPreferredSize().height;
 		int		xOld = x, yOld = y;
 		
-		for (JInternalFrame item : pane.getAllFrames()) {
+		for (JInternalFrame item : pipeManager.getAllFrames()) {
+//		for (JInternalFrame item : pane.getAllFrames()) {
 			final Point	pt = new Point(item.getWidth(),item.getHeight());
 			
 			SwingUtilities.convertPointToScreen(pt,item);
-			SwingUtilities.convertPointFromScreen(pt,pane);
+			SwingUtilities.convertPointFromScreen(pt,pipeManager);
+//			SwingUtilities.convertPointFromScreen(pt,pane);
 			
 			x = Math.max(x,pt.x);
 			y = Math.max(y,pt.y);
@@ -385,7 +400,8 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		if (x > xOld || y > yOld) {
 			final Dimension	newSize = new Dimension(x > xOld ? x+30 : x, y > yOld ? y+30 : y);
 
-			pane.setPreferredSize(newSize);
+			pipeManager.setPreferredSize(newSize);
+//			pane.setPreferredSize(newSize);
 			scroll.revalidate();
 		}
 	}
