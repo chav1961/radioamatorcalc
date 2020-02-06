@@ -57,7 +57,12 @@
 	      <groupId>org.apache.lucene</groupId>
 	      <artifactId>lucene-highlighter</artifactId>
 	      <version>7.3.0</version>
-	    </dependency>		
+	    </dependency>
+	   <dependency>
+		<groupId>com.github.chav1961</groupId>
+		<artifactId>purelib</artifactId>
+		<version>0.0.4</version>
+	   </dependency>
 	</dependencies>
   
 	<repositories>
