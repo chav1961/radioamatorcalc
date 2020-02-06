@@ -10,6 +10,8 @@ import java.util.Set;
 
 import chav1961.purelib.basic.AndOrTree;
 import chav1961.purelib.basic.CharUtils;
+import chav1961.purelib.basic.exceptions.CalculationException;
+import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.SyntaxTreeInterface;
 import chav1961.purelib.cdb.SyntaxNode;
@@ -19,8 +21,10 @@ import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 
 public class ScriptProcessor {
-	private static final char 								LEX_TERMINAL = '\0';
+	private static final char 								LEX_TERMINAL = '\uFFFF';
 	private static final SyntaxTreeInterface<LexemaType>	KEYWORDS = new AndOrTree<>();
+	private static final double								LOG10 = Math.log(10);
+	private static final double								INV_LOG10 = 1/LOG10;
 	
 	static {
 		KEYWORDS.placeName("if",LexemaType.LexIf);
@@ -45,15 +49,14 @@ public class ScriptProcessor {
 		KEYWORDS.placeName("sqrt",LexemaType.LexFSqrt);
 	}
 	
-	public enum GroupType {
-		GroupMul, GroupAdd, GroupCmp, GroupOther
-	}
-	
 	public enum LexemaType {
 		LexEOF, LexOpen, LexClose, 
 		LexPlus(GroupType.GroupAdd), LexMinus(GroupType.GroupAdd), LexMul(GroupType.GroupMul), LexDiv(GroupType.GroupMul), 
 		LexGE(GroupType.GroupCmp), LexGT(GroupType.GroupCmp), LexLE(GroupType.GroupCmp), LexLT(GroupType.GroupCmp), LexEQ(GroupType.GroupCmp), LexNE(GroupType.GroupCmp), 
-		LexFSin, LexFCos, LexFTan, LexFASin,LexFACos, LexFATan, LexFExp, LexFExp10, LexFLn, LexFLog10, LexFSqrt,  
+		LexFSin(GroupType.GroupFunc), LexFCos(GroupType.GroupFunc), LexFTan(GroupType.GroupFunc),
+		LexFASin(GroupType.GroupFunc), LexFACos(GroupType.GroupFunc), LexFATan(GroupType.GroupFunc), 
+		LexFExp(GroupType.GroupFunc), LexFExp10(GroupType.GroupFunc), LexFLn(GroupType.GroupFunc), LexFLog10(GroupType.GroupFunc),
+		LexFSqrt(GroupType.GroupFunc),  
 		LexAnd, LexOr, LexNot, LexAssign, 
 		LexInt, LexReal, LexName, LexString, LexList, LexEndOp,
 		LexIf, LexThen, LexElse, LexEndIf, LexReturn, LexPrint, LexRoot;
@@ -73,26 +76,35 @@ public class ScriptProcessor {
 		}
 	}
 
-	public enum ExpressionDepth {
-		ExprOr, ExprAnd, ExprNot, ExprCmp, ExprAdd, ExprMul, ExprUnary, ExprTerm,
-	}
-
 	public enum SyntaxNodeType {
 		NodeRoot, NodeSequence, NodePrint, NodeReturn, NodeAssign, NodeShortIf, NodeLongIf,
 		NodeGetVar, NodeGetInt, NodeGetReal, NodeNegation, NodeMul, NodeAdd, NodeCmp, NodeNot, NodeAnd, NodeOr,
 		NodeFunc
 	}
 	
-	public enum ComparisonType {
+	enum ComparisonType {
 		EQ, NE, GT, GE, LT, LE
 	}
 
-	public enum FunctionType {
+	enum FunctionType {
 		Sin, Cos, Tan, ArcSin, ArcCos, ArcTan, Exp, Exp10, Ln, Ln10, Sqrt
+	}
+
+	enum GroupType {
+		GroupMul, GroupAdd, GroupCmp, GroupFunc, GroupOther
+	}
+	
+	enum ExpressionDepth {
+		ExprOr, ExprAnd, ExprNot, ExprCmp, ExprAdd, ExprMul, ExprUnary, ExprTerm,
 	}
 	
 	public static List<Lexema> buildLexemaList(final String content) throws SyntaxException, IllegalArgumentException, NullPointerException {
-		return buildLexemaList(CharUtils.terminateAndConvert2CharArray(content,LEX_TERMINAL));
+		if (content == null || content.isEmpty()) {
+			throw new IllegalArgumentException("Content string can't be null or empty"); 
+		}
+		else {
+			return buildLexemaList(CharUtils.terminateAndConvert2CharArray(content,LEX_TERMINAL));
+		}
 	}
 	
 	private static List<Lexema> buildLexemaList(final char[] source) throws SyntaxException, IllegalArgumentException, NullPointerException {
@@ -100,16 +112,19 @@ public class ScriptProcessor {
 		final StringBuilder	sb = new StringBuilder();
 		final long[]		forLongs = new long[2];
 		final int[]			forInts = new int[2]; 
-		int					from = 0, start, row, col;
+		int					from = 0, start, row = 0, lastRowLocation = 0, col = 0;
 		
 loop:	for (;;) {
-			from = CharUtils.skipBlank(source,from,false);
-			row = SyntaxException.toRow(source,from);
-			col = SyntaxException.toCol(source,from);
+			from = CharUtils.skipBlank(source,from,true); 
+			col = from - lastRowLocation;
 			switch (source[from]) {
 				case LEX_TERMINAL :
 					lexemas.add(new Lexema(LexemaType.LexEOF,row,col));
 					break loop;
+				case '\n'	:	// Only to calculate rows and columns
+					lastRowLocation = ++from;
+					row++;
+					break;
 				case ';'	:
 					lexemas.add(new Lexema(LexemaType.LexEndOp,row,col));
 					from++;
@@ -179,7 +194,7 @@ loop:	for (;;) {
 						from += 2;
 					}
 					else {
-						throw new SyntaxException(SyntaxException.toRow(source,from),SyntaxException.toCol(source,from),"Unknown lexema");
+						throw new SyntaxException(row,col,"Unknown lexema");
 					}
 					break;
 				case ','	:
@@ -189,7 +204,7 @@ loop:	for (;;) {
 				case '0' : case '1' : case '2' : case '3' : case '4' : case '5' : case '6' : case '7' : case '8' : case '9' :
 					start = from;
 					from = CharUtils.parseNumber(source,from,forLongs,CharUtils.PREF_LONG|CharUtils.PREF_DOUBLE,true);
-					if (forLongs[1] == CharUtils.PREF_LONG) {
+					if (forLongs[1] == CharUtils.PREF_INT || forLongs[1] == CharUtils.PREF_LONG) {
 						lexemas.add(new Lexema(LexemaType.LexInt,row,col,forLongs[0]));
 					}
 					else {
@@ -197,22 +212,21 @@ loop:	for (;;) {
 					}
 					break;
 				case '\"'	:
-					start = from;
-					sb.setLength(0);
-					from = CharUtils.parseString(source,from+1,'\"',sb);
-					if (source[from] == '\"') {
-						from++;
+					
+					try{start = from;
+						sb.setLength(0);
+						from = CharUtils.parseString(source,from+1,'\"',sb);
+						
 						lexemas.add(new Lexema(LexemaType.LexString,row,col,sb.toString()));
-					}
-					else {
-						throw new SyntaxException(SyntaxException.toRow(source,from),SyntaxException.toCol(source,from),"Unquoted string");
+					} catch (IllegalArgumentException exc) {
+						throw new SyntaxException(row,col,"Unquoted string");
 					}
 					break;
 				default :
 					if (Character.isJavaIdentifierStart(source[from])) {
 						start = from;
 						from = CharUtils.parseName(source,from,forInts);
-						final long 	id = KEYWORDS.seekName(source,forInts[0],forInts[1]-forInts[0]);
+						final long 	id = KEYWORDS.seekName(source,forInts[0],forInts[1]+1);
 						
 						if (id >= 0) {
 							lexemas.add(new Lexema(KEYWORDS.getCargo(id),row,col));
@@ -222,7 +236,7 @@ loop:	for (;;) {
 						}
 					}
 					else {
-						throw new SyntaxException(SyntaxException.toRow(source,from),SyntaxException.toCol(source,from),"Unknown lexema");
+						throw new SyntaxException(row,col,"Unknown lexema");
 					}
 					break;
 			}
@@ -230,38 +244,47 @@ loop:	for (;;) {
 		return lexemas;
 	}
 	
-	public static <T> SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>> buildSyntaxTree(final Lexema[] lexemas, final ContentMetadataInterface model) throws SyntaxException {
-		final Map<String,ContentNodeMetadata>	vars = new HashMap<>();
-		final boolean[]		found = new boolean[1];
-
-		for (Lexema item : lexemas) {
-			if (item.type == LexemaType.LexName) {
-				final String	name = item.stringContent;
-				
-				found[0] = false;
-				model.walkDown((mode,appPath,uiPath,node) -> {
-						if (mode == NodeEnterMode.ENTER && node.getName().equals(name)) {
-							vars.put(name,node);
-							found[0] = true;
-						}
-						return ContinueMode.CONTINUE;
-					}
-					,model.getRoot().getUIPath()
-				);
-				if (!found[0]) {
-					throw new SyntaxException(item.row,item.col,"Unknown name ["+name+"]");
-				}
-			}
+	public static <T> SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>> buildSyntaxTree(final Lexema[] lexemas, final ContentMetadataInterface model) throws NullPointerException, IllegalArgumentException, SyntaxException {
+		if (lexemas == null || lexemas.length == 0) {
+			throw new IllegalArgumentException("Lexemas list can't be null or empty array"); 
 		}
-
-		final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	root = new SyntaxNode<>(0,0,SyntaxNodeType.NodeSequence,0,null); 
-		final int	from = buildSequence(lexemas,0,root, vars);
-		
-		if (lexemas[from].type != LexemaType.LexEOF) {
-			throw new SyntaxException(lexemas[from].row,lexemas[from].col,"Dust in the tail");
+		else if (model == null) {
+			throw new IllegalArgumentException("Model can't be null"); 
 		}
 		else {
-			return root;
+			final Map<String,ContentNodeMetadata>	vars = new HashMap<>();
+			final boolean[]		found = new boolean[1];
+	
+			for (Lexema item : lexemas) {
+				if (item.type == LexemaType.LexName) {
+					final String	name = item.stringContent;
+					
+					found[0] = false;
+					model.walkDown((mode,appPath,uiPath,node) -> {
+							if (mode == NodeEnterMode.ENTER && node.getName().equals(name)) {
+								vars.put(name,node);
+								found[0] = true;
+							}
+							return ContinueMode.CONTINUE;
+						}
+						,model.getRoot().getUIPath()
+					);
+					if (!found[0]) {
+						throw new SyntaxException(item.row,item.col,"Unknown var name ["+name+"]");
+					}
+				}
+			}
+	
+			final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	root = new SyntaxNode<>(0,0,SyntaxNodeType.NodeSequence,0,null); 
+			final int	from = buildSequence(lexemas,0,root, vars);
+			
+			if (lexemas[from].type != LexemaType.LexEOF) {
+				throw new SyntaxException(lexemas[from].row,lexemas[from].col,"Dust in the tail");
+			}
+			else {
+				vars.clear();
+				return root;
+			}
 		}
 	}
 
@@ -279,7 +302,7 @@ loop:	do {from++;
 						throw new SyntaxException(lexemas[from].row,lexemas[from].col,"Assignment (:=) is missing");
 					}
 					else {
-						final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	node = new SyntaxNode<>(0,0,SyntaxNodeType.NodeRoot,0,null);
+						final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	node = new SyntaxNode<>(0,0,SyntaxNodeType.NodeAssign,0,null);
 						
 						from = buildExpression(lexemas,from+1,ExpressionDepth.ExprOr,node,vars);
 						operators.add(new SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>(rowAssign,colAssign,SyntaxNodeType.NodeAssign,0,metaData,node));
@@ -289,7 +312,7 @@ loop:	do {from++;
 					final int		rowIf = lexemas[from].row, colIf = lexemas[from].col;
 					final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	exprNode = new SyntaxNode<>(lexemas[from].row,lexemas[from].col,SyntaxNodeType.NodeRoot,0,null);
 					
-					from = buildExpression(lexemas,from++,ExpressionDepth.ExprOr,exprNode,vars);
+					from = buildExpression(lexemas,from+1,ExpressionDepth.ExprOr,exprNode,vars);
 					if (lexemas[from].type != LexemaType.LexThen) {
 						throw new SyntaxException(lexemas[from].row,lexemas[from].col,"keyword 'then' is missing");
 					}
@@ -301,7 +324,7 @@ loop:	do {from++;
 							if (lexemas[from].type == LexemaType.LexElse) {
 								final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	elseNode = new SyntaxNode<>(lexemas[from].row,lexemas[from].col,SyntaxNodeType.NodeSequence,0,null);
 
-								from = buildSequence(lexemas,from+1,thenNode,vars);
+								from = buildSequence(lexemas,from+1,elseNode,vars);
 								if (lexemas[from].type != LexemaType.LexEndIf) {
 									throw new SyntaxException(lexemas[from].row,lexemas[from].col,"keyword 'endif' is missing");
 								}
@@ -320,13 +343,14 @@ loop:	do {from++;
 					break;
 				case LexPrint	:
 					if (lexemas[++from].type != LexemaType.LexString) {
-						throw new SyntaxException(lexemas[from].row,lexemas[from].col,"String constant waited");
+						throw new SyntaxException(lexemas[from].row,lexemas[from].col,"Format sting is missing");
 					}
 					else {
 						final int		rowPrint = lexemas[from].row, colPrint = lexemas[from].col;
 						final String	format = lexemas[from].stringContent;
 						final List<SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>>	printList = new ArrayList<>();
 						
+						from++;
 						while (lexemas[from].type == LexemaType.LexList) {
 							final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	node = new SyntaxNode<>(0,0,SyntaxNodeType.NodeRoot,0,null);
 							
@@ -344,7 +368,15 @@ loop:	do {from++;
 					break loop;
 			}
 		} while (lexemas[from].type == LexemaType.LexEndOp);
-		
+
+		if (operators.size() == 1) {
+			root.assign(operators.get(0));
+		}
+		else {
+			root.type = SyntaxNodeType.NodeSequence;
+			root.children = operators.toArray(new SyntaxNode[operators.size()]); 
+		}
+		operators.clear();
 		return from;
 	}
 	
@@ -419,7 +451,7 @@ loop:	do {from++;
 				from = buildExpression(lexemas,from,ExpressionDepth.ExprMul,root,vars); 
 				if (lexemas[from].type.groupType() == GroupType.GroupAdd) {
 					final List<SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>>	operands = new ArrayList<>();
-					final StringBuilder sb = new StringBuilder();
+					final StringBuilder sb = new StringBuilder("+");
 					
 					operands.add(new SyntaxNode<>(root));
 					do {sb.append(lexemas[from].type == LexemaType.LexPlus ? '+' : '-');
@@ -438,7 +470,7 @@ loop:	do {from++;
 				from = buildExpression(lexemas,from,ExpressionDepth.ExprUnary,root,vars);
 				if (lexemas[from].type.groupType() == GroupType.GroupMul) {
 					final List<SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>>	operands = new ArrayList<>();
-					final StringBuilder sb = new StringBuilder();
+					final StringBuilder sb = new StringBuilder("*");
 					
 					operands.add(new SyntaxNode<>(root));
 					do {sb.append(lexemas[from].type == LexemaType.LexMul ? '*' : '/');
@@ -473,14 +505,19 @@ loop:	do {from++;
 					case LexInt 	:
 						root.type = SyntaxNodeType.NodeGetInt;
 						root.value = lexemas[from].numberContent;
+						from++;
 						break;
 					case LexReal 	:
 						root.type = SyntaxNodeType.NodeGetReal;
 						root.value = lexemas[from].numberContent;
+						from++;
 						break;
 					case LexName 	:
 						root.type = SyntaxNodeType.NodeGetVar;
-						root.cargo = vars.get(lexemas[from].stringContent);
+						if ((root.cargo = vars.get(lexemas[from].stringContent)) == null) {
+							throw new SyntaxException(lexemas[from].row,lexemas[from].col,"Variable name ["+lexemas[from].stringContent+"] is unknown"); 
+						}
+						from++;
 						break;
 					case LexOpen	:
 						from = buildExpression(lexemas,from+1,ExpressionDepth.ExprOr,root,vars);
@@ -490,6 +527,7 @@ loop:	do {from++;
 						else {
 							throw new SyntaxException(lexemas[from].row,lexemas[from].col,"Close bracket ')' is missing"); 
 						}
+						break;
 					case LexFSin 	:
 						from = buildFunctionCall(lexemas,from+1,FunctionType.Sin,1,root,vars);
 						break;
@@ -563,10 +601,297 @@ loop:	do {from++;
 		return from;
 	}	
 	
-	public static <T> void processSyntaxTree(final SyntaxNode<LexemaType,?> root, final T instance) {
-		
+	public interface PrintAndVariableAccessor {
+		Object getVar(ContentNodeMetadata metadata) throws ContentException;
+		void setVar(ContentNodeMetadata metadata, Object value) throws ContentException;
+		void print(String format, Object... parameters) throws ContentException;
 	}
 
+	public static <T> void processSyntaxTree(final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>> root, final PrintAndVariableAccessor accessor) throws NullPointerException, CalculationException {
+		if (root == null) {
+			throw new NullPointerException("Syntax node root can't be null");
+		}
+		else if (accessor == null) {
+			throw new NullPointerException("Var accessor can't be null");
+		}
+		else {
+			try {processSyntaxTreeInternal(root,accessor);
+			} catch (ReturnException exc) {
+			}
+		}
+	}	
+
+	private static class ReturnException extends Exception {
+		private static final long serialVersionUID = 1L;
+	}
+	
+	private static <T> Object processSyntaxTreeInternal(final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>> root, final PrintAndVariableAccessor accessor) throws NullPointerException, CalculationException, ReturnException {
+		if (root == null) {
+			throw new NullPointerException("Syntax node root can't be null");
+		}
+		else if (accessor == null) {
+			throw new NullPointerException("Var accessor can't be null");
+		}
+		else {
+			switch (root.getType()) {
+				case NodeAdd		:
+					final Object[]	addValues = new Object[root.children.length];
+					boolean			needDoubleAdd = false;
+					
+					for (int index = 0; index < addValues.length; index++) {
+						addValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+					}
+					for (int index = 0; index < addValues.length; index++) {
+						if ((addValues[index] instanceof Float) || (addValues[index] instanceof Double)) {
+							needDoubleAdd = true;
+						}
+						else if (!(addValues[index] instanceof Number)) {
+							throw new CalculationException("Error processing additional operators: operand at row "+root.children[index].row+", col "+root.children[index].col+" is not a number");
+						}
+					}
+					if (needDoubleAdd) {
+						double	sum = 0;
+						
+						for (int index = 0; index < addValues.length; index++) {
+							if (((char[])root.cargo)[index] == '+') {
+								sum += ((Number)addValues[index]).doubleValue();
+							}
+							else {
+								sum -= ((Number)addValues[index]).doubleValue();
+							}
+						}
+						return sum;
+					}
+					else {
+						long sum = 0;
+						
+						for (int index = 0; index < addValues.length; index++) {
+							if (((char[])root.cargo)[index] == '+') {
+								sum += ((Number)addValues[index]).longValue();
+							}
+							else {
+								sum -= ((Number)addValues[index]).longValue();
+							}
+						}
+						return sum;
+					}
+				case NodeAnd		:
+					final Object[]	andValues = new Object[root.children.length];
+					
+					for (int index = 0; index < andValues.length; index++) {
+						andValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+					}
+					for (int index = 0; index < andValues.length; index++) {
+						if (!(andValues[index] instanceof Boolean)) {
+							throw new CalculationException("Error processing multiplication operators: operand at row "+root.children[index].row+", col "+root.children[index].col+" is not a boolean");
+						}
+					}
+					for (Object item : andValues) {
+						if (!(Boolean)item) {
+							return false;
+						}
+					}
+					return true;
+				case NodeAssign		:
+					try{accessor.setVar((ContentNodeMetadata)root.cargo, processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[0],accessor));
+					} catch (ContentException e) {
+						throw new CalculationException(e.getLocalizedMessage(),e);
+					}
+				case NodeCmp		:
+					final Object	leftCmp = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[0],accessor);
+					final Object	rightCmp = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[1],accessor);
+					
+					if (!(leftCmp instanceof Number)) {
+						throw new CalculationException("Error processing comparison operators: left operand at row "+root.children[0].row+", col "+root.children[0].col+" is not a number");
+					}
+					else if (!(rightCmp instanceof Number)) {
+						throw new CalculationException("Error processing comparison operators: right operand at row "+root.children[1].row+", col "+root.children[1].col+" is not a number");
+					}
+					else if ((leftCmp instanceof Float) || (leftCmp instanceof Double) || (rightCmp instanceof Float) || (rightCmp instanceof Double)) {
+						return testSign(((Number)leftCmp).doubleValue() - ((Number)rightCmp).doubleValue(), (ComparisonType)root.cargo); 
+					}
+					else {
+						return testSign(((Number)leftCmp).longValue() - ((Number)rightCmp).longValue(), (ComparisonType)root.cargo);
+					}
+				case NodeFunc		:
+					final Object[]	paramValues = new Object[root.children.length];
+					
+					for (int index = 0; index < paramValues.length; index++) {
+						paramValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+					}
+					for (int index = 0; index < paramValues.length; index++) {
+						if (!(paramValues[index] instanceof Number)) {
+							throw new CalculationException("Error calling function : parameter at row "+root.children[index].row+", col "+root.children[index].col+" is not a number");
+						}
+					}
+					return callFunction((FunctionType)root.cargo,paramValues);
+				case NodeGetInt		:
+					return root.value;
+				case NodeGetReal	:
+					return Double.longBitsToDouble(root.value);
+				case NodeGetVar		:
+					try{return accessor.getVar((ContentNodeMetadata)root.cargo);
+					} catch (ContentException e) {
+						throw new CalculationException(e.getLocalizedMessage(),e);
+					}
+				case NodeLongIf		:
+					final Object	longIfCond = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo,accessor);
+
+					if (!(longIfCond instanceof Boolean)) {
+						throw new CalculationException("Error processing of: operand at row "+((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo).row+", col "+((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo).col+" is not a boolean");
+					}
+					else if ((Boolean)longIfCond) {
+						processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[0],accessor);
+					}
+					else {
+						processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[1],accessor);
+					}
+					return null;
+				case NodeMul		:
+					final Object[]	mulValues = new Object[root.children.length];
+					boolean			needDoubleMul = false;
+					
+					for (int index = 0; index < mulValues.length; index++) {
+						mulValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+					}
+					for (int index = 0; index < mulValues.length; index++) {
+						if ((mulValues[index] instanceof Float) || (mulValues[index] instanceof Double)) {
+							needDoubleMul = true;
+						}
+						else if (!(mulValues[index] instanceof Number)) {
+							throw new CalculationException("Error processing multiplication operators: operand at row "+root.children[index].row+", col "+root.children[index].col+" is not a number");
+						}
+					}
+					if (needDoubleMul) {
+						double	sum = 1;
+						
+						for (int index = 0; index < mulValues.length; index++) {
+							if (((char[])root.cargo)[index] == '*') {
+								sum *= ((Number)mulValues[index]).doubleValue();
+							}
+							else {
+								sum /= ((Number)mulValues[index]).doubleValue();
+							}
+						}
+						return sum;
+					}
+					else {
+						long sum = 1;
+						
+						for (int index = 0; index < mulValues.length; index++) {
+							if (((char[])root.cargo)[index] == '*') {
+								sum *= ((Number)mulValues[index]).longValue();
+							}
+							else {
+								sum /= ((Number)mulValues[index]).longValue();
+							}
+						}
+						return sum;
+					}
+				case NodeNegation	:
+					final Object	negationResult = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo,accessor);
+					
+					if (negationResult instanceof Number) {
+						if ((negationResult instanceof Float) || (negationResult instanceof Double)) {
+							return -((Number)negationResult).doubleValue();
+						}
+						else {
+							return -((Number)negationResult).longValue();
+						}
+					}
+					else {
+						throw new CalculationException("Error processing negation: operand at row "+((SyntaxNode<?,?>)root.cargo).row+", col "+((SyntaxNode<?,?>)root.cargo).col+" is not a number");
+					}
+				case NodeNot		:
+					final Object	notResult = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo,accessor);
+					
+					if (notResult instanceof Boolean) {
+						return !(Boolean)notResult;
+					}
+					else {
+						throw new CalculationException("Error processing negation: operand at row "+((SyntaxNode<?,?>)root.cargo).row+", col "+((SyntaxNode<?,?>)root.cargo).col+" is not a boolean");
+					}
+				case NodeOr			:
+					final Object[]	orValues = new Object[root.children.length];
+					
+					for (int index = 0; index < orValues.length; index++) {
+						orValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+					}
+					for (int index = 0; index < orValues.length; index++) {
+						if (!(orValues[index] instanceof Boolean)) {
+							throw new CalculationException("Error processing multiplication operators: operand at row "+root.children[index].row+", col "+root.children[index].col+" is not a boolean");
+						}
+					}
+					for (Object item : orValues) {
+						if ((Boolean)item) {
+							return true;
+						}
+					}
+					return false;
+				case NodePrint		:
+					final Object[]	printValues = new Object[root.children.length];
+					
+					for (int index = 0; index < printValues.length; index++) {
+						printValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+					}
+					
+					try{accessor.print((String)root.cargo,printValues);
+					} catch (ContentException e) {
+						throw new CalculationException(e.getLocalizedMessage(),e);
+					}
+					break;
+				case NodeReturn		:
+					throw new ReturnException();
+				case NodeSequence	:
+					for (SyntaxNode<?, ?> item : root.children) {
+						processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)item,accessor);
+					}
+					break;
+				case NodeShortIf	:
+					final Object	shortIfCond = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo,accessor);
+
+					if (!(shortIfCond instanceof Boolean)) {
+						throw new CalculationException("Error processing of: operand at row "+((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo).row+", col "+((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo).col+" is not a boolean");
+					}
+					else if ((Boolean)shortIfCond) {
+						processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[0],accessor);
+					}
+					return null;
+				default	:
+					throw new IllegalArgumentException("Unsupported node type ["+root.getType()+"] in the tree");
+			}
+			return null;
+		}
+	}
+
+	private static Object callFunction(final FunctionType func, final Object[] parameters) {
+		switch (func) {
+			case ArcCos	: return Math.acos(((Number)parameters[0]).doubleValue());
+			case ArcSin	: return Math.asin(((Number)parameters[0]).doubleValue());
+			case ArcTan	: return Math.atan(((Number)parameters[0]).doubleValue());
+			case Cos	: return Math.cos(((Number)parameters[0]).doubleValue());
+			case Exp	: return Math.exp(((Number)parameters[0]).doubleValue());
+			case Exp10	: return Math.exp(LOG10*((Number)parameters[0]).doubleValue());
+			case Ln		: return Math.log(((Number)parameters[0]).doubleValue());
+			case Ln10	: return INV_LOG10 * Math.log(((Number)parameters[0]).doubleValue());
+			case Sin	: return Math.sin(((Number)parameters[0]).doubleValue());
+			case Sqrt	: return Math.sqrt(((Number)parameters[0]).doubleValue());
+			case Tan	: return Math.tan(((Number)parameters[0]).doubleValue());
+			default	: throw new IllegalArgumentException("Unsupported function call ["+func+"] in the tree");
+		}
+	}
+
+	private static boolean testSign(final double sign, final ComparisonType comp) {
+		switch (comp) {
+			case EQ	: return sign == 0;
+			case GE	: return sign >= 0;
+			case GT	: return sign > 0;
+			case LE	: return sign <= 0;
+			case LT	: return sign < 0;
+			case NE	: return sign != 0;
+			default	: throw new IllegalArgumentException("Unsupported comparison operator ["+comp+"] in the tree");
+		}
+	}
 	
 	public static class Lexema {
 		public final LexemaType	type;
