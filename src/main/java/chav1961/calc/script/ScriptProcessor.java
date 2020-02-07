@@ -249,7 +249,7 @@ loop:	for (;;) {
 			throw new IllegalArgumentException("Lexemas list can't be null or empty array"); 
 		}
 		else if (model == null) {
-			throw new IllegalArgumentException("Model can't be null"); 
+			throw new NullPointerException("Model can't be null"); 
 		}
 		else {
 			final Map<String,ContentNodeMetadata>	vars = new HashMap<>();
@@ -288,6 +288,14 @@ loop:	for (;;) {
 		}
 	}
 
+	public static <T> SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>> buildSyntaxTree(final String content, final ContentMetadataInterface model) throws NullPointerException, IllegalArgumentException, SyntaxException {
+		final List<Lexema>									lex = buildLexemaList(content);
+		final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	root = buildSyntaxTree(lex.toArray(new Lexema[lex.size()]), model);
+		
+		lex.clear();
+		return root;
+	}
+	
 	static int buildSequence(final Lexema[] lexemas, int from, final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>> root, final Map<String,ContentNodeMetadata> vars) throws SyntaxException {
 		final List<SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>>	operators = new ArrayList<>();
 		
@@ -330,6 +338,7 @@ loop:	do {from++;
 								}
 								else {
 									operators.add(new SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>(rowIf,colIf,SyntaxNodeType.NodeLongIf,0,exprNode,thenNode,elseNode));
+									from++;
 								}
 							}
 							else {
@@ -338,6 +347,7 @@ loop:	do {from++;
 						}
 						else {
 							operators.add(new SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>(rowIf,colIf,SyntaxNodeType.NodeShortIf,0,exprNode,thenNode));
+							from++;
 						}
 					}
 					break;
@@ -390,7 +400,7 @@ loop:	do {from++;
 					operands.add(new SyntaxNode<>(root));
 					do {final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	operand = new SyntaxNode<>(root);
 						
-						from = buildExpression(lexemas,from+1,ExpressionDepth.ExprAnd,root,vars);
+						from = buildExpression(lexemas,from+1,ExpressionDepth.ExprAnd,operand,vars);
 						operands.add(operand);
 					} while (lexemas[from].type == LexemaType.LexOr);
 					root.type = SyntaxNodeType.NodeOr;
@@ -406,7 +416,7 @@ loop:	do {from++;
 					operands.add(new SyntaxNode<>(root));
 					do {final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	operand = new SyntaxNode<>(root);
 						
-						from = buildExpression(lexemas,from+1,ExpressionDepth.ExprNot,root,vars);
+						from = buildExpression(lexemas,from+1,ExpressionDepth.ExprNot,operand,vars);
 						operands.add(operand);
 					} while (lexemas[from].type == LexemaType.LexAnd);
 					root.type = SyntaxNodeType.NodeAnd;
@@ -457,7 +467,7 @@ loop:	do {from++;
 					do {sb.append(lexemas[from].type == LexemaType.LexPlus ? '+' : '-');
 						final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	operand = new SyntaxNode<>(root);
 						
-						from = buildExpression(lexemas,from+1,ExpressionDepth.ExprMul,root,vars);
+						from = buildExpression(lexemas,from+1,ExpressionDepth.ExprMul,operand,vars);
 						operands.add(operand);
 					} while (lexemas[from].type.groupType() == GroupType.GroupAdd);
 					root.type = SyntaxNodeType.NodeAdd;
@@ -476,7 +486,7 @@ loop:	do {from++;
 					do {sb.append(lexemas[from].type == LexemaType.LexMul ? '*' : '/');
 						final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	operand = new SyntaxNode<>(root);
 						
-						from = buildExpression(lexemas,from+1,ExpressionDepth.ExprUnary,root,vars);
+						from = buildExpression(lexemas,from+1,ExpressionDepth.ExprUnary,operand,vars);
 						operands.add(operand);
 					} while (lexemas[from].type.groupType() == GroupType.GroupMul);
 					root.type = SyntaxNodeType.NodeMul;
@@ -616,7 +626,7 @@ loop:	do {from++;
 		}
 		else {
 			try {processSyntaxTreeInternal(root,accessor);
-			} catch (ReturnException exc) {
+			} catch (ReturnException exc) { 
 			}
 		}
 	}	
@@ -626,242 +636,235 @@ loop:	do {from++;
 	}
 	
 	private static <T> Object processSyntaxTreeInternal(final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>> root, final PrintAndVariableAccessor accessor) throws NullPointerException, CalculationException, ReturnException {
-		if (root == null) {
-			throw new NullPointerException("Syntax node root can't be null");
-		}
-		else if (accessor == null) {
-			throw new NullPointerException("Var accessor can't be null");
-		}
-		else {
-			switch (root.getType()) {
-				case NodeAdd		:
-					final Object[]	addValues = new Object[root.children.length];
-					boolean			needDoubleAdd = false;
+		switch (root.getType()) {
+			case NodeAdd		:
+				final Object[]	addValues = new Object[root.children.length];
+				boolean			needDoubleAdd = false;
+				
+				for (int index = 0; index < addValues.length; index++) {
+					addValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+				}
+				for (int index = 0; index < addValues.length; index++) {
+					if ((addValues[index] instanceof Float) || (addValues[index] instanceof Double)) {
+						needDoubleAdd = true;
+					}
+					else if (!(addValues[index] instanceof Number)) {
+						throw new CalculationException("Error processing additional operators: operand at row "+root.children[index].row+", col "+root.children[index].col+" is not a number");
+					}
+				}
+				if (needDoubleAdd) {
+					double	sum = 0;
 					
 					for (int index = 0; index < addValues.length; index++) {
-						addValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
-					}
-					for (int index = 0; index < addValues.length; index++) {
-						if ((addValues[index] instanceof Float) || (addValues[index] instanceof Double)) {
-							needDoubleAdd = true;
-						}
-						else if (!(addValues[index] instanceof Number)) {
-							throw new CalculationException("Error processing additional operators: operand at row "+root.children[index].row+", col "+root.children[index].col+" is not a number");
-						}
-					}
-					if (needDoubleAdd) {
-						double	sum = 0;
-						
-						for (int index = 0; index < addValues.length; index++) {
-							if (((char[])root.cargo)[index] == '+') {
-								sum += ((Number)addValues[index]).doubleValue();
-							}
-							else {
-								sum -= ((Number)addValues[index]).doubleValue();
-							}
-						}
-						return sum;
-					}
-					else {
-						long sum = 0;
-						
-						for (int index = 0; index < addValues.length; index++) {
-							if (((char[])root.cargo)[index] == '+') {
-								sum += ((Number)addValues[index]).longValue();
-							}
-							else {
-								sum -= ((Number)addValues[index]).longValue();
-							}
-						}
-						return sum;
-					}
-				case NodeAnd		:
-					final Object[]	andValues = new Object[root.children.length];
-					
-					for (int index = 0; index < andValues.length; index++) {
-						andValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
-					}
-					for (int index = 0; index < andValues.length; index++) {
-						if (!(andValues[index] instanceof Boolean)) {
-							throw new CalculationException("Error processing multiplication operators: operand at row "+root.children[index].row+", col "+root.children[index].col+" is not a boolean");
-						}
-					}
-					for (Object item : andValues) {
-						if (!(Boolean)item) {
-							return false;
-						}
-					}
-					return true;
-				case NodeAssign		:
-					try{accessor.setVar((ContentNodeMetadata)root.cargo, processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[0],accessor));
-					} catch (ContentException e) {
-						throw new CalculationException(e.getLocalizedMessage(),e);
-					}
-				case NodeCmp		:
-					final Object	leftCmp = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[0],accessor);
-					final Object	rightCmp = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[1],accessor);
-					
-					if (!(leftCmp instanceof Number)) {
-						throw new CalculationException("Error processing comparison operators: left operand at row "+root.children[0].row+", col "+root.children[0].col+" is not a number");
-					}
-					else if (!(rightCmp instanceof Number)) {
-						throw new CalculationException("Error processing comparison operators: right operand at row "+root.children[1].row+", col "+root.children[1].col+" is not a number");
-					}
-					else if ((leftCmp instanceof Float) || (leftCmp instanceof Double) || (rightCmp instanceof Float) || (rightCmp instanceof Double)) {
-						return testSign(((Number)leftCmp).doubleValue() - ((Number)rightCmp).doubleValue(), (ComparisonType)root.cargo); 
-					}
-					else {
-						return testSign(((Number)leftCmp).longValue() - ((Number)rightCmp).longValue(), (ComparisonType)root.cargo);
-					}
-				case NodeFunc		:
-					final Object[]	paramValues = new Object[root.children.length];
-					
-					for (int index = 0; index < paramValues.length; index++) {
-						paramValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
-					}
-					for (int index = 0; index < paramValues.length; index++) {
-						if (!(paramValues[index] instanceof Number)) {
-							throw new CalculationException("Error calling function : parameter at row "+root.children[index].row+", col "+root.children[index].col+" is not a number");
-						}
-					}
-					return callFunction((FunctionType)root.cargo,paramValues);
-				case NodeGetInt		:
-					return root.value;
-				case NodeGetReal	:
-					return Double.longBitsToDouble(root.value);
-				case NodeGetVar		:
-					try{return accessor.getVar((ContentNodeMetadata)root.cargo);
-					} catch (ContentException e) {
-						throw new CalculationException(e.getLocalizedMessage(),e);
-					}
-				case NodeLongIf		:
-					final Object	longIfCond = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo,accessor);
-
-					if (!(longIfCond instanceof Boolean)) {
-						throw new CalculationException("Error processing of: operand at row "+((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo).row+", col "+((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo).col+" is not a boolean");
-					}
-					else if ((Boolean)longIfCond) {
-						processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[0],accessor);
-					}
-					else {
-						processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[1],accessor);
-					}
-					return null;
-				case NodeMul		:
-					final Object[]	mulValues = new Object[root.children.length];
-					boolean			needDoubleMul = false;
-					
-					for (int index = 0; index < mulValues.length; index++) {
-						mulValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
-					}
-					for (int index = 0; index < mulValues.length; index++) {
-						if ((mulValues[index] instanceof Float) || (mulValues[index] instanceof Double)) {
-							needDoubleMul = true;
-						}
-						else if (!(mulValues[index] instanceof Number)) {
-							throw new CalculationException("Error processing multiplication operators: operand at row "+root.children[index].row+", col "+root.children[index].col+" is not a number");
-						}
-					}
-					if (needDoubleMul) {
-						double	sum = 1;
-						
-						for (int index = 0; index < mulValues.length; index++) {
-							if (((char[])root.cargo)[index] == '*') {
-								sum *= ((Number)mulValues[index]).doubleValue();
-							}
-							else {
-								sum /= ((Number)mulValues[index]).doubleValue();
-							}
-						}
-						return sum;
-					}
-					else {
-						long sum = 1;
-						
-						for (int index = 0; index < mulValues.length; index++) {
-							if (((char[])root.cargo)[index] == '*') {
-								sum *= ((Number)mulValues[index]).longValue();
-							}
-							else {
-								sum /= ((Number)mulValues[index]).longValue();
-							}
-						}
-						return sum;
-					}
-				case NodeNegation	:
-					final Object	negationResult = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo,accessor);
-					
-					if (negationResult instanceof Number) {
-						if ((negationResult instanceof Float) || (negationResult instanceof Double)) {
-							return -((Number)negationResult).doubleValue();
+						if (((char[])root.cargo)[index] == '+') {
+							sum += ((Number)addValues[index]).doubleValue();
 						}
 						else {
-							return -((Number)negationResult).longValue();
+							sum -= ((Number)addValues[index]).doubleValue();
 						}
 					}
-					else {
-						throw new CalculationException("Error processing negation: operand at row "+((SyntaxNode<?,?>)root.cargo).row+", col "+((SyntaxNode<?,?>)root.cargo).col+" is not a number");
-					}
-				case NodeNot		:
-					final Object	notResult = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo,accessor);
+					return sum;
+				}
+				else {
+					long sum = 0;
 					
-					if (notResult instanceof Boolean) {
-						return !(Boolean)notResult;
-					}
-					else {
-						throw new CalculationException("Error processing negation: operand at row "+((SyntaxNode<?,?>)root.cargo).row+", col "+((SyntaxNode<?,?>)root.cargo).col+" is not a boolean");
-					}
-				case NodeOr			:
-					final Object[]	orValues = new Object[root.children.length];
-					
-					for (int index = 0; index < orValues.length; index++) {
-						orValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
-					}
-					for (int index = 0; index < orValues.length; index++) {
-						if (!(orValues[index] instanceof Boolean)) {
-							throw new CalculationException("Error processing multiplication operators: operand at row "+root.children[index].row+", col "+root.children[index].col+" is not a boolean");
+					for (int index = 0; index < addValues.length; index++) {
+						if (((char[])root.cargo)[index] == '+') {
+							sum += ((Number)addValues[index]).longValue();
+						}
+						else {
+							sum -= ((Number)addValues[index]).longValue();
 						}
 					}
-					for (Object item : orValues) {
-						if ((Boolean)item) {
-							return true;
-						}
+					return sum;
+				}
+			case NodeAnd		:
+				final Object[]	andValues = new Object[root.children.length];
+				
+				for (int index = 0; index < andValues.length; index++) {
+					andValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+				}
+				for (int index = 0; index < andValues.length; index++) {
+					if (!(andValues[index] instanceof Boolean)) {
+						throw new CalculationException("Error processing multiplication operators: operand at row "+root.children[index].row+", col "+root.children[index].col+" is not a boolean");
 					}
-					return false;
-				case NodePrint		:
-					final Object[]	printValues = new Object[root.children.length];
-					
-					for (int index = 0; index < printValues.length; index++) {
-						printValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+				}
+				for (Object item : andValues) {
+					if (!(Boolean)item) {
+						return false;
 					}
-					
-					try{accessor.print((String)root.cargo,printValues);
-					} catch (ContentException e) {
-						throw new CalculationException(e.getLocalizedMessage(),e);
+				}
+				return true;
+			case NodeAssign		:
+				try{accessor.setVar((ContentNodeMetadata)root.cargo, processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[0],accessor));
+				} catch (ContentException e) {
+					throw new CalculationException(e.getLocalizedMessage(),e);
+				}
+				return null;
+			case NodeCmp		:
+				final Object	leftCmp = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[0],accessor);
+				final Object	rightCmp = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[1],accessor);
+				
+				if (!(leftCmp instanceof Number)) {
+					throw new CalculationException("Error processing comparison operators: left operand at row "+root.children[0].row+", col "+root.children[0].col+" is not a number");
+				}
+				else if (!(rightCmp instanceof Number)) {
+					throw new CalculationException("Error processing comparison operators: right operand at row "+root.children[1].row+", col "+root.children[1].col+" is not a number");
+				}
+				else if ((leftCmp instanceof Float) || (leftCmp instanceof Double) || (rightCmp instanceof Float) || (rightCmp instanceof Double)) {
+					return testSign(((Number)leftCmp).doubleValue() - ((Number)rightCmp).doubleValue(), (ComparisonType)root.cargo); 
+				}
+				else {
+					return testSign(((Number)leftCmp).longValue() - ((Number)rightCmp).longValue(), (ComparisonType)root.cargo);
+				}
+			case NodeFunc		:
+				final Object[]	paramValues = new Object[root.children.length];
+				
+				for (int index = 0; index < paramValues.length; index++) {
+					paramValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+				}
+				for (int index = 0; index < paramValues.length; index++) {
+					if (!(paramValues[index] instanceof Number)) {
+						throw new CalculationException("Error calling function : parameter at row "+root.children[index].row+", col "+root.children[index].col+" is not a number");
 					}
-					break;
-				case NodeReturn		:
-					throw new ReturnException();
-				case NodeSequence	:
-					for (SyntaxNode<?, ?> item : root.children) {
-						processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)item,accessor);
-					}
-					break;
-				case NodeShortIf	:
-					final Object	shortIfCond = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo,accessor);
+				}
+				return callFunction((FunctionType)root.cargo,paramValues);
+			case NodeGetInt		:
+				return root.value;
+			case NodeGetReal	:
+				return Double.longBitsToDouble(root.value);
+			case NodeGetVar		:
+				try{return accessor.getVar((ContentNodeMetadata)root.cargo);
+				} catch (ContentException e) {
+					throw new CalculationException(e.getLocalizedMessage(),e);
+				}
+			case NodeLongIf		:
+				final Object	longIfCond = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo,accessor);
 
-					if (!(shortIfCond instanceof Boolean)) {
-						throw new CalculationException("Error processing of: operand at row "+((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo).row+", col "+((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo).col+" is not a boolean");
+				if (!(longIfCond instanceof Boolean)) {
+					throw new CalculationException("Error processing of: operand at row "+((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo).row+", col "+((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo).col+" is not a boolean");
+				}
+				else if ((Boolean)longIfCond) {
+					processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[0],accessor);
+				}
+				else {
+					processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[1],accessor);
+				}
+				return null;
+			case NodeMul		:
+				final Object[]	mulValues = new Object[root.children.length];
+				boolean			needDoubleMul = false;
+				
+				for (int index = 0; index < mulValues.length; index++) {
+					mulValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+				}
+				for (int index = 0; index < mulValues.length; index++) {
+					if ((mulValues[index] instanceof Float) || (mulValues[index] instanceof Double)) {
+						needDoubleMul = true;
 					}
-					else if ((Boolean)shortIfCond) {
-						processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[0],accessor);
+					else if (!(mulValues[index] instanceof Number)) {
+						throw new CalculationException("Error processing multiplication operators: operand at row "+root.children[index].row+", col "+root.children[index].col+" is not a number");
 					}
-					return null;
-				default	:
-					throw new IllegalArgumentException("Unsupported node type ["+root.getType()+"] in the tree");
-			}
-			return null;
+				}
+				if (needDoubleMul) {
+					double	sum = 1;
+					
+					for (int index = 0; index < mulValues.length; index++) {
+						if (((char[])root.cargo)[index] == '*') {
+							sum *= ((Number)mulValues[index]).doubleValue();
+						}
+						else {
+							sum /= ((Number)mulValues[index]).doubleValue();
+						}
+					}
+					return sum;
+				}
+				else {
+					long sum = 1;
+					
+					for (int index = 0; index < mulValues.length; index++) {
+						if (((char[])root.cargo)[index] == '*') {
+							sum *= ((Number)mulValues[index]).longValue();
+						}
+						else {
+							sum /= ((Number)mulValues[index]).longValue();
+						}
+					}
+					return sum;
+				}
+			case NodeNegation	:
+				final Object	negationResult = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo,accessor);
+				
+				if (negationResult instanceof Number) {
+					if ((negationResult instanceof Float) || (negationResult instanceof Double)) {
+						return -((Number)negationResult).doubleValue();
+					}
+					else {
+						return -((Number)negationResult).longValue();
+					}
+				}
+				else {
+					throw new CalculationException("Error processing negation: operand at row "+((SyntaxNode<?,?>)root.cargo).row+", col "+((SyntaxNode<?,?>)root.cargo).col+" is not a number");
+				}
+			case NodeNot		:
+				final Object	notResult = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo,accessor);
+				
+				if (notResult instanceof Boolean) {
+					return !(Boolean)notResult;
+				}
+				else {
+					throw new CalculationException("Error processing negation: operand at row "+((SyntaxNode<?,?>)root.cargo).row+", col "+((SyntaxNode<?,?>)root.cargo).col+" is not a boolean");
+				}
+			case NodeOr			:
+				final Object[]	orValues = new Object[root.children.length];
+				
+				for (int index = 0; index < orValues.length; index++) {
+					orValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+				}
+				for (int index = 0; index < orValues.length; index++) {
+					if (!(orValues[index] instanceof Boolean)) {
+						throw new CalculationException("Error processing multiplication operators: operand at row "+root.children[index].row+", col "+root.children[index].col+" is not a boolean");
+					}
+				}
+				for (Object item : orValues) {
+					if ((Boolean)item) {
+						return true;
+					}
+				}
+				return false;
+			case NodePrint		:
+				final Object[]	printValues = new Object[root.children.length];
+				
+				for (int index = 0; index < printValues.length; index++) {
+					printValues[index] = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[index],accessor);
+				}
+				
+				try{accessor.print((String)root.cargo,printValues);
+				} catch (ContentException e) {
+					throw new CalculationException(e.getLocalizedMessage(),e);
+				}
+				break;
+			case NodeReturn		:
+				throw new ReturnException();
+			case NodeSequence	:
+				for (SyntaxNode<?, ?> item : root.children) {
+					processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)item,accessor);
+				}
+				break;
+			case NodeShortIf	:
+				final Object	shortIfCond = processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo,accessor);
+
+				if (!(shortIfCond instanceof Boolean)) {
+					throw new CalculationException("Error processing of: operand at row "+((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo).row+", col "+((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.cargo).col+" is not a boolean");
+				}
+				else if ((Boolean)shortIfCond) {
+					processSyntaxTreeInternal((SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>)root.children[0],accessor);
+				}
+				return null;
+			default	:
+				throw new IllegalArgumentException("Unsupported node type ["+root.getType()+"] in the tree");
 		}
+		return null;
 	}
 
 	private static Object callFunction(final FunctionType func, final Object[] parameters) {
