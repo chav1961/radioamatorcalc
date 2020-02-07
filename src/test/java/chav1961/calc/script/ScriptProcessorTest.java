@@ -14,15 +14,23 @@ import chav1961.calc.script.ScriptProcessor.ExpressionDepth;
 import chav1961.calc.script.ScriptProcessor.FunctionType;
 import chav1961.calc.script.ScriptProcessor.Lexema;
 import chav1961.calc.script.ScriptProcessor.LexemaType;
+import chav1961.calc.script.ScriptProcessor.PrintAndVariableAccessor;
 import chav1961.calc.script.ScriptProcessor.SyntaxNodeType;
-import chav1961.purelib.basic.CharUtils;
+import chav1961.purelib.basic.exceptions.CalculationException;
+import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
+import chav1961.purelib.basic.exceptions.PreparationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.cdb.SyntaxNode;
+import chav1961.purelib.i18n.interfaces.LocaleResource;
+import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
+import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.FieldFormat;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.ui.interfaces.Action;
+import chav1961.purelib.ui.interfaces.Format;
 
 public class ScriptProcessorTest {
 	@Test
@@ -458,21 +466,24 @@ public class ScriptProcessorTest {
 	}	
 
 	@Test
-	public void buildSyntaxTreeTest() throws SyntaxException, EnvironmentException {
-		final ContentMetadataInterface				model = ContentModelFactory.forXmlDescription(this.getClass().getResourceAsStream("testmodel.xml")); 
+	public void buildSyntaxTreeTest() throws EnvironmentException, ContentException {
+		final ContentMetadataInterface				model = ContentModelFactory.forAnnotatedClass(AnnotatedForTest.class); 
 		SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	root;
 		
 		root = ScriptProcessor.buildSyntaxTree(toLexArray("print\"z\""),model);
 		Assert.assertEquals(SyntaxNodeType.NodePrint,root.getType());
 		
-		root = ScriptProcessor.buildSyntaxTree(toLexArray("if x > 1 then print \"z\" else print\"t\" endif"),model);
+		root = ScriptProcessor.buildSyntaxTree(toLexArray("testLong := 0; if testLong > 1 then print \"z\" else print\"t\" endif"),model);
+		Assert.assertEquals(SyntaxNodeType.NodeSequence,root.getType());
+
+		root = ScriptProcessor.buildSyntaxTree("testLong := 0; if testLong > 1 then print \"z\" else print\"t\" endif",model);
 		Assert.assertEquals(SyntaxNodeType.NodeSequence,root.getType());
 		
-		try {ScriptProcessor.buildSyntaxTree(null,model);
+		try {ScriptProcessor.buildSyntaxTree((Lexema[])null,model);
 			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
-		} catch (NullPointerException exc) {
+		} catch (IllegalArgumentException exc) {
 		}
-		try {ScriptProcessor.buildSyntaxTree(toLexArray("if x > 1 then print \"z\" else print\"t\" endif"),null);
+		try {ScriptProcessor.buildSyntaxTree(toLexArray("if testLong > 1 then print \"z\" else print\"t\" endif"),null);
 			Assert.fail("Mandatory exception was not detected (null 2-nd argument)");
 		} catch (NullPointerException exc) {
 		}
@@ -480,16 +491,236 @@ public class ScriptProcessorTest {
 			Assert.fail("Mandatory exception was not detected (unknown variable name)");
 		} catch (NullPointerException exc) {
 		}
-		try {ScriptProcessor.buildSyntaxTree(toLexArray("x := 0 y := 2"),null);
+		try {ScriptProcessor.buildSyntaxTree(toLexArray("testLong := 0 testLong := 2"),null);
 			Assert.fail("Mandatory exception was not detected (unparsed tail in the string)");
 		} catch (NullPointerException exc) {
 		}
 	}	
-	
+
+	@Test
+	public void basicProcessTest() throws EnvironmentException, ContentException, CalculationException {
+		final AnnotatedForTest						aft = new AnnotatedForTest();
+		final ContentMetadataInterface				model = ContentModelFactory.forAnnotatedClass(AnnotatedForTest.class);
+		final String[]								printed = new String[1];
+		final PrintAndVariableAccessor				pavp = new PrintAndVariableAccessor() {
+														@Override
+														public Object getVar(final ContentNodeMetadata metadata) throws ContentException {
+															switch (metadata.getName()) {
+																case "testLong"		: return aft.testLong;
+																case "testDouble"	: return aft.testDouble;
+																case "testString"	: return aft.testString;
+																default : throw new ContentException("Var name ["+metadata.getName()+"] not found");
+															}
+														}
+											
+														@Override
+														public void setVar(final ContentNodeMetadata metadata, Object value) throws ContentException {
+															switch (metadata.getName()) {
+																case "testLong"		: aft.testLong = ((Number)value).longValue(); break;
+																case "testDouble"	: aft.testDouble = ((Number)value).doubleValue(); break;
+																case "testString"	: aft.testString = value.toString(); break;
+																default : throw new ContentException("Var name ["+metadata.getName()+"] not found");
+															}
+														}
+											
+														@Override
+														public void print(final String format, final Object... parameters) throws ContentException {
+															if (parameters == null || parameters.length == 0) {
+																printed[0] = format; 
+															}
+															else {
+																printed[0] = String.format(format,parameters);
+															}
+														}
+													};
+		
+		
+		// Long arithmetic
+		aft.testLong = 1;
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testLong := -testLong",model),pavp);
+		Assert.assertEquals(-1,aft.testLong);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testLong := 2 * testLong",model),pavp);
+		Assert.assertEquals(-2,aft.testLong);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testLong := testLong / -2",model),pavp);
+		Assert.assertEquals(1,aft.testLong);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testLong := testLong + 3",model),pavp);
+		Assert.assertEquals(4,aft.testLong);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testLong := 5 - testLong",model),pavp);
+		Assert.assertEquals(1,aft.testLong);
+
+		// Double arithmetic
+		aft.testDouble = 1;
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testDouble := -testDouble",model),pavp);
+		Assert.assertEquals(-1,aft.testDouble,0.001);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testDouble := 2 * testDouble",model),pavp);
+		Assert.assertEquals(-2,aft.testDouble,0.001);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testDouble := testDouble / -2",model),pavp);
+		Assert.assertEquals(1,aft.testDouble,0.001);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testDouble := testDouble + 3",model),pavp);
+		Assert.assertEquals(4,aft.testDouble,0.001);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testDouble := 5 - testDouble",model),pavp);
+		Assert.assertEquals(1,aft.testDouble,0.001);
+
+		// Functions
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testDouble := arcsin(sin(1))",model),pavp);
+		Assert.assertEquals(1,aft.testDouble,0.001);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testDouble := arccos(cos(1))",model),pavp);
+		Assert.assertEquals(1,aft.testDouble,0.001);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testDouble := arctan(tan(1))",model),pavp);
+		Assert.assertEquals(1,aft.testDouble,0.001);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testDouble := exp(ln(1))",model),pavp);
+		Assert.assertEquals(1,aft.testDouble,0.001);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testDouble := exp10(ln10(1))",model),pavp);
+		Assert.assertEquals(1,aft.testDouble,0.001);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testDouble := sqrt(25)",model),pavp);
+		Assert.assertEquals(5,aft.testDouble,0.001);
+		 
+		// Return
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("return",model),pavp);
+		
+		// Printing
+		aft.testLong = 2;
+		aft.testDouble = 3;
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("print \"%1$d %2$3.1f\", testLong, testDouble",model),pavp);
+		Assert.assertEquals("2 3.0",printed[0].replace(',','.'));
+
+		// Long comparison
+		aft.testLong = 1;
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong = 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("true",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong <> 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("false",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong >= 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("true",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong > 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("false",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong <= 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("true",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong < 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("false",printed[0]);
+		printed[0] = null;
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong < 1 then print \"true\"endif",model),pavp);
+		Assert.assertNull(printed[0]);
+		aft.testLong = 0;
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong < 1 then print \"true\" endif",model),pavp);
+		Assert.assertEquals("true",printed[0]);
+
+		// Double comparison
+		aft.testDouble = 1;
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testDouble = 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("true",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testDouble <> 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("false",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testDouble >= 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("true",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testDouble > 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("false",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testDouble <= 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("true",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testDouble < 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("false",printed[0]);
+
+		// Boolean operators test
+		aft.testLong = 1;
+		aft.testDouble = 1;
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong = 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("true",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if not testLong = 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("false",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong = 1 and testDouble = 1.0 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("true",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong = 1 and testDouble <> 1.0 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("false",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong <> 1 or testDouble <> 1 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("false",printed[0]);
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong = 1 or testDouble = 1.0 then print \"true\" else print \"false\" endif",model),pavp);
+		Assert.assertEquals("true",printed[0]);
+
+		// Sequence test
+		aft.testLong = 1;
+		aft.testDouble = 1;
+		ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testLong := -testLong; testDouble := -testDouble",model),pavp);
+		Assert.assertEquals(-1,aft.testLong);
+		Assert.assertEquals(-1,aft.testDouble,0.001);
+		
+		
+		try{ScriptProcessor.processSyntaxTree(null,pavp);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (NullPointerException exc) {
+		}
+		try{ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testLong := -testLong; testDouble := -testDouble",model),null);
+			Assert.fail("Mandatory exception was not detected (null 2-nd argument)");
+		} catch (NullPointerException exc) {
+		}
+		
+		try{ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testLong := sin(testString)",model),pavp);
+			Assert.fail("Mandatory exception was not detected (unsupported types in expression)");
+		} catch (CalculationException exc) {
+		}
+		try{ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testString := -testString",model),pavp);
+			Assert.fail("Mandatory exception was not detected (unsupported types in expression)");
+		} catch (CalculationException exc) {
+		}
+		try{ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testString := 2 * testString",model),pavp);
+			Assert.fail("Mandatory exception was not detected (unsupported types in expression)");
+		} catch (CalculationException exc) {
+		}
+		try{ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("testString := 1 + testString",model),pavp);
+			Assert.fail("Mandatory exception was not detected (unsupported types in expression)");
+		} catch (CalculationException exc) {
+		}
+		try{ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong then print \"true\" else print \"false\" endif",model),pavp);
+			Assert.fail("Mandatory exception was not detected (unsupported types in expression)");
+		} catch (CalculationException exc) {
+		}
+		try{ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong then print \"true\" endif",model),pavp);
+			Assert.fail("Mandatory exception was not detected (unsupported types in expression)");
+		} catch (CalculationException exc) {
+		}
+		try{ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testString = 1 then print \"true\" else print \"false\" endif",model),pavp);
+			Assert.fail("Mandatory exception was not detected (unsupported types in expression)");
+		} catch (CalculationException exc) {
+		}
+		try{ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong = testString then print \"true\" else print \"false\" endif",model),pavp);
+			Assert.fail("Mandatory exception was not detected (unsupported types in expression)");
+		} catch (CalculationException exc) {
+		}
+		try{ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if not testLong then print \"true\" else print \"false\" endif",model),pavp);
+			Assert.fail("Mandatory exception was not detected (unsupported types in expression)");
+		} catch (CalculationException exc) {
+		}
+		try{ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong and testDouble then print \"true\" else print \"false\" endif",model),pavp);
+			Assert.fail("Mandatory exception was not detected (unsupported types in expression)");
+		} catch (CalculationException exc) {
+		}
+		try{ScriptProcessor.processSyntaxTree(ScriptProcessor.buildSyntaxTree("if testLong or testDouble then print \"true\" else print \"false\" endif",model),pavp);
+			Assert.fail("Mandatory exception was not detected (unsupported types in expression)");
+		} catch (CalculationException exc) {
+		}
+	}	
+	 
 	
 	private static Lexema[] toLexArray(final String expr) throws SyntaxException {
 		final List<Lexema>	lex = ScriptProcessor.buildLexemaList(expr);
 
-		return lex.toArray(new Lexema[lex.size()]);
+		return lex.toArray(new Lexema[lex.size()]); 
 	}
+}
+
+
+@LocaleResourceLocation(Localizer.LOCALIZER_SCHEME+":prop:chav1961/purelib/i18n/localization")
+@LocaleResource(value="testSet1",tooltip="testSet2",help="testSet1")
+@Action(resource=@LocaleResource(value="testSet1",tooltip="testSet2"),actionString="press",simulateCheck=true) 
+class AnnotatedForTest {
+	@LocaleResource(value="testSet1",tooltip="testSet2")
+	@Format("10.3mpzn")
+		long	testLong = 0;
+
+	@LocaleResource(value="testSet1",tooltip="testSet2")
+	@Format("10.3mpzn")
+		double	testDouble = 0;
+	
+	@LocaleResource(value="testSet1",tooltip="testSet2")
+	@Format("10.3m")
+		String	testString = "";
 }
