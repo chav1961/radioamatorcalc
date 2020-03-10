@@ -38,24 +38,19 @@ public class PipeExecutorFrame extends InnerFrame<PipeExecutor>{
 			throw new IllegalArgumentException("Instance must ne annotated with @"+PluginProperties.class.getName()); 
 		}
 		else {
-			try{
-				this.instance = instance;
-				this.mdi = ContentModelFactory.forAnnotatedClass(instance.getClass());
-				this.localizer = parent.push(LocalizerFactory.getLocalizer(mdi.getRoot().getLocalizerAssociated()));
-				this.state = new JStateString(localizer);
-				
-				// TODO Auto-generated constructor stub
-				final JPanel	leftPanel = new JPanel(), rightPanel = new JPanel(), bottom = new JPanel(new BorderLayout(5,5)), bottomRight = new JPanel(new GridLayout(1,2));
-				
-				bottomRight.add(start);
-				start.addActionListener((e)->instance.start());
-				bottomRight.add(stop);
-				stop.addActionListener((e)->instance.stop());
-				bottom.add(state,BorderLayout.SOUTH);
-				
-			} catch (IOException e) {
-				throw new LocalizationException(e);
-			}			
+			this.instance = instance;
+			this.mdi = ContentModelFactory.forAnnotatedClass(instance.getClass());
+			this.localizer = parent.push(LocalizerFactory.getLocalizer(mdi.getRoot().getLocalizerAssociated()));
+			this.state = new JStateString(localizer);
+			
+			// TODO Auto-generated constructor stub
+			final JPanel	leftPanel = new JPanel(), rightPanel = new JPanel(), bottom = new JPanel(new BorderLayout(5,5)), bottomRight = new JPanel(new GridLayout(1,2));
+			
+			bottomRight.add(start);
+			start.addActionListener((e)->instance.start());
+			bottomRight.add(stop);
+			stop.addActionListener((e)->instance.stop());
+			bottom.add(state,BorderLayout.SOUTH);
 		}	
 	}
 	

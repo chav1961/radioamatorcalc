@@ -81,7 +81,7 @@ public class ModelItemButtonContainer extends JButton implements LocaleChangeLis
 				try{final Localizer	localizer = LocalizerFactory.getLocalizer(metadata.getLocalizerAssociated());
 					
 					fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
-				} catch (LocalizationException | IOException e) {
+				} catch (LocalizationException e) {
 					setText(metadata.getLabelId());
 					setToolTipText(metadata.getTooltipId() != null ? metadata.getTooltipId() : "");
 				}
@@ -148,12 +148,12 @@ public class ModelItemButtonContainer extends JButton implements LocaleChangeLis
 		
 		if (metadata != null) {
 			try{setText(LocalizerFactory.getLocalizer(metadata.getLocalizerAssociated()).getValue(metadata.getLabelId()));
-			} catch (IOException e) {
+			} catch (LocalizationException e) {
 				setText(metadata.getLabelId());
 			}
 			if (metadata.getTooltipId() != null) {
 				try{setToolTipText(LocalizerFactory.getLocalizer(metadata.getLocalizerAssociated()).getValue(metadata.getTooltipId()));
-				} catch (IOException e) {
+				} catch (LocalizationException e) {
 					setText(metadata.getLabelId());
 				}
 			}

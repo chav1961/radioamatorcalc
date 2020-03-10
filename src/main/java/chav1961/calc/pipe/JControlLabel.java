@@ -32,7 +32,7 @@ public class JControlLabel extends JLabel implements NodeMetadataOwner, LocaleCh
 				this.metadata = metadata;
 				setBorder(new LineBorder(Color.BLACK));
 				fillLocalizedStrings(l.currentLocale().getLocale(),l.currentLocale().getLocale());
-			} catch (IOException | LocalizationException e) {
+			} catch (LocalizationException e) {
 				throw new ContentException(e);
 			}
 		}
@@ -50,9 +50,8 @@ public class JControlLabel extends JLabel implements NodeMetadataOwner, LocaleCh
 
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
 		if (getNodeMetadata().getTooltipId() != null) {
-			try {
-				setToolTipText(LocalizerFactory.getLocalizer(getNodeMetadata().getLocalizerAssociated()).getValue(getNodeMetadata().getTooltipId()));
-			} catch (IOException e) {
+			try{setToolTipText(LocalizerFactory.getLocalizer(getNodeMetadata().getLocalizerAssociated()).getValue(getNodeMetadata().getTooltipId()));
+			} catch (LocalizationException e) {
 				setToolTipText(getNodeMetadata().getTooltipId());
 			}
 		}
