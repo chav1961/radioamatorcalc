@@ -126,7 +126,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 
 			final JSplitPane	split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 			
-			leftMenu = new SimpleNavigatorTree(localizer,SwingModelUtils.toMenuEntity(xda.byUIPath(URI.create("ui:/model/navigation.top.navigator")),JMenuBar.class));
+			leftMenu = new SimpleNavigatorTree(localizer,xda.byUIPath(URI.create("ui:/model/navigation.top.navigator")));
 
 			leftMenu.addActionListener((e)->{callPlugin(e.getActionCommand());});
 			
@@ -199,7 +199,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	}
 	
 	public void expandPluginByItsId(final String pluginId) {
-		leftMenu.findAndSelect(pluginId);
+		leftMenu.findAndSelect(URI.create(pluginId));
 	}
 	
 	private void fillLocalizedStrings(Locale oldLocale, Locale newLocale) throws LocalizationException {
