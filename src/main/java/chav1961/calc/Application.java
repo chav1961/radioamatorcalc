@@ -64,9 +64,7 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
-import chav1961.purelib.ui.swing.AnnotatedActionListener;
 import chav1961.purelib.ui.swing.SimpleNavigatorTree;
-import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 import chav1961.purelib.ui.swing.useful.JCloseableTab;
@@ -114,7 +112,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			parentLocalizer.push(localizer);
 			localizer.addLocaleChangeListener(this);
 			
-			this.menu = SwingModelUtils.toMenuEntity(xda.byUIPath(URI.create("ui:/model/navigation.top.mainmenu")),JMenuBar.class); 
+			this.menu = SwingUtils.toJComponent(xda.byUIPath(URI.create("ui:/model/navigation.top.mainmenu")),JMenuBar.class); 
 			SwingUtils.assignActionListeners(this.menu,this);
 			
 			final JPanel	centerPanel = new JPanel(new BorderLayout()); 
@@ -148,7 +146,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			SwingUtils.assignActionKey((JPanel)getContentPane()
 						,KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_DOWN_MASK)
-						,new AnnotatedActionListener<Application>(this)
+						,SwingUtils.buildAnnotatedActionListener(this)
 						,"find");
 			SwingUtils.centerMainWindow(this,0.75f);
 			addWindowListener(new WindowListener() {
