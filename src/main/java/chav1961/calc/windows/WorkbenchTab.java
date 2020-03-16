@@ -38,7 +38,6 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
-import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 import chav1961.purelib.ui.swing.useful.JCloseableTab;
@@ -82,7 +81,7 @@ public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeL
 				throw new ContentException(e);
 			}
 			this.tab = new JCloseableTab(localizer,this.ownModel.getRoot());
-			this.popup = SwingModelUtils.toMenuEntity(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.workbenchMenu")),JPopupMenu.class);
+			this.popup = SwingUtils.toJComponent(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.workbenchMenu")),JPopupMenu.class);
 
 			pluginCount.addListener((oldValue,newValue)->{
 				((JMenuItem)SwingUtils.findComponentByName(popup,"workbenchMenu.closeAll")).setEnabled(newValue != 0);

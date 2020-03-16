@@ -104,7 +104,7 @@ public class CalcPipeFrame extends PipePluginFrame<Object> {
 				SwingUtils.assignActionKey(sourceFields,SwingUtils.KS_HELP,(e)->{showHelp(e.getActionCommand());},mdi.getRoot().getHelpId());
 				SwingUtils.assignActionKey(targetFields,SwingUtils.KS_HELP,(e)->{showHelp(e.getActionCommand());},mdi.getRoot().getHelpId());
 				fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
-			} catch (LocalizationException | IOException e) {
+			} catch (LocalizationException e) {
 				throw new ContentException(e);
 			}
 		}

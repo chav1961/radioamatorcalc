@@ -144,13 +144,13 @@ public class ModelItemListContainer extends JList<LocaleChangeListener> implemen
 
 		private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
 			try{label.setText(LocalizerFactory.getLocalizer(metadata.getLocalizerAssociated()).getValue(metadata.getLabelId()));
-			} catch (IOException e) {
+			} catch (LocalizationException e) {
 				label.setText(metadata.getLabelId());
 			}
 			field.setText(metadata.getName());
 			if (metadata.getTooltipId() != null) {
 				try{field.setToolTipText(LocalizerFactory.getLocalizer(metadata.getLocalizerAssociated()).getValue(metadata.getTooltipId()));
-				} catch (IOException e) {
+				} catch (LocalizationException e) {
 					label.setText(metadata.getLabelId());
 				}
 			}

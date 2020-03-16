@@ -50,7 +50,6 @@ import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.model.interfaces.NodeMetadataOwner;
-import chav1961.purelib.ui.swing.SwingModelUtils;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 import chav1961.purelib.ui.swing.useful.DnDManager;
@@ -116,9 +115,9 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			}
 			
 			this.tab = new JCloseableTab(localizer,this.ownModel.getRoot());
-			this.popup = SwingModelUtils.toMenuEntity(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.pipeMenu")),JPopupMenu.class);
+			this.popup = SwingUtils.toJComponent(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.pipeMenu")),JPopupMenu.class);
 			SwingUtils.assignActionListeners(this.popup,this);
-			this.toolbar = SwingModelUtils.toToolbar(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.pipeMenu")),JToolBar.class);
+			this.toolbar = SwingUtils.toJComponent(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.pipeMenu")),JToolBar.class);
 			SwingUtils.assignActionListeners(this.toolbar,this);
 			
 			setLayout(new BorderLayout());

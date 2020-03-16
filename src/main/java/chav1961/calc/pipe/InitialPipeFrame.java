@@ -74,7 +74,7 @@ public class InitialPipeFrame extends PipePluginFrame<Object> {
 				add(bottom,BorderLayout.SOUTH);
 				SwingUtils.assignActionKey(fields,SwingUtils.KS_HELP,(e)->{showHelp(e.getActionCommand());},mdi.getRoot().getHelpId());
 				fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
-			} catch (LocalizationException | IOException e) {
+			} catch (LocalizationException e) {
 				throw new ContentException(e);
 			}
 		}
