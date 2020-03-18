@@ -15,6 +15,7 @@ import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.interfaces.Localizer;
+import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.ui.interfaces.FormManager;
 import chav1961.purelib.ui.interfaces.RefreshMode;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
@@ -46,7 +47,7 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
         	
 			try{final FormManager<Object,T>	wrapper = new FormManagerWrapper<>((FormManager<Object,T>)instance, ()-> {refresh();}); 
 				
-				abf = new AutoBuiltForm<T>(localizer, instance, wrapper);
+				abf = new AutoBuiltForm<T>(ContentModelFactory.forAnnotatedClass(instance.getClass()),localizer, instance, wrapper);
 				w = new InnerSVGPluginWindow<T>(instance.getClass().getResource(pp.svgURI()).toURI(),abf,(src)->
 				{
 					try{final Object result = instance.getClass().getField(src).get(instance);
