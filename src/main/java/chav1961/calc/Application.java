@@ -64,6 +64,9 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
+import chav1961.purelib.ui.interfaces.FormManager;
+import chav1961.purelib.ui.interfaces.RefreshMode;
+import chav1961.purelib.ui.swing.AutoBuiltForm;
 import chav1961.purelib.ui.swing.SimpleNavigatorTree;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
@@ -244,6 +247,33 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
+	@OnAction("action:/settings")
+	private void settings() {
+		try{final ContentMetadataInterface				mdi = ContentModelFactory.forAnnotatedClass(CurrentSettings.class);
+			final FormManager<Object,CurrentSettings>	fm = new FormManager<Object,CurrentSettings>(){
+															@Override
+															public RefreshMode onField(CurrentSettings inst, Object id, String fieldName, Object oldValue) throws FlowException, LocalizationException {
+																return RefreshMode.FIELD_ONLY;
+															}
+											
+															@Override
+															public LoggerFacade getLogger() {
+																return logger;
+															}
+														};  
+			try(final AutoBuiltForm<CurrentSettings>	abf = new AutoBuiltForm<CurrentSettings>(mdi,localizer,settings,fm)) {
+				
+				CurrentSettings.class.getModule().addExports(CurrentSettings.class.getPackageName(),abf.getUnnamedModule());
+				
+				if (AutoBuiltForm.ask(this,localizer,abf,new URI[]{URI.create("app:action:/CurrentSettings.OK"),URI.create("app:action:/CurrentSettings.cancel")})) {
+					
+				}
+			}
+		} catch (LocalizationException | ContentException e) {
+			stateString.message(Severity.error,e.getLocalizedMessage());
+		} 
+	}	
+	
 	@OnAction("action:/helpAbout")
 	private void showAboutScreen() {
 		try{final JEditorPane 	pane = new JEditorPane("text/html",null);

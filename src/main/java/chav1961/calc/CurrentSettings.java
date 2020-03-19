@@ -29,7 +29,7 @@ import chav1961.purelib.ui.interfaces.RefreshMode;
 @Action(resource=@LocaleResource(value="settings.save",tooltip="settings.save.tooltip"),actionString="OK") 
 @Action(resource=@LocaleResource(value="settings.reset",tooltip="settings.reset.tooltip"),actionString="reset") 
 @Action(resource=@LocaleResource(value="settings.cancel",tooltip="settings.cancel.tooltip"),actionString="cancel") 
-@LocaleResourceLocation(Localizer.LOCALIZER_SCHEME+":prop:chav1961/calculator/i18n/i18n")
+@LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="menu.settings",tooltip="menu.ttSettings")
 public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 	public static final String	SETTINGS_LOCATION = "./.radioamatorcalc";
