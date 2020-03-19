@@ -1,0 +1,777 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localization xmlns="http://www.i18n.purelib.chav1961.ru/">
+	<lang name="en">
+<!-- Localization for application menu --> 
+		<key name="menu.file">File</key> 
+		<key name="menu.ttFile">File menu</key>
+
+		<key name="menu.cleanDesktop">Clear desktop</key> 
+		<key name="menu.ttCleanDesktop">Clear desktop content</key> 
+
+		<key name="menu.newPipe">Create pipe</key>
+		<key name="menu.ttNewPipe">Start new pipe</key>
+
+		<key name="menu.loadPipe">load pipe</key>
+		<key name="menu.ttLoadPipe">Load pipe configuration was saved earlier</key>
+
+		<key name="menu.savePipe">Save pipe</key>
+		<key name="menu.ttSavePipe">Save pipe content for longer use</key>
+
+		<key name="menu.savePipeAs">Save pipe as...</key>
+		<key name="menu.ttSavePipeAs">Save pipe content for longer use with the given name</key>
+
+		<key name="menu.exit">Quit</key>
+		<key name="menu.ttExit">Quit application</key>
+
+		<key name="menu.elements">Item</key>
+		<key name="menu.ttElements">Calculation of circuit elements (coils, contours, filters etc)</key>
+
+		<key name="menu.elements.coils">Coils</key>
+		<key name="menu.ttElements.coils">Coils parameters calculation</key>
+
+		<key name="menu.elements.coils.onelayer">One-layer coils</key>
+		<key name="menu.ttElements.coils.onelayer">One-layer coils calculation</key>
+
+		<key name="menu.elements.coils.ringlayer">Coils on rings</key>
+		<key name="menu.ttElements.coils.ringlayer">Coils on rings calculation</key>
+
+		<key name="menu.components">Components</key>
+		<key name="menu.ttComponents">Components of the schemes</key> 
+
+		<key name="menu.components.lccontour">LC-contour</key>
+		<key name="menu.ttComponents.lccontour">Calculate LC-contour parameters</key>
+
+		<key name="menu.components.rcgenerator">RC-generator</key>
+		<key name="menu.ttComponents.rcgenerator">Calculate RC-generator parameters</key>
+
+		<key name="menu.schemes">Schemes</key>
+		<key name="menu.ttSchemes">Calculation of the schematic blocks</key>
+			
+		<key name="menu.schemes.powerfactor">Power factors</key>
+		<key name="menu.ttSchemes.powerfactor">Calculation of the power factors</key>
+
+		<key name="menu.schemes.powerfactor.mc34262">MC34262 power factor chip</key>
+		<key name="menu.ttSchemes.powerfactor.mc34262">Calculation of the power factor based on MC34262 chip</key>
+
+		<key name="menu.schemes.stepup">Step-up convertor</key>
+		<key name="menu.ttSchemes.stepup">Calculation of the step-up convertors</key>
+
+		<key name="menu.schemes.stepup.ucX84X">UCX84X convertor chips</key>
+		<key name="menu.ttSchemes.stepup.ucX84X">Calculation of the step-up convertor based on UCX84X chips</key>
+
+		<key name="menu.schemes.stepup.mc34063">MC34063 convertor chip</key>
+		<key name="menu.ttSchemes.stepup.mc34063">Calculation of the step-up convertor based on MC34063 chip</key>
+
+		<key name="menu.schemes.stepdown">Step-down convertor</key>
+		<key name="menu.ttSchemes.stepdown">Calculation of the step-down convertors</key>
+
+		<key name="menu.schemes.stepdown.mc34063">MC34063 convertor chip</key>
+		<key name="menu.ttSchemes.stepdown.mc34063">Calculation of the step-down convertor based on MC34063 chip</key>
+
+		<key name="menu.schemes.stepdown.tps40200">TPS40200 convertor chip</key>
+		<key name="menu.ttSchemes.stepdown.tps40200">Calculation of the step-down convertor based on TPS40200 chip</key>
+
+		<key name="menu.schemes.transmitter">Transmitter</key>
+		<key name="menu.ttSchemes.transmitter">Calculate transmitter components</key>
+
+		<key name="menu.schemes.transmitter.pcontour">P-contours</key>
+		<key name="menu.ttSchemes.transmitter.pcontour">Calculate single and double P-contours</key>
+
+		<key name="menu.schemes.transmitter.quartzfilter">Quartz filters</key>
+		<key name="menu.ttSchemes.transmitter.quartzfilter">Calculate different quartz filters</key>
+
+		<key name="menu.pipes">Pipes</key>
+		<key name="menu.ttPipes">Use pipes infrastructure to build calculation pipes</key>
+
+		<key name="menu.pipes.startnode">Start node</key>
+		<key name="menu.ttPipes.Startnode">Insert start node into your pipe</key>
+
+		<key name="menu.pipes.formulanode">Formula node</key>
+		<key name="menu.ttPipes.formulanode">Insert formula node for non-standard calculation into your pipe</key>
+
+		<key name="menu.pipes.switchnode">Switch node</key>
+		<key name="menu.ttPipes.switchnode">Insert switch node for conditional jump in your pipe</key>
+
+		<key name="menu.pipes.mapnode">Map node</key>
+		<key name="menu.ttPipes.mapnode">Insert map node to split calculations into parallel threads</key> 
+
+		<key name="menu.pipes.reducenode">Reduce node</key>
+		<key name="menu.ttPipes.reducenode">Insert map node to join calculations were split</key> 
+
+		<key name="menu.pipes.terminalnode">Terminal node</key>
+		<key name="menu.ttPipes.terminalnode">Insert terminal node into your pipe</key> 
+
+		<key name="menu.tools">Tools</key>
+		<key name="menu.ttTools">Set of tools to manage application</key>
+
+		<key name="menu.find">Search (Ctrl+F) ...</key>
+		<key name="menu.ttFind">Internet-styled search for calculator abilities</key>
+
+		<key name="menu.index">Indexing... </key>
+		<key name="menu.ttIndex">Rebuild search index for calculator abilities</key> 
+
+		<key name="menu.addPdf">Add PDF</key>
+		<key name="menu.ttAddPdf">Add new pdf file to the knowledge base</key> 
+
+		<key name="menu.languages">Language</key>
+		<key name="menu.ttLanguages">Select language for application</key>
+
+		<key name="menu.settings">Options</key>
+		<key name="menu.ttSettings">Application settings and options</key>
+
+		<key name="menu.help">Help</key>
+		<key name="menu.ttHelp">Help for the application</key>
+		<key name="menu.about">About</key>
+		<key name="menu.ttAbout">About application</key>
+
+		<key name="root">root</key>
+		<key name="root.tooltip">root</key>
+
+		<key name="workbenchMenu.iconifyAll">Iconify all</key>
+		<key name="workbenchMenu.iconifyAll.tt">Iconify all plugins on the workbench</key>
+		<key name="workbenchMenu.closeAll">Close all</key>
+		<key name="workbenchMenu.closeAll.tt">Close all plugins on the workbench</key>
+
+		<key name="pipeMenu.new">New</key>
+		<key name="pipeMenu.new.tt">Create new pipe element</key>
+		<key name="pipeMenu.new.initial">Initial node</key>
+		<key name="pipeMenu.new.initial.tt">Create new initial node for the pipe</key>
+		<key name="pipeMenu.new.conditional">Conditional node</key>
+		<key name="pipeMenu.new.conditional.tt">Create new conditional node for the pipe</key>
+		<key name="pipeMenu.new.calc">Calculator</key>
+		<key name="pipeMenu.new.calc.tt">Create new calculator element</key>
+		<key name="pipeMenu.new.dialog">Dialog</key>
+		<key name="pipeMenu.new.dialog.tt">Create dialog screen (usually for select data from database)</key>
+		<key name="pipeMenu.new.terminal">Terminal node</key>
+		<key name="pipeMenu.new.terminal.tt">Create new terminal node for the pipe</key>
+		<key name="pipeMenu.clean">Clear</key>
+		<key name="pipeMenu.clean.tt">Remove all the pipe elements</key>
+		<key name="pipeMenu.validate">Validate</key>
+		<key name="pipeMenu.validate.tt">Validate pipe</key>
+
+<!-- Localization for navigator menu --> 
+		<key name="menu.curcuits">Circuit's parameters</key>
+		<key name="menu.curcuits.tt">Calculate circuit's parameter</key>
+		<key name="menu.curcuits.contour">Contour parameters</key>
+		<key name="menu.curcuits.contour.tt">Calculate contour parameters</key> 
+		<key name="menu.curcuits.wienbridge">Wien's bridge parameters</key>
+		<key name="menu.curcuits.wienbridge.tt">Calculate Wien's bridge parameters</key>
+		<key name="menu.curcuits.phaseshift">Phase-shift generator parameters</key>
+		<key name="menu.curcuits.phaseshift.tt">Calculate phase-shift generator parameters</key>
+
+<!-- Localization for settings -->
+		<key name="settings.save">Save</key>
+		<key name="settings.save.tooltip">Save new application settings</key>
+		<key name="settings.reset">Reset</key>
+		<key name="settings.reset.tooltip">Reset current settings</key> 
+		<key name="settings.cancel">Cancel</key>
+		<key name="settings.cancel.tooltip">Don't save current settings</key>
+		<key name="settings.autosave">Autosave application field</key>
+		<key name="settings.autosave.tooltip">Automatically save application field state on exit and restore it on the further start of the application</key>
+		<key name="settings.autosave.location">Autosave location</key>
+		<key name="settings.autosave.location.tooltip">Directory for autosaving application field</key> 
+		<key name="settings.autoupdate">Autoupdate application</key>
+		<key name="settings.autoupdate.tooltip">Automatically update application to newer versions</key>
+		<key name="settings.caption">Application settings</key>
+		<key name="settings.help">uri(settings.cre)</key>
+
+<!-- Localization for helps -->
+		<key name="help.aboutApplication">uri(aboutApplication.cre)</key>
+
+<!-- Localization for window titles -->
+		<key name="title.Application">(c) 2018 A.Chernomyrdin aka chav1961. Radioamator calc V.R.=1.0</key>
+		<key name="title.help.aboutApplication">About...</key>
+
+<!-- Localization for desktop --> 
+		<key name="desktop.toolbar.closeAll">Close all</key>
+		<key name="desktop.toolbar.closeAllTT">Close all windows in the desktop pipe</key>
+		<key name="desktop.state.nameLabel">Pipe item name</key>
+
+<!-- Localization for search --> 
+		<key name="search.toolbar.close">Close search</key>
+		<key name="search.toolbar.closeTT">Close search window</key>
+
+		<key name="search.label">Search (Esc - exit)</key>
+		<key name="search.tooltip">Enter search string in the Lucene query syntax</key>
+		<key name="search.found">found</key>
+		<key name="search.notfound">No data found...</key>
+
+		<key name="search.uses">Uses</key>
+		<key name="search.tags">Tags</key>
+		<key name="search.seealso">See also</key>
+
+<!-- Localization for messages --> 
+		<key name="message.reindexed">Lucene index was rebuilt successfully</key>
+		<key name="message.pdf.indexed">PDF file added to lucene index</key>
+
+<!-- Localization for queries --> 
+		<key name="confirm.button.open">Open</key>
+		<key name="confirm.button.open.tooltip">Load calculation pipe descriptor into the program</key>
+		<key name="confirm.button.save">Save</key>
+		<key name="confirm.button.save.tooltip">Save current calculation pipe to selected file</key> 
+		<key name="confirm.button.yes">Yes</key>
+		<key name="confirm.button.no">No</key>
+		<key name="confirm.button.cancel">Cancel</key>
+	
+		<key name="confirm.clearDesktop.caption">Clean desktop</key>
+		<key name="confirm.clearDesktop.message">Desktop will be cleaned now. Are you sure,</key>
+		<key name="confirm.savePipe.caption">Pipe saving</key>
+		<key name="confirm.savePipe.message">Your pipe was modified. Save changes?</key>
+
+		<key name="confirm.fileFilter.pipe">(*.pipe) calculation pipes</key>
+
+<!-- Localization for formulas -->
+		<key name="formula.inductanceOneLayerCoil">inductance of simple coil</key>
+		<key name="formula.numberOfCoilsOneLayerCoil">coils of simple coil</key>
+		<key name="formula.inductanceRingCoil">inductance of coil on rings</key>
+		<key name="formula.coilsRingCoil">coils of coil on rings</key>
+		<key name="formula.inductionRingCoil">magnetic induction in the ring</key>
+
+<!-- Localization for pipes -->
+		<key name="pipe.calculationSuccess">Pipe calculation success</key>
+		<key name="pipe.calculationFailed">Pipe calculation failed</key>
+		<key name="pipe.parameterName">Parameter name</key>
+		<key name="pipe.parameterType">Parameter type</key>
+
+		<key name="pipe.pluginId">Plugin ID</key>
+		<key name="pipe.pluginIdTooltip">ID of the plugin had been used</key>
+		<key name="pipe.pluginInstanceName">Instance name</key>
+		<key name="pipe.pluginInstanceNameTooltip">Plugin instance name</key> 
+		<key name="pipe.pluginFieldName">Field name</key>
+		<key name="pipe.pluginFieldNameTooltip">Plugin field name</key>
+		<key name="pipe.pluginFieldtype">Type</key>
+		<key name="pipe.pluginFieldtypeTooltip">Field type</key> 	
+
+<!-- Localization for pipe items -->
+		<key name="StartNode.caption">Start node</key>
+		<key name="StartNode.tooltip">Start node is a first component in the pipe chain</key>
+		<key name="StartNode.help">Start node is a first component in the pipe chain</key>
+		<key name="StartNode.message.duplicateField">Duplicated parameter's name [%1$s] in the list</key>
+
+		<key name="pipe.start.comment">Description</key>
+
+		<key name="FormulaNode.caption">Formula node</key>
+		<key name="FormulaNode.tooltip">Formula node is a node for non-standard calculations in the pipe</key>
+		<key name="FormulaNode.help">Formula node is a node for non-standard calculations in the pipe</key>
+
+		<key name="pipe.formula.comment">Description</key>
+		<key name="pipe.formula.comment.tooltip">Description</key> 
+		<key name="pipe.formula.expression">Expression</key> 
+		<key name="pipe.formula.expression.tooltip">Expression</key> 
+
+		<key name="SwitchNode.caption">Switch node</key>
+		<key name="SwitchNode.tooltip">Switch node is a node for implementing conditional jumps in the pipe</key>
+		<key name="SwitchNode.help">Switch node is a node for implementing conditional jumps in the pipe</key>
+
+		<key name="pipe.switch.comment">Description</key>
+		<key name="pipe.switch.comment.tooltip">Description</key>
+		<key name="pipe.switch.expression">Expression</key>
+		<key name="pipe.switch.expression.tooltip">Expression</key>
+		<key name="pipe.switch.askbefore">Ask before jump</key>
+		<key name="pipe.switch.askbefore.tooltip">Ask before jump</key> 
+
+		<key name="pipe.terminal.nodetype">Terminal node type</key>
+		<key name="pipe.terminal.nodetype.success">Successful</key>
+		<key name="pipe.terminal.nodetype.failed">Failed</key>
+		<key name="pipe.terminal.format">Message format</key>
+		<key name="pipe.terminal.parameters">Parameters</key>
+
+		<key name="MapNode.caption">Map node</key>
+		<key name="MapNode.tooltip">Map node is a node for splitting calculations into parallel threads</key>
+		<key name="MapNode.help">Map node is a node for splitting calculations into parallel threads</key>
+
+		<key name="ReduceNode.caption">Reduce node</key>
+		<key name="ReduceNode.tooltip">Reduce node is a node for joining calculations were split</key>
+		<key name="ReduceNode.help">Reduce node is a node for joining calculations were split</key>
+
+		<key name="TerminalNode.caption">Terminal node</key>
+		<key name="TerminalNode.tooltip">Terminal node is a last component in the pipe chain</key>
+		<key name="TerminalNode.help">Terminal node is a last component in the pipe chain</key>
+
+<!-- localization for standard windows -->
+		<key name="chav1961.calc.workbench">Workbench</key>
+		<key name="chav1961.calc.workbench.tt">Workbench contains your plugins</key>
+		<key name="chav1961.calc.workbench.action.iconifyAll">Iconify all</key>
+		<key name="chav1961.calc.workbench.action.iconifyAll.tt">Iconify all plugins on the workbench</key>
+		<key name="chav1961.calc.workbench.action.closeAll">Close all</key>
+		<key name="chav1961.calc.workbench.action.closeAll.tt">Close all plugins on the workbench</key>
+
+		<key name="chav1961.calc.pipe">%1$s Pipe %2$s</key>
+		<key name="chav1961.calc.pipe.tt">Pipe is used to build calculation's chains (similar to block-schemas)</key>
+
+<!-- localization for standard pipe components -->
+		<key name="chav1961.calc.pipe.screen.source.tt">Control source starts execution for other pipe nodes</key>
+		<key name="chav1961.calc.pipe.screen.target.tt">Control target waits all incoming contorls to complete</key>
+		<key name="chav1961.calc.pipe.screen.true.tt">True source starts execution for other pipes node on true conditional</key>
+		<key name="chav1961.calc.pipe.screen.false.tt">False source starts execution for other pipes node on false conditional</key>
+
+		<key name="chav1961.calc.pipe.initial.caption">Initial pipe node</key>
+		<key name="chav1961.calc.pipe.initial.caption.tt">Begins pipe execution</key>
+		<key name="chav1961.calc.pipe.initial.fields">Drag other plugin's field here</key>
+		<key name="chav1961.calc.pipe.initial.fields.tt">Drag other plugin's field here to fill them with initial before pipe start</key>
+
+		<key name="chav1961.calc.pipe.conditional.caption">Conditional pipe node</key>
+		<key name="chav1961.calc.pipe.conditional.caption.tt">Changes pipe execution order</key>
+		<key name="chav1961.calc.pipe.conditional.fields">Drag other plugin's field here</key>
+		<key name="chav1961.calc.pipe.conditional.fields.tt">Drag other plugin's field here to use them in the condition</key> 
+		<key name="chav1961.calc.pipe.conditional.expression">Expression to test</key>
+		<key name="chav1961.calc.pipe.conditional.expression.tt">Type expression to test here. Expression must return true or false as a result. Use fields for this plugin in it</key>
+
+		<key name="chav1961.calc.pipe.calc.caption">Calculator node</key>
+		<key name="chav1961.calc.pipe.calc.caption.tt">Supports customized calculations</key>
+		<key name="chav1961.calc.pipe.calc.fields.source">Drag other plugin's field here for source</key>
+		<key name="chav1961.calc.pipe.calc.fields.source.tt">Drag other plugin's field here to use them in the right side of expression</key>
+		<key name="chav1961.calc.pipe.calc.fields.target">Drag other plugin's field here for destination</key>
+		<key name="chav1961.calc.pipe.calc.fields.target.tt">Drag other plugin's field here to use them in the left side of expression</key>
+		<key name="chav1961.calc.pipe.calc.tabs.fields">Fields</key>
+		<key name="chav1961.calc.pipe.calc.tabs.fields.tt">This tab contains source and target fields to use them in the expressions</key>
+		<key name="chav1961.calc.pipe.calc.tabs.expressions">Expressions</key>
+		<key name="chav1961.calc.pipe.calc.tabs.expressions.tt">This tab contains expressions to calculate</key>
+
+		<key name="chav1961.calc.pipe.terminal.caption">Terminal pipe node</key>
+		<key name="chav1961.calc.pipe.terminal.caption.tt">Terminates pipe execution</key>
+		<key name="chav1961.calc.pipe.terminal.fields">Drag other plugin's field here</key>
+		<key name="chav1961.calc.pipe.terminal.fields.tt">Drag other plugin's field here to get them as s result of the pipe execution</key> 
+		<key name="chav1961.calc.pipe.terminal.message">Message on exit</key>
+		<key name="chav1961.calc.pipe.terminal.message.tt">Type message that you will receive on processing this node</key>
+		<key name="chav1961.calc.pipe.terminal.failure">Is failure</key>
+		<key name="chav1961.calc.pipe.terminal.failure.tt">Setting this check box means that executing this terminal node is erroneous termination of the pipe</key> 
+
+<!-- Localization for plugins -->
+
+<!-- Localization for chav1961.calc.plugins.calc.contour --> 
+		<key name="chav1961.calc.plugins.calc.contour">Contour parameters</key>
+		<key name="chav1961.calc.plugins.calc.contour.tt">Calculate any of contour parameter thru other two ones</key>
+		<key name="chav1961.calc.plugins.calc.contour.inductanсe">Inductance (uH)</key>
+		<key name="chav1961.calc.plugins.calc.contour.inductanсe.tt">Type Inductance in uH</key>
+		<key name="chav1961.calc.plugins.calc.contour.capacity">Capacity (pF)</key>
+		<key name="chav1961.calc.plugins.calc.contour.capacity.tt">Type capacity in pF</key>
+		<key name="chav1961.calc.plugins.calc.contour.frequency">Frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.contour.frequency.tt">Type frequency in kHz</key>
+		<key name="chav1961.calc.plugins.calc.contour.button.freq">F</key>
+		<key name="chav1961.calc.plugins.calc.contour.button.freq.tt">Calculate frequency</key>
+		<key name="chav1961.calc.plugins.calc.contour.button.ind">L</key>
+		<key name="chav1961.calc.plugins.calc.contour.button.ind.tt">Calculate inductance</key>
+		<key name="chav1961.calc.plugins.calc.contour.button.cap">C</key>
+		<key name="chav1961.calc.plugins.calc.contour.button.cap.tt">Calculate capacity</key>
+
+<!-- Localization for chav1961.calc.plugins.calc.winbridge --> 
+		<key name="chav1961.calc.plugins.calc.wienbridge">Win-Robinson bridge parameters</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.tt">Calculate any of Win-Robinson bridge parameter thru other two ones</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.resistance">Resistance (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.resistance.tt">Type resistance in kOhms</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.capacity">Capacity (nF)</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.capacity.tt">Type capacity in nF</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.frequency">Frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.frequency.tt">Type frequency in kHz</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.button.freq">F</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.button.freq.tt">Calculate frequency</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.button.res">R</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.button.res.tt">Calculate resistance</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.button.cap">C</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.button.cap.tt">Calculate capacity</key>
+
+<!-- Localization for chav1961.calc.plugins.calc.phaseshift --> 
+		<key name="chav1961.calc.plugins.calc.phaseshift">Phase-shift generator parameters</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.tt">Calculate any of phase-shift generator parameter thru other two ones</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.resistance">Resistance (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.resistance.tt">Type resistance in kOhms</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.capacity">Capacity (nF)</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.capacity.tt">Type capacity in nF</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.frequency">Frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.frequency.tt">Type frequency in kHz</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.button.freq">F</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.button.freq.tt">Calculate frequency</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.button.res">R</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.button.res.tt">Calculate resistance</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap">C</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap.tt">Calculate capacitance</key>
+	</lang>
+	<lang name="ru">
+<!-- Локализация меню приложения --> 
+		<key name="menu.file">Файл</key> 
+		<key name="menu.ttFile">Меню файл</key>
+
+		<key name="menu.exit">Выход</key>
+		<key name="menu.ttExit">Завершение работы приложения</key>
+
+		<key name="menu.cleanDesktop">Очистить поле</key>
+		<key name="menu.ttCleanDesktop">Очистить содержимое правой части экрана</key> 
+
+		<key name="menu.newPipe">Создать конвейер</key>
+		<key name="menu.ttNewPipe">Начать новый конвейер расчетов</key>
+
+		<key name="menu.loadPipe">Загрузить конвейер</key>
+		<key name="menu.ttLoadPipe">Загрузить в правую чатсь экрана ранее сохраненное содержимое</key>
+
+		<key name="menu.savePipe">Сохранить конвейер</key>
+		<key name="menu.ttSavePipe">Сохранить содержимое правой части экрана</key>
+
+		<key name="menu.savePipeAs">Сохранить конвейер как...</key>
+		<key name="menu.ttSavePipeAs">Сохранить содержимое правой части экрана под новым именем</key>
+
+		<key name="menu.elements">Элементы</key>
+		<key name="menu.ttElements">Расчет элементов радиотехнических цепей (катушки, контуры, фильтры)</key>
+
+		<key name="menu.elements.coils">Катушки</key>
+		<key name="menu.ttElements.coils">Расчет параметров различных катушек</key>
+
+		<key name="menu.elements.coils.onelayer">Однослойные круглые</key>
+		<key name="menu.ttElements.coils.onelayer">Расчет параметров однослойных круглых катушек</key>
+
+		<key name="menu.elements.coils.ringlayer">На кольцах</key>
+		<key name="menu.ttElements.coils.ringlayer">Расчет параметров катушек на кольцах</key>
+
+		<key name="menu.components">Компоненты</key>
+		<key name="menu.ttComponents">Расчет компонентов схем</key> 
+
+		<key name="menu.components.lccontour">LC-контур</key>
+		<key name="menu.ttComponents.lccontour">Расчет параметров LC-контура</key>
+
+		<key name="menu.components.rcgenerator">RC-генератор</key>
+		<key name="menu.ttComponents.rcgenerator">Расчет параметров RC-генератора</key>
+
+		<key name="menu.schemes">Схемы</key>
+		<key name="menu.ttSchemes">Расчет готовых схем</key>
+			
+		<key name="menu.schemes.powerfactor">Корректоры коэфф. мощности</key>
+		<key name="menu.ttSchemes.powerfactor">Расчет схем корректоров коэффициента мощности</key>
+
+		<key name="menu.schemes.powerfactor.mc34262">микросхема MC34262</key>
+		<key name="menu.ttSchemes.powerfactor.mc34262">Расчет корректора коэффициента мощности на базе MC34262</key>
+
+		<key name="menu.schemes.stepup">Повышающие преобразователи</key>
+		<key name="menu.ttSchemes.stepup">Расчет повышающих преобразователей</key>
+
+		<key name="menu.schemes.stepup.mc34063">Микросхема преобразователя MC34063</key>
+		<key name="menu.ttSchemes.stepup.mc34063">Расчет повышающего преобразователя на микросхеме MC34063</key>
+
+		<key name="menu.schemes.stepup.ucX84X">Семейство микросхем UCX84X</key>
+		<key name="menu.ttSchemes.stepup.ucX84X">Расчет повышающего преобразователя на микросхемах семейства UCX84X</key>
+
+		<key name="menu.schemes.stepdown">Понижающие преобразователи</key>
+		<key name="menu.ttSchemes.stepdown">Расчет понижающих преобразователей</key>
+
+		<key name="menu.schemes.stepdown.mc34063">Микросхема преобразователя MC34063</key>
+		<key name="menu.ttSchemes.stepdown.mc34063">Расчет понижающего преобразователя на микросхеме MC34063</key>
+
+		<key name="menu.schemes.stepdown.tps40200">Микросхема преобразователя TPS40200</key>
+		<key name="menu.ttSchemes.stepdown.tps40200">Расчет понижающего преобразователя на микросхеме TPS40200</key>
+
+		<key name="menu.schemes.transmitter">Передатчик</key>
+		<key name="menu.ttSchemes.transmitter">Расчет компонент и узлов передатчика</key>
+
+		<key name="menu.schemes.transmitter.pcontour">П-контур</key>
+		<key name="menu.ttSchemes.transmitter.pcontour">Расчет параметров LC-контура</key>
+
+		<key name="menu.schemes.transmitter.quartzfilter">Кварцевые фильтры</key>
+		<key name="menu.ttSchemes.transmitter.quartzfilter">Расчет различных кварецвых фильтров</key>
+
+		<key name="menu.pipes">Конвейеры</key>
+		<key name="menu.ttPipes">Инфраструктура конвейеров для построения цепочек вычислений</key>
+
+		<key name="menu.pipes.startnode">Начальный узел</key>
+		<key name="menu.ttPipes.Startnode">Включить начальный узел в ваш конвейер</key>
+
+		<key name="menu.pipes.formulanode">Узел-формула</key>
+		<key name="menu.ttPipes.formulanode">Включить узел-формулу для настандартных вычислений в ваш конвейер</key>
+
+		<key name="menu.pipes.switchnode">Узел-переключатель</key>
+		<key name="menu.ttPipes.switchnode">Включить узел-переключатель для условных ветвлений в вашем конвейере</key>
+
+		<key name="menu.pipes.mapnode">Узел-разветвитель</key>
+		<key name="menu.ttPipes.mapnode">Включить узел-разветвитель для разделения вычислений на параллельные ветки</key> 
+
+		<key name="menu.pipes.reducenode">Узел-сборщик</key>
+		<key name="menu.ttPipes.reducenode">Включить узел-сборщик для завершения параллельных ветвей вычислений</key>
+
+		<key name="menu.pipes.terminalnode">Конечный узел</key>
+		<key name="menu.ttPipes.terminalnode">Включить конечный узел в ваш конвейер</key> 
+
+		<key name="menu.tools">Инструменты</key>
+		<key name="menu.ttTools">Набор инструментов для настройки приложения</key>
+
+		<key name="menu.find">Поиск (Ctrl+F)...</key>
+		<key name="menu.ttFind">Поиск возможностей приложения по расчетам в Интернет-стиле</key>
+
+		<key name="menu.index">Индексация... </key>
+		<key name="menu.ttIndex">Построение поискового индекса по возможностям калькулятора</key> 
+
+		<key name="menu.addPdf">Добавить PDF</key>
+		<key name="menu.ttAddPdf">Добавить новый pdf файл в базу знаний</key> 
+
+		<key name="menu.languages">Язык</key>
+		<key name="menu.ttLanguages">Выбрать язык приложения</key>
+
+		<key name="menu.settings">Настройки</key>
+		<key name="menu.ttSettings">Настройки приложения</key>
+
+		<key name="menu.help">Справка</key>
+		<key name="menu.ttHelp">Справка по программе</key>
+		<key name="menu.about">О программе</key>
+		<key name="menu.ttAbout">Информация о приложении</key>
+
+		<key name="root">Корень</key>
+		<key name="root.tooltip">Корень</key>
+
+		<key name="workbenchMenu.iconifyAll">Свернуть все</key>
+		<key name="workbenchMenu.iconifyAll.tt">Свернуть все окна рабочего стола</key>
+		<key name="workbenchMenu.closeAll">Закрыть все</key>
+		<key name="workbenchMenu.closeAll.tt">Закрыть все плагины на рабочем столе</key>
+
+		<key name="pipeMenu.new">Создать</key>
+		<key name="pipeMenu.new.tt">Создать новый элемент конвейера</key>
+		<key name="pipeMenu.new.initial">Начальный элемент</key>
+		<key name="pipeMenu.new.initial.tt">Создать начальный жлемент конвейера</key>
+		<key name="pipeMenu.new.conditional">Условный элемент</key>
+		<key name="pipeMenu.new.conditional.tt">Создать элемент, проверяющий заданное условие</key>
+		<key name="pipeMenu.new.calc">Калькулятор</key>
+		<key name="pipeMenu.new.calc.tt">Создать элемент, выполняющия вычисление заданной формулы</key>
+		<key name="pipeMenu.new.dialog">Диалог</key>
+		<key name="pipeMenu.new.dialog.tt">Создать диалоговый элемент (как правило, для подбора данных из справочников)</key>
+		<key name="pipeMenu.new.terminal">Конечный элемент</key>
+		<key name="pipeMenu.new.terminal.tt">СОздать конечный элемент конвейера</key>
+		<key name="pipeMenu.clean">Очистить</key>
+		<key name="pipeMenu.clean.tt">Удалить все элементы конвейера</key>
+		<key name="pipeMenu.validate">Проверить</key>
+		<key name="pipeMenu.validate.tt">Проверить правильность сборки конвейера</key>
+
+<!-- Локализация меню навигатора --> 
+		<key name="menu.curcuits">Параметры цепей</key>
+		<key name="menu.curcuits.tt">Расчет параметров цепей</key> 
+		<key name="menu.curcuits.contour">Параметры контура</key>
+		<key name="menu.curcuits.contour.tt">Расчет параметров контура</key>
+		<key name="menu.curcuits.wienbridge">Параметры моста Вина</key>
+		<key name="menu.curcuits.wienbridge.tt">Расчет параметров моста Вина</key>
+		<key name="menu.curcuits.phaseshift">Параметры фазосдвигающего генератора</key>
+		<key name="menu.curcuits.phaseshift.tt">Расчет параметров фазосдвигающего генератора</key>
+
+<!-- Локализация настроек приложения -->
+		<key name="settings.save">Сохранить</key>
+		<key name="settings.save.tooltip">Сохранить новые настройки приложения</key>
+		<key name="settings.reset">Сброс</key>
+		<key name="settings.reset.tooltip">Восстановить текущие настроки приложения</key>
+		<key name="settings.cancel">Отмена</key>
+		<key name="settings.cancel.tooltip">Не сохранять введенные данные</key>
+		<key name="settings.autosave">Автосохранение поля</key>
+		<key name="settings.autosave.tooltip">Автоматически сохранять состояние поля приложения при его завершении и восстанавливать его при повторном запуске</key>
+		<key name="settings.autosave.location">Где сохранять поле</key>
+		<key name="settings.autosave.location.tooltip">Директория, в которую будет автоматически сохраняться  состояние поля приложения</key>
+		<key name="settings.autoupdate">Автообновление</key>
+		<key name="settings.autoupdate.tooltip">Автоматически обновлять приложение при появлении новых версий</key>
+		<key name="settings.caption">Настройки приложения</key>
+		<key name="settings.help">uri(settings.cre)</key>
+
+<!-- Локализация справок по приложению -->
+
+		<key name="help.aboutApplication">uri(aboutApplication.cre)</key>
+
+<!-- Локализация заголовков окон -->
+		<key name="title.Application"> (c) 2018 А.Черномырдин aka chav1961. Калькулятор радиолюбителя V.R.=1.0</key>
+		<key name="title.help.aboutApplication">О программе</key>
+
+<!-- Локадизация деcктопа --> 
+		<key name="desktop.toolbar.closeAll">Закрыть все</key>
+		<key name="desktop.toolbar.closeAllTT">Закрыть все окна в рабочем поле</key>
+		<key name="desktop.state.nameLabel">Имя в конвейере</key>
+
+<!-- Локализация для поиска --> 
+		<key name="search.toolbar.close">Закрыть поиск</key>
+		<key name="search.toolbar.closeTT">Закрыть окно поиска</key>
+
+		<key name="search.label">Найти (Esc - выход)</key>
+		<key name="search.tooltip">Введите строку запроса в формате Lucene</key>
+		<key name="search.found">найдено</key>
+		<key name="search.notfound">Нет ничего... Пичяль-бида...</key> 
+
+		<key name="search.uses">Параметры</key>
+		<key name="search.tags">Теги</key>
+		<key name="search.seealso">См также</key>
+
+<!-- Локализация сообщений --> 
+		<key name="message.reindexed">Lucene индекс успешно построен</key>
+		<key name="message.pdf.indexed">PDF файл проиндексирован</key>
+
+<!-- Локализация запросов --> 
+		<key name="confirm.button.open">Открыть</key>
+		<key name="confirm.button.open.tooltip">Загрузить конвейер расчетов в программу</key>
+		<key name="confirm.button.save">Сохранить</key>
+		<key name="confirm.button.save.tooltip">Сохранить текущую конфигурацию конвейера расчетов</key> 
+		<key name="confirm.button.yes">Да</key>
+		<key name="confirm.button.no">Нет</key>
+		<key name="confirm.button.cancel">Отмена</key>
+	
+		<key name="confirm.clearDesktop.caption">Очистка поля</key>
+		<key name="confirm.clearDesktop.message">Будет очищено рабочее поле. Вы уверены?</key>
+		<key name="confirm.savePipe.caption">Сохранение конвейера</key>
+		<key name="confirm.savePipe.message">В конвейере имеются несохраненные изменения. Сохранить их?</key>
+
+		<key name="confirm.fileFilter.pipe">(*.pipe) конвейеры расчета</key>
+
+<!-- Локализация формул -->
+		<key name="formula.inductanceOneLayerCoil">индуктивность однослойной катушки</key>
+		<key name="formula.numberOfCoilsOneLayerCoil">число витков однослойной катушки</key>
+		<key name="formula.inductanceRingCoil">индуктивность катушки на кольце</key>
+		<key name="formula.coilsRingCoil">число витков катушки на кольце</key>
+		<key name="formula.inductionRingCoil">индукция магнитного поля в кольце</key>
+
+<!-- Локализация конвейеров -->
+		<key name="pipe.calculationSuccess">Конвейерные вычисления успешно завершены</key>
+		<key name="pipe.calculationFailed">Конвейерные вычисления завершены с ошибкой</key>
+		<key name="pipe.parameterName">Имя параметра</key>
+		<key name="pipe.parameterType">Тип параметра</key>
+		<key name="pipe.pluginId">ID плагина </key>
+		<key name="pipe.pluginIdTooltip">ID использованного плагина</key>
+		<key name="pipe.pluginInstanceName">Имя инстанции</key>
+		<key name="pipe.pluginInstanceNameTooltip">Имя инстанции плагина</key> 
+		<key name="pipe.pluginFieldName">Имя поля</key>
+		<key name="pipe.pluginFieldNameTooltip">Имя поля плагина</key>
+		<key name="pipe.pluginFieldtype">Тип</key>
+		<key name="pipe.pluginFieldtypeTooltip">Тип поля</key> 	
+
+<!-- Локализация компонентов конвейера -->
+		<key name="StartNode.caption">Начальный узел</key>
+		<key name="StartNode.tooltip">Начальный узел является самым первым элементом в цепочке вычислений</key>
+		<key name="StartNode.help">Начальный узел является самым первым элементом в цепочке вычислений</key>
+		<key name="StartNode.message.duplicateField">Дублированное имя параметра [%1$s] в списке</key>
+
+		<key name="pipe.start.comment">Описание</key>
+
+		<key name="pipe.formula.comment">Описание</key>
+		<key name="pipe.formula.comment.tooltip">Описание</key> 
+		<key name="pipe.formula.expression">Формула</key> 
+		<key name="pipe.formula.expression.tooltip">Формула</key>
+
+		<key name="FormulaNode.caption">Узел-формула</key>
+		<key name="FormulaNode.tooltip">Узел-формула используется для нестандартных вычислений в конвейере</key>
+		<key name="FormulaNode.help">Узел-формула используется для нестандартных вычислений в конвейере</key>
+
+		<key name="SwitchNode.caption">Узел-переключатель</key>
+		<key name="SwitchNode.tooltip">Узел-переключатель реализует ветвление управления в конвейере</key>
+		<key name="SwitchNode.help">Узел-переключатель реализует ветвление управления в конвейере</key>
+
+		<key name="pipe.switch.comment">Описание</key>
+		<key name="pipe.switch.comment.tooltip">Описание</key>
+		<key name="pipe.switch.expression">Выражение</key>
+		<key name="pipe.switch.expression.tooltip">Выражение</key>
+		<key name="pipe.switch.askbefore">Запрос перед переходом</key>
+		<key name="pipe.switch.askbefore.tooltip">Запрос перед переходом</key> 
+
+		<key name="pipe.terminal.nodetype">Тип терминального узла</key>
+		<key name="pipe.terminal.nodetype.success">Успешный</key>
+		<key name="pipe.terminal.nodetype.failed">Аварийный</key>
+		<key name="pipe.terminal.format">Формат сообщения</key>
+		<key name="pipe.terminal.parameters">Параметры</key>
+
+		<key name="MapNode.caption">Узел-разветвитель</key>
+		<key name="MapNode.tooltip">Узел-разветвитель разделяет поток вычислений на несколько параллельных ветвей</key>
+		<key name="MapNode.help"> Узел-разветвитель разделяет поток вычислений на несколько параллельных ветвей</key>
+
+		<key name="ReduceNode.caption">Узел-сборщик</key>
+		<key name="ReduceNode.tooltip">Узел-сборщик собирает параллельные потоки вычислений, образованные узлом-разветвителем</key>
+		<key name="ReduceNode.help">Узел-сборщик собирает параллельные потоки вычислений, образованные узлом-разветвителем</key>
+
+		<key name="TerminalNode.caption">Конечный узел</key>
+		<key name="TerminalNode.tooltip">Конечный узел является завершающим элементом в цепочке вычислений</key>
+		<key name="TerminalNode.help">Конечный узел является завершающим элементом в цепочке вычислений</key>
+
+<!-- Локализация для стандартных окон -->
+		<key name="chav1961.calc.workbench">Раб.стол</key>
+		<key name="chav1961.calc.workbench.tt">На рабочем столе располагаются плагины</key>
+		<key name="chav1961.calc.workbench.action.iconifyAll">Свернуть все</key>
+		<key name="chav1961.calc.workbench.action.iconifyAll.tt">Свернуть все плагины рабочего стола в иконки</key>
+		<key name="chav1961.calc.workbench.action.closeAll">Закрыть все</key>
+		<key name="chav1961.calc.workbench.action.closeAll.tt">Закрыть все плагины рабочего стола</key>
+
+		<key name="chav1961.calc.pipe">%1$s Конв. %2$s</key>
+		<key name="chav1961.calc.pipe.tt">Конвейер позволяет собирать из плагинов цепочки вычислений (наподобие блок-схем)</key>
+
+<!-- Локализация для стандартных компонент конвейера -->
+		<key name="chav1961.calc.pipe.screen.source.tt">Стартовый узел запускает выполнение других узлов конвейера</key>
+		<key name="chav1961.calc.pipe.screen.target.tt">Приемный узел ожизает завершение работы всех входящих узлов конвейера</key>
+		<key name="chav1961.calc.pipe.screen.true.tt">Узел старта "по истине" запускает выполнение других узлов конвейера при истинности проверяемого условия</key>
+		<key name="chav1961.calc.pipe.screen.false.tt">Узел старта "по лжи" запускает выполнение других узлов конвейера при ложности проверяемого условия</key>
+
+		<key name="chav1961.calc.pipe.initial.caption">Стартовый узел</key>
+		<key name="chav1961.calc.pipe.initial.caption.tt">Со стартового узла начинается работа конвейера</key> 
+		<key name="chav1961.calc.pipe.initial.fields">Перетащите сюда поля других плагинов</key>
+		<key name="chav1961.calc.pipe.initial.fields.tt">Перетащите сюда поля других плагинов, чтобы задавать им начальное значения перед запуском конвейера</key>
+
+		<key name="chav1961.calc.pipe.conditional.caption">Узел проверки условия</key>
+		<key name="chav1961.calc.pipe.conditional.caption.tt">Управляет порядком вычислений в конвейере</key>
+		<key name="chav1961.calc.pipe.conditional.fields">Перетащите сюда поля других плагинов</key>
+		<key name="chav1961.calc.pipe.conditional.fields.tt">Перетащите сюда поля других плагинов, чтобы использовать их при проверке условия</key>
+		<key name="chav1961.calc.pipe.conditional.expression">Проверяемое условие</key>
+		<key name="chav1961.calc.pipe.conditional.expression.tt">Задайте здеь проверяемое выражение. Результатом вычисления выражение должна быть либо истина, либо ложь. В выражении можно использовать поля плагина</key>
+
+		<key name="chav1961.calc.pipe.calc.caption">Узел-калькулятор</key>
+		<key name="chav1961.calc.pipe.calc.caption.tt">Программирует вычисления конвейере</key>
+		<key name="chav1961.calc.pipe.calc.fields.source">Перетащите сюда исходные поля других плагинов</key>
+		<key name="chav1961.calc.pipe.calc.fields.source.tt">Перетащите сюда поля других плагинов, чтобы использовать их в правой части операторов присваивания</key>
+		<key name="chav1961.calc.pipe.calc.fields.target">Перетащите сюда расчитываемые поля других плагинов</key>
+		<key name="chav1961.calc.pipe.calc.fields.target.tt">Перетащите сюда поля других плагинов, чтобы использовать их в левой части операторов присваивания</key>
+		<key name="chav1961.calc.pipe.calc.tabs.fields">Поля</key>
+		<key name="chav1961.calc.pipe.calc.tabs.fields.tt">Эта закладка содержит исходные и вычисляемые поля, которые можно использовать в вычисляемых выражениях</key>
+		<key name="chav1961.calc.pipe.calc.tabs.expressions">Вычисления</key>
+		<key name="chav1961.calc.pipe.calc.tabs.expressions.tt">Эта закладка содержит программы для расчет значений вычисляемых полей</key> 
+
+		<key name="chav1961.calc.pipe.terminal.caption">Конечный узел</key>
+		<key name="chav1961.calc.pipe.terminal.caption.tt">Конечный узел (или конечные узлы) завершает работу конвейера</key>
+		<key name="chav1961.calc.pipe.terminal.fields">Перетащите сюда поля других плагинов</key>
+		<key name="chav1961.calc.pipe.terminal.fields.tt">Перетащите сюда поля других плагинов, чтобы забрать из них результаты после завершения работы конвейера</key>
+		<key name="chav1961.calc.pipe.terminal.message">Сообщение при выходе</key>
+		<key name="chav1961.calc.pipe.terminal.message.tt">Задайте сообщение, которое будет выдано при завершении работы конвейера</key> 
+		<key name="chav1961.calc.pipe.terminal.failure">Ошибка</key>
+		<key name="chav1961.calc.pipe.terminal.failure.tt">Установка этого флага обозначает, что этот узел индицирует ошибку работы конвейера</key>   
+
+<!-- Локализация для плагинов -->
+
+<!-- Локализация для chav1961.calc.plugins.calc.contour --> 
+		<key name="chav1961.calc.plugins.calc.contour">Параметры контура</key>
+		<key name="chav1961.calc.plugins.calc.contour.tt">Расчет любого параметра контура через два других параметра</key>
+		<key name="chav1961.calc.plugins.calc.contour.inductanсe">Индуктивность (uH)</key>
+		<key name="chav1961.calc.plugins.calc.contour.inductanсe.tt">Введите индуктивность в микрогенри</key>
+		<key name="chav1961.calc.plugins.calc.contour.capacity">Емкость (pF)</key>
+		<key name="chav1961.calc.plugins.calc.contour.capacity.tt">Введите емкость в пикофарадах</key>
+		<key name="chav1961.calc.plugins.calc.contour.frequency">Частота (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.contour.frequency.tt">Введите частоту в килогерцах</key>
+		<key name="chav1961.calc.plugins.calc.contour.button.freq">F</key>
+		<key name="chav1961.calc.plugins.calc.contour.button.freq.tt">Расчет частоты</key>
+		<key name="chav1961.calc.plugins.calc.contour.button.ind">L</key>
+		<key name="chav1961.calc.plugins.calc.contour.button.ind.tt">Расчет индуктивности</key>
+		<key name="chav1961.calc.plugins.calc.contour.button.cap">C</key>
+		<key name="chav1961.calc.plugins.calc.contour.button.cap.tt">Расчет емкости</key>
+
+<!-- Локализация для chav1961.calc.plugins.calc.winbridge --> 
+		<key name="chav1961.calc.plugins.calc.wienbridge">Параметры моста Вина-Робинсона</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.tt">Расчет любого параметра моста Вина-Робинсона через два других параметра</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.resistance">Сопротивление (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.resistance.tt">Введите сопротивление в килоомах</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.capacity">Емкость (nF)</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.capacity.tt">Введите емкость в пикофарадах</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.frequency">Частота (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.frequency.tt">Введите частоту в килогерцах</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.button.freq">F </key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.button.freq.tt">Расчет частоты</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.button.res">R</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.button.res.tt">Расчет сопротивления</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.button.cap">C</key>
+		<key name="chav1961.calc.plugins.calc.wienbridge.button.cap.tt">Расчет емкости</key>
+
+<!-- Локализация для chav1961.calc.plugins.calc.phaseshift --> 
+		<key name="chav1961.calc.plugins.calc.phaseshift">Параметры фазосдвигающего генератора</key> 
+		<key name="chav1961.calc.plugins.calc.phaseshift.tt">Расчет любого параметра фазосдвигающего генератора через два других параметра</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.resistance">Сопротивление (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.resistance.tt">Введите сопротивление в килоомах</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.capacity">Емкость (nF)</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.capacity.tt">Введите емкость в пикофарадах</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.frequency">Частота (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.frequency.tt">Введите частоту в килогерцах</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.button.freq">F </key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.button.freq.tt">Расчет частоты</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.button.res">R</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.button.res.tt">Расчет сопротивления</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap">C</key>
+		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap.tt">Расчет емкости</key>
+	</lang>	
+</localization>

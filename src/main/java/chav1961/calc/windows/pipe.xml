@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <app:root xmlns:app="http://ui.purelib.chav1961/">
-	<app:i18n location="i18n:prop:chav1961/calculator/i18n/i18n"/>
+	<app:i18n location="i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml"/>
 	<app:menu id="workbenchMenu">
 		<app:item name="workbenchMenu.iconifyAll" caption="workbenchMenu.iconifyAll" tooltip="workbenchMenu.iconifyAll.tt" action="iconifyAll"/>
 		<app:item name="workbenchMenu.closeAll" caption="workbenchMenu.closeAll" tooltip="workbenchMenu.closeAll.tt" action="closeAll"/>

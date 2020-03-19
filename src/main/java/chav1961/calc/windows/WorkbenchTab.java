@@ -44,7 +44,7 @@ import chav1961.purelib.ui.swing.useful.JCloseableTab;
 import chav1961.purelib.ui.swing.useful.JExtendedScrollPane;
 import chav1961.purelib.ui.swing.useful.JLocalizedOptionPane;
 
-@LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
+@LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value = "chav1961.calc.workbench", tooltip = "chav1961.calc.workbench.tt", icon = "root:/WorkbenchTab!")
 public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeListener, TabContent {
 	private static final long serialVersionUID = 1L;
