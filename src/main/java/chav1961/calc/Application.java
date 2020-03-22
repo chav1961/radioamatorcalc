@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.ServiceLoader;
@@ -172,24 +173,26 @@ public class Application extends JFrame implements LocaleChangeListener {
 	}
 
 	private void callPlugin(final String actionCommand) {
-		final URI	actionURI = URI.create(PluginInterface.PLUGIN_SCHEME+":"+URI.create(actionCommand).getSchemeSpecificPart().substring(1)+":/");
-		
-		for (PluginInterface item : ServiceLoader.load(PluginInterface.class)) {
-			if (item.canServe(actionURI)) {
-				try{final Object			inst = item.newIstance(stateString);
-					final SVGPluginFrame	frame = new SVGPluginFrame(localizer, inst);
-				        
-					 frame.setVisible(true);
-					 ((WorkbenchTab)tabs.getSelectedComponent()).placePlugin(frame);
-//				     desktopPane.add(frame);
-					 frame.setSelected(true);
-				} catch (java.beans.PropertyVetoException | ContentException e) {
-					stateString.message(Severity.error,e,"Error creating plugin window: "+e.getLocalizedMessage());
-				}
-				return;
-			}			
+		if (actionCommand != null && !actionCommand.isEmpty()) {
+			final URI	actionURI = URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":"+PluginInterface.PLUGIN_SCHEME+":/"+URI.create(URI.create(actionCommand).getSchemeSpecificPart()).getSchemeSpecificPart());
+			
+			for (PluginInterface<?> item : ServiceLoader.load(PluginInterface.class)) {
+				if (item.canServe(actionURI)) {
+					try{final Object			inst = item.newIstance(stateString);
+						final SVGPluginFrame	frame = new SVGPluginFrame(localizer, inst);
+					        
+						 frame.setVisible(true);
+						 ((WorkbenchTab)tabs.getSelectedComponent()).placePlugin(frame);
+	//				     desktopPane.add(frame);
+						 frame.setSelected(true);
+					} catch (java.beans.PropertyVetoException | ContentException e) {
+						stateString.message(Severity.error,e,"Error creating plugin window: "+e.getLocalizedMessage());
+					}
+					return;
+				}			
+			}
+			stateString.message(Severity.error,"No any plugin found for ["+actionCommand+"]");
 		}
-		stateString.message(Severity.error,"No any plugin found for ["+actionCommand+"]");
 	}
 
 	@Override
@@ -247,26 +250,21 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
+	@OnAction("action:/builtin.languages")
+	private void selectLang(final Hashtable<String,String[]> langs) throws LocalizationException {
+		localizer.setCurrentLocale(Locale.forLanguageTag(langs.get("lang")[0]));
+	}
+
 	@OnAction("action:/settings")
 	private void settings() {
 		try{final ContentMetadataInterface				mdi = ContentModelFactory.forAnnotatedClass(CurrentSettings.class);
-			final FormManager<Object,CurrentSettings>	fm = new FormManager<Object,CurrentSettings>(){
-															@Override
-															public RefreshMode onField(CurrentSettings inst, Object id, String fieldName, Object oldValue) throws FlowException, LocalizationException {
-																return RefreshMode.FIELD_ONLY;
-															}
-											
-															@Override
-															public LoggerFacade getLogger() {
-																return logger;
-															}
-														};  
-			try(final AutoBuiltForm<CurrentSettings>	abf = new AutoBuiltForm<CurrentSettings>(mdi,localizer,settings,fm)) {
+		
+			try(final AutoBuiltForm<CurrentSettings>	abf = new AutoBuiltForm<CurrentSettings>(mdi,localizer,settings,settings)) {
 				
 				CurrentSettings.class.getModule().addExports(CurrentSettings.class.getPackageName(),abf.getUnnamedModule());
-				
+				abf.setPreferredSize(new Dimension(300,140));
 				if (AutoBuiltForm.ask(this,localizer,abf,new URI[]{URI.create("app:action:/CurrentSettings.OK"),URI.create("app:action:/CurrentSettings.cancel")})) {
-					
+					stateString.message(Severity.info,CurrentSettings.SETTINGS_SAVED);
 				}
 			}
 		} catch (LocalizationException | ContentException e) {

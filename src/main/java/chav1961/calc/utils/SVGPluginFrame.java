@@ -9,6 +9,8 @@ import java.util.Base64;
 import java.util.Locale;
 
 import chav1961.calc.interfaces.PluginProperties;
+import chav1961.purelib.basic.URIUtils;
+import chav1961.purelib.basic.Utils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
@@ -48,6 +50,8 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
 			try{final FormManager<Object,T>	wrapper = new FormManagerWrapper<>((FormManager<Object,T>)instance, ()-> {refresh();}); 
 				
 				abf = new AutoBuiltForm<T>(ContentModelFactory.forAnnotatedClass(instance.getClass()),localizer, instance, wrapper);
+				
+				instance.getClass().getModule().addExports(instance.getClass().getPackageName(),abf.getUnnamedModule());
 				w = new InnerSVGPluginWindow<T>(instance.getClass().getResource(pp.svgURI()).toURI(),abf,(src)->
 				{
 					try{final Object result = instance.getClass().getField(src).get(instance);
@@ -95,12 +99,7 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
 	}
 
 	private void showHelp(final String helpId) {
-		final GrowableCharArray	gca = new GrowableCharArray(false);
-		
-		try{gca.append(localizer.getContent(helpId));
-			final byte[]	content = Base64.getEncoder().encode(new String(gca.extract()).getBytes());
-			
-			SwingUtils.showCreoleHelpWindow(this,URI.create("self:/#"+new String(content,0,content.length)));
+		try{SwingUtils.showCreoleHelpWindow(this,URIUtils.convert2selfURI(Utils.fromResource(localizer.getContent(helpId)).toCharArray(),"UTF-8"));
 		} catch (LocalizationException | NullPointerException | IllegalArgumentException | IOException e) {
 			e.printStackTrace();
 		}

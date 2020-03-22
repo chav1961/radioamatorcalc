@@ -33,6 +33,8 @@ import chav1961.purelib.ui.interfaces.RefreshMode;
 @LocaleResource(value="menu.settings",tooltip="menu.ttSettings")
 public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 	public static final String	SETTINGS_LOCATION = "./.radioamatorcalc";
+
+	public static final String	SETTINGS_SAVED = "settings.saved";
 	
 	private static final String	KEY_AUTOSAVEFIELD = "autoSaveField";
 	private static final String	KEY_AUTOSAVELOCATION = "autoSaveLocation";
