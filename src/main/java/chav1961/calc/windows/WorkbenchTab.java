@@ -1,9 +1,9 @@
 package chav1961.calc.windows;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.beans.PropertyVetoException;
@@ -103,7 +103,9 @@ public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeL
 
 	@Override
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-		SwingUtils.refreshLocale(this,oldLocale,newLocale);
+		for (Component item : SwingUtils.children(this)) {
+			SwingUtils.refreshLocale(item,oldLocale,newLocale);
+		}
 	}
 
 	@Override

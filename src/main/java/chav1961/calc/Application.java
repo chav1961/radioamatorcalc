@@ -200,6 +200,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 		fillLocalizedStrings(oldLocale,newLocale);
 		SwingUtils.refreshLocale(menu,oldLocale, newLocale);
 		SwingUtils.refreshLocale(leftMenu,oldLocale, newLocale);
+		SwingUtils.refreshLocale(wbt,oldLocale, newLocale);
 	}
 	
 	public void expandPluginByItsId(final String pluginId) {
