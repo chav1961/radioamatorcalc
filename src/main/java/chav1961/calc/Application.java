@@ -262,7 +262,9 @@ public class Application extends JFrame implements LocaleChangeListener {
 		
 			try(final AutoBuiltForm<CurrentSettings>	abf = new AutoBuiltForm<CurrentSettings>(mdi,localizer,settings,settings)) {
 				
-				CurrentSettings.class.getModule().addExports(CurrentSettings.class.getPackageName(),abf.getUnnamedModule());
+				for (Module m : abf.getUnnamedModules()) {
+					CurrentSettings.class.getModule().addExports(CurrentSettings.class.getPackageName(),m);
+				}
 				abf.setPreferredSize(new Dimension(300,140));
 				if (AutoBuiltForm.ask(this,localizer,abf,new URI[]{URI.create("app:action:/CurrentSettings.OK"),URI.create("app:action:/CurrentSettings.cancel")})) {
 					stateString.message(Severity.info,CurrentSettings.SETTINGS_SAVED);

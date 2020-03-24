@@ -51,7 +51,9 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
 				
 				abf = new AutoBuiltForm<T>(ContentModelFactory.forAnnotatedClass(instance.getClass()),localizer, instance, wrapper);
 				
-				instance.getClass().getModule().addExports(instance.getClass().getPackageName(),abf.getUnnamedModule());
+				for (Module m : abf.getUnnamedModules()) {
+					instance.getClass().getModule().addExports(instance.getClass().getPackageName(),m);
+				}
 				w = new InnerSVGPluginWindow<T>(instance.getClass().getResource(pp.svgURI()).toURI(),abf,(src)->
 				{
 					try{final Object result = instance.getClass().getField(src).get(instance);

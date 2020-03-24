@@ -82,8 +82,8 @@ public class MutableLocalizer extends AbstractLocalizer {
 	
 
 	@Override
-	public String getLocalizerId() {
-		return "mutable:/";
+	public URI getLocalizerId() {
+		return URI.create("mutable:/");
 	}
 
 	@Override

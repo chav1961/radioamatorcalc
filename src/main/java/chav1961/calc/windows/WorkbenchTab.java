@@ -106,6 +106,7 @@ public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeL
 		for (Component item : SwingUtils.children(this)) {
 			SwingUtils.refreshLocale(item,oldLocale,newLocale);
 		}
+		tab.localeChanged(oldLocale, newLocale);
 	}
 
 	@Override
