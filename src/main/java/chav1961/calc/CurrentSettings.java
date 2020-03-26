@@ -15,6 +15,7 @@ import java.io.Writer;
 import java.util.Properties;
 
 import chav1961.purelib.basic.SubstitutableProperties;
+import chav1961.purelib.basic.Utils;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
@@ -39,6 +40,9 @@ public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 	private static final String	KEY_AUTOSAVEFIELD = "autoSaveField";
 	private static final String	KEY_AUTOSAVELOCATION = "autoSaveLocation";
 	private static final String	KEY_AUTOUPDATE = "autoUpdate";
+
+	private static final File	SETTINGS_FILE = new File(SETTINGS_LOCATION);
+	
 	
 @LocaleResource(value="settings.autosave",tooltip="settings.autosave.tooltip")
 @Format("1")
@@ -96,25 +100,24 @@ public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 	}
 
 	private void loadLastSaved() throws FlowException {
-		final File	source = new File(SETTINGS_LOCATION);
 		
-		if (source.exists()) {
-			if (source.isFile()) {
+		if (SETTINGS_FILE.exists()) {
+			if (SETTINGS_FILE.isFile()) {
 				final SubstitutableProperties	props = new SubstitutableProperties();
 				
-				try(final InputStream	is = new FileInputStream(source);
+				try(final InputStream	is = new FileInputStream(SETTINGS_FILE);
 					final Reader		rdr = new InputStreamReader(is,"UTF-8")) {
 					
 					props.load(rdr);
 				} catch (IOException exc) {
-					throw new FlowException("Settings location ["+source.getAbsolutePath()+"]: I/O error reading content ("+exc.getLocalizedMessage()+")",exc);
+					throw new FlowException("Settings location ["+SETTINGS_FILE.getAbsolutePath()+"]: I/O error reading content ("+exc.getLocalizedMessage()+")",exc);
 				}
 				this.autoSaveField = props.getProperty(KEY_AUTOSAVEFIELD,boolean.class,"false");
 				this.autoSaveLocation = props.getProperty(KEY_AUTOSAVELOCATION,File.class,SETTINGS_LOCATION);
 				this.autoUpdate = props.getProperty(KEY_AUTOUPDATE,boolean.class,"false");
 			}
 			else {
-				throw new FlowException("Settings location ["+source.getAbsolutePath()+"] is directory, not file!");
+				throw new FlowException("Settings location ["+SETTINGS_FILE.getAbsolutePath()+"] is directory, not file!");
 			}
 		}
 		else {
@@ -124,19 +127,16 @@ public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 
 
 	private void saveCurrent() throws FlowException {
-		final File			source = new File(SETTINGS_LOCATION);
-		final Properties	props = new Properties();
+		final Properties	props = Utils.mkProps(KEY_AUTOSAVEFIELD, autoSaveField ? "true" : "false",
+												  KEY_AUTOSAVELOCATION, autoSaveLocation.getAbsolutePath(),
+												  KEY_AUTOUPDATE, autoUpdate ? "true" : "false");
 
-		props.setProperty(KEY_AUTOSAVEFIELD,autoSaveField ? "true" : "false");
-		props.setProperty(KEY_AUTOSAVELOCATION,autoSaveLocation.getAbsolutePath());
-		props.setProperty(KEY_AUTOUPDATE,autoUpdate ? "true" : "false");
-		
-		try(final OutputStream	is = new FileOutputStream(source);
+		try(final OutputStream	is = new FileOutputStream(SETTINGS_FILE);
 			final Writer		wr = new OutputStreamWriter(is,"UTF-8")) {
 			
 			props.store(wr,null);
 		} catch (IOException exc) {
-			throw new FlowException("Settings location ["+source.getAbsolutePath()+"]: I/O error writing content ("+exc.getLocalizedMessage()+")",exc);
+			throw new FlowException("Settings location ["+SETTINGS_FILE.getAbsolutePath()+"]: I/O error writing content ("+exc.getLocalizedMessage()+")",exc);
 		}
 	}
 
