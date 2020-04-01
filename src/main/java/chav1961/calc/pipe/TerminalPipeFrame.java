@@ -34,7 +34,7 @@ import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.useful.JStateString;
 
-@LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
+@LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="chav1961.calc.pipe.terminal.caption",tooltip="chav1961.calc.pipe.terminal.caption.tt",help="help.aboutApplication")
 @PluginProperties(width=500,height=200,pluginIconURI="terminalFrameIcon.png",desktopIconURI="terminalDesktopIcon.png")
 public class TerminalPipeFrame extends PipePluginFrame<Object> {

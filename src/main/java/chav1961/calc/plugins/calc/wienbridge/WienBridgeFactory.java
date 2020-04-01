@@ -3,19 +3,45 @@ package chav1961.calc.plugins.calc.wienbridge;
 import java.net.URI;
 
 import chav1961.calc.interfaces.PluginInterface;
+import chav1961.calc.plugins.calc.phaseshift.PhaseShiftPlugin;
 import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.i18n.interfaces.LocaleResource;
+import chav1961.purelib.model.Constants;
+import chav1961.purelib.model.MutableContentNodeMetadata;
+import chav1961.purelib.model.interfaces.ContentMetadataInterface;
+import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 
 public class WienBridgeFactory implements PluginInterface<WienBridgePlugin>{
-	private static final URI	PLUGIN_URI = URI.create(PLUGIN_SCHEME+":WienBridgeCalculator:/"); 
+	private static final String	PLUGIN_NAME = "menu.curcuits.wienbridge"; 
+	private static final URI	PLUGIN_URI = URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":"+Constants.MODEL_APPLICATION_SCHEME_ACTION+":/"+PLUGIN_NAME);
 
 	@Override
 	public boolean canServe(final URI plugin) {
-		return URIUtils.canServeURI(plugin, PLUGIN_URI);
+		return PLUGIN_URI.equals(plugin);
 	}
 
 	@Override
 	public WienBridgePlugin newIstance(final LoggerFacade facade) {
 		return new WienBridgePlugin(facade);
+	}
+	
+	@Override
+	public String getPluginName() {
+		return PLUGIN_NAME;
+	}
+
+	@Override
+	public ContentNodeMetadata getMetadata() {
+		return new MutableContentNodeMetadata(getPluginName()
+				, WienBridgePlugin.class
+				, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+				, null
+				, WienBridgePlugin.class.getAnnotation(LocaleResource.class).value()
+				, WienBridgePlugin.class.getAnnotation(LocaleResource.class).tooltip()
+				, WienBridgePlugin.class.getAnnotation(LocaleResource.class).help()
+				, null
+				, PLUGIN_URI
+				, null);
 	}
 }

@@ -40,6 +40,8 @@ import javax.swing.KeyStroke;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
 
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.TabContent;
@@ -49,6 +51,7 @@ import chav1961.calc.windows.WorkbenchTab;
 import chav1961.purelib.basic.ArgParser;
 import chav1961.purelib.basic.MimeType;
 import chav1961.purelib.basic.NullLoggerFacade;
+import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.SystemErrLoggerFacade;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
@@ -65,6 +68,7 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
+import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.ui.interfaces.FormManager;
 import chav1961.purelib.ui.interfaces.RefreshMode;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
@@ -128,7 +132,19 @@ public class Application extends JFrame implements LocaleChangeListener {
 
 			final JSplitPane	split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 			
-			leftMenu = new SimpleNavigatorTree(localizer,xda.byUIPath(URI.create("ui:/model/navigation.top.navigator")));
+			leftMenu = new SimpleNavigatorTree(localizer,xda.byUIPath(URI.create("ui:/model/navigation.top.navigator"))) {
+								private static final long serialVersionUID = 1L;
+								@Override
+								protected void appendNodes(final ContentNodeMetadata submenu, final DefaultMutableTreeNode node) {
+									final String	namePrefix = submenu.getName()+'.';
+									
+									for (PluginInterface<?> item : ServiceLoader.load(PluginInterface.class)) {
+										if (item.getPluginName().startsWith(namePrefix)) {
+											node.add(new DefaultMutableTreeNode(item.getMetadata(),false));
+										}
+									}
+								}
+							};
 
 			leftMenu.addActionListener((e)->{callPlugin(e.getActionCommand());});
 			
@@ -143,7 +159,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			centerPanel.add(split,BorderLayout.CENTER);
 
-			wbt = new WorkbenchTab(localizer,stateString);			
+			wbt = new WorkbenchTab(tabs,localizer,stateString);			
 			wbt.pluginCount.addListener((oldValue,newValue)->((JMenuItem)SwingUtils.findComponentByName(menu,"menu.file.cleandesktop")).setEnabled(newValue != 0));
 			wbt.pluginCount.refresh();
 			placeTab(tabs,wbt,false);
@@ -174,7 +190,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 
 	private void callPlugin(final String actionCommand) {
 		if (actionCommand != null && !actionCommand.isEmpty()) {
-			final URI	actionURI = URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":"+PluginInterface.PLUGIN_SCHEME+":/"+URI.create(URI.create(actionCommand).getSchemeSpecificPart()).getSchemeSpecificPart());
+			final URI	actionURI = URI.create(actionCommand);
 			
 			for (PluginInterface<?> item : ServiceLoader.load(PluginInterface.class)) {
 				if (item.canServe(actionURI)) {
@@ -183,7 +199,6 @@ public class Application extends JFrame implements LocaleChangeListener {
 					        
 						 frame.setVisible(true);
 						 ((WorkbenchTab)tabs.getSelectedComponent()).placePlugin(frame);
-	//				     desktopPane.add(frame);
 						 frame.setSelected(true);
 					} catch (java.beans.PropertyVetoException | ContentException e) {
 						stateString.message(Severity.error,e,"Error creating plugin window: "+e.getLocalizedMessage());
@@ -223,7 +238,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	@OnAction("action:/newPipe")
 	private void newPipe() {
 		try{
-			final PipeTab	pipe = new PipeTab(localizer,logger);
+			final PipeTab	pipe = new PipeTab(localizer,stateString);
 			
 			placeTab(tabs,pipe,true);
 		} catch (LocalizationException | ContentException | MalformedURLException e) {
@@ -324,7 +339,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 		
 		try(final InputStream				is = Application.class.getResourceAsStream("application.xml");
 			final Localizer					localizer = new PureLibLocalizer();
-			final LoggerFacade				logger = parser.getValue("debug",boolean.class) ? new SystemErrLoggerFacade() : new NullLoggerFacade()) {
+			final LoggerFacade				logger = PureLibSettings.CURRENT_LOGGER) {
 			final ContentMetadataInterface	xda = ContentModelFactory.forXmlDescription(is);
 			
 			new Application(xda,localizer,logger).setVisible(true);

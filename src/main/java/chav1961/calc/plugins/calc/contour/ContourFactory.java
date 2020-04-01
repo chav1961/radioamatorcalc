@@ -2,23 +2,45 @@ package chav1961.calc.plugins.calc.contour;
 
 import java.net.URI;
 
-import javax.swing.text.html.parser.ContentModel;
-
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.i18n.interfaces.LocaleResource;
+import chav1961.purelib.model.Constants;
+import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
+import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 
 public class ContourFactory implements PluginInterface<ContourPlugin>{
-	private static final URI	PLUGIN_URI = URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":"+PLUGIN_SCHEME+":/ContourCalculator"); 
+	private static final String	PLUGIN_NAME = "menu.curcuits.contour"; 
+	private static final URI	PLUGIN_URI = URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":"+Constants.MODEL_APPLICATION_SCHEME_ACTION+":/"+PLUGIN_NAME);
 
 	@Override
 	public boolean canServe(final URI plugin) {
-		return URIUtils.canServeURI(plugin, PLUGIN_URI);
+		return PLUGIN_URI.equals(plugin);
 	}
 
 	@Override
 	public ContourPlugin newIstance(final LoggerFacade facade) {
 		return new ContourPlugin(facade);
+	}
+
+	@Override
+	public String getPluginName() {
+		return PLUGIN_NAME;
+	}
+
+	@Override
+	public ContentNodeMetadata getMetadata() {
+		return new MutableContentNodeMetadata(getPluginName()
+				, ContourPlugin.class
+				, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+				, null
+				, ContourPlugin.class.getAnnotation(LocaleResource.class).value()
+				, ContourPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+				, ContourPlugin.class.getAnnotation(LocaleResource.class).help()
+				, null
+				, PLUGIN_URI
+				, null);
 	}
 }

@@ -14,7 +14,7 @@ import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.interfaces.RefreshMode;
 import chav1961.purelib.ui.interfaces.Action;
 
-@LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
+@LocaleResourceLocation("i18n:xml:root://chav1961.calc.plugins.calc.wienbridge.WienBridgePlugin/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="menu.curcuits.wienbridge",tooltip="menu.curcuits.wienbridge.tt",help="help.aboutApplication")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.wienbridge.button.freq",tooltip="chav1961.calc.plugins.calc.wienbridge.button.freq.tt"),actionString="calcFreq")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.wienbridge.button.res",tooltip="chav1961.calc.plugins.calc.wienbridge.button.res.tt"),actionString="calcRes")
@@ -24,13 +24,13 @@ public class WienBridgePlugin implements FormManager<Object,WienBridgePlugin> {
 	private final LoggerFacade 	logger;
 	
 	@LocaleResource(value="chav1961.calc.plugins.calc.wienbridge.resistance",tooltip="chav1961.calc.plugins.calc.wienbridge.resistance.tt")
-	@Format("9.2pz")
+	@Format("9.2pzs")
 	public float resistance = 0;
 	@LocaleResource(value="chav1961.calc.plugins.calc.wienbridge.capacity",tooltip="chav1961.calc.plugins.calc.wienbridge.capacity.tt")
-	@Format("9.2pz")
+	@Format("9.2pzs")
 	public float capacity = 0;
 	@LocaleResource(value="chav1961.calc.plugins.calc.wienbridge.frequency",tooltip="chav1961.calc.plugins.calc.wienbridge.frequency.tt")
-	@Format("9.2pz")
+	@Format("9.2pzs")
 	public float frequency = 0;
 
 	public WienBridgePlugin(final LoggerFacade logger) {
@@ -52,7 +52,7 @@ public class WienBridgePlugin implements FormManager<Object,WienBridgePlugin> {
 		switch (actionName) {
 			case "app:action:/WienBridgePlugin.calcFreq"	:
 				if (resistance == 0 || capacity == 0) {
-					getLogger().message(Severity.warning,"r == 0 || c == 0");
+					getLogger().message(Severity.warning,"R == 0 || C == 0");
 					return RefreshMode.NONE;
 				}
 				else {
@@ -61,20 +61,20 @@ public class WienBridgePlugin implements FormManager<Object,WienBridgePlugin> {
 				}
 			case "app:action:/WienBridgePlugin.calcRes"	:
 				if (frequency == 0 || capacity == 0) {
-					getLogger().message(Severity.warning,"f == 0 || c == 0");
+					getLogger().message(Severity.warning,"F == 0 || C == 0");
 					return RefreshMode.NONE;
 				}
 				else {
-					resistance = (float) (1e-3 / (2 * Math.PI * frequency * 1e-3 * capacity * 1e-9));
+					resistance = (float) (1e-3 / (2 * Math.PI * frequency * 1e3 * capacity * 1e-9));
 					return RefreshMode.RECORD_ONLY;
 				}
 			case "app:action:/WienBridgePlugin.calcCap"	:
 				if (frequency == 0 || resistance == 0) {
-					getLogger().message(Severity.warning,"f == 0 || r == 0");
+					getLogger().message(Severity.warning,"F == 0 || R == 0");
 					return RefreshMode.NONE;
 				}
 				else {
-					capacity = (float) (1e9 / (2 * Math.PI * frequency * 1e-3 * resistance * 1e3));
+					capacity = (float) (1e9 / (2 * Math.PI * frequency * 1e3 * resistance * 1e3));
 					return RefreshMode.RECORD_ONLY;
 				}
 			default :

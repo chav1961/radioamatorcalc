@@ -32,7 +32,7 @@ import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.useful.JStateString;
 
-@LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
+@LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="menu.curcuits.phaseshift",tooltip="menu.curcuits.phaseshift.tt",help="help.aboutApplication")
 @PluginProperties(width=500,height=150,pluginIconURI="dialogFrameIcon.png",desktopIconURI="dialogDesktopIcon.png")
 public class DialogPipeFrame extends PipePluginFrame<Object> {

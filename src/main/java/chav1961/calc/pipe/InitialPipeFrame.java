@@ -2,6 +2,7 @@ package chav1961.calc.pipe;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -31,9 +32,9 @@ import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.useful.JStateString;
 
-@LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
+@LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="chav1961.calc.pipe.initial.caption",tooltip="chav1961.calc.pipe.initial.caption.tt",help="help.aboutApplication")
-@PluginProperties(width=500,height=150,pluginIconURI="initialFrameIcon.png",desktopIconURI="initialDesktopIcon.png")
+@PluginProperties(resizable=true,width=500,height=150,pluginIconURI="initialFrameIcon.png",desktopIconURI="initialDesktopIcon.png")
 public class InitialPipeFrame extends PipePluginFrame<Object> {
 	private static final 					long serialVersionUID = 1L;
 	private static final String				FIELDS_TITLE = "chav1961.calc.pipe.initial.fields"; 
@@ -62,7 +63,8 @@ public class InitialPipeFrame extends PipePluginFrame<Object> {
 				this.sourceControl = new JControlSource(initial);
 				this.fields = new ModelItemListContainer();
 				
-				final JPanel		bottom = new JPanel(new BorderLayout());
+				final JPanel			bottom = new JPanel(new BorderLayout());
+				final PluginProperties	props = this.getClass().getAnnotation(PluginProperties.class);
 				
 				bottom.add(state,BorderLayout.CENTER);
 				bottom.add(sourceControl,BorderLayout.EAST);
@@ -70,10 +72,12 @@ public class InitialPipeFrame extends PipePluginFrame<Object> {
 				final JScrollPane	pane = new JScrollPane(fields); 
 				
 				pane.setBorder(fieldsTitle);
+				pane.setPreferredSize(new Dimension(props.width(),props.height()));
 				add(pane,BorderLayout.CENTER);
 				add(bottom,BorderLayout.SOUTH);
 				SwingUtils.assignActionKey(fields,SwingUtils.KS_HELP,(e)->{showHelp(e.getActionCommand());},mdi.getRoot().getHelpId());
 				fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
+
 			} catch (LocalizationException e) {
 				throw new ContentException(e);
 			}

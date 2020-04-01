@@ -34,7 +34,7 @@ import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.useful.JStateString;
 
-@LocaleResourceLocation("i18n:prop:chav1961/calculator/i18n/i18n")
+@LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="chav1961.calc.pipe.conditional.caption",tooltip="chav1961.calc.pipe.conditional.caption.tt",help="help.aboutApplication")
 @PluginProperties(width=500,height=200,pluginIconURI="conditionalFrameIcon.png",desktopIconURI="conditionalDesktopIcon.png")
 public class ConditionalPipeFrame extends PipePluginFrame<Object> {

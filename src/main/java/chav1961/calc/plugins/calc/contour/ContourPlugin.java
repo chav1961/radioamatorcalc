@@ -24,13 +24,13 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin> {
 	private final LoggerFacade 	logger;
 	
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductanñe",tooltip="chav1961.calc.plugins.calc.contour.inductanñe.tt")
-	@Format("9.2pz")
+	@Format("9.2pzs")
 	public float inductance = 0;
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.capacity",tooltip="chav1961.calc.plugins.calc.contour.capacity.tt")
-	@Format("9.2pz")
+	@Format("9.2pzs")
 	public float capacity = 0;
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.frequency",tooltip="chav1961.calc.plugins.calc.contour.frequency.tt")
-	@Format("9.2pz")
+	@Format("9.2pzs")
 	public float frequency = 0;
 
 	public ContourPlugin(final LoggerFacade logger) {
@@ -52,29 +52,29 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin> {
 		switch (actionName) {
 			case "app:action:/ContourPlugin.calcFreq"	:
 				if (inductance == 0 || capacity == 0) {
-					getLogger().message(Severity.warning,"i == 0 || c == 0");
+					getLogger().message(Severity.warning,"L == 0 || C == 0");
 					return RefreshMode.NONE;
 				}
 				else {
-					frequency = (float) (159000 / Math.sqrt(inductance*capacity));
+					frequency = (float) (159154.943 / Math.sqrt(inductance*capacity));
 					return RefreshMode.RECORD_ONLY;
 				}
 			case "app:action:/ContourPlugin.calcInd"	:
 				if (frequency == 0 || capacity == 0) {
-					getLogger().message(Severity.warning,"f == 0 || c == 0");
+					getLogger().message(Severity.warning,"F == 0 || C == 0");
 					return RefreshMode.NONE;
 				}
 				else {
-					inductance = (float) (2528e7 / (frequency * frequency * capacity));
+					inductance = (float) (2533.029e7 / (frequency * frequency * capacity));
 					return RefreshMode.RECORD_ONLY;
 				}
 			case "app:action:/ContourPlugin.calcCap"	:
 				if (frequency == 0 || inductance == 0) {
-					getLogger().message(Severity.warning,"f == 0 || i == 0");
+					getLogger().message(Severity.warning,"F == 0 || L == 0");
 					return RefreshMode.NONE;
 				}
 				else {
-					capacity = (float) (2528e7 / (frequency * frequency * inductance));
+					capacity = (float) (2533.029e7 / (frequency * frequency * inductance));
 					return RefreshMode.RECORD_ONLY;
 				}
 			default :

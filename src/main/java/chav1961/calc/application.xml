@@ -29,10 +29,11 @@
 	<app:menu id="navigator">
 <!--  		<app:submenu name="menu.elements" caption="menu.elements" tooltip="menu.ttElements"> -->
   			<app:submenu name="menu.curcuits" caption="menu.curcuits" tooltip="menu.curcuits.tt">  
-				<app:item name="menu.curcuits.contour" caption="menu.curcuits.contour" tooltip="menu.curcuits.contour.tt" action="ContourCalculator"/>
+<!-- 				<app:item name="menu.curcuits.contour" caption="menu.curcuits.contour" tooltip="menu.curcuits.contour.tt" action="ContourCalculator"/>
 				<app:item name="menu.curcuits.wienbridge" caption="menu.curcuits.wienbridge" tooltip="menu.curcuits.wienbridge.tt" action="WienBridgeCalculator"/>
 				<app:item name="menu.curcuits.phaseshift" caption="menu.curcuits.phaseshift" tooltip="menu.curcuits.phaseshift.tt" action="PhaseShiftCalculator"/>
-<!--  				<app:item name="menu.elements.coils.ringlayer" caption="menu.elements.coils.ringlayer" tooltip="menu.ttElements.coils.ringlayer" action="RingCoilsService"/>  --> 
+ --> 
+<!--  				<app:item name="menu.elements.coils.ringlayer" caption="menu.elements.coils.ringlayer" tooltip="menu.ttElements.coils.ringlayer" action="RingCoilsService"/>  -->
     			</app:submenu>
 <!--		</app:submenu> -->
 <!--		<app:submenu name="menu.components" caption="menu.components" tooltip="menu.ttComponents">

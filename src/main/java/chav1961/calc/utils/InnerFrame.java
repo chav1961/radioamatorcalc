@@ -54,7 +54,6 @@ public abstract class InnerFrame<T> extends JInternalFrame implements LocaleChan
         	final Object 			pluginPropKeeper = instance.getClass().isAnnotationPresent(PluginProperties.class) ? instance : this;
         	final PluginProperties	pp = pluginPropKeeper.getClass().getAnnotation(PluginProperties.class);
         	
-        	
         	this.windowId = ++openFrameCount;
 			setSize(pp.width(),pp.height());
 			

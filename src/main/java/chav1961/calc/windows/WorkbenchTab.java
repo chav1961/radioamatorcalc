@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -64,7 +65,7 @@ public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeL
 	@LocaleResource(value="chav1961.calc.workbench",tooltip="chav1961.calc.workbench.tt")
 	private final boolean field = false;
 	
-	public WorkbenchTab(final Localizer localizer, final LoggerFacade logger) throws SyntaxException, LocalizationException, ContentException {
+	public WorkbenchTab(final JTabbedPane tabs, final Localizer localizer, final LoggerFacade logger) throws SyntaxException, LocalizationException, ContentException {
 		if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null");
 		}
@@ -82,6 +83,7 @@ public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeL
 			}
 			this.tab = new JCloseableTab(localizer,this.ownModel.getRoot());
 			this.popup = SwingUtils.toJComponent(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.workbenchMenu")),JPopupMenu.class);
+			this.tab.associate(tabs,this,popup);
 
 			pluginCount.addListener((oldValue,newValue)->{
 				((JMenuItem)SwingUtils.findComponentByName(popup,"workbenchMenu.closeAll")).setEnabled(newValue != 0);

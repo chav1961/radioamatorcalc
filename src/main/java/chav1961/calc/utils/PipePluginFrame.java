@@ -3,6 +3,7 @@ package chav1961.calc.utils;
 import java.awt.BorderLayout;
 import java.util.Locale;
 
+import chav1961.calc.interfaces.PluginProperties;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
