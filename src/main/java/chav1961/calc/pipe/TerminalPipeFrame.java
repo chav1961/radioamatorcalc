@@ -18,7 +18,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
+import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
 import chav1961.calc.utils.PipePluginFrame;
+import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
@@ -37,7 +39,7 @@ import chav1961.purelib.ui.swing.useful.JStateString;
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="chav1961.calc.pipe.terminal.caption",tooltip="chav1961.calc.pipe.terminal.caption.tt",help="help.aboutApplication")
 @PluginProperties(width=500,height=200,pluginIconURI="terminalFrameIcon.png",desktopIconURI="terminalDesktopIcon.png")
-public class TerminalPipeFrame extends PipePluginFrame<Object> {
+public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	private static final 					long serialVersionUID = 1L;
 	private static final String				FIELDS_TITLE = "chav1961.calc.pipe.terminal.fields"; 
 	private static final String				FIELDS_TITLE_TT = "chav1961.calc.pipe.terminal.fields.tt"; 
@@ -60,8 +62,8 @@ public class TerminalPipeFrame extends PipePluginFrame<Object> {
 	@Format("9.2pz")
 	public float temp = 0;
 	
-	public TerminalPipeFrame(final Localizer parent, final ContentNodeMetadata terminal) throws ContentException {
-		super(terminal);
+	public TerminalPipeFrame(final PipeManager parent,final Localizer localizer, final ContentNodeMetadata terminal) throws ContentException {
+		super(parent,localizer,TerminalPipeFrame.class,PipeItemType.TERMINAL_ITEM);
 		if (terminal == null) {
 			throw new NullPointerException("Initial metadata can't be null");
 		}
@@ -70,7 +72,7 @@ public class TerminalPipeFrame extends PipePluginFrame<Object> {
 				this.localizer = LocalizerFactory.getLocalizer(mdi.getRoot().getLocalizerAssociated());
 				this.state = new JStateString(localizer);
 				this.targetControl = new JControlTarget(terminal);
-				this.fields = new ModelItemListContainer();
+				this.fields = new ModelItemListContainer(true);
 				
 				final JPanel	bottom = new JPanel(new BorderLayout());
 				final JPanel	top = new JPanel(new BorderLayout(5,5));
@@ -97,7 +99,7 @@ public class TerminalPipeFrame extends PipePluginFrame<Object> {
 	}
 
 	public void addTargetField(final ContentNodeMetadata metadata) {
-		fields.placeContent(metadata);
+		fields.addContent(metadata);
 	}
 	
 	public ContentNodeMetadata[] getTargetFields() {
@@ -131,13 +133,8 @@ public class TerminalPipeFrame extends PipePluginFrame<Object> {
 		fillLocalizedStrings(oldLocale,newLocale);
 	}
 
-	@Override
-	public LoggerFacade getLogger() {
-		return state;
-	}
-
 	protected void showHelp(final String helpId) {
-		final GrowableCharArray	gca = new GrowableCharArray(false);
+		final GrowableCharArray<?>	gca = new GrowableCharArray<>(false);
 		
 		try{gca.append(localizer.getContent(helpId));
 			final byte[]	content = Base64.getEncoder().encode(new String(gca.extract()).getBytes());

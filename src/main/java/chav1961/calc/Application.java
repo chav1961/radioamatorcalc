@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ServiceLoader;
 import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -117,6 +118,10 @@ public class Application extends JFrame implements LocaleChangeListener {
 			this.stateString = new JStateString(this.localizer,10);
 			this.settings = new CurrentSettings(this.localizer,this.logger);
 			
+			stateString.setAutomaticClearTime(Severity.error,1,TimeUnit.MINUTES);
+			stateString.setAutomaticClearTime(Severity.warning,15,TimeUnit.SECONDS);
+			stateString.setAutomaticClearTime(Severity.info,5,TimeUnit.SECONDS);
+			
 			parentLocalizer.push(localizer);
 			localizer.addLocaleChangeListener(this);
 			
@@ -195,7 +200,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			for (PluginInterface<?> item : ServiceLoader.load(PluginInterface.class)) {
 				if (item.canServe(actionURI)) {
 					try{final Object			inst = item.newIstance(stateString);
-						final SVGPluginFrame	frame = new SVGPluginFrame(localizer, inst);
+						final SVGPluginFrame<?>	frame = new SVGPluginFrame(localizer,inst.getClass(),inst);
 					        
 						 frame.setVisible(true);
 						 ((WorkbenchTab)tabs.getSelectedComponent()).placePlugin(frame);
@@ -238,7 +243,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	@OnAction("action:/newPipe")
 	private void newPipe() {
 		try{
-			final PipeTab	pipe = new PipeTab(localizer,stateString);
+			final PipeTab	pipe = new PipeTab(tabs,localizer,stateString);
 			
 			placeTab(tabs,pipe,true);
 		} catch (LocalizationException | ContentException | MalformedURLException e) {

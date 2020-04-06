@@ -19,10 +19,10 @@ import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
 import chav1961.calc.utils.PipePluginFrame;
+import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
-import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
@@ -37,7 +37,7 @@ import chav1961.purelib.ui.swing.useful.JStateString;
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="chav1961.calc.pipe.calc.caption",tooltip="chav1961.calc.pipe.calc.caption.tt",help="help.aboutApplication")
 @PluginProperties(width=600,height=250,pluginIconURI="calcFrameIcon.png",desktopIconURI="calcDesktopIcon.png")
-public class CalcPipeFrame extends PipePluginFrame<Object> {
+public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	private static final 					long serialVersionUID = 1L;
 	
 	private static final String				TABS_FIELDS_TITLE = "chav1961.calc.pipe.calc.tabs.fields";	
@@ -65,8 +65,8 @@ public class CalcPipeFrame extends PipePluginFrame<Object> {
 	@Format("9.2pz")
 	public float temp = 0;
 	
-	public CalcPipeFrame(final Localizer parent, final ContentNodeMetadata inner, final ContentNodeMetadata outer) throws ContentException {
-		super(inner);
+	public CalcPipeFrame(final PipeManager parent, final Localizer localizer, final ContentNodeMetadata inner, final ContentNodeMetadata outer) throws ContentException {
+		super(parent,localizer,CalcPipeFrame.class,PipeItemType.CALC_ITEM);
 		if (inner == null) {
 			throw new NullPointerException("Initial metadata can't be null");
 		}
@@ -76,8 +76,8 @@ public class CalcPipeFrame extends PipePluginFrame<Object> {
 				this.state = new JStateString(localizer);
 				this.targetControl = new JControlTarget(inner);
 				this.sourceControl = new JControlSource(outer);
-				this.sourceFields = new ModelItemListContainer();
-				this.targetFields = new ModelItemListContainer();
+				this.sourceFields = new ModelItemListContainer(true);
+				this.targetFields = new ModelItemListContainer(true);
 				
 				final JPanel	bottom = new JPanel(new BorderLayout());
 				
@@ -111,11 +111,11 @@ public class CalcPipeFrame extends PipePluginFrame<Object> {
 	}
 
 	public void addSourceField(final ContentNodeMetadata metadata) {
-		sourceFields.placeContent(metadata);
+		sourceFields.addContent(metadata);
 	}
 
 	public void addPargetField(final ContentNodeMetadata metadata) {
-		targetFields.placeContent(metadata);
+		targetFields.addContent(metadata);
 	}
 	
 	public ContentNodeMetadata[] getSourceFields() {
@@ -153,13 +153,8 @@ public class CalcPipeFrame extends PipePluginFrame<Object> {
 		fillLocalizedStrings(oldLocale,newLocale);
 	}
 
-	@Override
-	public LoggerFacade getLogger() {
-		return state;
-	}
-
 	protected void showHelp(final String helpId) {
-		final GrowableCharArray	gca = new GrowableCharArray(false);
+		final GrowableCharArray<?>	gca = new GrowableCharArray<>(false);
 		
 		try{gca.append(localizer.getContent(helpId));
 			final byte[]	content = Base64.getEncoder().encode(new String(gca.extract()).getBytes());

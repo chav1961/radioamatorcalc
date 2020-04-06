@@ -19,4 +19,9 @@
 		<app:item name="pipeMenu.clean" caption="pipeMenu.clean" tooltip="pipeMenu.clean.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/clearAllIcon.png" action="cleanPipe"/>
 		<app:item name="pipeMenu.validate" caption="pipeMenu.validate" tooltip="pipeMenu.validate.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/validateIcon.png" action="validatePipe"/>
 	</app:menu>
+	<app:menu id="initial.toolbar">
+		<app:item name="chav1961.calc.pipe.initial.toolbar.addfield" caption="chav1961.calc.pipe.initial.toolbar.addfield" tooltip="chav1961.calc.pipe.initial.toolbar.addfield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/newIcon.png" action="addField"/>
+		<app:item name="chav1961.calc.pipe.initial.toolbar.removefield" caption="chav1961.calc.pipe.initial.toolbar.removefield" tooltip="chav1961.calc.pipe.initial.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeField"/>
+		<app:item name="chav1961.calc.pipe.initial.toolbar.editfield" caption="chav1961.calc.pipe.initial.toolbar.editfield" tooltip="chav1961.calc.pipe.initial.toolbar.editfield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/editIcon.png" action="editField"/>
+	</app:menu>
 </app:root>

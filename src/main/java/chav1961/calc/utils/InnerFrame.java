@@ -32,7 +32,7 @@ import chav1961.purelib.enumerations.NodeEnterMode;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.ui.swing.SwingUtils;
 
-public abstract class InnerFrame<T> extends JInternalFrame implements LocaleChangeListener {
+abstract class InnerFrame<T> extends JInternalFrame implements LocaleChangeListener {
 	private static final long 			serialVersionUID = 1L;
     private static final int 			X_OFFSET = 30, Y_OFFSET = 30, OFFSET_REPEAT = 15;
 	
@@ -41,18 +41,18 @@ public abstract class InnerFrame<T> extends JInternalFrame implements LocaleChan
     private final int					windowId;
     private final SimpleDesktopIconUI 	iconUI;
 
-	public InnerFrame(final T instance) throws ContentException {
+	protected InnerFrame(final Class<T> instanceClass) throws ContentException {
         super("", true, true, true, true);
         
-        if (instance == null) {
+        if (instanceClass == null) {
         	throw new NullPointerException("Instance to show can't be null"); 
         }
-        else if (!instance.getClass().isAnnotationPresent(PluginProperties.class) && !this.getClass().isAnnotationPresent(PluginProperties.class)) {
+        else if (!instanceClass.isAnnotationPresent(PluginProperties.class) && !this.getClass().isAnnotationPresent(PluginProperties.class)) {
         	throw new IllegalArgumentException("Instance passed must be annotated with @"+PluginProperties.class.getCanonicalName()); 
         }
         else {
-        	final Object 			pluginPropKeeper = instance.getClass().isAnnotationPresent(PluginProperties.class) ? instance : this;
-        	final PluginProperties	pp = pluginPropKeeper.getClass().getAnnotation(PluginProperties.class);
+        	final Class<?> 			pluginPropKeeper = instanceClass.isAnnotationPresent(PluginProperties.class) ? instanceClass : this.getClass();
+        	final PluginProperties	pp = pluginPropKeeper.getAnnotation(PluginProperties.class);
         	
         	this.windowId = ++openFrameCount;
 			setSize(pp.width(),pp.height());
@@ -61,10 +61,10 @@ public abstract class InnerFrame<T> extends JInternalFrame implements LocaleChan
         	setResizable(pp.resizable());
 
         	if (!pp.pluginIconURI().isEmpty()) {
-        		setFrameIcon(new ImageIcon(pluginPropKeeper.getClass().getResource(pp.pluginIconURI())));
+        		setFrameIcon(new ImageIcon(pluginPropKeeper.getResource(pp.pluginIconURI())));
         	}
         	if (!pp.desktopIconURI().isEmpty()) {
-        		getDesktopIcon().setUI(this.iconUI = new SimpleDesktopIconUI(getDesktopIcon(),new ImageIcon(pluginPropKeeper.getClass().getResource(pp.desktopIconURI()))));
+        		getDesktopIcon().setUI(this.iconUI = new SimpleDesktopIconUI(getDesktopIcon(),new ImageIcon(pluginPropKeeper.getResource(pp.desktopIconURI()))));
         		setIconifiable(true);
         	}
         	else {

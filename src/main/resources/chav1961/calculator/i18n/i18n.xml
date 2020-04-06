@@ -310,6 +310,14 @@
 		<key name="chav1961.calc.pipe.initial.caption.tt">Begins pipe execution</key>
 		<key name="chav1961.calc.pipe.initial.fields">Drag other plugin's field here</key>
 		<key name="chav1961.calc.pipe.initial.fields.tt">Drag other plugin's field here to fill them with initial before pipe start</key>
+		<key name="chav1961.calc.pipe.initial.toolbar.addfield">Add field</key>
+		<key name="chav1961.calc.pipe.initial.toolbar.addfield.tt">Add new global field to the initial pipe node</key>
+		<key name="chav1961.calc.pipe.initial.toolbar.removefield">Remove field</key>
+		<key name="chav1961.calc.pipe.initial.toolbar.removefield.tt">Remove selected global field from the initial pipe node</key>
+		<key name="chav1961.calc.pipe.initial.toolbar.editfield">Edit field</key>
+		<key name="chav1961.calc.pipe.initial.toolbar.editfield.tt">Edit selected global field settings</key>
+		<key name="chav1961.calc.pipe.initial.fields.add.caption">Add new field</key> 
+		<key name="chav1961.calc.pipe.initial.fields.add.caption.tt">Add new global field description to the initial node</key>
 
 		<key name="chav1961.calc.pipe.conditional.caption">Conditional pipe node</key>
 		<key name="chav1961.calc.pipe.conditional.caption.tt">Changes pipe execution order</key>
@@ -337,6 +345,14 @@
 		<key name="chav1961.calc.pipe.terminal.message.tt">Type message that you will receive on processing this node</key>
 		<key name="chav1961.calc.pipe.terminal.failure">Is failure</key>
 		<key name="chav1961.calc.pipe.terminal.failure.tt">Setting this check box means that executing this terminal node is erroneous termination of the pipe</key> 
+
+<!-- Localization for pipe manager -->
+
+		<key name="chav1961.calc.windows.pipemanager.validation.noInitial">Pipe error: no any initial node in the pipe</key> 
+		<key name="chav1961.calc.windows.pipemanager.validation.noTerminal">Pipe error: pipe must contain at least one terminal node</key> 
+		<key name="chav1961.calc.windows.pipemanager.validation.noWayToTerminal">Pipe error: No any way form initial node to any terminal node</key> 
+		<key name="chav1961.calc.windows.pipemanager.validation.unconditionalLoop">Pipe error: unconditional loop in the pipe</key> 
+		<key name="chav1961.calc.windows.pipemanager.validation.OK">Pipe validation OK</key> 
 
 <!-- Localization for plugins -->
 
@@ -696,8 +712,16 @@
 
 		<key name="chav1961.calc.pipe.initial.caption">Стартовый узел</key>
 		<key name="chav1961.calc.pipe.initial.caption.tt">Со стартового узла начинается работа конвейера</key> 
-		<key name="chav1961.calc.pipe.initial.fields">Перетащите сюда поля других плагинов</key>
-		<key name="chav1961.calc.pipe.initial.fields.tt">Перетащите сюда поля других плагинов, чтобы задавать им начальное значения перед запуском конвейера</key>
+		<key name="chav1961.calc.pipe.initial.fields">Список общих полей стартового узла</key>
+		<key name="chav1961.calc.pipe.initial.fields.tt">С помощью кнопок панели инструмтеодв определите поля, доступные всем узлам конвейера</key>
+		<key name="chav1961.calc.pipe.initial.toolbar.addfield">Создать поле</key>
+		<key name="chav1961.calc.pipe.initial.toolbar.addfield.tt">Добавить новое общее поле к стартовому узлу конвейера</key>
+		<key name="chav1961.calc.pipe.initial.toolbar.removefield">Удалить поле</key>
+		<key name="chav1961.calc.pipe.initial.toolbar.removefield.tt">Удалить выбранное общее поле из стартового узла конвейера</key>
+		<key name="chav1961.calc.pipe.initial.toolbar.editfield">Редактировать поле</key>
+		<key name="chav1961.calc.pipe.initial.toolbar.editfield.tt">Изменить параметры выбранного общего поля</key>
+		<key name="chav1961.calc.pipe.initial.fields.add.caption">Добавить новое поле</key> 
+		<key name="chav1961.calc.pipe.initial.fields.add.caption.tt">Добавить новое глобальное поле в стартовый узел конвейера</key>
 
 		<key name="chav1961.calc.pipe.conditional.caption">Узел проверки условия</key>
 		<key name="chav1961.calc.pipe.conditional.caption.tt">Управляет порядком вычислений в конвейере</key>
@@ -725,6 +749,14 @@
 		<key name="chav1961.calc.pipe.terminal.message.tt">Задайте сообщение, которое будет выдано при завершении работы конвейера</key> 
 		<key name="chav1961.calc.pipe.terminal.failure">Ошибка</key>
 		<key name="chav1961.calc.pipe.terminal.failure.tt">Установка этого флага обозначает, что этот узел индицирует ошибку работы конвейера</key>   
+
+<!-- Локализация для менеджера конвейера -->
+
+		<key name="chav1961.calc.windows.pipemanager.validation.noInitial">Ошибка конвейера: нет ни одного начального узла</key> 
+		<key name="chav1961.calc.windows.pipemanager.validation.noTerminal">Ошибка конвейера: нет ни одного конечного узла</key> 
+		<key name="chav1961.calc.windows.pipemanager.validation.noWayToTerminal">Ошибка конвейера: нет ни одного пути из начального узла в конечные узлы</key> 
+		<key name="chav1961.calc.windows.pipemanager.validation.unconditionalLoop">Ошибка конвейера: безусловный бесконечный цикл в конвейере</key> 
+		<key name="chav1961.calc.windows.pipemanager.validation.OK">Проверка конвейера успешна</key> 
 
 <!-- Локализация для плагинов -->
 

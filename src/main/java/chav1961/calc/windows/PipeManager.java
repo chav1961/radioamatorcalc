@@ -27,6 +27,7 @@ import chav1961.calc.interfaces.DragMode;
 import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
 import chav1961.calc.interfaces.PipeContainerItemInterface;
 import chav1961.calc.interfaces.PipeItemDropTarget;
+import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.DragDropGlass.DragNotification;
 import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.SequenceIterator;
@@ -51,27 +52,32 @@ import chav1961.purelib.ui.swing.useful.JLocalizedOptionPane;
 public class PipeManager extends JDesktopPane implements Closeable, LocaleChangeListener, ContentClassificator, ContentEnumerator, DragNotification {
 	private static final long serialVersionUID = 1L;
 
-	private final LoggerFacade				logger;
-	private final Localizer					localizer;
-	private final ContentMetadataInterface	xmlModel;
-	private final List<PipeItemFrame<?>>	frames = new ArrayList<>();
-	private final List<PipeLink>			links = new ArrayList<>();
-	private final ReentrantReadWriteLock	lock = new ReentrantReadWriteLock();
-	private final SubscribableInt			pluginCount = new SubscribableInt(); 
-	private final SubscribableBoolean		hasInitial = new SubscribableBoolean(); 
+	private static final String				VALIDATION_NO_INITIAL_NODE = "chav1961.calc.windows.pipemanager.validation.noInitial";
+	private static final String				VALIDATION_NO_TERMINAL_NODES = "chav1961.calc.windows.pipemanager.validation.noTerminal";
+	private static final String				VALIDATION_NO_WAY_TO_TERMINAL = "chav1961.calc.windows.pipemanager.validation.noWayToTerminal";
+	private static final String				VALIDATION_UNCONDITIONAL_LOOP = "chav1961.calc.windows.pipemanager.validation.unconditionalLoop";
+	private static final String				VALIDATION_OK = "chav1961.calc.windows.pipemanager.validation.OK";
 	
-	public PipeManager(final Localizer localizer, final LoggerFacade logger, final ContentMetadataInterface xmlModel) throws IOException, EnvironmentException, ContentException {
-		if (localizer == null) {
+	private final PipeTab					parent;
+	private final Localizer					localizer;
+	private final LoggerFacade				logger;
+	private final List<PipePluginFrame<?>>	frames = new ArrayList<>();
+	private final List<PipeLink>			links = new ArrayList<>();
+	
+	public PipeManager(final PipeTab parent, final Localizer localizer, final LoggerFacade logger, final ContentMetadataInterface xmlModel) throws IOException, EnvironmentException, ContentException {
+		if (parent == null) {
+			throw new NullPointerException("Parent tab can't be null");
+		}
+		else if (localizer == null) {
 			throw new NullPointerException("Localizer can't be null");
 		}
 		else if (logger == null) {
 			throw new NullPointerException("Logger can't be null");
 		}
 		else {
+			this.parent = parent;
 			this.localizer = localizer;
 			this.logger = logger;
-			this.xmlModel = xmlModel;
-			pluginCount.refresh();
 		}
 	}
 	
@@ -132,7 +138,7 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 	public Iterator<PipeContainerItemInterface> iterator() {
 		final List<Iterator<PipeContainerItemInterface>>	collection = new ArrayList<>();
 		
-		for (PipeItemFrame<?> item : frames) {
+		for (PipePluginFrame<?> item : frames) {
 			collection.add(item.getItems().iterator());
 		}
 		
@@ -159,8 +165,8 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		}
 	}
 	
-	public PipeItemFrame<?>[] getPipeComponents() {
-		final PipeItemFrame<?>[]	result = new PipeItemFrame[frames.size()];
+	public PipePluginFrame<?>[] getPipeComponents() {
+		final PipePluginFrame<?>[]	result = new PipePluginFrame<?>[frames.size()];
 		
 		for (int index = 0, maxIndex = result.length; index < maxIndex; index++) {
 			result[index] = frames.get(index);
@@ -169,7 +175,7 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 	}
 
 	public boolean hasComponentAt(int x, int y) {
-		for (PipeItemFrame<?> item : frames) {
+		for (PipePluginFrame<?> item : frames) {
 			if (((JInternalFrame)item).getBounds().contains(x, y)) {
 				return true;
 			}
@@ -177,8 +183,8 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		return false;		
 	}
 	
-	public PipeItemFrame<?> at(int x, int y) {
-		for (PipeItemFrame<?> item : frames) {
+	public PipePluginFrame<?> at(int x, int y) {
+		for (PipePluginFrame<?> item : frames) {
 			if (((JInternalFrame)item).getBounds().contains(x, y)) {
 				return item;
 			}
@@ -186,7 +192,7 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		return null;		
 	}
 	
-	public void addPipeComponent(final PipeItemFrame<?> item) {
+	public void addPipeComponent(final PipePluginFrame<?> item) {
 		if (item == null) {
 			throw new NullPointerException("Iem to add can't be null");
 		}
@@ -196,7 +202,7 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		}
 	}
 
-	public void removePipeComponent(final PipeItemFrame<?> item) {
+	public void removePipeComponent(final PipePluginFrame<?> item) {
 		if (item == null) {
 			throw new NullPointerException("Iem to remove can't be null");
 		}
@@ -220,8 +226,10 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		if (new JLocalizedOptionPane(localizer).confirm(this, LocalizationKeys.CONFIRM_CLEAR_DESKTOP_MESSAGE, LocalizationKeys.CONFIRM_CLEAR_DESKTOP_CAPTION, JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 			for (JInternalFrame item : this.getAllFrames()) {
 				this.getDesktopManager().closeFrame(item);
+				if (item instanceof PipePluginFrame) {
+					frames.remove(item);
+				}
 			}
-			pluginCount.set(0);
 		}
 	}
 
@@ -232,9 +240,9 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 	public boolean validatePipe(final LoggerFacade facade) {
 		// TODO Auto-generated method stub
 		boolean 			initialDetected = false, terminalDetected = false;
-		PipeItemFrame<?>	initial = null;
+		PipePluginFrame<?>	initial = null;
 		
-		for (PipeItemFrame<?> item : getPipeComponents()) {
+		for (PipePluginFrame<?> item : getPipeComponents()) {
 			if (item.getType() == PipeItemType.INITIAL_ITEM) {
 				initialDetected = true;
 				initial = item;
@@ -244,31 +252,31 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 			}
 		}
 		if (!initialDetected) {
-			facade.message(Severity.warning,"No initial item");
+			facade.message(Severity.warning,VALIDATION_NO_INITIAL_NODE);
 			return false;
 		}
 		if (!terminalDetected) {
-			facade.message(Severity.warning,"No terminal item");
+			facade.message(Severity.warning,VALIDATION_NO_TERMINAL_NODES);
 			return false;
 		}
 		if (!hasWay2Terminal(initial,new HashSet<>())) {
-			facade.message(Severity.warning,"No control way from initial to any terminal pipe items");
+			facade.message(Severity.warning,VALIDATION_NO_WAY_TO_TERMINAL);
 			return false;
 		}
 		if (hasLoop(initial,new HashSet<>())) {
-			facade.message(Severity.warning,"Unconditional loop inside pipe");
+			facade.message(Severity.warning,VALIDATION_UNCONDITIONAL_LOOP);
 			return false;
 		}
-		for (PipeItemFrame<?> item : getPipeComponents()) {
+		for (PipePluginFrame<?> item : getPipeComponents()) {
 			
 		}
-		facade.message(Severity.info,"Pipe validation is OK");
+		facade.message(Severity.info,VALIDATION_OK);
 		return true;		
 	}
 	
 	public boolean start(final LoggerFacade facade) throws ContentException {
 		if (!validatePipe(PureLibSettings.CURRENT_LOGGER)) {
-			facade.message(Severity.warning,"Start rejected because there are problems in the pipe. Validate it!");
+			facade.message(Severity.error,"Start rejected because there are problems in the pipe. Validate it!");
 			return false;
 		}
 		else {
@@ -283,21 +291,20 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		return false;
 	}
 	
-	DragMode setDragMode(final DragMode newMode) {
-		// TODO Auto-generated method stub
-		return newMode;
+	public DragMode setDragMode(final DragMode newMode) {
+		return parent.setDragMode(newMode);
 	}
 	
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) {
 		// TODO Auto-generated method stub
 	}
 
-	private boolean hasWay2Terminal(final PipeItemFrame<?> node, final Set<PipeItemFrame<?>> passed) {
+	private boolean hasWay2Terminal(final PipePluginFrame<?> node, final Set<PipePluginFrame<?>> passed) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	private boolean hasLoop(final PipeItemFrame<?> node, final Set<PipeItemFrame<?>> passed) {
+	private boolean hasLoop(final PipePluginFrame<?> node, final Set<PipePluginFrame<?>> passed) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -3,6 +3,7 @@ module chav1961.radioamatorcalc {
 	requires java.desktop;
 	
 	opens chav1961.calc to chav1961.purelib;
+	opens chav1961.calc.pipe to chav1961.purelib;
 	opens chav1961.calc.windows to chav1961.purelib;
 	
 	uses chav1961.calc.interfaces.PluginInterface;

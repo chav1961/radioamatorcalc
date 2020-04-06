@@ -99,7 +99,7 @@ public class ModelItemButtonContainer extends JButton implements LocaleChangeLis
 		}
 		else {
 			this.linked.add(metadata);
-			listeners.fireEvent((e)->e.contentChangePerormed(ChangeType.INSERTED, null,metadata));
+			listeners.fireEvent((e)->e.contentChangePerformed(ChangeType.INSERTED, null,metadata));
 		}
 	}
 
@@ -109,7 +109,7 @@ public class ModelItemButtonContainer extends JButton implements LocaleChangeLis
 		}
 		else {
 			this.linked.remove(metadata);
-			listeners.fireEvent((e)->e.contentChangePerormed(ChangeType.REMOVED, null,metadata));
+			listeners.fireEvent((e)->e.contentChangePerformed(ChangeType.REMOVED, null,metadata));
 		}
 	}
 	

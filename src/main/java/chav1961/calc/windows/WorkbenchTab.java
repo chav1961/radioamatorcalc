@@ -83,7 +83,6 @@ public class WorkbenchTab extends JPanel implements AutoCloseable, LocaleChangeL
 			}
 			this.tab = new JCloseableTab(localizer,this.ownModel.getRoot());
 			this.popup = SwingUtils.toJComponent(xmlModel.byUIPath(URI.create("ui:/model/navigation.top.workbenchMenu")),JPopupMenu.class);
-			this.tab.associate(tabs,this,popup);
 
 			pluginCount.addListener((oldValue,newValue)->{
 				((JMenuItem)SwingUtils.findComponentByName(popup,"workbenchMenu.closeAll")).setEnabled(newValue != 0);

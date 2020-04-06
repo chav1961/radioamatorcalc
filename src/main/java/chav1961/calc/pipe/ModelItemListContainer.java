@@ -1,6 +1,7 @@
 package chav1961.calc.pipe;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.datatransfer.DataFlavor;
@@ -19,8 +20,10 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
+import javax.swing.border.LineBorder;
 
 import chav1961.calc.pipe.ModelContentChangeListener.ChangeType;
 import chav1961.purelib.basic.PureLibSettings;
@@ -30,22 +33,36 @@ import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 
-public class ModelItemListContainer extends JList<LocaleChangeListener> implements LocaleChangeListener {
+public class ModelItemListContainer extends JList<ContentNodeMetadata> implements LocaleChangeListener {
 	private static final long 	serialVersionUID = 1L;
 	private static final Icon	REMOVE_ICON = null;
 
 	private final LightWeightListenerList<ModelContentChangeListener>	listeners = new LightWeightListenerList<>(ModelContentChangeListener.class);
 	
 	
-	public ModelItemListContainer() throws LocalizationException {
+	public ModelItemListContainer(final boolean useAsDropTarget) throws LocalizationException {
         setDropMode(DropMode.INSERT);
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        setTransferHandler(new DropModelHandler());
+        setModel(new DefaultListModel<ContentNodeMetadata>());
+        if (useAsDropTarget) {
+        	setTransferHandler(new DropModelHandler());
+        }
+        setCellRenderer((list,value,index,isSelected,cellHasFocus)->{
+        		final JLabel	label = new JLabel(((ContentNodeMetadata)value).getName());
+        		
+        		label.setOpaque(false);
+        		label.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
+        		if (cellHasFocus) {
+        			label.setBorder(new LineBorder(Color.BLUE));
+        		}
+        		return label;
+			}
+		);
 	}
 
 	@Override
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-		fillLocalizedStrings(oldLocale,newLocale);
+		updateUI();
 	}
 	
 	public void addContentChangeListener(final ModelContentChangeListener listener) {
@@ -66,25 +83,35 @@ public class ModelItemListContainer extends JList<LocaleChangeListener> implemen
 		}
 	}
 	
-	public void placeContent(final ContentNodeMetadata metadata) {
+	public void addContent(final ContentNodeMetadata metadata) {
 		if (metadata == null) {
 			throw new NullPointerException("Element to add can't be null");
 		}
 		else {
-			((DefaultListModel<LocaleChangeListener>)getModel()).add(getComponentCount()-1,new KeepContent(metadata));
-			listeners.fireEvent((e)->e.contentChangePerormed(ChangeType.INSERTED, null,metadata));
+			((DefaultListModel<ContentNodeMetadata>)getModel()).add(getComponentCount()-1,metadata);
+			listeners.fireEvent((e)->e.contentChangePerformed(ChangeType.INSERTED, null,metadata));
 		}
 	}
 
+	public void changeContent(final ContentNodeMetadata metadata) {
+		if (metadata == null) {
+			throw new NullPointerException("Element to add can't be null");
+		}
+		else {
+			((DefaultListModel<ContentNodeMetadata>)getModel()).set(getSelectedIndex(),metadata);
+			listeners.fireEvent((e)->e.contentChangePerformed(ChangeType.CHANGED, null,metadata));
+		}
+	}
+	
 	public void removeContent(final ContentNodeMetadata metadata) {
 		if (metadata == null) {
 			throw new NullPointerException("Element to remove can't be null");
 		}
 		else {
 			for (int index = 0, maxIndex = getComponentCount(); index < maxIndex; index++) {
-				if (((KeepContent)getComponent(index)).metadata.equals(metadata)) {
+				if (((ContentNodeMetadata)getComponent(index)).equals(metadata)) {
 					remove(index);
-					listeners.fireEvent((e)->e.contentChangePerormed(ChangeType.REMOVED, null,metadata));
+					listeners.fireEvent((e)->e.contentChangePerformed(ChangeType.REMOVED, null,metadata));
 					return;
 				}
 			}
@@ -95,68 +122,11 @@ public class ModelItemListContainer extends JList<LocaleChangeListener> implemen
 		final ContentNodeMetadata[]	result = new ContentNodeMetadata[getComponentCount()-1];
 		
 		for (int index = 0, maxIndex = result.length; index < maxIndex; index++) {
-			result[index] = ((KeepContent)getComponent(index)).metadata;			
+			result[index] = ((ContentNodeMetadata)getComponent(index));			
 		}
 		return result;
 	}
 	
-	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-		for (Component item : getComponents()) {
-			if (item instanceof LocaleChangeListener) {
-				((LocaleChangeListener)item).localeChanged(oldLocale, newLocale);
-			}
-		}
-	}
-
-	private class KeepContent extends JPanel implements LocaleChangeListener {
-		private static final long 			serialVersionUID = 1L;
-		
-		private final ContentNodeMetadata 	metadata;
-		private final JLabel				label = new JLabel();
-		private final JTextField			field = new JTextField();
-		private final JButton				button = new JButton(REMOVE_ICON);
-		
-		KeepContent(final ContentNodeMetadata metadata) {
-			super(new BorderLayout());
-			this.metadata = metadata;
-			this.field.setEnabled(false);			
-			this.button.setBorderPainted(false);
-			this.button.setFocusPainted(false);
-			this.button.setContentAreaFilled(false);
-			this.button.addActionListener((event)->{
-				removeContent(metadata);
-				listeners.fireEvent((e)->{
-					e.contentChangePerormed(ModelContentChangeListener.ChangeType.REMOVED,null,metadata);
-				});
-			});
-			final JPanel	centerPanel = new JPanel(new GridLayout(1,2));
-			
-			centerPanel.add(this.label);
-			centerPanel.add(this.field);
-			add(centerPanel,BorderLayout.CENTER);
-			add(button,BorderLayout.EAST);
-		}
-
-		@Override
-		public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-			fillLocalizedStrings(oldLocale,newLocale);
-		}
-
-		private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-			try{label.setText(LocalizerFactory.getLocalizer(metadata.getLocalizerAssociated()).getValue(metadata.getLabelId()));
-			} catch (LocalizationException e) {
-				label.setText(metadata.getLabelId());
-			}
-			field.setText(metadata.getName());
-			if (metadata.getTooltipId() != null) {
-				try{field.setToolTipText(LocalizerFactory.getLocalizer(metadata.getLocalizerAssociated()).getValue(metadata.getTooltipId()));
-				} catch (LocalizationException e) {
-					label.setText(metadata.getLabelId());
-				}
-			}
-		}
-	}
-
     private class DropModelHandler extends TransferHandler {
 		private static final long 	serialVersionUID = 1L;
 
@@ -182,8 +152,8 @@ public class ModelItemListContainer extends JList<LocaleChangeListener> implemen
 	            	final JList.DropLocation 	dl = (JList.DropLocation) support.getDropLocation();
 	            	final int 					index = dl.getIndex();
 	            	
-	            	((DefaultListModel)getModel()).add(index, new KeepContent(metaData));
-					listeners.fireEvent((e)->e.contentChangePerormed(ChangeType.INSERTED,support.getComponent(),metaData));
+	            	((DefaultListModel)getModel()).add(index, metaData);
+					listeners.fireEvent((e)->e.contentChangePerformed(ChangeType.INSERTED,support.getComponent(),metaData));
 	            	return true;
 	            } catch (UnsupportedFlavorException | IOException e) {
 	            	return false;

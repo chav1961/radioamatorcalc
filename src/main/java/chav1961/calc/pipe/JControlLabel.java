@@ -1,6 +1,9 @@
 package chav1961.calc.pipe;
 
+import java.awt.AWTEvent;
 import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -21,6 +24,7 @@ public class JControlLabel extends JLabel implements NodeMetadataOwner, LocaleCh
 
 	private final ContentNodeMetadata	metadata;
 	
+	
 	public JControlLabel(final Icon icon, final ContentNodeMetadata metadata) throws ContentException {
 		super(icon);
 		if (metadata == null) {
@@ -32,6 +36,7 @@ public class JControlLabel extends JLabel implements NodeMetadataOwner, LocaleCh
 				this.metadata = metadata;
 				setBorder(new LineBorder(Color.BLACK));
 				fillLocalizedStrings(l.currentLocale().getLocale(),l.currentLocale().getLocale());
+				enableEvents(AWTEvent.MOUSE_EVENT_MASK);
 			} catch (LocalizationException e) {
 				throw new ContentException(e);
 			}

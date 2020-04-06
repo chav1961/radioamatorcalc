@@ -19,10 +19,10 @@ import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
 import chav1961.calc.utils.PipePluginFrame;
+import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
-import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
@@ -37,7 +37,7 @@ import chav1961.purelib.ui.swing.useful.JStateString;
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="chav1961.calc.pipe.conditional.caption",tooltip="chav1961.calc.pipe.conditional.caption.tt",help="help.aboutApplication")
 @PluginProperties(width=500,height=200,pluginIconURI="conditionalFrameIcon.png",desktopIconURI="conditionalDesktopIcon.png")
-public class ConditionalPipeFrame extends PipePluginFrame<Object> {
+public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> {
 	private static final 					long serialVersionUID = 1L;
 	private static final String				FIELDS_TITLE = "chav1961.calc.pipe.conditional.fields"; 
 	private static final String				FIELDS_TITLE_TT = "chav1961.calc.pipe.conditional.fields.tt"; 
@@ -59,8 +59,8 @@ public class ConditionalPipeFrame extends PipePluginFrame<Object> {
 	@Format("9.2pz")
 	public float temp = 0;
 	
-	public ConditionalPipeFrame(final Localizer parent, final ContentNodeMetadata inner, final ContentNodeMetadata onTrue, final ContentNodeMetadata onFalse) throws ContentException {
-		super(inner);
+	public ConditionalPipeFrame(final PipeManager parent,final Localizer localizer, final ContentNodeMetadata inner, final ContentNodeMetadata onTrue, final ContentNodeMetadata onFalse) throws ContentException {
+		super(parent,localizer,ConditionalPipeFrame.class,PipeItemType.CONDITIONAL_ITEM);
 		if (inner == null) {
 			throw new NullPointerException("Initial metadata can't be null");
 		}
@@ -71,7 +71,7 @@ public class ConditionalPipeFrame extends PipePluginFrame<Object> {
 				this.targetControl = new JControlTarget(inner);
 				this.onTrueControl = new JControlTrue(onTrue);
 				this.onFalseControl = new JControlFalse(onFalse);
-				this.fields = new ModelItemListContainer();
+				this.fields = new ModelItemListContainer(true);
 				
 				final JPanel		bottom = new JPanel(new BorderLayout());
 				final JPanel		rightBottom = new JPanel(new GridLayout(1,2));
@@ -102,7 +102,7 @@ public class ConditionalPipeFrame extends PipePluginFrame<Object> {
 	}
 
 	public void addTargetField(final ContentNodeMetadata metadata) {
-		fields.placeContent(metadata);
+		fields.addContent(metadata);
 	}
 	
 	public ContentNodeMetadata[] getTargetFields() {
@@ -136,13 +136,8 @@ public class ConditionalPipeFrame extends PipePluginFrame<Object> {
 		fillLocalizedStrings(oldLocale,newLocale);
 	}
 
-	@Override
-	public LoggerFacade getLogger() {
-		return state;
-	}
-
 	protected void showHelp(final String helpId) {
-		final GrowableCharArray	gca = new GrowableCharArray(false);
+		final GrowableCharArray<?>	gca = new GrowableCharArray<>(false);
 		
 		try{gca.append(localizer.getContent(helpId));
 			final byte[]	content = Base64.getEncoder().encode(new String(gca.extract()).getBytes());

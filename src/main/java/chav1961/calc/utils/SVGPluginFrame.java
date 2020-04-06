@@ -30,33 +30,36 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
     private final AutoBuiltForm<T>			abf;
     private final InnerSVGPluginWindow<T>	w;
     
-    public SVGPluginFrame(final Localizer localizer, final T instance) throws ContentException {
-        super(instance);
+    public SVGPluginFrame(final Localizer localizer, final Class<T> instanceClass, final T instance) throws ContentException {
+        super(instanceClass);
         
-        if (instance == null) {
+        if (instanceClass == null) {
+        	throw new NullPointerException("Instance class to show can't be null"); 
+        }
+        else if (instance == null) {
         	throw new NullPointerException("Instance to show can't be null"); 
         }
         else if (!(instance instanceof FormManager<?,?>)) {
         	throw new IllegalArgumentException("Instance passed must implements "+FormManager.class.getCanonicalName()+" interface!"); 
         }
-        else if (!instance.getClass().isAnnotationPresent(PluginProperties.class)) {
+        else if (!instanceClass.isAnnotationPresent(PluginProperties.class)) {
         	throw new IllegalArgumentException("Instance passed must be annotated with @"+PluginProperties.class.getCanonicalName()); 
         }
         else {
-        	final PluginProperties	pp = instance.getClass().getAnnotation(PluginProperties.class);
+        	final PluginProperties	pp = instanceClass.getAnnotation(PluginProperties.class);
 
         	this.localizer = localizer;
         	
 			try{final FormManager<Object,T>	wrapper = new FormManagerWrapper<>((FormManager<Object,T>)instance, ()-> {refresh();}); 
 				
-				abf = new AutoBuiltForm<T>(ContentModelFactory.forAnnotatedClass(instance.getClass()),localizer, instance, wrapper);
+				abf = new AutoBuiltForm<T>(ContentModelFactory.forAnnotatedClass(instanceClass),localizer, instance, wrapper);
 				
 				for (Module m : abf.getUnnamedModules()) {
-					instance.getClass().getModule().addExports(instance.getClass().getPackageName(),m);
+					instanceClass.getModule().addExports(instanceClass.getPackageName(),m);
 				}
-				w = new InnerSVGPluginWindow<T>(instance.getClass().getResource(pp.svgURI()).toURI(),abf,(src)->
+				w = new InnerSVGPluginWindow<T>(instanceClass.getResource(pp.svgURI()).toURI(),abf,(src)->
 				{
-					try{final Object result = instance.getClass().getField(src).get(instance);
+					try{final Object result = instanceClass.getField(src).get(instance);
 					
 						return result == null ? "" : result.toString();
 					} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
