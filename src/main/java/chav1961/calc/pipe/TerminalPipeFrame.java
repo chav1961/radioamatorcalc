@@ -72,10 +72,11 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 				this.localizer = LocalizerFactory.getLocalizer(mdi.getRoot().getLocalizerAssociated());
 				this.state = new JStateString(localizer);
 				this.targetControl = new JControlTarget(terminal);
-				this.fields = new ModelItemListContainer(true);
+				this.fields = new ModelItemListContainer(localizer,true);
 				
 				final JPanel	bottom = new JPanel(new BorderLayout());
 				final JPanel	top = new JPanel(new BorderLayout(5,5));
+				final Color		ordinalTextColor = terminalMessage.getForeground();
 				
 				bottom.add(state,BorderLayout.CENTER);
 				bottom.add(targetControl,BorderLayout.WEST);
@@ -83,6 +84,10 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 				top.add(terminalLabel,BorderLayout.WEST);
 				top.add(terminalMessage,BorderLayout.CENTER);
 				top.add(terminalFailure,BorderLayout.EAST);
+				
+				terminalFailure.addActionListener((e)->{
+					terminalMessage.setForeground(terminalFailure.isSelected() ? Color.RED : ordinalTextColor);
+				});
 				
 				final JScrollPane	pane = new JScrollPane(fields); 
 				

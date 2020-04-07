@@ -50,6 +50,7 @@ import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 import chav1961.purelib.ui.swing.useful.JContentMetadataEditor;
 import chav1961.purelib.ui.swing.useful.JDialogContainer;
+import chav1961.purelib.ui.swing.useful.JLocalizedOptionPane;
 import chav1961.purelib.ui.swing.useful.JStateString;
 
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
@@ -61,6 +62,11 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	private static final String				FIELDS_TITLE_TT = "chav1961.calc.pipe.initial.fields.tt"; 
 	private static final String				FIELDS_ADD_TITLE = "chav1961.calc.pipe.initial.fields.add.caption"; 
 	private static final String				FIELDS_ADD_TITLE_TT = "chav1961.calc.pipe.initial.fields.add.caption.tt";
+	private static final String				FIELDS_EDIT_TITLE = "chav1961.calc.pipe.initial.fields.edit.caption"; 
+	private static final String				FIELDS_EDIT_TITLE_TT = "chav1961.calc.pipe.initial.fields.edit.caption.tt";
+	private static final String				FIELDS_REMOVE_TITLE = "chav1961.calc.pipe.initial.fields.remove.caption"; 
+	private static final String				FIELDS_REMOVE_TITLE_TT = "chav1961.calc.pipe.initial.fields.remove.caption.tt";
+	private static final String				FIELDS_REMOVE_QUESTION = "chav1961.calc.pipe.initial.fields.remove.caption"; 
 	
 	private static final URI				PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.initial.toolbar");	
 	private static final String				PIPE_MENU_ADD_FIELD = "chav1961.calc.pipe.initial.toolbar.addfield";	
@@ -93,7 +99,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 				this.localizer = LocalizerFactory.getLocalizer(mdi.getRoot().getLocalizerAssociated());
 				this.state = new JStateString(localizer);
 				this.sourceControl = new JControlSource(initial);
-				this.fields = new ModelItemListContainer(false);
+				this.fields = new ModelItemListContainer(localizer,false);
 				this.toolbar = SwingUtils.toJComponent(general.byUIPath(PIPE_MENU_ROOT),JToolBar.class);
 				this.toolbar.setOrientation(JToolBar.VERTICAL);
 				this.toolbar.setFloatable(false);
@@ -196,7 +202,9 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 
 	@OnAction("action:/removeField")
 	private void removeField() throws LocalizationException {
-		// TODO:
+		if (new JLocalizedOptionPane(localizer).confirm(this,FIELDS_REMOVE_QUESTION,FIELDS_REMOVE_TITLE,JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+			fields.removeContent(fields.getSelectedValue());
+		}
 	}
 
 	@OnAction("action:/editField")
@@ -207,7 +215,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 		ed.setPreferredSize(new Dimension(350,350));
 		ed.setValue(meta);
 		
-		final JDialogContainer<Object,Enum<?>,JContentMetadataEditor>	dlg = new JDialogContainer<Object,Enum<?>,JContentMetadataEditor>(localizer,(JFrame)null,FIELDS_ADD_TITLE,ed);
+		final JDialogContainer<Object,Enum<?>,JContentMetadataEditor>	dlg = new JDialogContainer<Object,Enum<?>,JContentMetadataEditor>(localizer,(JFrame)null,FIELDS_EDIT_TITLE,ed);
 		
 		if (dlg.showDialog()) {
 			fields.changeContent(ed.getContentNodeMetadataValue());

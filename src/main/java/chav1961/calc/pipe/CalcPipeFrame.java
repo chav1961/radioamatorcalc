@@ -76,8 +76,8 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 				this.state = new JStateString(localizer);
 				this.targetControl = new JControlTarget(inner);
 				this.sourceControl = new JControlSource(outer);
-				this.sourceFields = new ModelItemListContainer(true);
-				this.targetFields = new ModelItemListContainer(true);
+				this.sourceFields = new ModelItemListContainer(localizer,true);
+				this.targetFields = new ModelItemListContainer(localizer,true);
 				
 				final JPanel	bottom = new JPanel(new BorderLayout());
 				

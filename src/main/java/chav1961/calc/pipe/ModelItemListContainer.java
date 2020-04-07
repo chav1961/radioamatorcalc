@@ -10,11 +10,13 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Locale;
 
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -25,22 +27,26 @@ import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
 import javax.swing.border.LineBorder;
 
+import chav1961.calc.interfaces.MetadataTarget;
 import chav1961.calc.pipe.ModelContentChangeListener.ChangeType;
 import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.concurrent.LightWeightListenerList;
 import chav1961.purelib.i18n.LocalizerFactory;
+import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
+import chav1961.purelib.model.interfaces.NodeMetadataOwner;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 
-public class ModelItemListContainer extends JList<ContentNodeMetadata> implements LocaleChangeListener {
+public class ModelItemListContainer extends JList<ContentNodeMetadata> implements LocaleChangeListener, NodeMetadataOwner, MetadataTarget {
 	private static final long 	serialVersionUID = 1L;
 	private static final Icon	REMOVE_ICON = null;
 
 	private final LightWeightListenerList<ModelContentChangeListener>	listeners = new LightWeightListenerList<>(ModelContentChangeListener.class);
+	private final Localizer		localizer;
 	
-	
-	public ModelItemListContainer(final boolean useAsDropTarget) throws LocalizationException {
+	public ModelItemListContainer(final Localizer localizer, final boolean useAsDropTarget) throws LocalizationException {
+		this.localizer = localizer;
         setDropMode(DropMode.INSERT);
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setModel(new DefaultListModel<ContentNodeMetadata>());
@@ -48,13 +54,25 @@ public class ModelItemListContainer extends JList<ContentNodeMetadata> implement
         	setTransferHandler(new DropModelHandler());
         }
         setCellRenderer((list,value,index,isSelected,cellHasFocus)->{
-        		final JLabel	label = new JLabel(((ContentNodeMetadata)value).getName());
+        		final ContentNodeMetadata	meta = (ContentNodeMetadata)value; 
+        		final JLabel	label = new JLabel();
         		
-        		label.setOpaque(false);
+        		label.setOpaque(true);
         		label.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
+        		label.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
         		if (cellHasFocus) {
         			label.setBorder(new LineBorder(Color.BLUE));
         		}
+        		try{label.setText(meta.getName()+": "+localizer.getValue(meta.getLabelId())+" ("+meta.getType().getCanonicalName()+")");
+        			if (meta.getTooltipId() != null && !meta.getTooltipId().isEmpty()) {
+        				label.setToolTipText(localizer.getValue(meta.getTooltipId()));
+        			}
+        			if (meta.getIcon() != null) {
+        				label.setIcon(new ImageIcon(meta.getIcon().toURL()));
+        			}
+				} catch (LocalizationException | MalformedURLException e) {
+					label.setText(e.getLocalizedMessage());
+				}
         		return label;
 			}
 		);
@@ -63,6 +81,16 @@ public class ModelItemListContainer extends JList<ContentNodeMetadata> implement
 	@Override
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
 		updateUI();
+	}
+
+	@Override
+	public ContentNodeMetadata getNodeMetadata() {
+		return isSelectionEmpty() ? (getModel().getSize() == 0 ? null : getModel().getElementAt(0)) : getSelectedValue();
+	}
+
+	@Override
+	public void drop(final ContentNodeMetadata meta, final Component from, final int xFrom, final int yFrom, final int xTo, final int yTo) {
+		addContent(meta);
 	}
 	
 	public void addContentChangeListener(final ModelContentChangeListener listener) {
@@ -108,9 +136,9 @@ public class ModelItemListContainer extends JList<ContentNodeMetadata> implement
 			throw new NullPointerException("Element to remove can't be null");
 		}
 		else {
-			for (int index = 0, maxIndex = getComponentCount(); index < maxIndex; index++) {
-				if (((ContentNodeMetadata)getComponent(index)).equals(metadata)) {
-					remove(index);
+			for (int index = 0, maxIndex = getModel().getSize(); index < maxIndex; index++) {
+				if (getModel().getElementAt(index).equals(metadata)) {
+					((DefaultListModel<ContentNodeMetadata>)getModel()).remove(index);
 					listeners.fireEvent((e)->e.contentChangePerformed(ChangeType.REMOVED, null,metadata));
 					return;
 				}
@@ -119,10 +147,10 @@ public class ModelItemListContainer extends JList<ContentNodeMetadata> implement
 	}
 	
 	public ContentNodeMetadata[] getContent() {
-		final ContentNodeMetadata[]	result = new ContentNodeMetadata[getComponentCount()-1];
+		final ContentNodeMetadata[]	result = new ContentNodeMetadata[getModel().getSize()];
 		
 		for (int index = 0, maxIndex = result.length; index < maxIndex; index++) {
-			result[index] = ((ContentNodeMetadata)getComponent(index));			
+			result[index] = getModel().getElementAt(index);			
 		}
 		return result;
 	}

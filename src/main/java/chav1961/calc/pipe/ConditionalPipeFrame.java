@@ -71,7 +71,7 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 				this.targetControl = new JControlTarget(inner);
 				this.onTrueControl = new JControlTrue(onTrue);
 				this.onFalseControl = new JControlFalse(onFalse);
-				this.fields = new ModelItemListContainer(true);
+				this.fields = new ModelItemListContainer(localizer,true);
 				
 				final JPanel		bottom = new JPanel(new BorderLayout());
 				final JPanel		rightBottom = new JPanel(new GridLayout(1,2));

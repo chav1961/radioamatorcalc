@@ -318,6 +318,11 @@
 		<key name="chav1961.calc.pipe.initial.toolbar.editfield.tt">Edit selected global field settings</key>
 		<key name="chav1961.calc.pipe.initial.fields.add.caption">Add new field</key> 
 		<key name="chav1961.calc.pipe.initial.fields.add.caption.tt">Add new global field description to the initial node</key>
+		<key name="chav1961.calc.pipe.initial.fields.edit.caption">Edit global field</key>
+		<key name="chav1961.calc.pipe.initial.fields.edit.caption.tt">Edit global field description to the initial node</key>
+		<key name="chav1961.calc.pipe.initial.fields.remove.caption">Remove global field</key>
+		<key name="chav1961.calc.pipe.initial.fields.remove.caption.tt">Remove global field description to the initial node</key>
+		<key name="chav1961.calc.pipe.initial.fields.remove.caption">Confirm removing global field from the initial node</key>
 
 		<key name="chav1961.calc.pipe.conditional.caption">Conditional pipe node</key>
 		<key name="chav1961.calc.pipe.conditional.caption.tt">Changes pipe execution order</key>
@@ -722,6 +727,11 @@
 		<key name="chav1961.calc.pipe.initial.toolbar.editfield.tt">Изменить параметры выбранного общего поля</key>
 		<key name="chav1961.calc.pipe.initial.fields.add.caption">Добавить новое поле</key> 
 		<key name="chav1961.calc.pipe.initial.fields.add.caption.tt">Добавить новое глобальное поле в стартовый узел конвейера</key>
+		<key name="chav1961.calc.pipe.initial.fields.edit.caption">Редактировать глобальное поле</key>
+		<key name="chav1961.calc.pipe.initial.fields.edit.caption.tt">Редактировать описание суещствующего пгдобального поля в стартовом узле конвейера</key>
+		<key name="chav1961.calc.pipe.initial.fields.remove.caption">Удалить глобальное поле</key>
+		<key name="chav1961.calc.pipe.initial.fields.remove.caption.tt">Удалить существующее глобальное поле из стартового узла конвейера</key>
+		<key name="chav1961.calc.pipe.initial.fields.remove.caption">Подтвердите удаление поля из стартового узла конвейера</key>
 
 		<key name="chav1961.calc.pipe.conditional.caption">Узел проверки условия</key>
 		<key name="chav1961.calc.pipe.conditional.caption.tt">Управляет порядком вычислений в конвейере</key>

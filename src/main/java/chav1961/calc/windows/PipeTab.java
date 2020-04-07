@@ -131,7 +131,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			setLayout(new BorderLayout());
 			add(toolbar,BorderLayout.NORTH);
 			
-			scroll = new JExtendedScrollPane(pipeManager,true);
+			scroll = new JExtendedScrollPane(pipeManager,false);
 			pipeManager.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 			add(scroll,BorderLayout.CENTER);
 			
@@ -181,7 +181,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	@Override
 	public Object getSource(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo) {
 		if (from instanceof NodeMetadataOwner) {
-			return ((NodeMetadataOwner)from).getNodeMetadata();
+			return ((NodeMetadataOwner)from).getNodeMetadata(xFrom,yFrom);
 		}
 		else {
 			return null;
@@ -190,7 +190,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 
 	@Override
 	public boolean canReceive(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo, final Class<?> contentClass) {
-		return ContentNodeMetadata.class.isAssignableFrom(contentClass) && (from instanceof NodeMetadataOwner) && (to instanceof MetadataTarget); 
+		return ContentNodeMetadata.class.isAssignableFrom(contentClass) && (from instanceof NodeMetadataOwner) && (to instanceof MetadataTarget) && to.getBounds().contains(xTo,yTo);
 	}
 
 	@Override
@@ -200,7 +200,11 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 
 	@Override
 	public void complete(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo, final Object content) {
-		// TODO Auto-generated method stub
+		try{((MetadataTarget)to).drop((ContentNodeMetadata)((MutableContentNodeMetadata)content).clone(),from,xFrom,yFrom,xTo,yTo);
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void putPlugin(final Object plugin) throws ContentException {
