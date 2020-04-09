@@ -2,6 +2,7 @@ package chav1961.calc.pipe;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.io.IOException;
 import java.net.URI;
@@ -10,14 +11,18 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JToolBar;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
+import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -32,11 +37,13 @@ import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.swing.SwingUtils;
+import chav1961.purelib.ui.swing.interfaces.OnAction;
+import chav1961.purelib.ui.swing.useful.JLocalizedOptionPane;
 import chav1961.purelib.ui.swing.useful.JStateString;
 
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="chav1961.calc.pipe.calc.caption",tooltip="chav1961.calc.pipe.calc.caption.tt",help="help.aboutApplication")
-@PluginProperties(width=600,height=250,pluginIconURI="calcFrameIcon.png",desktopIconURI="calcDesktopIcon.png")
+@PluginProperties(width=450,height=400,pluginIconURI="calcFrameIcon.png",desktopIconURI="calcDesktopIcon.png")
 public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	private static final 					long serialVersionUID = 1L;
 	
@@ -48,24 +55,37 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	private static final String				SOURCE_FIELDS_TITLE_TT = "chav1961.calc.pipe.calc.fields.source.tt"; 
 	private static final String				TARGET_FIELDS_TITLE = "chav1961.calc.pipe.calc.fields.target"; 
 	private static final String				TARGET_FIELDS_TITLE_TT = "chav1961.calc.pipe.calc.fields.target.tt"; 
+
+	private static final String				FIELDS_REMOVE_TITLE = "chav1961.calc.pipe.calc.fields.remove.caption"; 
+//	private static final String				FIELDS_REMOVE_TITLE_TT = "chav1961.calc.pipe.calc.fields.remove.caption.tt";
+	private static final String				FIELDS_REMOVE_QUESTION = "chav1961.calc.pipe.calc.fields.remove.question"; 
+	
+	private static final URI				PIPE_MENU_SOURCE_ROOT = URI.create("ui:/model/navigation.top.calc.sourceToolbar");	
+	private static final URI				PIPE_MENU_TARGET_ROOT = URI.create("ui:/model/navigation.top.calc.targetToolbar");	
+	private static final String				PIPE_MENU_REMOVE_SOURCE_FIELD = "chav1961.calc.pipe.calc.sourceToolbar.removefield";	
+	private static final String				PIPE_MENU_REMOVE_TARGET_FIELD = "chav1961.calc.pipe.calc.targetToolbar.removefield";	
 	
 	private final ContentMetadataInterface	mdi;
 	private final Localizer					localizer;
 	private final JStateString				state;
 	private final JControlTarget			targetControl;
 	private final JControlSource			sourceControl;
-	private final List<ContentNodeMetadata>	controls = new ArrayList<>();
+	private final List<PipeLink>			links = new ArrayList<>();
+	private final List<PipeLink>			sourceControls = new ArrayList<>();
+	private final List<PipeLink>			targetControls = new ArrayList<>();
 	private final ModelItemListContainer	sourceFields; 
 	private final TitledBorder				sourceFieldsTitle = new TitledBorder(new LineBorder(Color.BLACK)); 
 	private final ModelItemListContainer	targetFields; 
 	private final TitledBorder				targetFieldsTitle = new TitledBorder(new LineBorder(Color.BLACK));
+	private final JToolBar					sourceToolbar;
+	private final JToolBar					targetToolbar;
 	private final JTextArea					expression = new JTextArea();
 	private final JTabbedPane				tabs = new JTabbedPane(); 
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductanñe",tooltip="chav1961.calc.plugins.calc.contour.inductanñe.tt")
 	@Format("9.2pz")
 	public float temp = 0;
 	
-	public CalcPipeFrame(final PipeManager parent, final Localizer localizer, final ContentNodeMetadata inner, final ContentNodeMetadata outer) throws ContentException {
+	public CalcPipeFrame(final PipeManager parent, final Localizer localizer, final ContentNodeMetadata inner, final ContentNodeMetadata outer, final ContentMetadataInterface general) throws ContentException {
 		super(parent,localizer,CalcPipeFrame.class,PipeItemType.CALC_ITEM);
 		if (inner == null) {
 			throw new NullPointerException("Initial metadata can't be null");
@@ -74,23 +94,42 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 			try{this.mdi = ContentModelFactory.forAnnotatedClass(this.getClass());
 				this.localizer = LocalizerFactory.getLocalizer(mdi.getRoot().getLocalizerAssociated());
 				this.state = new JStateString(localizer);
-				this.targetControl = new JControlTarget(inner);
-				this.sourceControl = new JControlSource(outer);
-				this.sourceFields = new ModelItemListContainer(localizer,true);
-				this.targetFields = new ModelItemListContainer(localizer,true);
+				this.targetControl = new JControlTarget(inner,this);
+				this.sourceControl = new JControlSource(outer,this);
+				this.sourceFields = new ModelItemListContainer(localizer,this);
+				this.targetFields = new ModelItemListContainer(localizer,this);
+				this.sourceToolbar = SwingUtils.toJComponent(general.byUIPath(PIPE_MENU_SOURCE_ROOT),JToolBar.class);
+				this.sourceToolbar.setOrientation(JToolBar.VERTICAL);
+				this.sourceToolbar.setFloatable(false);
+				SwingUtils.assignActionListeners(this.sourceToolbar,this);
+				this.targetToolbar = SwingUtils.toJComponent(general.byUIPath(PIPE_MENU_TARGET_ROOT),JToolBar.class);
+				this.targetToolbar.setOrientation(JToolBar.VERTICAL);
+				this.targetToolbar.setFloatable(false);
+				SwingUtils.assignActionListeners(this.targetToolbar,this);
 				
-				final JPanel	bottom = new JPanel(new BorderLayout());
+				final JPanel			bottom = new JPanel(new BorderLayout());
+				final PluginProperties	props = this.getClass().getAnnotation(PluginProperties.class);
+				
+				assignDndLink(sourceControl);
+				assignDndComponent(sourceFields);
+				assignDndComponent(targetFields);
 				
 				bottom.add(state,BorderLayout.CENTER);
 				bottom.add(targetControl,BorderLayout.WEST);
 				bottom.add(sourceControl,BorderLayout.EAST);
 				
-				final JScrollPane	pane1 = new JScrollPane(sourceFields); 
-				final JScrollPane	pane2 = new JScrollPane(targetFields);
-				final JPanel		centerPanel = new JPanel(new GridLayout(1,2));
+				final JScrollPane	scroll1 = new JScrollPane(sourceFields); 
+				final JScrollPane	scroll2 = new JScrollPane(targetFields);
+				final JPanel		pane1 = new JPanel(new BorderLayout()); 
+				final JPanel		pane2 = new JPanel(new BorderLayout());
+				final JPanel		centerPanel = new JPanel(new GridLayout(2,1));
 				
-				pane1.setBorder(sourceFieldsTitle);
-				pane2.setBorder(targetFieldsTitle);
+				scroll1.setBorder(sourceFieldsTitle);
+				scroll2.setBorder(targetFieldsTitle);
+				pane1.add(scroll1,BorderLayout.CENTER);
+				pane1.add(sourceToolbar,BorderLayout.EAST);
+				pane2.add(scroll2,BorderLayout.CENTER);
+				pane2.add(targetToolbar,BorderLayout.EAST);
 				centerPanel.add(pane1);
 				centerPanel.add(pane2);
 				
@@ -98,11 +137,61 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 				tabs.addTab("",new JScrollPane(expression));
 				tabs.setSelectedIndex(0);
 				
+				tabs.setPreferredSize(new Dimension(props.width(),props.height()));
 				add(tabs,BorderLayout.CENTER);
 				
 				add(bottom,BorderLayout.SOUTH);
 				SwingUtils.assignActionKey(sourceFields,SwingUtils.KS_HELP,(e)->{showHelp(e.getActionCommand());},mdi.getRoot().getHelpId());
 				SwingUtils.assignActionKey(targetFields,SwingUtils.KS_HELP,(e)->{showHelp(e.getActionCommand());},mdi.getRoot().getHelpId());
+
+				sourceFields.addListSelectionListener((e)->{
+					enableSourceButtons(!sourceFields.isSelectionEmpty());
+				});
+				sourceFields.addContentChangeListener((changeType,source,current)->{
+					switch (changeType) {
+						case CHANGED	:
+							break;
+						case INSERTED	:
+							sourceControls.add((PipeLink)current);
+							break;
+						case REMOVED	:
+							sourceControls.remove((PipeLink)current);
+							break;
+						default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
+					}
+				});
+				enableSourceButtons(!sourceFields.isSelectionEmpty());
+				targetFields.addListSelectionListener((e)->{
+					enableTargetButtons(!sourceFields.isSelectionEmpty());
+				});
+				targetFields.addContentChangeListener((changeType,source,current)->{
+					switch (changeType) {
+						case CHANGED	:
+							break;
+						case INSERTED	:
+							targetControls.add((PipeLink)current);
+							break;
+						case REMOVED	:
+							targetControls.remove((PipeLink)current);
+							break;
+						default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
+					}
+				});
+				enableTargetButtons(!targetFields.isSelectionEmpty());
+				targetControl.addContentChangeListener((changeType,source,current)->{
+					switch (changeType) {
+						case CHANGED	:
+							break;
+						case INSERTED	:
+							links.add((PipeLink)current);
+							break;
+						case REMOVED	:
+							links.remove((PipeLink)current);
+							break;
+						default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
+					}
+				});
+				
 				fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
 			} catch (LocalizationException e) {
 				throw new ContentException(e);
@@ -110,49 +199,83 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 		}
 	}
 
-	public void addSourceField(final ContentNodeMetadata metadata) {
+	@Override
+	public ContentMetadataInterface getModel() {
+		return mdi;
+	}
+
+	@Override
+	public JControlLabel[] getControlSources() {
+		return new JControlLabel[] {sourceControl};
+	}
+
+	@Override
+	public JControlTargetLabel getControlTarget() {
+		return targetControl;
+	}
+
+	@Override
+	public PipeLink[] getLinks() {
+		return links.toArray(new PipeLink[links.size()]);
+	}
+	
+	public void addSourceField(final PipeLink metadata) {
 		sourceFields.addContent(metadata);
 	}
 
-	public void addPargetField(final ContentNodeMetadata metadata) {
+	public void addTargetField(final PipeLink metadata) {
 		targetFields.addContent(metadata);
 	}
 	
-	public ContentNodeMetadata[] getSourceFields() {
+	public PipeLink[] getSourceFields() {
 		return sourceFields.getContent();
 	}
 
-	public ContentNodeMetadata[] getTargetFields() {
+	public PipeLink[] getTargetFields() {
 		return targetFields.getContent();
 	}
 	
-	public void addTargetControl(final ContentNodeMetadata control) {
+	public void addTargetControl(final PipeLink control) {
 		if (control == null) {
 			throw new NullPointerException("Control to add can't be null");
 		}
 		else {
-			controls.add(control);
+			sourceControls.add(control);
 		}
 	}
 	
-	public void removeTargetControl(final ContentNodeMetadata control) {
+	public void removeTargetControl(final PipeLink control) {
 		if (control == null) {
 			throw new NullPointerException("Control to remove can't be null");
 		}
 		else {
-			controls.remove(control);
+			sourceControls.remove(control);
 		}
 	}
 	
-	public ContentNodeMetadata[] getTaregtControls() {
-		return controls.toArray(new ContentNodeMetadata[controls.size()]);
+	public PipeLink[] getTaregtControls() {
+		return sourceControls.toArray(new PipeLink[sourceControls.size()]);
 	}	
 	
 	@Override
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
 		fillLocalizedStrings(oldLocale,newLocale);
 	}
+	
+	@OnAction("action:/removeSourceField")
+	private void removeSourceField() throws LocalizationException {
+		if (new JLocalizedOptionPane(localizer).confirm(this,FIELDS_REMOVE_QUESTION,FIELDS_REMOVE_TITLE,JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+			sourceFields.removeContent(sourceFields.getSelectedValue());
+		}
+	}
 
+	@OnAction("action:/removeTargetField")
+	private void removeTargetField() throws LocalizationException {
+		if (new JLocalizedOptionPane(localizer).confirm(this,FIELDS_REMOVE_QUESTION,FIELDS_REMOVE_TITLE,JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+			targetFields.removeContent(targetFields.getSelectedValue());
+		}
+	}
+	
 	protected void showHelp(final String helpId) {
 		final GrowableCharArray<?>	gca = new GrowableCharArray<>(false);
 		
@@ -179,5 +302,13 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 		tabs.setToolTipTextAt(0,localizer.getValue(TABS_FIELDS_TITLE_TT));
 		tabs.setTitleAt(1,localizer.getValue(TABS_EXPRESSIONS_TITLE));
 		tabs.setToolTipTextAt(1,localizer.getValue(TABS_EXPRESSIONS_TITLE_TT));
+	}
+
+	private void enableSourceButtons(final boolean buttonsState) {
+		((JButton)SwingUtils.findComponentByName(sourceToolbar,PIPE_MENU_REMOVE_SOURCE_FIELD)).setEnabled(buttonsState);
+	}
+
+	private void enableTargetButtons(final boolean buttonsState) {
+		((JButton)SwingUtils.findComponentByName(targetToolbar,PIPE_MENU_REMOVE_TARGET_FIELD)).setEnabled(buttonsState);
 	}
 }

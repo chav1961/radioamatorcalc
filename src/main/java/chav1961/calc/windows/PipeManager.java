@@ -1,7 +1,14 @@
 package chav1961.calc.windows;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Stroke;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,22 +20,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import chav1961.calc.LocalizationKeys;
-import chav1961.calc.interfaces.ContentClassificator;
 import chav1961.calc.interfaces.ContentEnumerator;
 import chav1961.calc.interfaces.DragMode;
 import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
 import chav1961.calc.interfaces.PipeContainerItemInterface;
-import chav1961.calc.interfaces.PipeItemDropTarget;
+import chav1961.calc.pipe.JControlLabel;
+import chav1961.calc.pipe.JControlTargetLabel;
+import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
-import chav1961.calc.windows.DragDropGlass.DragNotification;
 import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.SequenceIterator;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -36,8 +45,6 @@ import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
-import chav1961.purelib.basic.subscribable.SubscribableBoolean;
-import chav1961.purelib.basic.subscribable.SubscribableInt;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
@@ -49,10 +56,11 @@ import chav1961.purelib.ui.swing.useful.JLocalizedOptionPane;
 
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value = "chav1961.calc.workbench", tooltip = "chav1961.calc.workbench.tt", icon = "root:/WorkbenchTab!")
-public class PipeManager extends JDesktopPane implements Closeable, LocaleChangeListener, ContentClassificator, ContentEnumerator, DragNotification {
+public class PipeManager extends JDesktopPane implements Closeable, LocaleChangeListener, ContentEnumerator {
 	private static final long serialVersionUID = 1L;
 
 	private static final String				VALIDATION_NO_INITIAL_NODE = "chav1961.calc.windows.pipemanager.validation.noInitial";
+	private static final String				VALIDATION_MULTIPLE_INITIAL_NODE = "chav1961.calc.windows.pipemanager.validation.multipleInitial";
 	private static final String				VALIDATION_NO_TERMINAL_NODES = "chav1961.calc.windows.pipemanager.validation.noTerminal";
 	private static final String				VALIDATION_NO_WAY_TO_TERMINAL = "chav1961.calc.windows.pipemanager.validation.noWayToTerminal";
 	private static final String				VALIDATION_UNCONDITIONAL_LOOP = "chav1961.calc.windows.pipemanager.validation.unconditionalLoop";
@@ -93,46 +101,6 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		fillLocalizedStrings(oldLocale, newLocale);
 	}
 
-	@Override
-	public ContentType classify(final int x, final int y) {
-		final Point		location = new Point(x,y);	
-		
-		for (PipeLink item : links) {
-			if (item.atCorner(x, y)) {
-				return ContentType.SOURCE_OR_TARGET;
-			}
-			else if (item.intersects(x, y)) {
-				return ContentType.LINK;
-			}
-		}
-		
-		for (JInternalFrame item : frames) {
-			if (item.isVisible()) {
-				if (!item.isIconifiable() && item.getVisibleRect().contains(location)) {
-					final Point 	innerPoint = SwingUtilities.convertPoint(this,location,item);
-					final Component component = SwingUtilities.getDeepestComponentAt(item,innerPoint.x,innerPoint.y);
-					
-					if (component instanceof NodeMetadataOwner) {
-						final ContentNodeMetadata meta = ((NodeMetadataOwner)component).getNodeMetadata();
-						
-						if ("action".equalsIgnoreCase(URI.create(meta.getApplicationPath().getSchemeSpecificPart()).getScheme())) {
-							return ContentType.CONTROL;
-						}
-						else {
-							return ContentType.VALUE;
-						}
-					}
-					else {
-						return ContentType.CONTAINER;
-					}
-				}
-				else if (item.isIconifiable() && item.getDesktopIcon().getVisibleRect().contains(location)) {
-					return ContentType.CONTAINER_ICON;
-				}
-			}
-		}
-		return ContentType.FREE;
-	}
 	
 	@Override
 	public Iterator<PipeContainerItemInterface> iterator() {
@@ -146,23 +114,9 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 	}
 
 	@Override
-	public void process(final DragOperation oper, final PipeContainerItemInterface source, final PipeContainerItemInterface target) {
-		// TODO Auto-generated method stub
-		switch (oper) {
-			case CREATE_LINK	:
-				links.add(new PipeLink(source,target));
-				break;
-			case DROP_LINK		:
-				links.remove(new PipeLink(source,target));
-				break;
-			case MOVE			:
-				if (target instanceof PipeItemDropTarget) {
-					((PipeItemDropTarget)target).drop(source);
-				}
-				break;
-			default:
-				throw new UnsupportedOperationException("Drag operation ["+oper+"] is not supported yet");
-		}
+	public void paint(final Graphics g) {
+		super.paint(g);
+		paintLinks((Graphics2D)g);
 	}
 	
 	public PipePluginFrame<?>[] getPipeComponents() {
@@ -239,16 +193,24 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 	
 	public boolean validatePipe(final LoggerFacade facade) {
 		// TODO Auto-generated method stub
-		boolean 			initialDetected = false, terminalDetected = false;
-		PipePluginFrame<?>	initial = null;
+		boolean 					initialDetected = false, terminalDetected = false;
+		PipePluginFrame<?>			initial = null;
+		Set<PipePluginFrame<?>>		terminals = new HashSet<>();
 		
 		for (PipePluginFrame<?> item : getPipeComponents()) {
 			if (item.getType() == PipeItemType.INITIAL_ITEM) {
-				initialDetected = true;
-				initial = item;
+				if (!initialDetected) {
+					initialDetected = true;
+					initial = item;
+				}
+				else {
+					facade.message(Severity.warning,VALIDATION_MULTIPLE_INITIAL_NODE);
+					return false;
+				}
 			}
 			else if (item.getType() == PipeItemType.TERMINAL_ITEM) {
 				terminalDetected = true;
+				terminals.add(item);
 			}
 		}
 		if (!initialDetected) {
@@ -259,13 +221,15 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 			facade.message(Severity.warning,VALIDATION_NO_TERMINAL_NODES);
 			return false;
 		}
-		if (!hasWay2Terminal(initial,new HashSet<>())) {
-			facade.message(Severity.warning,VALIDATION_NO_WAY_TO_TERMINAL);
-			return false;
-		}
 		if (hasLoop(initial,new HashSet<>())) {
 			facade.message(Severity.warning,VALIDATION_UNCONDITIONAL_LOOP);
 			return false;
+		}
+		for (PipePluginFrame<?> item : terminals) {
+			if (!hasWay2Terminal(initial,item)) {
+				facade.message(Severity.warning,VALIDATION_NO_WAY_TO_TERMINAL);
+				return false;
+			}
 		}
 		for (PipePluginFrame<?> item : getPipeComponents()) {
 			
@@ -295,65 +259,96 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		return parent.setDragMode(newMode);
 	}
 	
+	public void refreshLinks() {
+		for (Point[] pair : walkLinkPoints()) {
+			final int	minX = Math.min(pair[0].x,pair[1].x), minY = Math.min(pair[0].y,pair[1].y);
+			
+			repaint(minX,minY,Math.abs(pair[0].x-pair[1].x),Math.abs(pair[0].y-pair[1].y));
+		}
+	}
+	
+	
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) {
 		// TODO Auto-generated method stub
-	}
-
-	private boolean hasWay2Terminal(final PipePluginFrame<?> node, final Set<PipePluginFrame<?>> passed) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	private boolean hasLoop(final PipePluginFrame<?> node, final Set<PipePluginFrame<?>> passed) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 	
-	
-	private static class PipeLink {
-		final PipeContainerItemInterface source, target;
+	private boolean hasWay2Terminal(final PipePluginFrame<?> node, final PipePluginFrame<?> terminal) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-		public PipeLink(final PipeContainerItemInterface source, final PipeContainerItemInterface target) {
-			this.source = source;
-			this.target = target;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((source == null) ? 0 : source.hashCode());
-			result = prime * result + ((target == null) ? 0 : target.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) return true;
-			if (obj == null) return false;
-			if (getClass() != obj.getClass()) return false;
-			PipeLink other = (PipeLink) obj;
-			if (source == null) {
-				if (other.source != null) return false;
-			} else if (!source.equals(other.source)) return false;
-			if (target == null) {
-				if (other.target != null) return false;
-			} else if (!target.equals(other.target)) return false;
-			return true;
-		}
-
-		@Override
-		public String toString() {
-			return "PipeLink [source=" + source + ", target=" + target + "]";
+	private void paintLinks(final Graphics2D g) {
+		final Color		oldColor = g.getColor();
+		final Stroke	oldStroke= g.getStroke();
+		
+		g.setColor(Color.BLUE);
+		g.setStroke(new BasicStroke(3));
+		
+		for (Point[] pair : walkLinkPoints()) {
+			drawArrowLine(g,pair[1].x,pair[1].y,pair[0].x,pair[0].y,15,7);
 		}
 		
-		public boolean intersects(int x, int y) {
-			return false;
-		}
+		g.setStroke(oldStroke);
+		g.setColor(oldColor);
+	}
 
-		public boolean atCorner(int x, int y) {
-			return false;
+	private Point[][] walkLinkPoints() {
+		final List<Point[]>	result = new ArrayList<>();
+		
+		for (PipePluginFrame<?> item : frames) {
+			final JControlTargetLabel	label = item.getControlTarget();
+
+			if (label != null) {
+				for (PipeLink target : item.getLinks()) {
+					result.add(new Point[] {centralPoint(this,label), centralPoint(this,target.getSourcePoint())}); 
+				}
+			}
 		}
+		return result.toArray(new Point[result.size()][]);
+	}
+	
+	private static Point centralPoint(final Component owner, final Component anchor) {
+		final Point	result = new Point(anchor.getWidth()/2,anchor.getHeight()/2); 
+		
+		SwingUtilities.convertPointToScreen(result,anchor);
+		SwingUtilities.convertPointFromScreen(result,owner);
+		return result;
+	}
+
+	/**
+	 * Draw an arrow line between two points.
+	 * @param g the graphics component.
+	 * @param x1 x-position of first point.
+	 * @param y1 y-position of first point.
+	 * @param x2 x-position of second point.
+	 * @param y2 y-position of second point.
+	 * @param d  the width of the arrow.
+	 * @param h  the height of the arrow.
+	 * @see https://stackoverflow.com/questions/2027613/how-to-draw-a-directed-arrow-line-in-java
+	 */
+	private static void drawArrowLine(final Graphics2D g, int x1, int y1, int x2, int y2, int d, int h) {
+	    final int dx = x2 - x1, dy = y2 - y1;
+	    final double D = Math.sqrt(dx*dx + dy*dy);
+	    double xm = D - d, xn = xm, ym = h, yn = -h, x;
+	    double sin = dy / D, cos = dx / D;
+
+	    x = xm*cos - ym*sin + x1;
+	    ym = xm*sin + ym*cos + y1;
+	    xm = x;
+
+	    x = xn*cos - yn*sin + x1;
+	    yn = xn*sin + yn*cos + y1;
+	    xn = x;
+
+	    int[] xpoints = {x2, (int) xm, (int) xn};
+	    int[] ypoints = {y2, (int) ym, (int) yn};
+
+	    g.drawLine(x1, y1, x2, y2);
+	    g.fillPolygon(xpoints, ypoints, 3);
 	}
 }

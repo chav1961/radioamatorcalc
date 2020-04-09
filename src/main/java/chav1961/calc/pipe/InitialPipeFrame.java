@@ -3,34 +3,26 @@ package chav1961.calc.pipe;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import chav1961.calc.interfaces.PluginProperties;
-import chav1961.calc.pipe.ModelContentChangeListener.ChangeType;
+import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
+import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.windows.PipeManager;
-import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
@@ -45,7 +37,6 @@ import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.ui.interfaces.Format;
-import chav1961.purelib.ui.swing.AutoBuiltForm;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 import chav1961.purelib.ui.swing.useful.JContentMetadataEditor;
@@ -61,15 +52,15 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	private static final String				FIELDS_TITLE = "chav1961.calc.pipe.initial.fields"; 
 	private static final String				FIELDS_TITLE_TT = "chav1961.calc.pipe.initial.fields.tt"; 
 	private static final String				FIELDS_ADD_TITLE = "chav1961.calc.pipe.initial.fields.add.caption"; 
-	private static final String				FIELDS_ADD_TITLE_TT = "chav1961.calc.pipe.initial.fields.add.caption.tt";
+//	private static final String				FIELDS_ADD_TITLE_TT = "chav1961.calc.pipe.initial.fields.add.caption.tt";
 	private static final String				FIELDS_EDIT_TITLE = "chav1961.calc.pipe.initial.fields.edit.caption"; 
-	private static final String				FIELDS_EDIT_TITLE_TT = "chav1961.calc.pipe.initial.fields.edit.caption.tt";
+//	private static final String				FIELDS_EDIT_TITLE_TT = "chav1961.calc.pipe.initial.fields.edit.caption.tt";
 	private static final String				FIELDS_REMOVE_TITLE = "chav1961.calc.pipe.initial.fields.remove.caption"; 
-	private static final String				FIELDS_REMOVE_TITLE_TT = "chav1961.calc.pipe.initial.fields.remove.caption.tt";
-	private static final String				FIELDS_REMOVE_QUESTION = "chav1961.calc.pipe.initial.fields.remove.caption"; 
+//	private static final String				FIELDS_REMOVE_TITLE_TT = "chav1961.calc.pipe.initial.fields.remove.caption.tt";
+	private static final String				FIELDS_REMOVE_QUESTION = "chav1961.calc.pipe.initial.fields.remove.question"; 
 	
 	private static final URI				PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.initial.toolbar");	
-	private static final String				PIPE_MENU_ADD_FIELD = "chav1961.calc.pipe.initial.toolbar.addfield";	
+//	private static final String				PIPE_MENU_ADD_FIELD = "chav1961.calc.pipe.initial.toolbar.addfield";	
 	private static final String				PIPE_MENU_REMOVE_FIELD = "chav1961.calc.pipe.initial.toolbar.removefield";	
 	private static final String				PIPE_MENU_EDIT_FIELD = "chav1961.calc.pipe.initial.toolbar.editfield";	
 	
@@ -77,7 +68,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	private final Localizer					localizer;
 	private final JStateString				state;
 	private final JControlSource			sourceControl;
-	private final List<ContentNodeMetadata>	controls = new ArrayList<>();
+	private final List<PipeLink>			controls = new ArrayList<>();
 	private final ModelItemListContainer	fields;
 	private final TitledBorder				fieldsTitle = new TitledBorder(new LineBorder(Color.BLACK),"");
 	private final JToolBar					toolbar;
@@ -98,8 +89,8 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 			try{this.mdi = ContentModelFactory.forAnnotatedClass(this.getClass());
 				this.localizer = LocalizerFactory.getLocalizer(mdi.getRoot().getLocalizerAssociated());
 				this.state = new JStateString(localizer);
-				this.sourceControl = new JControlSource(initial);
-				this.fields = new ModelItemListContainer(localizer,false);
+				this.sourceControl = new JControlSource(initial,this);
+				this.fields = new ModelItemListContainer(localizer,this);
 				this.toolbar = SwingUtils.toJComponent(general.byUIPath(PIPE_MENU_ROOT),JToolBar.class);
 				this.toolbar.setOrientation(JToolBar.VERTICAL);
 				this.toolbar.setFloatable(false);
@@ -130,10 +121,10 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 						case CHANGED	:
 							break;
 						case INSERTED	:
-							controls.add((ContentNodeMetadata)current);
+							controls.add((PipeLink)current);
 							break;
 						case REMOVED	:
-							controls.remove((ContentNodeMetadata)current);
+							controls.remove((PipeLink)current);
 							break;
 						default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
 					}
@@ -147,15 +138,35 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 		}
 	}
 
-	public void addSourceField(final ContentNodeMetadata metadata) {
+	@Override
+	public ContentMetadataInterface getModel() {
+		return mdi;
+	}
+
+	@Override
+	public JControlLabel[] getControlSources() {
+		return new JControlLabel[] {sourceControl};
+	}
+
+	@Override
+	public JControlTargetLabel getControlTarget() {
+		return null;
+	}
+
+	@Override
+	public PipeLink[] getLinks() {
+		return new PipeLink[0];
+	}
+	
+	public void addSourceField(final PipeLink metadata) {
 		fields.addContent(metadata);
 	}
 	
-	public ContentNodeMetadata[] getSourceFields() {
+	public PipeLink[] getSourceFields() {
 		return fields.getContent();
 	}
 
-	public void addSourceControl(final ContentNodeMetadata control) {
+	public void addSourceControl(final PipeLink control) {
 		if (control == null) {
 			throw new NullPointerException("Control to add can't be null");
 		}
@@ -165,7 +176,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 		}
 	}
 	
-	public void removeSourceControl(final ContentNodeMetadata control) {
+	public void removeSourceControl(final PipeLink control) {
 		if (control == null) {
 			throw new NullPointerException("Control to remove can't be null");
 		}
@@ -196,7 +207,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 		
 		if (dlg.showDialog()) {
 			ContentNodeMetadata temp = ed.getContentNodeMetadataValue(); 
-			fields.addContent(temp);
+			fields.addContent(new PipeLink(PipeLinkType.DATA_LINK,null,null,this,fields,temp));
 		}
 	}
 
@@ -209,7 +220,8 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 
 	@OnAction("action:/editField")
 	private void editField() throws LocalizationException, ContentException {
-		final ContentNodeMetadata		meta = fields.getSelectedValue(); 
+		final PipeLink					source = fields.getSelectedValue(); 
+		final ContentNodeMetadata		meta = source.getMetadata(); 
 		final JContentMetadataEditor	ed = new JContentMetadataEditor(localizer);
 
 		ed.setPreferredSize(new Dimension(350,350));
@@ -218,7 +230,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 		final JDialogContainer<Object,Enum<?>,JContentMetadataEditor>	dlg = new JDialogContainer<Object,Enum<?>,JContentMetadataEditor>(localizer,(JFrame)null,FIELDS_EDIT_TITLE,ed);
 		
 		if (dlg.showDialog()) {
-			fields.changeContent(ed.getContentNodeMetadataValue());
+			fields.changeContent(new PipeLink(source.getType(),source.getSource(),source.getSourcePoint(),source.getTarget(),source.getTargetPoint(),ed.getContentNodeMetadataValue()));
 		}
 	}
 	
@@ -249,5 +261,4 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 		// TODO Auto-generated method stub
 		
 	}
-
 }

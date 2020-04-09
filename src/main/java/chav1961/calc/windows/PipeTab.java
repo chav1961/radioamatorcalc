@@ -29,12 +29,20 @@ import javax.swing.event.InternalFrameListener;
 
 import chav1961.calc.interfaces.DragMode;
 import chav1961.calc.interfaces.MetadataTarget;
+import chav1961.calc.interfaces.PipeContainerItemInterface;
+import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.TabContent;
 import chav1961.calc.pipe.CalcPipeFrame;
 import chav1961.calc.pipe.ConditionalPipeFrame;
+import chav1961.calc.pipe.ContainerPipeFrame;
 import chav1961.calc.pipe.DialogPipeFrame;
 import chav1961.calc.pipe.InitialPipeFrame;
+import chav1961.calc.pipe.JControlLabel;
+import chav1961.calc.pipe.JControlTargetLabel;
+import chav1961.calc.pipe.ModelItemListContainer;
 import chav1961.calc.pipe.TerminalPipeFrame;
+import chav1961.calc.utils.PipeLink;
+import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -53,6 +61,7 @@ import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.model.interfaces.NodeMetadataOwner;
+import chav1961.purelib.ui.interfaces.FormManager;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 import chav1961.purelib.ui.swing.useful.DnDManager;
@@ -70,6 +79,8 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	private static final String				PIPE_TARGET_TT = "chav1961.calc.pipe.screen.target.tt";	
 	private static final String				PIPE_TRUE_TT = "chav1961.calc.pipe.screen.true.tt";	
 	private static final String				PIPE_FALSE_TT = "chav1961.calc.pipe.screen.false.tt";	
+	private static final String				PIPE_OK_TT = "chav1961.calc.pipe.screen.ok.tt";	
+	private static final String				PIPE_CANCEL_TT = "chav1961.calc.pipe.screen.cancel.tt";	
 
 	private static final URI				PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.pipeMenu");	
 	private static final String				PIPE_MENU_CLEAN_NAME = "pipeMenu.clean";	
@@ -190,7 +201,12 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 
 	@Override
 	public boolean canReceive(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo, final Class<?> contentClass) {
-		return ContentNodeMetadata.class.isAssignableFrom(contentClass) && (from instanceof NodeMetadataOwner) && (to instanceof MetadataTarget) && to.getBounds().contains(xTo,yTo);
+		if (from != to && (((from instanceof ModelItemListContainer) && (to instanceof ModelItemListContainer)) || ((from instanceof JControlLabel) && (to instanceof JControlLabel)))) {
+			return ContentNodeMetadata.class.isAssignableFrom(contentClass) && (from instanceof NodeMetadataOwner) && (to instanceof MetadataTarget) && to.getBounds().contains(xTo,yTo);
+		}
+		else {
+			return false;
+		}
 	}
 
 	@Override
@@ -200,64 +216,19 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 
 	@Override
 	public void complete(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo, final Object content) {
-		try{((MetadataTarget)to).drop((ContentNodeMetadata)((MutableContentNodeMetadata)content).clone(),from,xFrom,yFrom,xTo,yTo);
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		final PipeLink	pl;
+	
+		if ((to instanceof JControlLabel) && (to instanceof JControlTargetLabel)) {
+			pl = new PipeLink(PipeLinkType.CONTROL_LINK,((JControlLabel)from).getOwner(),from,((JControlLabel)to).getOwner(),to,(MutableContentNodeMetadata)content);
+			((MetadataTarget)to).drop(pl,xFrom,yFrom,xTo,yTo);
 		}
+		else if ((from instanceof ModelItemListContainer) && (to instanceof ModelItemListContainer)) {
+			pl = new PipeLink(PipeLinkType.DATA_LINK,((ModelItemListContainer)from).getOwner(),from,((ModelItemListContainer)to).getOwner(),to,(MutableContentNodeMetadata)content);
+			((MetadataTarget)to).drop(pl,xFrom,yFrom,xTo,yTo);
+		}
+		pipeManager.repaint();
 	}
 
-	public void putPlugin(final Object plugin) throws ContentException {
-		final SVGPluginFrame<?>	frame = new SVGPluginFrame(localizer,plugin.getClass(),plugin);
-	        
-		frame.addInternalFrameListener(new InternalFrameListener() {
-				@Override public void internalFrameOpened(InternalFrameEvent e) {}
-				@Override public void internalFrameDeactivated(InternalFrameEvent e) {}
-				@Override public void internalFrameClosing(InternalFrameEvent e) {
-					
-				}
-				@Override public void internalFrameActivated(InternalFrameEvent e) {}
-				
-				@Override 
-				public void internalFrameIconified(InternalFrameEvent e) {
-//					iconifiedCount.set(iconifiedCount.get()+1);
-				}
-				
-				@Override
-				public void internalFrameDeiconified(InternalFrameEvent e) {
-	//				iconifiedCount.set(iconifiedCount.get()-1);
-				}
-				
-				@Override
-				public void internalFrameClosed(InternalFrameEvent e) {
-//					pluginCount.set(pluginCount.get()-1);
-//					if (frame.isIcon()) {
-//						iconifiedCount.set(iconifiedCount.get()-1);
-//					}
-				}
-		});
-		frame.addComponentListener(new ComponentListener() {
-			@Override public void componentShown(ComponentEvent e) {}
-			@Override public void componentHidden(ComponentEvent e) {}
-			
-			@Override 
-			public void componentResized(ComponentEvent e) {
-				resizeDesktopPane();
-			}
-			
-			@Override
-			public void componentMoved(ComponentEvent e) {
-				resizeDesktopPane();
-			}
-		});
-		frame.setVisible(true);
-		pipeManager.add(frame);
-		try{frame.setSelected(true);
-		} catch (PropertyVetoException e) {
-			throw new ContentException(e);
-		}
-	}
-	
 	DragMode setDragMode(final DragMode newMode) {
 		switch (newMode) {
 			case CONTROLS	:
@@ -320,7 +291,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		final ContentNodeMetadata	onFalse = new MutableContentNodeMetadata("onFalse",ConditionalPipeFrame.class,"./onfalse",localizerURI,PIPE_FALSE_TT, PIPE_FALSE_TT, null, null, URI.create("app:action:/onfalse"),null); 
 		
 		try{
-			putPlugin(new ConditionalPipeFrame(pipeManager, localizer, inner, onTrue, onFalse));
+			putPlugin(new ConditionalPipeFrame(pipeManager, localizer, inner, onTrue, onFalse, xmlModel));
 		} catch (ContentException e) {
 			logger.message(Severity.error,e,e.getLocalizedMessage());
 		}
@@ -332,7 +303,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		final ContentNodeMetadata	outer = new MutableContentNodeMetadata("outer",CalcPipeFrame.class,"./outer",localizerURI,PIPE_SOURCE_TT, PIPE_SOURCE_TT, null, null, URI.create("app:action:/outer"),null); 
 		
 		try{
-			putPlugin(new CalcPipeFrame(pipeManager, localizer, inner, outer));
+			putPlugin(new CalcPipeFrame(pipeManager, localizer, inner, outer, xmlModel));
 		} catch (ContentException e) {
 			logger.message(Severity.error,e,e.getLocalizedMessage());
 		}
@@ -341,10 +312,11 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	@OnAction("action:/newDialog")
 	private void newDialog() {
 		final ContentNodeMetadata	inner = new MutableContentNodeMetadata("inner",DialogPipeFrame.class,"./inner",localizerURI,PIPE_TARGET_TT, PIPE_TARGET_TT, null, null, URI.create("app:action:/inner"),null); 
-		final ContentNodeMetadata	outer = new MutableContentNodeMetadata("outer",DialogPipeFrame.class,"./outer",localizerURI,PIPE_SOURCE_TT, PIPE_SOURCE_TT, null, null, URI.create("app:action:/outer"),null); 
+		final ContentNodeMetadata	onTrue = new MutableContentNodeMetadata("onTrue",ConditionalPipeFrame.class,"./ontrue",localizerURI,PIPE_OK_TT, PIPE_OK_TT, null, null, URI.create("app:action:/onok"),null); 
+		final ContentNodeMetadata	onFalse = new MutableContentNodeMetadata("onFalse",ConditionalPipeFrame.class,"./onfalse",localizerURI,PIPE_CANCEL_TT, PIPE_CANCEL_TT, null, null, URI.create("app:action:/oncancel"),null); 
 		
 		try{
-			putPlugin(new DialogPipeFrame(pipeManager, localizer, inner, outer));
+			putPlugin(new DialogPipeFrame(pipeManager, localizer, inner, onTrue, onFalse, xmlModel));
 		} catch (ContentException e) {
 			logger.message(Severity.error,e,e.getLocalizedMessage());
 		}
@@ -355,12 +327,20 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		final ContentNodeMetadata	terminal = new MutableContentNodeMetadata("terminal",TerminalPipeFrame.class,"./terminal",localizerURI,PIPE_TARGET_TT, PIPE_TARGET_TT, null, null, URI.create("app:action:/stop"),null); 
 		
 		try{
-			putPlugin(new TerminalPipeFrame(pipeManager, localizer, terminal));
+			putPlugin(new TerminalPipeFrame(pipeManager, localizer, terminal, xmlModel));
 		} catch (ContentException e) {
 			logger.message(Severity.error,e,e.getLocalizedMessage());
 		}
 	}
 
+	public <T> void placePlugin(final PluginInterface<?> item, final T inst) {
+		try{
+			putPlugin(new ContainerPipeFrame<T>(pipeManager, localizer, (FormManager<?,T>)inst, xmlModel));
+		} catch (ContentException e) {
+			logger.message(Severity.error,e,e.getLocalizedMessage());
+		}
+	}
+	
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) {
 		// TODO Auto-generated method stub
 		
@@ -382,17 +362,26 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			}
 		});
 		frame.addComponentListener(new ComponentListener() {
-			@Override public void componentShown(ComponentEvent e) {}
-			@Override public void componentHidden(ComponentEvent e) {}
+			@Override 
+			public void componentShown(ComponentEvent e) {
+				pipeManager.refreshLinks();
+			}
+			
+			@Override 
+			public void componentHidden(ComponentEvent e) {
+				pipeManager.refreshLinks();
+			}
 			
 			@Override 
 			public void componentResized(ComponentEvent e) {
 				resizeDesktopPane();
+				pipeManager.refreshLinks();
 			}
 			
 			@Override
 			public void componentMoved(ComponentEvent e) {
 				resizeDesktopPane();
+				pipeManager.refreshLinks();
 			}
 		});
 		frame.setVisible(true);

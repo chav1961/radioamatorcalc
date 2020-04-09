@@ -42,18 +42,16 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
 
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.TabContent;
+import chav1961.calc.pipe.ContainerPipeFrame;
 import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.calc.windows.PipeTab;
 import chav1961.calc.windows.WorkbenchTab;
 import chav1961.purelib.basic.ArgParser;
 import chav1961.purelib.basic.MimeType;
-import chav1961.purelib.basic.NullLoggerFacade;
 import chav1961.purelib.basic.PureLibSettings;
-import chav1961.purelib.basic.SystemErrLoggerFacade;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.FlowException;
@@ -70,8 +68,6 @@ import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
-import chav1961.purelib.ui.interfaces.FormManager;
-import chav1961.purelib.ui.interfaces.RefreshMode;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
 import chav1961.purelib.ui.swing.SimpleNavigatorTree;
 import chav1961.purelib.ui.swing.SwingUtils;
@@ -199,14 +195,19 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			for (PluginInterface<?> item : ServiceLoader.load(PluginInterface.class)) {
 				if (item.canServe(actionURI)) {
-					try{final Object			inst = item.newIstance(stateString);
-						final SVGPluginFrame<?>	frame = new SVGPluginFrame(localizer,inst.getClass(),inst);
-					        
-						 frame.setVisible(true);
-						 ((WorkbenchTab)tabs.getSelectedComponent()).placePlugin(frame);
-						 frame.setSelected(true);
-					} catch (java.beans.PropertyVetoException | ContentException e) {
-						stateString.message(Severity.error,e,"Error creating plugin window: "+e.getLocalizedMessage());
+					if (tabs.getSelectedComponent() instanceof WorkbenchTab) {
+						try{final Object			inst = item.newIstance(stateString);
+							final SVGPluginFrame<?>	frame = new SVGPluginFrame(localizer,inst.getClass(),inst);
+						        
+							 frame.setVisible(true);
+							 ((WorkbenchTab)tabs.getSelectedComponent()).placePlugin(frame);
+							 frame.setSelected(true);
+						} catch (java.beans.PropertyVetoException | ContentException e) {
+							stateString.message(Severity.error,e,"Error creating plugin window: "+e.getLocalizedMessage());
+						}
+					}
+					else if (tabs.getSelectedComponent() instanceof PipeTab) {
+						((PipeTab)tabs.getSelectedComponent()).placePlugin(item,item.newIstance(stateString));
 					}
 					return;
 				}			

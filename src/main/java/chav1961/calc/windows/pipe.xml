@@ -24,4 +24,20 @@
 		<app:item name="chav1961.calc.pipe.initial.toolbar.removefield" caption="chav1961.calc.pipe.initial.toolbar.removefield" tooltip="chav1961.calc.pipe.initial.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeField"/>
 		<app:item name="chav1961.calc.pipe.initial.toolbar.editfield" caption="chav1961.calc.pipe.initial.toolbar.editfield" tooltip="chav1961.calc.pipe.initial.toolbar.editfield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/editIcon.png" action="editField"/>
 	</app:menu>
+	<app:menu id="conditional.toolbar">
+		<app:item name="chav1961.calc.pipe.conditional.toolbar.removefield" caption="chav1961.calc.pipe.conditional.toolbar.removefield" tooltip="chav1961.calc.pipe.conditional.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeField"/>
+	</app:menu>
+	<app:menu id="dialog.toolbar">
+		<app:item name="chav1961.calc.pipe.dialog.toolbar.removefield" caption="chav1961.calc.pipe.dialog.toolbar.removefield" tooltip="chav1961.calc.pipe.dialog.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeField"/>
+		<app:item name="chav1961.calc.pipe.dialog.toolbar.editfield" caption="chav1961.calc.pipe.dialog.toolbar.editfield" tooltip="chav1961.calc.pipe.dialog.toolbar.editfield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/editIcon.png" action="editField"/>
+	</app:menu>
+	<app:menu id="calc.sourceToolbar">
+		<app:item name="chav1961.calc.pipe.calc.sourceToolbar.removefield" caption="chav1961.calc.pipe.calc.toolbar.removefield" tooltip="chav1961.calc.pipe.calc.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeSourceField"/>
+	</app:menu>
+	<app:menu id="calc.targetToolbar">
+		<app:item name="chav1961.calc.pipe.calc.targetToolbar.removefield" caption="chav1961.calc.pipe.calc.toolbar.removefield" tooltip="chav1961.calc.pipe.calc.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeTargetField"/>
+	</app:menu>
+	<app:menu id="terminal.toolbar">
+		<app:item name="chav1961.calc.pipe.terminal.toolbar.removefield" caption="chav1961.calc.pipe.terminal.toolbar.removefield" tooltip="chav1961.calc.pipe.terminal.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeField"/>
+	</app:menu>
 </app:root>

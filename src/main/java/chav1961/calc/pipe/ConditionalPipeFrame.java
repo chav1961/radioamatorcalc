@@ -10,14 +10,18 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
+import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -32,6 +36,8 @@ import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.swing.SwingUtils;
+import chav1961.purelib.ui.swing.interfaces.OnAction;
+import chav1961.purelib.ui.swing.useful.JLocalizedOptionPane;
 import chav1961.purelib.ui.swing.useful.JStateString;
 
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
@@ -43,6 +49,13 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 	private static final String				FIELDS_TITLE_TT = "chav1961.calc.pipe.conditional.fields.tt"; 
 	private static final String				EXPRESSION_TITLE = "chav1961.calc.pipe.conditional.expression"; 
 	private static final String				EXPRESSION_TITLE_TT = "chav1961.calc.pipe.conditional.expression.tt"; 
+
+	private static final String				FIELDS_REMOVE_TITLE = "chav1961.calc.pipe.conditional.fields.remove.caption"; 
+//	private static final String				FIELDS_REMOVE_TITLE_TT = "chav1961.calc.pipe.conditional.fields.remove.caption.tt";
+	private static final String				FIELDS_REMOVE_QUESTION = "chav1961.calc.pipe.conditional.fields.remove.question"; 
+	
+	private static final URI				PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.conditional.toolbar");	
+	private static final String				PIPE_MENU_REMOVE_FIELD = "chav1961.calc.pipe.conditional.toolbar.removefield";	
 	
 	private final ContentMetadataInterface	mdi;
 	private final Localizer					localizer;
@@ -50,8 +63,10 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 	private final JControlTarget			targetControl;
 	private final JControlTrue				onTrueControl;
 	private final JControlFalse				onFalseControl;
-	private final List<ContentNodeMetadata>	controls = new ArrayList<>();
+	private final List<PipeLink>			links = new ArrayList<>();
+	private final List<PipeLink>			controls = new ArrayList<>();
 	private final ModelItemListContainer	fields; 
+	private final JToolBar					toolbar;
 	private final TitledBorder				fieldsTitle = new TitledBorder(new LineBorder(Color.BLACK)); 
 	private final JLabel					conditionLabel = new JLabel();
 	private final JTextField				condition = new JTextField();
@@ -59,7 +74,7 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 	@Format("9.2pz")
 	public float temp = 0;
 	
-	public ConditionalPipeFrame(final PipeManager parent,final Localizer localizer, final ContentNodeMetadata inner, final ContentNodeMetadata onTrue, final ContentNodeMetadata onFalse) throws ContentException {
+	public ConditionalPipeFrame(final PipeManager parent,final Localizer localizer, final ContentNodeMetadata inner, final ContentNodeMetadata onTrue, final ContentNodeMetadata onFalse, final ContentMetadataInterface general) throws ContentException {
 		super(parent,localizer,ConditionalPipeFrame.class,PipeItemType.CONDITIONAL_ITEM);
 		if (inner == null) {
 			throw new NullPointerException("Initial metadata can't be null");
@@ -68,10 +83,14 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 			try{this.mdi = ContentModelFactory.forAnnotatedClass(this.getClass());
 				this.localizer = LocalizerFactory.getLocalizer(mdi.getRoot().getLocalizerAssociated());
 				this.state = new JStateString(localizer);
-				this.targetControl = new JControlTarget(inner);
-				this.onTrueControl = new JControlTrue(onTrue);
-				this.onFalseControl = new JControlFalse(onFalse);
-				this.fields = new ModelItemListContainer(localizer,true);
+				this.targetControl = new JControlTarget(inner,this);
+				this.onTrueControl = new JControlTrue(onTrue,this);
+				this.onFalseControl = new JControlFalse(onFalse,this);
+				this.fields = new ModelItemListContainer(localizer,this);
+				this.toolbar = SwingUtils.toJComponent(general.byUIPath(PIPE_MENU_ROOT),JToolBar.class);
+				this.toolbar.setOrientation(JToolBar.VERTICAL);
+				this.toolbar.setFloatable(false);
+				SwingUtils.assignActionListeners(this.toolbar,this);
 				
 				final JPanel		bottom = new JPanel(new BorderLayout());
 				final JPanel		rightBottom = new JPanel(new GridLayout(1,2));
@@ -87,13 +106,52 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 				top.add(conditionLabel,BorderLayout.WEST);
 				top.add(condition,BorderLayout.CENTER);
 				
-				final JScrollPane	pane = new JScrollPane(fields);  
+				assignDndLink(onFalseControl);
+				assignDndLink(onTrueControl);
+				assignDndComponent(fields);
 				
-				pane.setBorder(fieldsTitle);
+				final JScrollPane	scroll = new JScrollPane(fields);  
+				final JPanel		pane = new JPanel(new BorderLayout());
+				
+				scroll.setBorder(fieldsTitle);
+				pane.add(scroll,BorderLayout.CENTER);
+				pane.add(toolbar,BorderLayout.EAST);
 				add(top,BorderLayout.NORTH);
 				add(pane,BorderLayout.CENTER);
 				add(bottom,BorderLayout.SOUTH);
 				SwingUtils.assignActionKey(fields,SwingUtils.KS_HELP,(e)->{showHelp(e.getActionCommand());},mdi.getRoot().getHelpId());
+				
+				fields.addListSelectionListener((e)->{
+					enableButtons(!fields.isSelectionEmpty());
+				});
+				fields.addContentChangeListener((changeType,source,current)->{
+					switch (changeType) {
+						case CHANGED	:
+							break;
+						case INSERTED	:
+							controls.add((PipeLink)current);
+							break;
+						case REMOVED	:
+							controls.remove((PipeLink)current);
+							break;
+						default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
+					}
+				});
+				targetControl.addContentChangeListener((changeType,source,current)->{
+					switch (changeType) {
+						case CHANGED	:
+							break;
+						case INSERTED	:
+							links.add((PipeLink)current);
+							break;
+						case REMOVED	:
+							links.remove((PipeLink)current);
+							break;
+						default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
+					}
+				});
+				enableButtons(!fields.isSelectionEmpty());
+				
 				fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
 			} catch (LocalizationException e) {
 				throw new ContentException(e);
@@ -101,15 +159,35 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 		}
 	}
 
-	public void addTargetField(final ContentNodeMetadata metadata) {
+	@Override
+	public ContentMetadataInterface getModel() {
+		return mdi;
+	}
+	
+	@Override
+	public JControlLabel[] getControlSources() {
+		return new JControlLabel[] {onTrueControl, onFalseControl};
+	}
+
+	@Override
+	public JControlTargetLabel getControlTarget() {
+		return targetControl;
+	}
+
+	@Override
+	public PipeLink[] getLinks() {
+		return links.toArray(new PipeLink[links.size()]);
+	}
+	
+	public void addTargetField(final PipeLink metadata) {
 		fields.addContent(metadata);
 	}
 	
-	public ContentNodeMetadata[] getTargetFields() {
+	public PipeLink[] getTargetFields() {
 		return fields.getContent();
 	}
 
-	public void addTargetControl(final ContentNodeMetadata control) {
+	public void addTargetControl(final PipeLink control) {
 		if (control == null) {
 			throw new NullPointerException("Control to add can't be null");
 		}
@@ -118,7 +196,7 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 		}
 	}
 	
-	public void removeTargetControl(final ContentNodeMetadata control) {
+	public void removeTargetControl(final PipeLink control) {
 		if (control == null) {
 			throw new NullPointerException("Control to remove can't be null");
 		}
@@ -127,8 +205,8 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 		}
 	}
 	
-	public ContentNodeMetadata[] getTaregtControls() {
-		return controls.toArray(new ContentNodeMetadata[controls.size()]);
+	public PipeLink[] getTargetControls() {
+		return controls.toArray(new PipeLink[controls.size()]);
 	}	
 	
 	@Override
@@ -148,6 +226,13 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 		}
 	}
 	
+	@OnAction("action:/removeField")
+	private void removeField() throws LocalizationException {
+		if (new JLocalizedOptionPane(localizer).confirm(this,FIELDS_REMOVE_QUESTION,FIELDS_REMOVE_TITLE,JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+			fields.removeContent(fields.getSelectedValue());
+		}
+	}
+	
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
 		setTitle(localizer.getValue(mdi.getRoot().getLabelId()));
 		if (mdi.getRoot().getTooltipId() != null) {
@@ -157,5 +242,9 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 		fields.setToolTipText(localizer.getValue(FIELDS_TITLE_TT));
 		conditionLabel.setText(localizer.getValue(EXPRESSION_TITLE));
 		condition.setToolTipText(localizer.getValue(EXPRESSION_TITLE_TT));
+	}
+
+	private void enableButtons(final boolean buttonsState) {
+		((JButton)SwingUtils.findComponentByName(toolbar,PIPE_MENU_REMOVE_FIELD)).setEnabled(buttonsState);
 	}
 }

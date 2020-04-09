@@ -14,9 +14,10 @@ import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
+import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.ui.swing.useful.CursorsLibrary;
 
-public class PipePluginFrame<T> extends InnerFrame<T> implements PipeContainerInterface {
+public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeContainerInterface {
 	private static final long serialVersionUID = 1L;
 
 	private final PipeManager	parent;
@@ -71,12 +72,6 @@ public class PipePluginFrame<T> extends InnerFrame<T> implements PipeContainerIn
 	}
 
 	@Override
-	public ContentMetadataInterface getModel() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
 		// TODO Auto-generated method stub
 		
@@ -98,14 +93,14 @@ public class PipePluginFrame<T> extends InnerFrame<T> implements PipeContainerIn
 			@Override
 			public void mouseExited(MouseEvent e) {
 				parent.setDragMode(oldDragMode);
-				component.setCursor(oldCursor);
+//				component.setCursor(oldCursor);
 			}
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				oldCursor = component.getCursor();
 				oldDragMode = parent.setDragMode(DragMode.LINKS);
-				component.setCursor(CursorsLibrary.DRAG_HAND);
+//				component.setCursor(CursorsLibrary.DRAG_HAND);
 			}
 			
 		});
@@ -123,14 +118,14 @@ public class PipePluginFrame<T> extends InnerFrame<T> implements PipeContainerIn
 			@Override
 			public void mouseExited(MouseEvent e) {
 				parent.setDragMode(oldDragMode);
-				component.setCursor(oldCursor);
+//				component.setCursor(oldCursor);
 			}
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				oldCursor = component.getCursor();
 				oldDragMode = parent.setDragMode(DragMode.CONTROLS);
-				component.setCursor(CursorsLibrary.DRAG_HAND);
+//				component.setCursor(CursorsLibrary.DRAG_HAND);
 			}
 		});
 	}
