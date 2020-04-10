@@ -23,6 +23,7 @@ import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
 import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
+import chav1961.calc.pipe.ModelItemListContainer.DropAction;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
@@ -74,12 +75,12 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	private final JCheckBox					terminalFailure = new JCheckBox();
 	private final JLabel					terminalLabel = new JLabel();
 	private final JTextField				terminalMessage = new JTextField();
-	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductanñe",tooltip="chav1961.calc.plugins.calc.contour.inductanñe.tt")
+	@LocaleResource(value="chav1961.calc.pipe.terminal.caption",tooltip="chav1961.calc.pipe.terminal.caption.tt")
 	@Format("9.2pz")
 	public float temp = 0;
 	
-	public TerminalPipeFrame(final PipeManager parent,final Localizer localizer, final ContentNodeMetadata terminal, final ContentMetadataInterface general) throws ContentException {
-		super(parent,localizer,TerminalPipeFrame.class,PipeItemType.TERMINAL_ITEM);
+	public TerminalPipeFrame(final int uniqueId, final PipeManager parent,final Localizer localizer, final ContentNodeMetadata terminal, final ContentMetadataInterface general) throws ContentException {
+		super(uniqueId,parent,localizer,TerminalPipeFrame.class,PipeItemType.TERMINAL_ITEM);
 		if (terminal == null) {
 			throw new NullPointerException("Initial metadata can't be null");
 		}
@@ -88,7 +89,7 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 				this.localizer = LocalizerFactory.getLocalizer(mdi.getRoot().getLocalizerAssociated());
 				this.state = new JStateString(localizer);
 				this.targetControl = new JControlTarget(terminal,this);
-				this.fields = new ModelItemListContainer(localizer,this);
+				this.fields = new ModelItemListContainer(localizer,this,DropAction.INSERT);
 				this.toolbar = SwingUtils.toJComponent(general.byUIPath(PIPE_MENU_ROOT),JToolBar.class);
 				this.toolbar.setOrientation(JToolBar.VERTICAL);
 				this.toolbar.setFloatable(false);
@@ -222,23 +223,8 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 		}
 	}
 	
-	protected void showHelp(final String helpId) {
-		final GrowableCharArray<?>	gca = new GrowableCharArray<>(false);
-		
-		try{gca.append(localizer.getContent(helpId));
-			final byte[]	content = Base64.getEncoder().encode(new String(gca.extract()).getBytes());
-			
-			SwingUtils.showCreoleHelpWindow(this,URI.create("self:/#"+new String(content,0,content.length)));
-		} catch (LocalizationException | NullPointerException | IllegalArgumentException | IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-		setTitle(localizer.getValue(mdi.getRoot().getLabelId()));
-		if (mdi.getRoot().getTooltipId() != null) {
-			setToolTipText(localizer.getValue(mdi.getRoot().getTooltipId()));
-		}
+		prepareTitle(mdi.getRoot().getLabelId(),mdi.getRoot().getTooltipId());
 		fieldsTitle.setTitle(localizer.getValue(FIELDS_TITLE));
 		fields.setToolTipText(localizer.getValue(FIELDS_TITLE_TT));
 		terminalLabel.setText(localizer.getValue(MESSAGE_TITLE));

@@ -22,6 +22,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
+import chav1961.calc.pipe.ModelItemListContainer.DropAction;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
@@ -81,12 +82,12 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	private final JToolBar					targetToolbar;
 	private final JTextArea					expression = new JTextArea();
 	private final JTabbedPane				tabs = new JTabbedPane(); 
-	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductanñe",tooltip="chav1961.calc.plugins.calc.contour.inductanñe.tt")
+	@LocaleResource(value="chav1961.calc.pipe.calc.caption",tooltip="chav1961.calc.pipe.calc.caption.tt")
 	@Format("9.2pz")
 	public float temp = 0;
 	
-	public CalcPipeFrame(final PipeManager parent, final Localizer localizer, final ContentNodeMetadata inner, final ContentNodeMetadata outer, final ContentMetadataInterface general) throws ContentException {
-		super(parent,localizer,CalcPipeFrame.class,PipeItemType.CALC_ITEM);
+	public CalcPipeFrame(final int uniqueId, final PipeManager parent, final Localizer localizer, final ContentNodeMetadata inner, final ContentNodeMetadata outer, final ContentMetadataInterface general) throws ContentException {
+		super(uniqueId,parent,localizer,CalcPipeFrame.class,PipeItemType.CALC_ITEM);
 		if (inner == null) {
 			throw new NullPointerException("Initial metadata can't be null");
 		}
@@ -96,8 +97,8 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 				this.state = new JStateString(localizer);
 				this.targetControl = new JControlTarget(inner,this);
 				this.sourceControl = new JControlSource(outer,this);
-				this.sourceFields = new ModelItemListContainer(localizer,this);
-				this.targetFields = new ModelItemListContainer(localizer,this);
+				this.sourceFields = new ModelItemListContainer(localizer,this,DropAction.INSERT);
+				this.targetFields = new ModelItemListContainer(localizer,this,DropAction.INSERT);
 				this.sourceToolbar = SwingUtils.toJComponent(general.byUIPath(PIPE_MENU_SOURCE_ROOT),JToolBar.class);
 				this.sourceToolbar.setOrientation(JToolBar.VERTICAL);
 				this.sourceToolbar.setFloatable(false);
@@ -276,23 +277,8 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 		}
 	}
 	
-	protected void showHelp(final String helpId) {
-		final GrowableCharArray<?>	gca = new GrowableCharArray<>(false);
-		
-		try{gca.append(localizer.getContent(helpId));
-			final byte[]	content = Base64.getEncoder().encode(new String(gca.extract()).getBytes());
-			
-			SwingUtils.showCreoleHelpWindow(this,URI.create("self:/#"+new String(content,0,content.length)));
-		} catch (LocalizationException | NullPointerException | IllegalArgumentException | IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-		setTitle(localizer.getValue(mdi.getRoot().getLabelId()));
-		if (mdi.getRoot().getTooltipId() != null) {
-			setToolTipText(localizer.getValue(mdi.getRoot().getTooltipId()));
-		}
+		prepareTitle(mdi.getRoot().getLabelId(),mdi.getRoot().getTooltipId());
 		sourceFieldsTitle.setTitle(localizer.getValue(SOURCE_FIELDS_TITLE));
 		sourceFields.setToolTipText(localizer.getValue(SOURCE_FIELDS_TITLE_TT));
 		targetFieldsTitle.setTitle(localizer.getValue(TARGET_FIELDS_TITLE));

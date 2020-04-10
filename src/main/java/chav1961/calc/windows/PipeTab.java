@@ -40,6 +40,7 @@ import chav1961.calc.pipe.InitialPipeFrame;
 import chav1961.calc.pipe.JControlLabel;
 import chav1961.calc.pipe.JControlTargetLabel;
 import chav1961.calc.pipe.ModelItemListContainer;
+import chav1961.calc.pipe.ModelItemListContainer.DropAction;
 import chav1961.calc.pipe.TerminalPipeFrame;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
@@ -99,10 +100,9 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	private final JPopupMenu				popup;
 	private final JToolBar					toolbar;
 
-	private boolean							pressed = false;
-	private Point							pressedPoint;
 	private boolean							isModified = false;			
 	private String							pipeName = "<new>";
+	private int								uniquePipeItemId = 1;
 
 	@LocaleResource(value="chav1961.calc.pipe",tooltip="chav1961.calc.pipe.tt")
 	private final boolean field = false;
@@ -201,7 +201,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 
 	@Override
 	public boolean canReceive(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo, final Class<?> contentClass) {
-		if (from != to && (((from instanceof ModelItemListContainer) && (to instanceof ModelItemListContainer)) || ((from instanceof JControlLabel) && (to instanceof JControlLabel)))) {
+		if (from != to && (((from instanceof ModelItemListContainer) && (to instanceof ModelItemListContainer) && ((ModelItemListContainer)to).getDropAction() != DropAction.NONE) || ((from instanceof JControlLabel) && (to instanceof JControlLabel)))) {
 			return ContentNodeMetadata.class.isAssignableFrom(contentClass) && (from instanceof NodeMetadataOwner) && (to instanceof MetadataTarget) && to.getBounds().contains(xTo,yTo);
 		}
 		else {
@@ -219,11 +219,11 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		final PipeLink	pl;
 	
 		if ((to instanceof JControlLabel) && (to instanceof JControlTargetLabel)) {
-			pl = new PipeLink(PipeLinkType.CONTROL_LINK,((JControlLabel)from).getOwner(),from,((JControlLabel)to).getOwner(),to,(MutableContentNodeMetadata)content);
+			pl = new PipeLink(PipeLinkType.CONTROL_LINK,((JControlLabel)from).getOwner(),from,((JControlLabel)to).getOwner(),to,(MutableContentNodeMetadata)content,null);
 			((MetadataTarget)to).drop(pl,xFrom,yFrom,xTo,yTo);
 		}
 		else if ((from instanceof ModelItemListContainer) && (to instanceof ModelItemListContainer)) {
-			pl = new PipeLink(PipeLinkType.DATA_LINK,((ModelItemListContainer)from).getOwner(),from,((ModelItemListContainer)to).getOwner(),to,(MutableContentNodeMetadata)content);
+			pl = new PipeLink(PipeLinkType.DATA_LINK,((ModelItemListContainer)from).getOwner(),from,((ModelItemListContainer)to).getOwner(),to,(MutableContentNodeMetadata)content,null);
 			((MetadataTarget)to).drop(pl,xFrom,yFrom,xTo,yTo);
 		}
 		pipeManager.repaint();
@@ -278,7 +278,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		final ContentNodeMetadata	initial = new MutableContentNodeMetadata("initial",InitialPipeFrame.class,"./initial",localizerURI,PIPE_SOURCE_TT, PIPE_SOURCE_TT, null, null, URI.create("app:action:/start"),null); 
 		
 		try{
-			putPlugin(new InitialPipeFrame(pipeManager, localizer, initial, xmlModel));
+			putPlugin(new InitialPipeFrame(uniquePipeItemId++, pipeManager, localizer, initial, xmlModel));
 		} catch (ContentException e) {
 			logger.message(Severity.error,e,e.getLocalizedMessage());
 		}
@@ -291,7 +291,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		final ContentNodeMetadata	onFalse = new MutableContentNodeMetadata("onFalse",ConditionalPipeFrame.class,"./onfalse",localizerURI,PIPE_FALSE_TT, PIPE_FALSE_TT, null, null, URI.create("app:action:/onfalse"),null); 
 		
 		try{
-			putPlugin(new ConditionalPipeFrame(pipeManager, localizer, inner, onTrue, onFalse, xmlModel));
+			putPlugin(new ConditionalPipeFrame(uniquePipeItemId++, pipeManager, localizer, inner, onTrue, onFalse, xmlModel));
 		} catch (ContentException e) {
 			logger.message(Severity.error,e,e.getLocalizedMessage());
 		}
@@ -303,7 +303,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		final ContentNodeMetadata	outer = new MutableContentNodeMetadata("outer",CalcPipeFrame.class,"./outer",localizerURI,PIPE_SOURCE_TT, PIPE_SOURCE_TT, null, null, URI.create("app:action:/outer"),null); 
 		
 		try{
-			putPlugin(new CalcPipeFrame(pipeManager, localizer, inner, outer, xmlModel));
+			putPlugin(new CalcPipeFrame(uniquePipeItemId++, pipeManager, localizer, inner, outer, xmlModel));
 		} catch (ContentException e) {
 			logger.message(Severity.error,e,e.getLocalizedMessage());
 		}
@@ -316,7 +316,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		final ContentNodeMetadata	onFalse = new MutableContentNodeMetadata("onFalse",ConditionalPipeFrame.class,"./onfalse",localizerURI,PIPE_CANCEL_TT, PIPE_CANCEL_TT, null, null, URI.create("app:action:/oncancel"),null); 
 		
 		try{
-			putPlugin(new DialogPipeFrame(pipeManager, localizer, inner, onTrue, onFalse, xmlModel));
+			putPlugin(new DialogPipeFrame(uniquePipeItemId++, pipeManager, localizer, inner, onTrue, onFalse, xmlModel));
 		} catch (ContentException e) {
 			logger.message(Severity.error,e,e.getLocalizedMessage());
 		}
@@ -327,7 +327,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		final ContentNodeMetadata	terminal = new MutableContentNodeMetadata("terminal",TerminalPipeFrame.class,"./terminal",localizerURI,PIPE_TARGET_TT, PIPE_TARGET_TT, null, null, URI.create("app:action:/stop"),null); 
 		
 		try{
-			putPlugin(new TerminalPipeFrame(pipeManager, localizer, terminal, xmlModel));
+			putPlugin(new TerminalPipeFrame(uniquePipeItemId++, pipeManager, localizer, terminal, xmlModel));
 		} catch (ContentException e) {
 			logger.message(Severity.error,e,e.getLocalizedMessage());
 		}
@@ -335,7 +335,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 
 	public <T> void placePlugin(final PluginInterface<?> item, final T inst) {
 		try{
-			putPlugin(new ContainerPipeFrame<T>(pipeManager, localizer, (FormManager<?,T>)inst, xmlModel));
+			putPlugin(new ContainerPipeFrame<T>(uniquePipeItemId++, pipeManager, localizer, (FormManager<?,T>)inst, xmlModel));
 		} catch (ContentException e) {
 			logger.message(Severity.error,e,e.getLocalizedMessage());
 		}

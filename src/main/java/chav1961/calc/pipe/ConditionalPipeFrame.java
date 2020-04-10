@@ -21,6 +21,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
+import chav1961.calc.pipe.ModelItemListContainer.DropAction;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
@@ -70,12 +71,12 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 	private final TitledBorder				fieldsTitle = new TitledBorder(new LineBorder(Color.BLACK)); 
 	private final JLabel					conditionLabel = new JLabel();
 	private final JTextField				condition = new JTextField();
-	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductanñe",tooltip="chav1961.calc.plugins.calc.contour.inductanñe.tt")
+	@LocaleResource(value="chav1961.calc.pipe.conditional.caption",tooltip="chav1961.calc.pipe.conditional.caption.tt")
 	@Format("9.2pz")
 	public float temp = 0;
 	
-	public ConditionalPipeFrame(final PipeManager parent,final Localizer localizer, final ContentNodeMetadata inner, final ContentNodeMetadata onTrue, final ContentNodeMetadata onFalse, final ContentMetadataInterface general) throws ContentException {
-		super(parent,localizer,ConditionalPipeFrame.class,PipeItemType.CONDITIONAL_ITEM);
+	public ConditionalPipeFrame(final int uniqueId, final PipeManager parent,final Localizer localizer, final ContentNodeMetadata inner, final ContentNodeMetadata onTrue, final ContentNodeMetadata onFalse, final ContentMetadataInterface general) throws ContentException {
+		super(uniqueId,parent,localizer,ConditionalPipeFrame.class,PipeItemType.CONDITIONAL_ITEM);
 		if (inner == null) {
 			throw new NullPointerException("Initial metadata can't be null");
 		}
@@ -86,7 +87,7 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 				this.targetControl = new JControlTarget(inner,this);
 				this.onTrueControl = new JControlTrue(onTrue,this);
 				this.onFalseControl = new JControlFalse(onFalse,this);
-				this.fields = new ModelItemListContainer(localizer,this);
+				this.fields = new ModelItemListContainer(localizer,this,DropAction.INSERT);
 				this.toolbar = SwingUtils.toJComponent(general.byUIPath(PIPE_MENU_ROOT),JToolBar.class);
 				this.toolbar.setOrientation(JToolBar.VERTICAL);
 				this.toolbar.setFloatable(false);
@@ -214,18 +215,6 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 		fillLocalizedStrings(oldLocale,newLocale);
 	}
 
-	protected void showHelp(final String helpId) {
-		final GrowableCharArray<?>	gca = new GrowableCharArray<>(false);
-		
-		try{gca.append(localizer.getContent(helpId));
-			final byte[]	content = Base64.getEncoder().encode(new String(gca.extract()).getBytes());
-			
-			SwingUtils.showCreoleHelpWindow(this,URI.create("self:/#"+new String(content,0,content.length)));
-		} catch (LocalizationException | NullPointerException | IllegalArgumentException | IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	@OnAction("action:/removeField")
 	private void removeField() throws LocalizationException {
 		if (new JLocalizedOptionPane(localizer).confirm(this,FIELDS_REMOVE_QUESTION,FIELDS_REMOVE_TITLE,JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -234,10 +223,7 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 	}
 	
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-		setTitle(localizer.getValue(mdi.getRoot().getLabelId()));
-		if (mdi.getRoot().getTooltipId() != null) {
-			setToolTipText(localizer.getValue(mdi.getRoot().getTooltipId()));
-		}
+		prepareTitle(mdi.getRoot().getLabelId(),mdi.getRoot().getTooltipId());
 		fieldsTitle.setTitle(localizer.getValue(FIELDS_TITLE));
 		fields.setToolTipText(localizer.getValue(FIELDS_TITLE_TT));
 		conditionLabel.setText(localizer.getValue(EXPRESSION_TITLE));

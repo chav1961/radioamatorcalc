@@ -11,6 +11,7 @@ public interface PipeContainerInterface {
 		INITIAL_ITEM, TERMINAL_ITEM, CONDITIONAL_ITEM, DIALOG_ITEM, CALC_ITEM, PLUGIN_ITEM  
 	}
 
+	String getPipeItemName();
 	PipeItemType getType();
 	int getItemCount();
 	Iterable<PipeContainerItemInterface> getItems();

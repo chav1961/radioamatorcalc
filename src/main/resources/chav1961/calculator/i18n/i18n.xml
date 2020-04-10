@@ -289,6 +289,19 @@
 		<key name="TerminalNode.tooltip">Terminal node is a last component in the pipe chain</key>
 		<key name="TerminalNode.help">Terminal node is a last component in the pipe chain</key>
 
+<!-- Localization for specific pipe items -->		
+		<key name="chav1961.calc.pipe.modelItemListContainer.tooltip.insertedFrom">Moved from %1$s</key>
+		<key name="chav1961.calc.pipe.modelItemListContainer.tooltip.linkedWith">Linked with %1$s</key>
+		<key name="chav1961.calc.pipe.modelItemListContainer.noComponent.caption">Link setting error</key>
+		<key name="chav1961.calc.pipe.modelItemListContainer.noComponent.message">Drag&amp;drop action ended on empty space in the list. You must end this operation on any existent element inside</key>
+		<key name="chav1961.calc.pipe.modelItemListContainer.replaceLink.caption">Replace link</key>
+		<key name="chav1961.calc.pipe.modelItemListContainer.replaceLink.message">Selected item already links with some element. Replace it's link to the new one?</key>
+		<key name="chav1961.calc.pipe.container.toolbar.removelink">Remove link</key>
+		<key name="chav1961.calc.pipe.container.toolbar.removelink.tt">Remove link associated with selected item in the list</key>
+		<key name="chav1961.calc.pipe.container.links.remove.caption">Remove link</key> 
+		<key name="chav1961.calc.pipe.container.links.remove.caption.tt">Remove link associated with selected item in the list</key>
+		<key name="chav1961.calc.pipe.container.links.remove.question">Confirm removing associated link for the selected field</key>
+
 <!-- localization for standard windows -->
 		<key name="chav1961.calc.workbench">Workbench</key>
 		<key name="chav1961.calc.workbench.tt">Workbench contains your plugins</key>
@@ -744,6 +757,19 @@
 		<key name="TerminalNode.caption">Конечный узел</key>
 		<key name="TerminalNode.tooltip">Конечный узел является завершающим элементом в цепочке вычислений</key>
 		<key name="TerminalNode.help">Конечный узел является завершающим элементом в цепочке вычислений</key>
+
+<!-- Локализация специфичных компонентов конвейера -->		
+		<key name="chav1961.calc.pipe.modelItemListContainer.tooltip.insertedFrom">Перенесено из %1$s</key>
+		<key name="chav1961.calc.pipe.modelItemListContainer.tooltip.linkedWith">Связано с %1$s</key>
+		<key name="chav1961.calc.pipe.modelItemListContainer.noComponent.caption">Ошибка установки связи</key>
+		<key name="chav1961.calc.pipe.modelItemListContainer.noComponent.message">Операция связи закончилась на пустом месте списка. Нужно закончить ее на одном из существующих элементов списка</key>
+		<key name="chav1961.calc.pipe.modelItemListContainer.replaceLink.caption">Заменить связь</key>
+		<key name="chav1961.calc.pipe.modelItemListContainer.replaceLink.message">Выбранный элемент списка уже связан с каким-либо другим элементом. Заменить его связь на новую?</key>
+		<key name="chav1961.calc.pipe.container.toolbar.removelink">Удалить связь</key>
+		<key name="chav1961.calc.pipe.container.toolbar.removelink.tt">Удалить связь, ассоциированную с выбраннвм элементом списка</key>
+		<key name="chav1961.calc.pipe.container.links.remove.caption">Удаление связи</key> 
+		<key name="chav1961.calc.pipe.container.links.remove.caption.tt">Удалить связь для выбранного элемента списка</key>
+		<key name="chav1961.calc.pipe.container.links.remove.question">Удалить связь для выбранного элемента списка</key>
 
 <!-- Локализация для стандартных окон -->
 		<key name="chav1961.calc.workbench">Раб.стол</key>

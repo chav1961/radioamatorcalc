@@ -4,18 +4,19 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.Locale;
 
 import chav1961.calc.interfaces.DragMode;
 import chav1961.calc.interfaces.PipeContainerInterface;
 import chav1961.calc.interfaces.PipeContainerItemInterface;
 import chav1961.calc.windows.PipeManager;
+import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.i18n.interfaces.Localizer;
-import chav1961.purelib.model.interfaces.ContentMetadataInterface;
-import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
-import chav1961.purelib.ui.swing.useful.CursorsLibrary;
+import chav1961.purelib.ui.swing.SwingUtils;
 
 public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeContainerInterface {
 	private static final long serialVersionUID = 1L;
@@ -23,8 +24,9 @@ public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeCo
 	private final PipeManager	parent;
 	private final Localizer		localizer;
 	private final PipeItemType	itemType;
+	private final int 			uniqueId;
 	
-	public PipePluginFrame(final PipeManager parent, final Localizer localizer, final Class<T> classInstance, final PipeItemType itemType) throws ContentException {
+	public PipePluginFrame(final int uniqueId, final PipeManager parent, final Localizer localizer, final Class<T> classInstance, final PipeItemType itemType) throws ContentException {
 		super(classInstance);
 		if (parent == null) {
 			throw new NullPointerException("Parent manager can't be null");
@@ -36,12 +38,18 @@ public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeCo
 			throw new NullPointerException("Item type can't be null");
 		}
 		else {
+			this.uniqueId = uniqueId;
 			this.parent = parent;
 			this.localizer = localizer;
 			this.itemType = itemType;
 		}
 	}
 
+	@Override
+	public String getPipeItemName() {
+		return itemType+" #"+uniqueId;
+	}
+	
 	@Override
 	public PipeItemType getType() {
 		return itemType;
@@ -77,8 +85,24 @@ public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeCo
 		
 	}
 	
+	protected void prepareTitle(final String titleId, final String titleTooltipId) throws LocalizationException {
+		setTitle(localizer.getValue(titleId)+" ("+getPipeItemName()+")");
+		if (titleTooltipId != null) {
+			setToolTipText(localizer.getValue(titleTooltipId));
+		}
+	}
+	
 	protected PipeManager getParentManager() {
 		return parent;
+	}
+
+	protected void showHelp(final String helpId) {
+		try{SwingUtils.showCreoleHelpWindow(this,
+				URIUtils.convert2selfURI(new GrowableCharArray<>(false).append(localizer.getContent(helpId)).extract(),"UTF-8")
+			);
+		} catch (LocalizationException | NullPointerException | IllegalArgumentException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	protected void assignDndLink(final Component component) {

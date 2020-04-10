@@ -14,14 +14,16 @@ public class PipeLink {
 	private final PipeContainerInterface 	source, target;
 	private final Component					sourcePoint, targetPoint;
 	private final ContentNodeMetadata		metadata;
+	private final ContentNodeMetadata		associatedMeta;
 	
-	public PipeLink(final PipeLink.PipeLinkType type, final PipeContainerInterface source, final Component sourcePoint, final PipeContainerInterface target,final Component targetPoint, final ContentNodeMetadata metadata) {
+	public PipeLink(final PipeLink.PipeLinkType type, final PipeContainerInterface source, final Component sourcePoint, final PipeContainerInterface target,final Component targetPoint, final ContentNodeMetadata metadata, final ContentNodeMetadata associatedMeta) {
 		this.type = type;
 		this.source = source;
 		this.target = target;
 		this.sourcePoint = sourcePoint;
 		this.targetPoint = targetPoint;
 		this.metadata = metadata;
+		this.associatedMeta = associatedMeta;
 	}
 
 	public PipeLinkType getType() {
@@ -48,8 +50,12 @@ public class PipeLink {
 		return metadata;
 	}
 
+	public ContentNodeMetadata getAssociatedMeta() {
+		return associatedMeta;
+	}
+
 	@Override
 	public String toString() {
-		return "PipeLink [type=" + type + ", source=" + source.getClass().getCanonicalName() + ", target=" + target.getClass().getCanonicalName() + ", sourcePoint=" + sourcePoint.getName() + ", targetPoint=" + targetPoint.getName() + ", metadata=" + metadata + "]";
+		return "PipeLink [type=" + type + ", source=" + source + ", target=" + target + ", sourcePoint=" + sourcePoint + ", targetPoint=" + targetPoint + ", metadata=" + metadata + ", associatedMeta=" + associatedMeta + "]";
 	}
 }

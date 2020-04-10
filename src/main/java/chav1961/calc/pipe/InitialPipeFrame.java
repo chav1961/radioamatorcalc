@@ -19,6 +19,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
+import chav1961.calc.pipe.ModelItemListContainer.DropAction;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
@@ -73,12 +74,12 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	private final TitledBorder				fieldsTitle = new TitledBorder(new LineBorder(Color.BLACK),"");
 	private final JToolBar					toolbar;
 	
-	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductanñe",tooltip="chav1961.calc.plugins.calc.contour.inductanñe.tt")
+	@LocaleResource(value="chav1961.calc.pipe.initial.caption",tooltip="chav1961.calc.pipe.initial.caption.tt")
 	@Format("9.2pz")
 	public float temp = 0;
 	
-	public InitialPipeFrame(final PipeManager parent, final Localizer localizer, final ContentNodeMetadata initial, final ContentMetadataInterface general) throws ContentException {
-		super(parent,localizer,InitialPipeFrame.class,PipeItemType.INITIAL_ITEM);
+	public InitialPipeFrame(final int uniqueId, final PipeManager parent, final Localizer localizer, final ContentNodeMetadata initial, final ContentMetadataInterface general) throws ContentException {
+		super(uniqueId,parent,localizer,InitialPipeFrame.class,PipeItemType.INITIAL_ITEM);
 		if (initial == null) {
 			throw new NullPointerException("Initial metadata can't be null");
 		}
@@ -90,7 +91,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 				this.localizer = LocalizerFactory.getLocalizer(mdi.getRoot().getLocalizerAssociated());
 				this.state = new JStateString(localizer);
 				this.sourceControl = new JControlSource(initial,this);
-				this.fields = new ModelItemListContainer(localizer,this);
+				this.fields = new ModelItemListContainer(localizer,this,DropAction.NONE);
 				this.toolbar = SwingUtils.toJComponent(general.byUIPath(PIPE_MENU_ROOT),JToolBar.class);
 				this.toolbar.setOrientation(JToolBar.VERTICAL);
 				this.toolbar.setFloatable(false);
@@ -171,8 +172,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 			throw new NullPointerException("Control to add can't be null");
 		}
 		else {
-			controls.add(control);
-			refreshList();
+			fields.addContent(control);
 		}
 	}
 	
@@ -181,8 +181,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 			throw new NullPointerException("Control to remove can't be null");
 		}
 		else {
-			controls.remove(control);
-			refreshList();
+			fields.removeContent(control);
 		}
 	}
 	
@@ -207,7 +206,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 		
 		if (dlg.showDialog()) {
 			ContentNodeMetadata temp = ed.getContentNodeMetadataValue(); 
-			fields.addContent(new PipeLink(PipeLinkType.DATA_LINK,null,null,this,fields,temp));
+			fields.addContent(new PipeLink(PipeLinkType.DATA_LINK,null,null,this,fields,temp,null));
 		}
 	}
 
@@ -230,24 +229,12 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 		final JDialogContainer<Object,Enum<?>,JContentMetadataEditor>	dlg = new JDialogContainer<Object,Enum<?>,JContentMetadataEditor>(localizer,(JFrame)null,FIELDS_EDIT_TITLE,ed);
 		
 		if (dlg.showDialog()) {
-			fields.changeContent(new PipeLink(source.getType(),source.getSource(),source.getSourcePoint(),source.getTarget(),source.getTargetPoint(),ed.getContentNodeMetadataValue()));
-		}
-	}
-	
-	protected void showHelp(final String helpId) {
-		try{SwingUtils.showCreoleHelpWindow(this,
-				URIUtils.convert2selfURI(new GrowableCharArray<>(false).append(localizer.getContent(helpId)).extract(),"UTF-8")
-			);
-		} catch (LocalizationException | NullPointerException | IllegalArgumentException | IOException e) {
-			e.printStackTrace();
+			fields.changeContent(fields.getSelectedIndex(),new PipeLink(source.getType(),source.getSource(),source.getSourcePoint(),source.getTarget(),source.getTargetPoint(),ed.getContentNodeMetadataValue(),null));
 		}
 	}
 	
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-		setTitle(localizer.getValue(mdi.getRoot().getLabelId()));
-		if (mdi.getRoot().getTooltipId() != null) {
-			setToolTipText(localizer.getValue(mdi.getRoot().getTooltipId()));
-		}
+		prepareTitle(mdi.getRoot().getLabelId(),mdi.getRoot().getTooltipId());
 		fieldsTitle.setTitle(localizer.getValue(FIELDS_TITLE));
 		fields.setToolTipText(localizer.getValue(FIELDS_TITLE_TT));
 	}
@@ -255,10 +242,5 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	private void enableButtons(final boolean buttonsState) {
 		((JButton)SwingUtils.findComponentByName(toolbar,PIPE_MENU_REMOVE_FIELD)).setEnabled(buttonsState);
 		((JButton)SwingUtils.findComponentByName(toolbar,PIPE_MENU_EDIT_FIELD)).setEnabled(buttonsState);
-	}
-
-	private void refreshList() {
-		// TODO Auto-generated method stub
-		
 	}
 }

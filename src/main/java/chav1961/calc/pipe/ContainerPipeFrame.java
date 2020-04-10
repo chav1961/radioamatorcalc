@@ -8,17 +8,23 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
+import chav1961.calc.pipe.ModelItemListContainer.DropAction;
 import chav1961.calc.utils.InnerSVGPluginWindow;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
@@ -28,6 +34,7 @@ import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.enumerations.ContinueMode;
 import chav1961.purelib.enumerations.NodeEnterMode;
@@ -47,6 +54,8 @@ import chav1961.purelib.ui.interfaces.RefreshMode;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
 import chav1961.purelib.ui.swing.JRadioButtonWithMeta;
 import chav1961.purelib.ui.swing.SwingUtils;
+import chav1961.purelib.ui.swing.interfaces.OnAction;
+import chav1961.purelib.ui.swing.useful.JLocalizedOptionPane;
 import chav1961.purelib.ui.swing.useful.JStateString;
 
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
@@ -63,7 +72,14 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	private static final String					FIELDS_TITLE = "chav1961.calc.pipe.container.fields"; 
 	private static final String					FIELDS_TITLE_TT = "chav1961.calc.pipe.container.fields.tt"; 
 	private static final String					ACTIONS_TITLE = "chav1961.calc.pipe.container.actions"; 
-	private static final String					ACTIONS_TITLE_TT = "chav1961.calc.pipe.container.actions.tt"; 
+//	private static final String					ACTIONS_TITLE_TT = "chav1961.calc.pipe.container.actions.tt"; 
+
+	private static final String					LINK_REMOVE_TITLE = "chav1961.calc.pipe.container.links.remove.caption"; 
+//	private static final String					LINK_REMOVE_TITLE_TT = "chav1961.calc.pipe.container.links.remove.caption.tt";
+	private static final String					LINK_REMOVE_QUESTION = "chav1961.calc.pipe.container.links.remove.question"; 
+
+	private static final URI					PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.container.toolbar");	
+	private static final String					PIPE_MENU_REMOVE_LINK = "chav1961.calc.pipe.container.toolbar.removelink";	
 	
 	private final ContentMetadataInterface		mdi, innerMdi;
 	private final Localizer						localizer, pluginLocalizer;
@@ -73,21 +89,22 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	private final List<PipeLink>				links = new ArrayList<>();
 	private final List<PipeLink>				controls = new ArrayList<>();
 	private final ModelItemListContainer		fields;
+	private final JToolBar						toolbar;
 	private final List<JRadioButtonWithMeta>	actions = new ArrayList<>();
 	private final TitledBorder					fieldsTitle = new TitledBorder(new LineBorder(Color.BLACK)); 
 	private final TitledBorder					actionsTitle = new TitledBorder(new LineBorder(Color.BLACK)); 
+	private final InnerSVGPluginWindow<T>		w;
 	private final JTabbedPane					tabs = new JTabbedPane();
 	private final AutoBuiltForm<T>				abf;
-	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductanñe",tooltip="chav1961.calc.plugins.calc.contour.inductanñe.tt")
+	@LocaleResource(value="chav1961.calc.pipe.container.caption",tooltip="chav1961.calc.pipe.container.caption.tt")
 	@Format("9.2pz")
 	public float temp = 0;
 
-	public ContainerPipeFrame(PipeManager parent, Localizer localizer, final FormManager<?,?> content, final ContentMetadataInterface general) throws ContentException {
-		super(parent, localizer, ContainerPipeFrame.class, PipeItemType.PLUGIN_ITEM);
+	public ContainerPipeFrame(final int uniqueId, final PipeManager parent, final Localizer localizer, final FormManager<?,?> content, final ContentMetadataInterface general) throws ContentException {
+		super(uniqueId,parent, localizer, ContainerPipeFrame.class, PipeItemType.PLUGIN_ITEM);
 		
 		final Class<?>					instanceClass = content.getClass();
     	final PluginProperties			pp = instanceClass.getAnnotation(PluginProperties.class);
-    	final InnerSVGPluginWindow<T>	w;
 		
 		try{this.mdi = ContentModelFactory.forAnnotatedClass(this.getClass());
 			this.innerMdi = ContentModelFactory.forAnnotatedClass(instanceClass);
@@ -96,7 +113,11 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 			this.state = new JStateString(localizer);
 			this.targetControl = new JControlTarget(mdi.getRoot(),this);
 			this.sourceControl = new JControlSource(mdi.getRoot(),this);
-			this.fields = new ModelItemListContainer(localizer,this);
+			this.fields = new ModelItemListContainer(localizer,this,DropAction.LINK);
+			this.toolbar = SwingUtils.toJComponent(general.byUIPath(PIPE_MENU_ROOT),JToolBar.class);
+			this.toolbar.setOrientation(JToolBar.VERTICAL);
+			this.toolbar.setFloatable(false);
+			SwingUtils.assignActionListeners(this.toolbar,this);
         	
 			try{final FormManager<Object,T>	wrapper = new FormManagerWrapper<>((FormManager<Object,T>)content, ()-> {refresh();}); 
 				
@@ -149,13 +170,14 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 				return ContinueMode.CONTINUE;
 			}, innerMdi.getRoot().getUIPath());
 			
-			final JPanel		metaTab = new JPanel(new GridLayout(1,2));
+			final JSplitPane	metaTab = new JSplitPane();
+			final JPanel		metaFieldsPanel = new JPanel(new BorderLayout());
 			final JScrollPane	metaFields = new JScrollPane(fields);
 			final JPanel		metaActions = new JPanel(new GridLayout(pluginActions.size(),1));
 			final ButtonGroup 	buttonGroup = new ButtonGroup();
 			
 			for (ContentNodeMetadata item : pluginFields) {
-				fields.addContent(new PipeLink(PipeLinkType.DATA_LINK,null,null,fields.getOwner(),fields,item));
+				fields.addContent(new PipeLink(PipeLinkType.DATA_LINK,null,null,fields.getOwner(),fields,item,null));
 			}
 			
 			for (ContentNodeMetadata item : pluginActions) {
@@ -168,9 +190,11 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 			}
 			
 			metaFields.setBorder(fieldsTitle);
-			metaTab.add(metaFields);
+			metaFieldsPanel.add(metaFields,BorderLayout.CENTER);
+			metaFieldsPanel.add(toolbar,BorderLayout.EAST);
+			metaTab.setLeftComponent(metaFieldsPanel);
 			metaActions.setBorder(actionsTitle);
-			metaTab.add(metaActions);
+			metaTab.setRightComponent(metaActions);
 			
 			tabs.addTab("",w);
 			tabs.addTab("",metaTab);
@@ -188,6 +212,23 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 			add(tabs,BorderLayout.CENTER);
 			add(bottom,BorderLayout.SOUTH);
 
+			fields.addListSelectionListener((e)->{
+				enableButtons(!fields.isSelectionEmpty() && fields.getSelectedValue().getSource() != null);
+			});
+			fields.addContentChangeListener((changeType,source,current)->{
+				switch (changeType) {
+					case CHANGED	:
+						for (int index = 0, maxIndex = controls.size(); index < maxIndex; index++) {
+							if (controls.get(index).getMetadata() == ((PipeLink)current).getMetadata()) {
+								controls.set(index,(PipeLink)current);
+								enableButtons(!fields.isSelectionEmpty() && fields.getSelectedValue().getSource() != null);
+								break;
+							}
+						}
+						break;
+					default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
+				}
+			});
 			targetControl.addContentChangeListener((changeType,source,current)->{
 				switch (changeType) {
 					case CHANGED	:
@@ -201,6 +242,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 					default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
 				}
 			});
+			enableButtons(false);
 			
 			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale()); 
 		} catch (LocalizationException e) {
@@ -229,20 +271,21 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	}
 
 	private void refresh() {
-		// TODO Auto-generated method stub
-		
+		w.refresh();
 	}
 
-	private void showHelp(String actionCommand) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-		setTitle(localizer.getValue(mdi.getRoot().getLabelId()));
-		if (mdi.getRoot().getTooltipId() != null) {
-			setToolTipText(localizer.getValue(mdi.getRoot().getTooltipId()));
+	@OnAction("action:/removeLink")
+	private void removeLink() throws LocalizationException {
+		if (new JLocalizedOptionPane(localizer).confirm(this,LINK_REMOVE_QUESTION,LINK_REMOVE_TITLE,JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+			final PipeLink	current = fields.getSelectedValue();
+			
+			fields.changeContent(fields.getSelectedIndex(),new PipeLink(current.getType(),null,null,current.getTarget(),current.getTargetPoint(),current.getMetadata(),null));
+			enableButtons(!fields.isSelectionEmpty() && fields.getSelectedValue().getSource() != null);
 		}
+	}
+	
+	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
+		prepareTitle(mdi.getRoot().getLabelId(),mdi.getRoot().getTooltipId());
 		fieldsTitle.setTitle(localizer.getValue(FIELDS_TITLE));
 		fields.setToolTipText(localizer.getValue(FIELDS_TITLE_TT));
 		actionsTitle.setTitle(localizer.getValue(ACTIONS_TITLE));
@@ -260,6 +303,9 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 		}
 	}
 
+	private void enableButtons(final boolean buttonsState) {
+		((JButton)SwingUtils.findComponentByName(toolbar,PIPE_MENU_REMOVE_LINK)).setEnabled(buttonsState);
+	}
 	
 	private static class FormManagerWrapper<T> implements FormManager<Object, T> {
 		@FunctionalInterface
