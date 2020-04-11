@@ -42,10 +42,12 @@ import chav1961.calc.pipe.JControlTargetLabel;
 import chav1961.calc.pipe.ModelItemListContainer;
 import chav1961.calc.pipe.ModelItemListContainer.DropAction;
 import chav1961.calc.pipe.TerminalPipeFrame;
+import chav1961.calc.utils.PipeExecutor;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.utils.SVGPluginFrame;
+import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
@@ -86,6 +88,11 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	private static final URI				PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.pipeMenu");	
 	private static final String				PIPE_MENU_CLEAN_NAME = "pipeMenu.clean";	
 	private static final String				PIPE_MENU_VALIDATE_NAME = "pipeMenu.validate";	
+	private static final String				PIPE_MENU_START_NAME = "pipeMenu.start";	
+	private static final String				PIPE_MENU_DEBUG_NAME = "pipeMenu.debug";	
+	private static final String				PIPE_MENU_STOP_NAME = "pipeMenu.stop";	
+
+	private static final String				PIPE_EXECUTION_COMPLETED = "chav1961.calc.pipe.screen.execution.completed";	
 	
 	public final SubscribableInt			pluginCount = new SubscribableInt(); 
 	
@@ -103,6 +110,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	private boolean							isModified = false;			
 	private String							pipeName = "<new>";
 	private int								uniquePipeItemId = 1;
+	private volatile Thread					executorThread = null;
 
 	@LocaleResource(value="chav1961.calc.pipe",tooltip="chav1961.calc.pipe.tt")
 	private final boolean field = false;
@@ -153,6 +161,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 				((JButton)SwingUtils.findComponentByName(toolbar,PIPE_MENU_CLEAN_NAME)).setEnabled(newValue != 0);
 				((JMenuItem)SwingUtils.findComponentByName(popup,PIPE_MENU_VALIDATE_NAME)).setEnabled(newValue != 0);
 				((JButton)SwingUtils.findComponentByName(toolbar,PIPE_MENU_VALIDATE_NAME)).setEnabled(newValue != 0);
+				refreshPlayingButtons(newValue != 0);
 			});
 			pluginCount.refresh();
 		}
@@ -259,20 +268,6 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		}
 	}
 
-	@OnAction("action:/cleanPipe")
-	private void cleanPipe() {
-		try{pipeManager.clean(logger);
-			pluginCount.set(0);
-		} catch (LocalizationException e) {
-			logger.message(Severity.error,e,e.getLocalizedMessage());
-		}
-	}
-	
-	@OnAction("action:/validatePipe")
-	private void validatePipe() {
-		pipeManager.validatePipe(logger);
-	}
-
 	@OnAction("action:/newInitial")
 	private void newInitial() {
 		final ContentNodeMetadata	initial = new MutableContentNodeMetadata("initial",InitialPipeFrame.class,"./initial",localizerURI,PIPE_SOURCE_TT, PIPE_SOURCE_TT, null, null, URI.create("app:action:/start"),null); 
@@ -333,6 +328,88 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		}
 	}
 
+	@OnAction("action:/cleanPipe")
+	private void cleanPipe() {
+		try{pipeManager.clean(logger);
+			pluginCount.set(0);
+		} catch (LocalizationException e) {
+			logger.message(Severity.error,e,e.getLocalizedMessage());
+		}
+	}
+	
+	@OnAction("action:/validatePipe")
+	private void validatePipe() {
+		pipeManager.validatePipe(logger);
+		refreshPlayingButtons(pluginCount.get() != 0);
+	}
+
+	@OnAction("action:/startPipe")
+	private void startPipe() {
+		if (pipeManager.validatePipe(logger)) {
+			executorThread = new Thread(()->{
+								try{refreshPlayingButtons(pluginCount.get() != 0);
+									new PipeExecutor(logger,pipeManager.getPipeComponents(),false).run();
+									logger.message(Severity.info,localizer.getValue(PIPE_EXECUTION_COMPLETED));
+								} catch (Exception exc) {
+									logger.message(Severity.error,exc,exc.getLocalizedMessage());
+								} finally {
+									SwingUtilities.invokeLater(()->{refreshPlayingButtons(pluginCount.get() != 0);});
+								}
+							});
+			executorThread.setDaemon(true);
+			executorThread.start();
+		}
+		else {
+			refreshPlayingButtons(pluginCount.get() != 0);
+		}
+	}
+	
+	@OnAction("action:/debugPipe")
+	private void debugPipe() {
+		if (pipeManager.validatePipe(logger)) {
+			executorThread = new Thread(()->{
+								try{refreshPlayingButtons(pluginCount.get() != 0);
+									new PipeExecutor(logger,pipeManager.getPipeComponents(),true).run();
+									logger.message(Severity.info,localizer.getValue(PIPE_EXECUTION_COMPLETED));
+								} catch (Exception exc) {
+									logger.message(Severity.error,exc,exc.getLocalizedMessage());
+								} finally {
+									SwingUtilities.invokeLater(()->{refreshPlayingButtons(pluginCount.get() != 0);});
+								}
+							});
+			executorThread.setDaemon(true);
+			executorThread.start();
+		}
+		else {
+			refreshPlayingButtons(pluginCount.get() != 0);
+		}
+	}
+
+	@OnAction("action:/stopPipe")
+	private void stopPipe() {
+		if (executorThread != null && executorThread.isAlive()) {
+			executorThread.interrupt();
+		}
+	}
+
+	private void refreshPlayingButtons(final boolean totalEnable) {
+		final boolean	isPipeValid = pipeManager.validatePipe(PureLibSettings.NULL_LOGGER);
+		final boolean	threadIsAlive = executorThread != null && executorThread.isAlive();
+		boolean			startButton, stopButton;
+		
+		startButton = stopButton = totalEnable && isPipeValid;
+		startButton &= !threadIsAlive;
+		stopButton &= threadIsAlive;
+		
+		((JMenuItem)SwingUtils.findComponentByName(popup,PIPE_MENU_START_NAME)).setEnabled(startButton);
+		((JButton)SwingUtils.findComponentByName(toolbar,PIPE_MENU_START_NAME)).setEnabled(startButton);
+		((JMenuItem)SwingUtils.findComponentByName(popup,PIPE_MENU_DEBUG_NAME)).setEnabled(startButton);
+		((JButton)SwingUtils.findComponentByName(toolbar,PIPE_MENU_DEBUG_NAME)).setEnabled(startButton);
+		((JMenuItem)SwingUtils.findComponentByName(popup,PIPE_MENU_STOP_NAME)).setEnabled(stopButton);
+		((JButton)SwingUtils.findComponentByName(toolbar,PIPE_MENU_STOP_NAME)).setEnabled(stopButton);
+	}
+
+	
 	public <T> void placePlugin(final PluginInterface<?> item, final T inst) {
 		try{
 			putPlugin(new ContainerPipeFrame<T>(uniquePipeItemId++, pipeManager, localizer, (FormManager<?,T>)inst, xmlModel));

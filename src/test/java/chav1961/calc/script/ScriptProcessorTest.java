@@ -37,13 +37,13 @@ public class ScriptProcessorTest {
 	public void buildLexemaListTest() throws SyntaxException {
 		List<Lexema>	lex;
 		
-		lex = ScriptProcessor.buildLexemaList(" ");
+		lex = ScriptProcessor.buildLexemaList(" ",false,false);
 		Assert.assertEquals(1,lex.size());
 		Assert.assertEquals(LexemaType.LexEOF,lex.get(0).type);
 
-		lex = ScriptProcessor.buildLexemaList(";()+-*/,");
+		lex = ScriptProcessor.buildLexemaList(";()+-*/,",false,false);
 		Assert.assertEquals(9,lex.size());
-		Assert.assertEquals(LexemaType.LexEndOp,lex.get(0).type);
+		Assert.assertEquals(LexemaType.LexSemicolon,lex.get(0).type);
 		Assert.assertEquals(LexemaType.LexOpen,lex.get(1).type);
 		Assert.assertEquals(LexemaType.LexClose,lex.get(2).type);
 		Assert.assertEquals(LexemaType.LexPlus,lex.get(3).type);
@@ -53,7 +53,7 @@ public class ScriptProcessorTest {
 		Assert.assertEquals(LexemaType.LexList,lex.get(7).type);
 		Assert.assertEquals(LexemaType.LexEOF,lex.get(8).type);
 
-		lex = ScriptProcessor.buildLexemaList("> >= < <= = <> :=");
+		lex = ScriptProcessor.buildLexemaList("> >= < <= = <> :=",false,false);
 		Assert.assertEquals(8,lex.size());
 		Assert.assertEquals(LexemaType.LexGT,lex.get(0).type);
 		Assert.assertEquals(LexemaType.LexGE,lex.get(1).type);
@@ -64,20 +64,20 @@ public class ScriptProcessorTest {
 		Assert.assertEquals(LexemaType.LexAssign,lex.get(6).type);
 		Assert.assertEquals(LexemaType.LexEOF,lex.get(7).type);
 
-		lex = ScriptProcessor.buildLexemaList("5 3.5 \"123\"");
+		lex = ScriptProcessor.buildLexemaList("5 3.5 \"123\"",false,false);
 		Assert.assertEquals(4,lex.size());
 		Assert.assertEquals(LexemaType.LexInt,lex.get(0).type);
 		Assert.assertEquals(LexemaType.LexReal,lex.get(1).type);
 		Assert.assertEquals(LexemaType.LexString,lex.get(2).type);
 		Assert.assertEquals(LexemaType.LexEOF,lex.get(3).type);
 		
-		lex = ScriptProcessor.buildLexemaList("name sin");
+		lex = ScriptProcessor.buildLexemaList("name sin",false,false);
 		Assert.assertEquals(3,lex.size());
 		Assert.assertEquals(LexemaType.LexName,lex.get(0).type);
 		Assert.assertEquals(LexemaType.LexFSin,lex.get(1).type);
 		Assert.assertEquals(LexemaType.LexEOF,lex.get(2).type);
 		
-		lex = ScriptProcessor.buildLexemaList("name1 // nameNone\nname2 name3");
+		lex = ScriptProcessor.buildLexemaList("name1 // nameNone\nname2 name3",false,false);
 		Assert.assertEquals(4,lex.size());
 		Assert.assertEquals(LexemaType.LexName,lex.get(0).type);
 		Assert.assertEquals(0,lex.get(0).row);
@@ -91,22 +91,22 @@ public class ScriptProcessorTest {
 		Assert.assertEquals(LexemaType.LexEOF,lex.get(3).type);
 		
 
-		try {ScriptProcessor.buildLexemaList(null);
+		try {ScriptProcessor.buildLexemaList(null,false,false);
 			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
 		} catch (IllegalArgumentException exc) {
 		}
 		
-		try {ScriptProcessor.buildLexemaList("? ");
+		try {ScriptProcessor.buildLexemaList("? ",false,false);
 			Assert.fail("Mandatory exception was not detected (unknown lexema)");
 		} catch (SyntaxException exc) {
 		}
 		
-		try {ScriptProcessor.buildLexemaList(":: ");
+		try {ScriptProcessor.buildLexemaList(":: ",false,false);
 			Assert.fail("Mandatory exception was not detected (unknown lexema)");
 		} catch (SyntaxException exc) {
 		} 
 
-		try {ScriptProcessor.buildLexemaList("\"test");
+		try {ScriptProcessor.buildLexemaList("\"test",false,false);
 			Assert.fail("Mandatory exception was not detected (unquoted constant)");
 		} catch (SyntaxException exc) {
 		}
@@ -701,7 +701,7 @@ public class ScriptProcessorTest {
 	 
 	
 	private static Lexema[] toLexArray(final String expr) throws SyntaxException {
-		final List<Lexema>	lex = ScriptProcessor.buildLexemaList(expr);
+		final List<Lexema>	lex = ScriptProcessor.buildLexemaList(expr,false,false);
 
 		return lex.toArray(new Lexema[lex.size()]); 
 	}

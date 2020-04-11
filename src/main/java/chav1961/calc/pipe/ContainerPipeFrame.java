@@ -270,6 +270,41 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 		return links.toArray(new PipeLink[links.size()]);
 	}
 
+	@Override
+	public void removeLink(final PipeLink link) {
+		links.remove(link);
+	}
+
+	@Override
+	public boolean validate(LoggerFacade logger) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
+	
+	@Override
+	public PipeLink[] getIncomingControls() {
+		return controls.toArray(new PipeLink[controls.size()]);
+	}
+	
+	@Override
+	public <T> void storeIncomingValue(ContentNodeMetadata meta, T value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public <T> T getOutgoingValue(ContentNodeMetadata meta) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PipeStepReturnCode processPipeStep() {
+		// TODO Auto-generated method stub
+		return PipeStepReturnCode.CONTINUE;
+	}
+
 	private void refresh() {
 		w.refresh();
 	}

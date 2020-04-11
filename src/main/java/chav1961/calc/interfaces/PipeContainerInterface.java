@@ -3,6 +3,7 @@ package chav1961.calc.interfaces;
 import chav1961.calc.pipe.JControlLabel;
 import chav1961.calc.pipe.JControlTargetLabel;
 import chav1961.calc.utils.PipeLink;
+import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 
@@ -21,4 +22,6 @@ public interface PipeContainerInterface {
 	JControlLabel[] getControlSources();
 	JControlTargetLabel getControlTarget();
 	PipeLink[] getLinks();
+	PipeLink[] getIncomingControls();
+	boolean validate(LoggerFacade logger);
 }

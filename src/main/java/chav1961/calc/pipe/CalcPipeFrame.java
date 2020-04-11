@@ -23,12 +23,14 @@ import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
 import chav1961.calc.pipe.ModelItemListContainer.DropAction;
+import chav1961.calc.script.ScriptEditor;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
+import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
@@ -80,7 +82,7 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	private final TitledBorder				targetFieldsTitle = new TitledBorder(new LineBorder(Color.BLACK));
 	private final JToolBar					sourceToolbar;
 	private final JToolBar					targetToolbar;
-	private final JTextArea					expression = new JTextArea();
+	private final ScriptEditor				expression = new ScriptEditor();
 	private final JTabbedPane				tabs = new JTabbedPane(); 
 	@LocaleResource(value="chav1961.calc.pipe.calc.caption",tooltip="chav1961.calc.pipe.calc.caption.tt")
 	@Format("9.2pz")
@@ -219,44 +221,41 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	public PipeLink[] getLinks() {
 		return links.toArray(new PipeLink[links.size()]);
 	}
-	
-	public void addSourceField(final PipeLink metadata) {
-		sourceFields.addContent(metadata);
+
+	@Override
+	public void removeLink(final PipeLink link) {
+		links.remove(link);
 	}
 
-	public void addTargetField(final PipeLink metadata) {
-		targetFields.addContent(metadata);
+	@Override
+	public boolean validate(LoggerFacade logger) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 	
-	public PipeLink[] getSourceFields() {
-		return sourceFields.getContent();
-	}
-
-	public PipeLink[] getTargetFields() {
-		return targetFields.getContent();
-	}
 	
-	public void addTargetControl(final PipeLink control) {
-		if (control == null) {
-			throw new NullPointerException("Control to add can't be null");
-		}
-		else {
-			sourceControls.add(control);
-		}
-	}
-	
-	public void removeTargetControl(final PipeLink control) {
-		if (control == null) {
-			throw new NullPointerException("Control to remove can't be null");
-		}
-		else {
-			sourceControls.remove(control);
-		}
-	}
-	
-	public PipeLink[] getTaregtControls() {
+	@Override
+	public PipeLink[] getIncomingControls() {
 		return sourceControls.toArray(new PipeLink[sourceControls.size()]);
-	}	
+	}
+	
+	@Override
+	public <T> void storeIncomingValue(ContentNodeMetadata meta, T value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public <T> T getOutgoingValue(ContentNodeMetadata meta) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PipeStepReturnCode processPipeStep() {
+		// TODO Auto-generated method stub
+		return PipeStepReturnCode.CONTINUE;
+	}
 	
 	@Override
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {

@@ -33,6 +33,7 @@ import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
@@ -71,6 +72,8 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 	private static final URI				PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.dialog.toolbar");	
 	private static final String				PIPE_MENU_REMOVE_FIELD = "chav1961.calc.pipe.dialog.toolbar.removefield";	
 	private static final String				PIPE_MENU_EDIT_FIELD = "chav1961.calc.pipe.dialog.toolbar.editfield";	
+
+	private static final String				VALIDATION_MISSING_FIELD = "chav1961.calc.pipe.dialog.validation.missingfield"; 
 	
 	private final ContentMetadataInterface	mdi;
 	private final Localizer					localizer;
@@ -177,37 +180,33 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 		}
 	}
 
-	public void addSourceField(final PipeLink metadata) {
-		fields.addContent(metadata);
-	}
-
-	public PipeLink[] getSourceFields() {
-		return fields.getContent();
-	}
-
 	@Override
 	public PipeLink[] getLinks() {
 		return links.toArray(new PipeLink[links.size()]);
 	}
 	
-	public void addTargetControl(final PipeLink control) {
-		if (control == null) {
-			throw new NullPointerException("Control to add can't be null");
+	@Override
+	public void removeLink(final PipeLink link) {
+		links.remove(link);
+	}
+
+	@Override
+	public boolean validate(final LoggerFacade logger) {
+		if (dialogCaptionText.getText().trim().isEmpty() || dialogMessageText.getText().trim().isEmpty()) {
+			logger.message(Severity.warning,VALIDATION_MISSING_FIELD,getPipeItemName());
+			return false;
 		}
 		else {
-			controls.add(control);
+			return true;
 		}
 	}
 	
-	public void removeTargetControl(final PipeLink control) {
-		if (control == null) {
-			throw new NullPointerException("Control to remove can't be null");
-		}
-		else {
-			controls.remove(control);
-		}
+	
+	@Override
+	public PipeLink[] getIncomingControls() {
+		return controls.toArray(new PipeLink[controls.size()]);
 	}
-
+	
 	@Override
 	public ContentMetadataInterface getModel() {
 		return mdi;
@@ -222,10 +221,24 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 	public JControlTargetLabel getControlTarget() {
 		return targetControl;
 	}
-	
-	public PipeLink[] getTargetControls() {
-		return controls.toArray(new PipeLink[controls.size()]);
-	}	
+
+	@Override
+	public <T> void storeIncomingValue(ContentNodeMetadata meta, T value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public <T> T getOutgoingValue(ContentNodeMetadata meta) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PipeStepReturnCode processPipeStep() {
+		// TODO Auto-generated method stub
+		return PipeStepReturnCode.CONTINUE_TRUE;
+	}
 	
 	@Override
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {

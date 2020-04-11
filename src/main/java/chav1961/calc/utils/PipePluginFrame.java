@@ -10,15 +10,17 @@ import java.util.Locale;
 import chav1961.calc.interfaces.DragMode;
 import chav1961.calc.interfaces.PipeContainerInterface;
 import chav1961.calc.interfaces.PipeContainerItemInterface;
+import chav1961.calc.interfaces.PipeItemRuntime;
 import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.i18n.interfaces.Localizer;
+import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.ui.swing.SwingUtils;
 
-public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeContainerInterface {
+public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeContainerInterface, PipeItemRuntime {
 	private static final long serialVersionUID = 1L;
 
 	private final PipeManager	parent;
@@ -45,6 +47,8 @@ public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeCo
 		}
 	}
 
+	public abstract void removeLink(final PipeLink link);
+	
 	@Override
 	public String getPipeItemName() {
 		return itemType+" #"+uniqueId;
@@ -84,7 +88,7 @@ public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeCo
 		// TODO Auto-generated method stub
 		
 	}
-	
+
 	protected void prepareTitle(final String titleId, final String titleTooltipId) throws LocalizationException {
 		setTitle(localizer.getValue(titleId)+" ("+getPipeItemName()+")");
 		if (titleTooltipId != null) {

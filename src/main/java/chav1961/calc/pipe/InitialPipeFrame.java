@@ -3,7 +3,6 @@ package chav1961.calc.pipe;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,20 +13,22 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
 import chav1961.calc.pipe.ModelItemListContainer.DropAction;
+import chav1961.calc.script.ScriptEditor;
 import chav1961.calc.utils.PipeLink;
-import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
+import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
-import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
-import chav1961.purelib.basic.growablearrays.GrowableCharArray;
+import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
@@ -47,9 +48,14 @@ import chav1961.purelib.ui.swing.useful.JStateString;
 
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="chav1961.calc.pipe.initial.caption",tooltip="chav1961.calc.pipe.initial.caption.tt",help="help.aboutApplication")
-@PluginProperties(resizable=true,width=500,height=180,pluginIconURI="initialFrameIcon.png",desktopIconURI="initialDesktopIcon.png")
+@PluginProperties(resizable=true,width=500,height=220,pluginIconURI="initialFrameIcon.png",desktopIconURI="initialDesktopIcon.png")
 public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	private static final 					long serialVersionUID = 1L;
+
+	private static final String				TABS_FIELDS_TITLE = "chav1961.calc.pipe.initial.tabs.fields";	
+	private static final String				TABS_FIELDS_TITLE_TT = "chav1961.calc.pipe.initial.tabs.fields.tt";	
+	private static final String				TABS_CODE_TITLE = "chav1961.calc.pipe.initial.tabs.expressions";	
+	private static final String				TABS_CODE_TITLE_TT = "chav1961.calc.pipe.initial.tabs.expressions.tt";	
 	private static final String				FIELDS_TITLE = "chav1961.calc.pipe.initial.fields"; 
 	private static final String				FIELDS_TITLE_TT = "chav1961.calc.pipe.initial.fields.tt"; 
 	private static final String				FIELDS_ADD_TITLE = "chav1961.calc.pipe.initial.fields.add.caption"; 
@@ -73,6 +79,8 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	private final ModelItemListContainer	fields;
 	private final TitledBorder				fieldsTitle = new TitledBorder(new LineBorder(Color.BLACK),"");
 	private final JToolBar					toolbar;
+	private final ScriptEditor				initialCode = new ScriptEditor();
+	private final JTabbedPane				tabs = new JTabbedPane(); 
 	
 	@LocaleResource(value="chav1961.calc.pipe.initial.caption",tooltip="chav1961.calc.pipe.initial.caption.tt")
 	@Format("9.2pz")
@@ -84,7 +92,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 			throw new NullPointerException("Initial metadata can't be null");
 		}
 		else if (general == null) {
-			throw new NullPointerException("Genetal metadata can't be null");
+			throw new NullPointerException("General metadata can't be null");
 		}
 		else {
 			try{this.mdi = ContentModelFactory.forAnnotatedClass(this.getClass());
@@ -105,12 +113,19 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 				bottom.add(state,BorderLayout.CENTER);
 				bottom.add(sourceControl,BorderLayout.EAST);
 				
-				final JScrollPane	pane = new JScrollPane(fields); 
+				final JScrollPane	fieldsScroll = new JScrollPane(fields);
+				final JPanel		pane = new JPanel(new BorderLayout());
 				
-				pane.setBorder(fieldsTitle);
-				pane.setPreferredSize(new Dimension(props.width(),props.height()));
-				add(pane,BorderLayout.CENTER);
-				add(toolbar,BorderLayout.EAST);
+				fieldsScroll.setBorder(fieldsTitle);
+				pane.add(fieldsScroll,BorderLayout.CENTER);
+				pane.add(toolbar,BorderLayout.EAST);
+
+				tabs.addTab("",pane);
+				tabs.addTab("",new JScrollPane(initialCode));
+				tabs.setSelectedIndex(0);
+				
+				tabs.setPreferredSize(new Dimension(props.width(),props.height()));
+				add(tabs,BorderLayout.CENTER);
 				add(bottom,BorderLayout.SOUTH);
 				SwingUtils.assignActionKey(fields,SwingUtils.KS_HELP,(e)->{showHelp(e.getActionCommand());},mdi.getRoot().getHelpId());
 				
@@ -159,36 +174,40 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 		return new PipeLink[0];
 	}
 	
-	public void addSourceField(final PipeLink metadata) {
-		fields.addContent(metadata);
-	}
-	
-	public PipeLink[] getSourceFields() {
-		return fields.getContent();
+	@Override
+	public void removeLink(final PipeLink link) {
 	}
 
-	public void addSourceControl(final PipeLink control) {
-		if (control == null) {
-			throw new NullPointerException("Control to add can't be null");
-		}
-		else {
-			fields.addContent(control);
-		}
+	@Override
+	public boolean validate(LoggerFacade logger) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 	
-	public void removeSourceControl(final PipeLink control) {
-		if (control == null) {
-			throw new NullPointerException("Control to remove can't be null");
-		}
-		else {
-			fields.removeContent(control);
-		}
+	
+	@Override
+	public PipeLink[] getIncomingControls() {
+		return controls.toArray(new PipeLink[controls.size()]);
 	}
 	
-	public ContentNodeMetadata[] getSourceControls() {
-		return controls.toArray(new ContentNodeMetadata[controls.size()]);
-	}	
-	
+	@Override
+	public <T> void storeIncomingValue(ContentNodeMetadata meta, T value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public <T> T getOutgoingValue(ContentNodeMetadata meta) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PipeStepReturnCode processPipeStep() {
+		// TODO Auto-generated method stub
+		return PipeStepReturnCode.CONTINUE;
+	}
+
 	@Override
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
 		fillLocalizedStrings(oldLocale,newLocale);
@@ -237,6 +256,11 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 		prepareTitle(mdi.getRoot().getLabelId(),mdi.getRoot().getTooltipId());
 		fieldsTitle.setTitle(localizer.getValue(FIELDS_TITLE));
 		fields.setToolTipText(localizer.getValue(FIELDS_TITLE_TT));
+
+		tabs.setTitleAt(0,localizer.getValue(TABS_FIELDS_TITLE));
+		tabs.setToolTipTextAt(0,localizer.getValue(TABS_FIELDS_TITLE_TT));
+		tabs.setTitleAt(1,localizer.getValue(TABS_CODE_TITLE));
+		tabs.setToolTipTextAt(1,localizer.getValue(TABS_CODE_TITLE_TT));
 	}
 
 	private void enableButtons(final boolean buttonsState) {

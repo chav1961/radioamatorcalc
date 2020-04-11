@@ -18,6 +18,10 @@
 		<app:separator/>
 		<app:item name="pipeMenu.clean" caption="pipeMenu.clean" tooltip="pipeMenu.clean.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/clearAllIcon.png" action="cleanPipe"/>
 		<app:item name="pipeMenu.validate" caption="pipeMenu.validate" tooltip="pipeMenu.validate.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/validateIcon.png" action="validatePipe"/>
+		<app:separator/>
+		<app:item name="pipeMenu.start" caption="pipeMenu.start" tooltip="pipeMenu.start.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/startIcon.png" action="startPipe"/>
+		<app:item name="pipeMenu.debug" caption="pipeMenu.debug" tooltip="pipeMenu.debug.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/startIcon.png" action="debugPipe"/>
+		<app:item name="pipeMenu.stop" caption="pipeMenu.stop" tooltip="pipeMenu.stop.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/stopIcon.png" action="stopPipe"/>
 	</app:menu>
 	<app:menu id="initial.toolbar">
 		<app:item name="chav1961.calc.pipe.initial.toolbar.addfield" caption="chav1961.calc.pipe.initial.toolbar.addfield" tooltip="chav1961.calc.pipe.initial.toolbar.addfield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/newIcon.png" action="addField"/>

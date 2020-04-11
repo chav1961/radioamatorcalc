@@ -148,6 +148,12 @@
 		<key name="pipeMenu.clean.tt">Remove all the pipe elements</key>
 		<key name="pipeMenu.validate">Validate</key>
 		<key name="pipeMenu.validate.tt">Validate pipe</key>
+		<key name="pipeMenu.start">Start</key>
+		<key name="pipeMenu.start.tt">Start pipe</key>
+		<key name="pipeMenu.debug">Debug</key>
+		<key name="pipeMenu.debug.tt">Start pipe in debug mode</key>
+		<key name="pipeMenu.stop">Stop</key>
+		<key name="pipeMenu.stop.tt">Stop pipe started</key>
 
 <!-- Localization for navigator menu --> 
 		<key name="menu.curcuits">Circuit's parameters</key>
@@ -320,11 +326,16 @@
 		<key name="chav1961.calc.pipe.screen.false.tt">False source starts execution for other pipes node on false conditional</key>
 		<key name="chav1961.calc.pipe.screen.ok.tt">OK source starts execution for other pipes node if user press 'OK' in the dialog window</key>
 		<key name="chav1961.calc.pipe.screen.cancel.tt">OK source starts execution for other pipes node if user press 'Cancel' in the dialog window</key>
+		<key name="chav1961.calc.pipe.screen.execution.completed">Pipe execution completed</key>
 
 		<key name="chav1961.calc.pipe.initial.caption">Initial pipe node</key>
 		<key name="chav1961.calc.pipe.initial.caption.tt">Begins pipe execution</key>
 		<key name="chav1961.calc.pipe.initial.fields">Drag other plugin's field here</key>
 		<key name="chav1961.calc.pipe.initial.fields.tt">Drag other plugin's field here to fill them with initial before pipe start</key>
+		<key name="chav1961.calc.pipe.initial.tabs.fields">Fields</key>	
+		<key name="chav1961.calc.pipe.initial.tabs.fields.tt">Fields described in the initial pipe node</key>
+		<key name="chav1961.calc.pipe.initial.tabs.expressions">Initial code</key>
+		<key name="chav1961.calc.pipe.initial.tabs.expressions.tt">Initial code to execute before pipe starts (for example, set initial values for fields)</key>
 		<key name="chav1961.calc.pipe.initial.toolbar.addfield">Add field</key>
 		<key name="chav1961.calc.pipe.initial.toolbar.addfield.tt">Add new global field to the initial pipe node</key>
 		<key name="chav1961.calc.pipe.initial.toolbar.removefield">Remove field</key>
@@ -350,6 +361,7 @@
 		<key name="chav1961.calc.pipe.conditional.fields.remove.caption">Remove global field</key>
 		<key name="chav1961.calc.pipe.conditional.fields.remove.caption.tt">Remove global field description from the conditional node</key>
 		<key name="chav1961.calc.pipe.conditional.fields.remove.question">Confirm removing global field from the conditional node</key>
+		<key name="chav1961.calc.pipe.conditional.validation.missingfield">Conditional node [%1$S] error - check expression is not typed</key>
 
 		<key name="chav1961.calc.pipe.calc.caption">Calculator node</key>
 		<key name="chav1961.calc.pipe.calc.caption.tt">Supports customized calculations</key>
@@ -384,7 +396,8 @@
 		<key name="chav1961.calc.pipe.dialog.fields.remove.question">Confirm removing selected global field from the dialog description pipe node</key>
 		<key name="chav1961.calc.pipe.dialog.fields.edit.caption">Edit dialog attributes</key>
 		<key name="chav1961.calc.pipe.dialog.fields.edit.caption.tt">Edit dialog attributes of the global field description</key>
-
+		<key name="chav1961.calc.pipe.dialog.validation.missingfield">Dialog node [%1$s] error - mandatory dialog message and/or dialog caption field(s) is not typed</key>
+		
 		<key name="chav1961.calc.pipe.container.caption">Container pipe node</key>
 		<key name="chav1961.calc.pipe.container.caption.tt">Container node inserts any available plugin in your pipe</key>
 		<key name="chav1961.calc.pipe.container.tabs.plugin">Plugin</key>
@@ -409,6 +422,9 @@
 		<key name="chav1961.calc.pipe.terminal.fields.remove.caption">Remove global field</key>
 		<key name="chav1961.calc.pipe.terminal.fields.remove.caption.tt">Remove global field description from the terminal node</key>
 		<key name="chav1961.calc.pipe.terminal.fields.remove.question">Remove global field description from the terminal node</key>
+		<key name="chav1961.calc.pipe.terminal.validation.missingfield">Terminal node [%1$s] error - mandatory message field is not typed</key>
+		<key name="chav1961.calc.pipe.terminal.terminate.caption">Execution terminated</key>
+		<key name="chav1961.calc.pipe.terminal.terminate.caption.tt">Execution terminated</key>
 
 <!-- Localization for pipe manager -->
 
@@ -617,6 +633,12 @@
 		<key name="pipeMenu.clean.tt">Удалить все элементы конвейера</key>
 		<key name="pipeMenu.validate">Проверить</key>
 		<key name="pipeMenu.validate.tt">Проверить правильность сборки конвейера</key>
+		<key name="pipeMenu.start">Пуск</key>
+		<key name="pipeMenu.start.tt">Запуск конвейера в работу</key>
+		<key name="pipeMenu.debug">Отладка</key>
+		<key name="pipeMenu.debug.tt">Запуск конвейера в работу в режиме отладки</key>
+		<key name="pipeMenu.stop">Стоп</key>
+		<key name="pipeMenu.stop.tt">Остановка конвейера</key>
 
 <!-- Локализация меню навигатора --> 
 		<key name="menu.curcuits">Параметры цепей</key>
@@ -789,11 +811,16 @@
 		<key name="chav1961.calc.pipe.screen.false.tt">Узел старта "по лжи" запускает выполнение других узлов конвейера при ложности проверяемого условия</key>
 		<key name="chav1961.calc.pipe.screen.ok.tt">Узел старта "OK" запускает выполнение других узлов конвейера, если пользователь нажал кнопку "ОК" в диалоговом окне</key>
 		<key name="chav1961.calc.pipe.screen.cancel.tt">Узел старта "Oтмена" запускает выполнение других узлов конвейера, если пользователь нажал кнопку "Отмена" в диалоговом окне</key>
+		<key name="chav1961.calc.pipe.screen.execution.completed">Конвейер завершил работу</key>
 
 		<key name="chav1961.calc.pipe.initial.caption">Стартовый узел</key>
 		<key name="chav1961.calc.pipe.initial.caption.tt">Со стартового узла начинается работа конвейера</key> 
 		<key name="chav1961.calc.pipe.initial.fields">Список общих полей стартового узла</key>
 		<key name="chav1961.calc.pipe.initial.fields.tt">С помощью кнопок панели инструмтеодв определите поля, доступные всем узлам конвейера</key>
+		<key name="chav1961.calc.pipe.initial.tabs.fields">Поля</key>	
+		<key name="chav1961.calc.pipe.initial.tabs.fields.tt">Поля, описанные в стартовом узле</key>
+		<key name="chav1961.calc.pipe.initial.tabs.expressions">Начальный код</key>
+		<key name="chav1961.calc.pipe.initial.tabs.expressions.tt">Начальный код, выполняемый перед работой конвейера (например, инициализация полей стартового узла)</key>
 		<key name="chav1961.calc.pipe.initial.toolbar.addfield">Создать поле</key>
 		<key name="chav1961.calc.pipe.initial.toolbar.addfield.tt">Добавить новое общее поле к стартовому узлу конвейера</key>
 		<key name="chav1961.calc.pipe.initial.toolbar.removefield">Удалить поле</key>
@@ -819,6 +846,7 @@
 		<key name="chav1961.calc.pipe.conditional.fields.remove.caption">Удалить глобальное поле</key>
 		<key name="chav1961.calc.pipe.conditional.fields.remove.caption.tt">Удалить существующее глобальное поле из узла проверки условия конвейера</key>
 		<key name="chav1961.calc.pipe.conditional.fields.remove.question">Подтвердите удаление поля из узла проверки условия конвейера</key>
+		<key name="chav1961.calc.pipe.conditional.validation.missingfield">Ошибка узла проверки условия [%1$S] - не задана формула вычисления условия проверки</key>
 
 		<key name="chav1961.calc.pipe.calc.caption">Узел-калькулятор</key>
 		<key name="chav1961.calc.pipe.calc.caption.tt">Программирует вычисления конвейере</key>
@@ -853,6 +881,7 @@
 		<key name="chav1961.calc.pipe.dialog.fields.remove.caption">Удалить поле</key>
 		<key name="chav1961.calc.pipe.dialog.fields.remove.caption.tt">Удалить выбранное глобальное поле из узла описания диалога</key>
 		<key name="chav1961.calc.pipe.dialog.fields.remove.question">Подтвердите удаление выбранного глобального поля из узла описания диалога</key>
+		<key name="chav1961.calc.pipe.dialog.validation.missingfield">Ошибка диалогового узла [%1$s] - не заполнено обязательное поле заголовка и/или текста диалога</key>
 
 		<key name="chav1961.calc.pipe.container.caption">Узел-контейнер плагина</key>
 		<key name="chav1961.calc.pipe.container.caption.tt">Узел-контейнер позволяет включать в конвейер любые доступные плагины</key>
@@ -878,6 +907,9 @@
 		<key name="chav1961.calc.pipe.terminal.fields.remove.caption">Удалить поле</key>
 		<key name="chav1961.calc.pipe.terminal.fields.remove.caption.tt">Удалить выранное глобальное поле из конечного узла конвейера</key>
 		<key name="chav1961.calc.pipe.terminal.fields.remove.question">Удалить выранное глобальное поле из конечного узла конвейера</key>
+		<key name="chav1961.calc.pipe.terminal.validation.missingfield">Ошибка конечного узла [%1$s] - не заполнено обязательное поле сообщения</key>
+		<key name="chav1961.calc.pipe.terminal.terminate.caption">Выполнение завершено</key>
+		<key name="chav1961.calc.pipe.terminal.terminate.caption.tt">Выполнение завершено</key>
 
 <!-- Локализация для менеджера конвейера -->
 

@@ -30,9 +30,24 @@ public class ScriptProcessor {
 		KEYWORDS.placeName("if",LexemaType.LexIf);
 		KEYWORDS.placeName("then",LexemaType.LexThen);
 		KEYWORDS.placeName("else",LexemaType.LexElse);
-		KEYWORDS.placeName("endif",LexemaType.LexEndIf);
+		KEYWORDS.placeName("while",LexemaType.LexWhile);
+		KEYWORDS.placeName("repeat",LexemaType.LexRepeat);
+		KEYWORDS.placeName("until",LexemaType.LexUntil);
+		KEYWORDS.placeName("for",LexemaType.LexFor);
+		KEYWORDS.placeName("to",LexemaType.LexTo);
+		KEYWORDS.placeName("step",LexemaType.LexStep);
+		KEYWORDS.placeName("case",LexemaType.LexCase);
+		KEYWORDS.placeName("of",LexemaType.LexOf);
+		KEYWORDS.placeName("break",LexemaType.LexBreak);
+		KEYWORDS.placeName("continue",LexemaType.LexContinue);
 		KEYWORDS.placeName("return",LexemaType.LexReturn);
+		KEYWORDS.placeName("begin",LexemaType.LexBegin);
+		KEYWORDS.placeName("end",LexemaType.LexEnd);
 		KEYWORDS.placeName("print",LexemaType.LexPrint);
+		KEYWORDS.placeName("call",LexemaType.LexCall);
+		KEYWORDS.placeName("div",LexemaType.LexIDiv);
+		KEYWORDS.placeName("mod",LexemaType.LexMod);
+		KEYWORDS.placeName("in",LexemaType.LexIn);
 		KEYWORDS.placeName("and",LexemaType.LexAnd);
 		KEYWORDS.placeName("not",LexemaType.LexNot);
 		KEYWORDS.placeName("or",LexemaType.LexOr);
@@ -46,68 +61,104 @@ public class ScriptProcessor {
 		KEYWORDS.placeName("exp10",LexemaType.LexFExp10); 
 		KEYWORDS.placeName("ln",LexemaType.LexFLn);
 		KEYWORDS.placeName("ln10",LexemaType.LexFLog10); 
+		KEYWORDS.placeName("sqr",LexemaType.LexFSqr);
 		KEYWORDS.placeName("sqrt",LexemaType.LexFSqrt);
+		KEYWORDS.placeName("int",LexemaType.LexInt);
+		KEYWORDS.placeName("real",LexemaType.LexReal);
+		KEYWORDS.placeName("str",LexemaType.LexString);
+		KEYWORDS.placeName("bool",LexemaType.LexBoolean);
+		KEYWORDS.placeName("true",LexemaType.LexTrue);
+		KEYWORDS.placeName("false",LexemaType.LexFalse);
 	}
 	
 	public enum LexemaType {
 		LexEOF, LexOpen, LexClose, 
-		LexPlus(GroupType.GroupAdd), LexMinus(GroupType.GroupAdd), LexMul(GroupType.GroupMul), LexDiv(GroupType.GroupMul), 
-		LexGE(GroupType.GroupCmp), LexGT(GroupType.GroupCmp), LexLE(GroupType.GroupCmp), LexLT(GroupType.GroupCmp), LexEQ(GroupType.GroupCmp), LexNE(GroupType.GroupCmp), 
+		LexDot, LexList, LexRange, LexSemicolon,
+		LexPlus(GroupType.GroupAdd), LexMinus(GroupType.GroupAdd), LexMul(GroupType.GroupMul), LexDiv(GroupType.GroupMul), LexIDiv(GroupType.GroupMul), LexMod(GroupType.GroupMul), 
+		LexGE(GroupType.GroupCmp,ComparisonType.GE), LexGT(GroupType.GroupCmp,ComparisonType.GT), LexLE(GroupType.GroupCmp,ComparisonType.LE), LexLT(GroupType.GroupCmp,ComparisonType.LT),
+		LexEQ(GroupType.GroupCmp,ComparisonType.EQ), LexNE(GroupType.GroupCmp,ComparisonType.NE), LexIn(GroupType.GroupCmp,ComparisonType.IN), 
 		LexFSin(GroupType.GroupFunc), LexFCos(GroupType.GroupFunc), LexFTan(GroupType.GroupFunc),
 		LexFASin(GroupType.GroupFunc), LexFACos(GroupType.GroupFunc), LexFATan(GroupType.GroupFunc), 
-		LexFExp(GroupType.GroupFunc), LexFExp10(GroupType.GroupFunc), LexFLn(GroupType.GroupFunc), LexFLog10(GroupType.GroupFunc),
-		LexFSqrt(GroupType.GroupFunc),  
-		LexAnd, LexOr, LexNot, LexAssign, 
-		LexInt, LexReal, LexName, LexString, LexList, LexEndOp,
-		LexIf, LexThen, LexElse, LexEndIf, LexReturn, LexPrint, LexRoot;
+		LexFExp(GroupType.GroupFunc), LexFExp10(GroupType.GroupFunc), LexFLn(GroupType.GroupFunc), 
+		LexFLog10(GroupType.GroupFunc), LexFSqr(GroupType.GroupFunc), LexFSqrt(GroupType.GroupFunc),
+		LexAnd(GroupType.GroupAnd), LexOr(GroupType.GroupOr), LexNot(GroupType.GroupNot), LexAssign(GroupType.GroupAssign), 
+		LexInt(GroupType.GroupDeclaration), LexReal(GroupType.GroupDeclaration), LexString(GroupType.GroupDeclaration), LexBoolean(GroupType.GroupDeclaration), 
+		LexPlugin(GroupType.GroupReference), LexName(GroupType.GroupReference), 
+		LexIntValue(GroupType.GroupConst), LexRealValue(GroupType.GroupConst), LexStringValue(GroupType.GroupConst), LexTrue(GroupType.GroupConst), LexFalse(GroupType.GroupConst), 
+		LexIf(GroupType.GroupOperator), LexThen(GroupType.GroupOperator), LexElse(GroupType.GroupOperator), 
+		LexWhile(GroupType.GroupOperator), LexRepeat(GroupType.GroupOperator), LexUntil(GroupType.GroupOperator),
+		LexFor(GroupType.GroupOperator), LexTo(GroupType.GroupOperator), LexStep(GroupType.GroupOperator),
+		LexCase(GroupType.GroupOperator), LexOf(GroupType.GroupOperator),
+		LexBreak(GroupType.GroupOperator), LexContinue(GroupType.GroupOperator), LexReturn(GroupType.GroupOperator),
+		LexBegin(GroupType.GroupOperator), LexEnd(GroupType.GroupOperator),
+		LexPrint(GroupType.GroupOperator), 
+		LexCall(GroupType.GroupOperator),
+		LexError(GroupType.GroupError),
+		LexComment(GroupType.GroupComment),
+		LexRoot;
 		
-		private final GroupType	groupType;
+		private final GroupType			groupType;
+		private final ComparisonType	comparisonType;
 
 		private LexemaType() {
 			this.groupType = GroupType.GroupOther;
+			this.comparisonType = null;
 		}
 		
 		private LexemaType(final GroupType groupType) {
 			this.groupType = groupType;
+			this.comparisonType = null;
+		}
+
+		private LexemaType(final GroupType groupType, final ComparisonType comparisonType) {
+			this.groupType = groupType;
+			this.comparisonType = comparisonType;
 		}
 		
 		public GroupType groupType() {
 			return groupType;
 		}
+		
+		public ComparisonType getComparisonType() {
+			return comparisonType;
+		}
 	}
 
 	public enum SyntaxNodeType {
-		NodeRoot, NodeSequence, NodePrint, NodeReturn, NodeAssign, NodeShortIf, NodeLongIf,
-		NodeGetVar, NodeGetInt, NodeGetReal, NodeNegation, NodeMul, NodeAdd, NodeCmp, NodeNot, NodeAnd, NodeOr,
+		NodeRoot, NodeSequence, NodeAssign, NodeShortIf, NodeLongIf,
+		NodeWhile, NodeRepeat, NodeFor, NodeCase, NodeGroup,
+		NodePrint, 
+		NodeBreak, NodeContinue, NodeReturn, 
+		NodeGetVar, NodeGetInt, NodeGetReal, NodeGetString, NodeGetBoolean, NodeNegation, NodeMul, NodeAdd, NodeCmp, NodeNot, NodeAnd, NodeOr,
 		NodeFunc
 	}
 	
 	enum ComparisonType {
-		EQ, NE, GT, GE, LT, LE
+		EQ, NE, GT, GE, LT, LE, IN
 	}
 
 	enum FunctionType {
 		Sin, Cos, Tan, ArcSin, ArcCos, ArcTan, Exp, Exp10, Ln, Ln10, Sqrt
 	}
-
+	
 	enum GroupType {
-		GroupMul, GroupAdd, GroupCmp, GroupFunc, GroupOther
+		GroupUnary, GroupMul, GroupAdd, GroupCmp, GroupNot, GroupAnd, GroupOr, GroupAssign, GroupFunc, GroupOperator, GroupDeclaration, GroupReference, GroupConst, GroupError, GroupComment, GroupOther
 	}
 	
 	enum ExpressionDepth {
 		ExprOr, ExprAnd, ExprNot, ExprCmp, ExprAdd, ExprMul, ExprUnary, ExprTerm,
 	}
 	
-	public static List<Lexema> buildLexemaList(final String content) throws SyntaxException, IllegalArgumentException, NullPointerException {
+	public static List<Lexema> buildLexemaList(final String content, final boolean suppressErrors, final boolean keepComments) throws SyntaxException, IllegalArgumentException, NullPointerException {
 		if (content == null || content.isEmpty()) {
 			throw new IllegalArgumentException("Content string can't be null or empty"); 
 		}
 		else {
-			return buildLexemaList(CharUtils.terminateAndConvert2CharArray(content,LEX_TERMINAL));
+			return buildLexemaList(CharUtils.terminateAndConvert2CharArray(content,LEX_TERMINAL),suppressErrors,keepComments);
 		}
 	}
 	
-	private static List<Lexema> buildLexemaList(final char[] source) throws SyntaxException, IllegalArgumentException, NullPointerException {
+	private static List<Lexema> buildLexemaList(final char[] source, final boolean suppressErrors, final boolean keepComments) throws SyntaxException, IllegalArgumentException, NullPointerException {
 		final List<Lexema>	lexemas = new ArrayList<>();
 		final StringBuilder	sb = new StringBuilder();
 		final long[]		forLongs = new long[2];
@@ -117,109 +168,139 @@ public class ScriptProcessor {
 loop:	for (;;) {
 			from = CharUtils.skipBlank(source,from,true); 
 			col = from - lastRowLocation;
+			if (source[from] == '/' && source[from+1] == '/') {
+				while (source[from] != '\n' && source[from] != LEX_TERMINAL) {
+					from++;
+				}
+				if (keepComments) {
+					lexemas.add(new Lexema(from,LexemaType.LexComment,row,col));
+				}
+			}
 			switch (source[from]) {
 				case LEX_TERMINAL :
-					lexemas.add(new Lexema(LexemaType.LexEOF,row,col));
+					lexemas.add(new Lexema(from,LexemaType.LexEOF,row,col));
 					break loop;
 				case '\n'	:	// Only to calculate rows and columns
 					lastRowLocation = ++from;
 					row++;
 					break;
-				case ';'	:
-					lexemas.add(new Lexema(LexemaType.LexEndOp,row,col));
-					from++;
-					break;
 				case '('	:
-					lexemas.add(new Lexema(LexemaType.LexOpen,row,col));
+					lexemas.add(new Lexema(from,LexemaType.LexOpen,row,col));
 					from++;
 					break;
 				case ')'	:
-					lexemas.add(new Lexema(LexemaType.LexClose,row,col));
+					lexemas.add(new Lexema(from,LexemaType.LexClose,row,col));
 					from++;
 					break;
-				case '+'	:
-					lexemas.add(new Lexema(LexemaType.LexPlus,row,col));
-					from++;
-					break;
-				case '-'	:
-					lexemas.add(new Lexema(LexemaType.LexMinus,row,col));
-					from++;
-					break;
-				case '*'	:
-					lexemas.add(new Lexema(LexemaType.LexMul,row,col));
-					from++;
-					break;
-				case '/'	:
-					if (source[from+1] == '/') { // Comment
-						while (source[from] != '\n' && source[from] != LEX_TERMINAL) {
-							from++;
-						}
+				case '.'	:
+					if (source[from+1] == '.') {
+						lexemas.add(new Lexema(from,LexemaType.LexRange,row,col));
+						from+=2;
 					}
 					else {
-						lexemas.add(new Lexema(LexemaType.LexDiv,row,col));
+						lexemas.add(new Lexema(from,LexemaType.LexList,row,col));
 						from++;
 					}
 					break;
+				case ','	:
+					lexemas.add(new Lexema(from,LexemaType.LexList,row,col));
+					from++;
+					break;
+				case ';'	:
+					lexemas.add(new Lexema(from,LexemaType.LexSemicolon,row,col));
+					from++;
+					break;
+				case '+'	:
+					lexemas.add(new Lexema(from,LexemaType.LexPlus,row,col));
+					from++;
+					break;
+				case '-'	:
+					lexemas.add(new Lexema(from,LexemaType.LexMinus,row,col));
+					from++;
+					break;
+				case '*'	:
+					lexemas.add(new Lexema(from,LexemaType.LexMul,row,col));
+					from++;
+					break;
+				case '/'	:
+					lexemas.add(new Lexema(from,LexemaType.LexDiv,row,col));
+					from++;
+					break;
 				case '>'	:
 					if (source[from+1] == '=') {
-						lexemas.add(new Lexema(LexemaType.LexGE,row,col));
+						lexemas.add(new Lexema(from,LexemaType.LexGE,row,col));
 						from += 2;
 					}
 					else {
-						lexemas.add(new Lexema(LexemaType.LexGT,row,col));
+						lexemas.add(new Lexema(from,LexemaType.LexGT,row,col));
 						from++;
 					}
 					break;
 				case '<'	:
 					if (source[from+1] == '=') {
-						lexemas.add(new Lexema(LexemaType.LexLE,row,col));
+						lexemas.add(new Lexema(from,LexemaType.LexLE,row,col));
 						from += 2;
 					}
 					else if (source[from+1] == '>') {
-						lexemas.add(new Lexema(LexemaType.LexNE,row,col));
+						lexemas.add(new Lexema(from,LexemaType.LexNE,row,col));
 						from += 2;
 					}
 					else {
-						lexemas.add(new Lexema(LexemaType.LexLT,row,col));
+						lexemas.add(new Lexema(from,LexemaType.LexLT,row,col));
 						from++;
 					}
 					break;
 				case '='	:
-					lexemas.add(new Lexema(LexemaType.LexEQ,row,col));
+					lexemas.add(new Lexema(from,LexemaType.LexEQ,row,col));
 					from++;
 					break;
 				case ':'	:
 					if (source[from+1] == '=') {
-						lexemas.add(new Lexema(LexemaType.LexAssign,row,col));
+						lexemas.add(new Lexema(from,LexemaType.LexAssign,row,col));
 						from += 2;
 					}
 					else {
-						throw new SyntaxException(row,col,"Unknown lexema");
+						processError(from,row,col,"Unknown lexema",lexemas,suppressErrors);
+						from++;
 					}
-					break;
-				case ','	:
-					lexemas.add(new Lexema(LexemaType.LexList,row,col));
-					from++;
 					break;
 				case '0' : case '1' : case '2' : case '3' : case '4' : case '5' : case '6' : case '7' : case '8' : case '9' :
 					start = from;
-					from = CharUtils.parseNumber(source,from,forLongs,CharUtils.PREF_LONG|CharUtils.PREF_DOUBLE,true);
+					from = CharUtils.parseNumber(source,start,forLongs,CharUtils.PREF_LONG,true);
+					if (source[from] == '.' && source[from+1] >= '0' && source[from+1] <= '9') {
+						from = CharUtils.parseNumber(source,start,forLongs,CharUtils.PREF_LONG|CharUtils.PREF_DOUBLE,true);
+					}
 					if (forLongs[1] == CharUtils.PREF_INT || forLongs[1] == CharUtils.PREF_LONG) {
-						lexemas.add(new Lexema(LexemaType.LexInt,row,col,forLongs[0]));
+						lexemas.add(new Lexema(start,LexemaType.LexIntValue,row,col,forLongs[0]));
 					}
 					else {
-						lexemas.add(new Lexema(LexemaType.LexReal,row,col,forLongs[0]));
+						lexemas.add(new Lexema(start,LexemaType.LexRealValue,row,col,forLongs[0]));
+					}
+					break;
+				case '#' :
+					if (source[from+1] >= '0' && source[from+1] <= '9') {
+						start = from;
+						try{from = CharUtils.parseNumber(source,from+1,forLongs,CharUtils.PREF_INT,true);
+							lexemas.add(new Lexema(start-1,LexemaType.LexPlugin,row,col,forLongs[0]));
+						} catch (IllegalArgumentException exc) {
+							processError(from,row,col,"Illegal plugin reference",lexemas,suppressErrors);
+							from++;
+						}
+					}
+					else {
+						processError(from,row,col,"Illegal plugin reference",lexemas,suppressErrors);
+						from++;
 					}
 					break;
 				case '\"'	:
-					
-					try{start = from;
+					try{start = from+1;
 						sb.setLength(0);
 						from = CharUtils.parseString(source,from+1,'\"',sb);
 						
-						lexemas.add(new Lexema(LexemaType.LexString,row,col,sb.toString()));
+						lexemas.add(new Lexema(start-1,LexemaType.LexStringValue,row,col,sb.toString()));
 					} catch (IllegalArgumentException exc) {
-						throw new SyntaxException(row,col,"Unquoted string");
+						processError(from,row,col,"Unquoted string",lexemas,suppressErrors);
+						from++;
 					}
 					break;
 				default :
@@ -229,19 +310,29 @@ loop:	for (;;) {
 						final long 	id = KEYWORDS.seekName(source,forInts[0],forInts[1]+1);
 						
 						if (id >= 0) {
-							lexemas.add(new Lexema(KEYWORDS.getCargo(id),row,col));
+							lexemas.add(new Lexema(start,KEYWORDS.getCargo(id),row,col));
 						}
 						else {
-							lexemas.add(new Lexema(LexemaType.LexName,row,col,new String(source,start,from-start)));
+							lexemas.add(new Lexema(start,LexemaType.LexName,row,col,new String(source,start,from-start)));
 						}
 					}
 					else {
-						throw new SyntaxException(row,col,"Unknown lexema");
+						processError(from,row,col,"Unknown lexema",lexemas,suppressErrors);
+						from++;
 					}
 					break;
 			}
 		}
 		return lexemas;
+	}
+
+	private static void processError(final int displ,final int row, final int col, final String message, final List<Lexema> lexemas, final boolean suppressErrors) throws SyntaxException {
+		if (suppressErrors) {
+			lexemas.add(new Lexema(displ,LexemaType.LexError,row,col,message));
+		}
+		else {
+			throw new SyntaxException(row,col,message); 
+		}
 	}
 	
 	public static <T> SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>> buildSyntaxTree(final Lexema[] lexemas, final ContentMetadataInterface model) throws NullPointerException, IllegalArgumentException, SyntaxException {
@@ -289,7 +380,7 @@ loop:	for (;;) {
 	}
 
 	public static <T> SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>> buildSyntaxTree(final String content, final ContentMetadataInterface model) throws NullPointerException, IllegalArgumentException, SyntaxException {
-		final List<Lexema>									lex = buildLexemaList(content);
+		final List<Lexema>									lex = buildLexemaList(content,false,false);
 		final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	root = buildSyntaxTree(lex.toArray(new Lexema[lex.size()]), model);
 		
 		lex.clear();
@@ -328,12 +419,12 @@ loop:	do {from++;
 						final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	thenNode = new SyntaxNode<>(lexemas[from].row,lexemas[from].col,SyntaxNodeType.NodeSequence,0,null);
 
 						from = buildSequence(lexemas,from+1,thenNode,vars);
-						if (lexemas[from].type != LexemaType.LexEndIf) {
+						if (lexemas[from].type != LexemaType.LexSemicolon) {
 							if (lexemas[from].type == LexemaType.LexElse) {
 								final SyntaxNode<SyntaxNodeType,SyntaxNode<?,?>>	elseNode = new SyntaxNode<>(lexemas[from].row,lexemas[from].col,SyntaxNodeType.NodeSequence,0,null);
 
 								from = buildSequence(lexemas,from+1,elseNode,vars);
-								if (lexemas[from].type != LexemaType.LexEndIf) {
+								if (lexemas[from].type != LexemaType.LexSemicolon) {
 									throw new SyntaxException(lexemas[from].row,lexemas[from].col,"keyword 'endif' is missing");
 								}
 								else {
@@ -377,7 +468,7 @@ loop:	do {from++;
 				default :
 					break loop;
 			}
-		} while (lexemas[from].type == LexemaType.LexEndOp);
+		} while (lexemas[from].type == LexemaType.LexSemicolon);
 
 		if (operators.size() == 1) {
 			root.assign(operators.get(0));
@@ -898,11 +989,13 @@ loop:	do {from++;
 	
 	public static class Lexema {
 		public final LexemaType	type;
+		public final int		displ;
 		public final int		row, col;
 		public final long		numberContent;
 		public final String		stringContent;
 
-		public Lexema(final LexemaType type, final int from, final int to) {
+		public Lexema(final int displ, final LexemaType type, final int from, final int to) {
+			this.displ = displ;
 			this.type = type;
 			this.row = from;
 			this.col = to;
@@ -910,7 +1003,8 @@ loop:	do {from++;
 			this.stringContent = null;
 		}
 		
-		public Lexema(final LexemaType type, final int from, final int to, final String stringContent) {
+		public Lexema(final int displ, final LexemaType type, final int from, final int to, final String stringContent) {
+			this.displ = displ;
 			this.type = type;
 			this.row = from;
 			this.col = to;
@@ -918,7 +1012,8 @@ loop:	do {from++;
 			this.stringContent = stringContent;
 		}
 
-		public Lexema(final LexemaType type, final int from, final int to, final long numberContent) {
+		public Lexema(final int displ, final LexemaType type, final int from, final int to, final long numberContent) {
+			this.displ = displ;
 			this.type = type;
 			this.row = from;
 			this.col = to;
@@ -928,7 +1023,7 @@ loop:	do {from++;
 
 		@Override
 		public String toString() {
-			return "Lexema [type=" + type + ", from=" + row + ", to=" + col + ", numberContent=" + numberContent + ", stringContent=" + stringContent + "]";
+			return "Lexema [type=" + type + ", displ=" + displ + ", row=" + row + ", col=" + col + ", numberContent=" + numberContent + ", stringContent=" + stringContent + "]";
 		}
 	}
 }

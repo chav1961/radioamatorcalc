@@ -28,9 +28,11 @@ import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.exceptions.ContentException;
+import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
@@ -60,6 +62,11 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 //	private static final String				FIELDS_REMOVE_TITLE_TT = "chav1961.calc.pipe.terminal.fields.remove.caption.tt";
 	private static final String				FIELDS_REMOVE_QUESTION = "chav1961.calc.pipe.terminal.fields.remove.question"; 
 
+	private static final String				VALIDATION_MISSING_FIELD = "chav1961.calc.pipe.terminal.validation.missingfield"; 
+	
+	private static final String				RUNTIME_TERMINATE_TITLE = "chav1961.calc.pipe.terminal.terminate.caption"; 
+//	private static final String				RUNTIME_TERMINATE_TITLE_TT = "chav1961.calc.pipe.terminal.terminate.caption.tt";
+	
 	private static final URI				PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.terminal.toolbar");	
 	private static final String				PIPE_MENU_REMOVE_FIELD = "chav1961.calc.pipe.terminal.toolbar.removefield";	
 	
@@ -177,39 +184,58 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	}
 
 	@Override
+	public boolean validate(final LoggerFacade logger) {
+		if (terminalMessage.getText().trim().isEmpty()) {
+			logger.message(Severity.warning,VALIDATION_MISSING_FIELD,getPipeItemName());
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
+	@Override
+	public <T> void storeIncomingValue(final ContentNodeMetadata meta, final T value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public <T> T getOutgoingValue(final ContentNodeMetadata meta) {
+		throw new UnsupportedOperationException("method getOutgoingValue(...) is not applicable for terminal node");
+	}
+
+	@Override
+	public PipeStepReturnCode processPipeStep() throws FlowException {
+		try{final String	title = localizer.getValue(RUNTIME_TERMINATE_TITLE); 
+			
+			if (terminalFailure.isSelected()) {
+				JOptionPane.showMessageDialog(this,terminalMessage.getText(),title,JOptionPane.ERROR_MESSAGE);
+				return PipeStepReturnCode.TERMINATE_FALSE;
+			}
+			else {
+				JOptionPane.showMessageDialog(this,terminalMessage.getText(),title,JOptionPane.INFORMATION_MESSAGE);
+				return PipeStepReturnCode.TERMINATE_TRUE;
+			}
+		} catch (LocalizationException e) {
+			throw new FlowException(e.getLocalizedMessage(),e);
+		}
+	}
+	
+	@Override
 	public PipeLink[] getLinks() {
 		return links.toArray(new PipeLink[links.size()]);
 	}
 	
-	public void addTargetField(final PipeLink metadata) {
-		fields.addContent(metadata);
+	@Override
+	public void removeLink(final PipeLink link) {
+		links.remove(link);
 	}
 	
-	public PipeLink[] getTargetFields() {
-		return fields.getContent();
+	@Override
+	public PipeLink[] getIncomingControls() {
+		return controls.toArray(new PipeLink[controls.size()]);
 	}
-
-	public void addTargetControl(final PipeLink control) {
-		if (control == null) {
-			throw new NullPointerException("Control to add can't be null");
-		}
-		else {
-			controls.add(control);
-		}
-	}
-	
-	public void removeTargetControl(final ContentNodeMetadata control) {
-		if (control == null) {
-			throw new NullPointerException("Control to remove can't be null");
-		}
-		else {
-			controls.remove(control);
-		}
-	}
-	
-	public ContentNodeMetadata[] getTargetControls() {
-		return controls.toArray(new ContentNodeMetadata[controls.size()]);
-	}	
 	
 	@Override
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
