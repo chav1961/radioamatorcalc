@@ -79,8 +79,6 @@ public class ScriptEditor  extends JTextPaneHighlighter<LexemaType>{
 		store(ScriptProcessor.LexemaType.LexRepeat,true,false,Color.blue);
 		store(ScriptProcessor.LexemaType.LexUntil,true,false,Color.blue);
 		store(ScriptProcessor.LexemaType.LexFor,true,false,Color.blue);
-		store(ScriptProcessor.LexemaType.LexTo,true,false,Color.blue);
-		store(ScriptProcessor.LexemaType.LexStep,true,false,Color.blue);
 		store(ScriptProcessor.LexemaType.LexCase,true,false,Color.blue);
 		store(ScriptProcessor.LexemaType.LexOf,true,false,Color.blue);
 		store(ScriptProcessor.LexemaType.LexBreak,true,false,Color.blue);

@@ -29,7 +29,6 @@ import javax.swing.event.InternalFrameListener;
 
 import chav1961.calc.interfaces.DragMode;
 import chav1961.calc.interfaces.MetadataTarget;
-import chav1961.calc.interfaces.PipeContainerItemInterface;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.TabContent;
 import chav1961.calc.pipe.CalcPipeFrame;
@@ -46,11 +45,11 @@ import chav1961.calc.utils.PipeExecutor;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.utils.PipePluginFrame;
-import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.exceptions.PrintingException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
@@ -64,6 +63,8 @@ import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.model.interfaces.NodeMetadataOwner;
+import chav1961.purelib.streams.JsonStaxParser;
+import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.interfaces.FormManager;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
@@ -72,6 +73,23 @@ import chav1961.purelib.ui.swing.useful.DnDManager.DnDInterface;
 import chav1961.purelib.ui.swing.useful.DnDManager.DnDMode;
 import chav1961.purelib.ui.swing.useful.JCloseableTab;
 import chav1961.purelib.ui.swing.useful.JExtendedScrollPane;
+
+//
+//	Json serial file format:
+//	<file> ::= <file_format_version><global_desc>[<item_desc>...]
+//  <global_desc> ::= <pipe_name><pipe_comment><last_free_id><pipe_geometry><number_of_items><plugins_required><localizer_references>
+//	<pipe_geometry> ::= <width><height>
+//	<item_desc> ::= <item_id><item_type><item_geometry><content><links>
+//  <item_geometry> ::= <window_modifiers><location><width><height>
+//	<content> ::= {<initial_content>|<conditional_content>|<calculation_content>|<dialog_content>|<terminal_content>|<container_content>}
+//	<initial_content> ::= <pipe_links><initial_code>
+//	<conditional_content> ::= <income_pipe_links><outgoing_pipe_links><conditional_code>
+//	<calculation_content> ::= <income_pipe_links><outgoing_pipe_links><calculation_code>
+//	<dialog_content> ::= <caption_and_message><income_pipe_links><outgoing_pipe_links><visual_settings>
+//	<terminal_content> ::= <message_and_error><pipe_links>
+//	<container_content> ::= <plugin_reference><income_pipe_links><selected_action>
+//	<links> ::= <pipe_link>
+//
 
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value = "chav1961.calc.pipe", tooltip = "chav1961.calc.pipe.tt", icon = "root:/WorkbenchTab!")
@@ -238,6 +256,18 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		pipeManager.repaint();
 	}
 
+	public void serialize(final JsonStaxPrinter printer) throws PrintingException {
+	
+	}
+
+	public void deserialize(final JsonStaxParser parser) throws SyntaxException {
+		
+	}
+	
+	public void clear() {
+		cleanPipe();
+	}
+	
 	DragMode setDragMode(final DragMode newMode) {
 		switch (newMode) {
 			case CONTROLS	:
