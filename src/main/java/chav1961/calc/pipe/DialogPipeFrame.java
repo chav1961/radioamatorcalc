@@ -31,6 +31,7 @@ import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.exceptions.PrintingException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
@@ -43,6 +44,7 @@ import chav1961.purelib.model.FieldFormat;
 import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
@@ -245,6 +247,17 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 		fillLocalizedStrings(oldLocale,newLocale);
 	}
 
+	@Override
+	public void serializeFrame(final JsonStaxPrinter printer) throws PrintingException, IOException {
+		if (printer == null) {
+			throw new NullPointerException("Json printer can't be null");
+		}
+		else {
+			printer.splitter().name(JSON_PIPE_CONTENT).startObject();
+			printer.endObject();
+		}
+	}	
+	
 	@OnAction("action:/removeField")
 	private void removeField() throws LocalizationException {
 		if (new JLocalizedOptionPane(localizer).confirm(this,FIELDS_REMOVE_QUESTION,FIELDS_REMOVE_TITLE,JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {

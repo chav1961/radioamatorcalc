@@ -34,6 +34,7 @@ import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.exceptions.PrintingException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.enumerations.ContinueMode;
@@ -48,6 +49,7 @@ import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.interfaces.FormManager;
 import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.interfaces.RefreshMode;
@@ -80,7 +82,10 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 
 	private static final URI					PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.container.toolbar");	
 	private static final String					PIPE_MENU_REMOVE_LINK = "chav1961.calc.pipe.container.toolbar.removelink";	
+
+	private static final String					JSON_PIPE_ITEM_PLUGIN_CLASS = "pluginClass";
 	
+	private final Class<?>						instanceClass; 
 	private final ContentMetadataInterface		mdi, innerMdi;
 	private final Localizer						localizer, pluginLocalizer;
 	private final JStateString					state;
@@ -103,10 +108,8 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	public ContainerPipeFrame(final int uniqueId, final PipeManager parent, final Localizer localizer, final FormManager<?,?> content, final ContentMetadataInterface general) throws ContentException {
 		super(uniqueId,parent, localizer, ContainerPipeFrame.class, PipeItemType.PLUGIN_ITEM);
 		
-		final Class<?>					instanceClass = content.getClass();
-    	final PluginProperties			pp = instanceClass.getAnnotation(PluginProperties.class);
-		
-		try{this.mdi = ContentModelFactory.forAnnotatedClass(this.getClass());
+		try{this.instanceClass = content.getClass();
+			this.mdi = ContentModelFactory.forAnnotatedClass(this.getClass());
 			this.innerMdi = ContentModelFactory.forAnnotatedClass(instanceClass);
 			this.localizer = LocalizerFactory.getLocalizer(mdi.getRoot().getLocalizerAssociated());
 			this.pluginLocalizer = LocalizerFactory.getLocalizer(innerMdi.getRoot().getLocalizerAssociated());
@@ -117,7 +120,10 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 			this.toolbar = SwingUtils.toJComponent(general.byUIPath(PIPE_MENU_ROOT),JToolBar.class);
 			this.toolbar.setOrientation(JToolBar.VERTICAL);
 			this.toolbar.setFloatable(false);
-			SwingUtils.assignActionListeners(this.toolbar,this);
+			
+	    	final PluginProperties			pp = instanceClass.getAnnotation(PluginProperties.class);
+			
+	    	SwingUtils.assignActionListeners(this.toolbar,this);
         	
 			try{final FormManager<Object,T>	wrapper = new FormManagerWrapper<>((FormManager<Object,T>)content, ()-> {refresh();}); 
 				
@@ -305,6 +311,18 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 		return PipeStepReturnCode.CONTINUE;
 	}
 
+	@Override
+	public void serializeFrame(final JsonStaxPrinter printer) throws PrintingException, IOException {
+		if (printer == null) {
+			throw new NullPointerException("Json printer can't be null");
+		}
+		else {
+			printer.splitter().name(JSON_PIPE_CONTENT).startObject();
+				printer.name(JSON_PIPE_ITEM_PLUGIN_CLASS).value(instanceClass.getCanonicalName());
+			printer.endObject();
+		}
+	}	
+	
 	private void refresh() {
 		w.refresh();
 	}

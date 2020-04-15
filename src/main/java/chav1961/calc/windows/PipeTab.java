@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.beans.PropertyVetoException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -66,6 +67,7 @@ import chav1961.purelib.model.interfaces.NodeMetadataOwner;
 import chav1961.purelib.streams.JsonStaxParser;
 import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.interfaces.FormManager;
+import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 import chav1961.purelib.ui.swing.useful.DnDManager;
@@ -76,8 +78,8 @@ import chav1961.purelib.ui.swing.useful.JExtendedScrollPane;
 
 //
 //	Json serial file format:
-//	<file> ::= <file_format_version><global_desc>[<item_desc>...]
-//  <global_desc> ::= <pipe_name><pipe_comment><last_free_id><pipe_geometry><number_of_items><plugins_required><localizer_references>
+//	<file> ::= <file_format_version><global_desc><number_of_items>[<item_desc>...]
+//  <global_desc> ::= <pipe_name><pipe_comment><last_free_id><pipe_geometry>
 //	<pipe_geometry> ::= <width><height>
 //	<item_desc> ::= <item_id><item_type><item_geometry><content><links>
 //  <item_geometry> ::= <window_modifiers><location><width><height>
@@ -95,6 +97,10 @@ import chav1961.purelib.ui.swing.useful.JExtendedScrollPane;
 @LocaleResource(value = "chav1961.calc.pipe", tooltip = "chav1961.calc.pipe.tt", icon = "root:/WorkbenchTab!")
 public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListener, TabContent, DnDInterface {
 	private static final long 				serialVersionUID = 1L;
+	
+	public static final String				JSON_VERSION = "1.0";
+	
+	
 	private static final String				MODIFICATION_MARK = "*";
 	private static final String				PIPE_SOURCE_TT = "chav1961.calc.pipe.screen.source.tt";	
 	private static final String				PIPE_TARGET_TT = "chav1961.calc.pipe.screen.target.tt";	
@@ -111,6 +117,14 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	private static final String				PIPE_MENU_STOP_NAME = "pipeMenu.stop";	
 
 	private static final String				PIPE_EXECUTION_COMPLETED = "chav1961.calc.pipe.screen.execution.completed";	
+
+	private static final String				JSON_VERSION_NAME = "version";
+	private static final String				JSON_PIPE_NAME = "pipeName";
+	private static final String				JSON_PIPE_DESCRIPTION = "pipeDescription";
+	private static final String				JSON_LAST_UNIQUE_ID = "lastUniqueId";
+	private static final String				JSON_GEOMETRY = "geometry";
+	private static final String				JSON_GEOMETRY_WIDTH = "width";
+	private static final String				JSON_GEOMETRY_HEIGHT = "height";
 	
 	public final SubscribableInt			pluginCount = new SubscribableInt(); 
 	
@@ -125,13 +139,18 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	private final JPopupMenu				popup;
 	private final JToolBar					toolbar;
 
+	private File							fileAssociated = null;
 	private boolean							isModified = false;			
-	private String							pipeName = "<new>";
 	private int								uniquePipeItemId = 1;
 	private volatile Thread					executorThread = null;
 
 	@LocaleResource(value="chav1961.calc.pipe",tooltip="chav1961.calc.pipe.tt")
-	private final boolean field = false;
+	@Format("50m")
+	private String							pipeName = "<new>";
+	
+	@LocaleResource(value="chav1961.calc.pipe",tooltip="chav1961.calc.pipe.tt")
+	@Format("50m")
+	private String 							pipeDescription = "";
 	
 	public PipeTab(final JTabbedPane tabs, final Localizer localizer, final LoggerFacade logger) throws SyntaxException, LocalizationException, ContentException {
 		if (localizer == null) {
@@ -256,8 +275,18 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		pipeManager.repaint();
 	}
 
-	public void serialize(final JsonStaxPrinter printer) throws PrintingException {
-	
+	public void serialize(final JsonStaxPrinter printer) throws PrintingException, IOException {
+		if (printer == null) {
+			throw new NullPointerException("Json printer can't be null");
+		}
+		else {
+			printer.startObject();
+			printer.name(JSON_VERSION_NAME).value(JSON_VERSION);
+			serializeGlobal(printer);
+			pipeManager.serializeFrames(printer);
+			printer.endObject();
+			printer.flush();
+		}
 	}
 
 	public void deserialize(final JsonStaxParser parser) throws SyntaxException {
@@ -266,6 +295,14 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	
 	public void clear() {
 		cleanPipe();
+	}
+	
+	public File getFileAssciated() {
+		return fileAssociated;
+	}
+
+	public void setFileAssciated(final File fileAssociated) {
+		this.fileAssociated = fileAssociated;
 	}
 	
 	DragMode setDragMode(final DragMode newMode) {
@@ -297,7 +334,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 		} catch (java.awt.IllegalComponentStateException e) {
 		}
 	}
-
+	
 	@OnAction("action:/newInitial")
 	private void newInitial() {
 		final ContentNodeMetadata	initial = new MutableContentNodeMetadata("initial",InitialPipeFrame.class,"./initial",localizerURI,PIPE_SOURCE_TT, PIPE_SOURCE_TT, null, null, URI.create("app:action:/start"),null); 
@@ -502,16 +539,13 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	
 	private void resizeDesktopPane() {
 		int		x = pipeManager.getPreferredSize().width, y = pipeManager.getPreferredSize().height;
-//		int		x = pane.getPreferredSize().width, y = pane.getPreferredSize().height;
 		int		xOld = x, yOld = y;
 		
 		for (JInternalFrame item : pipeManager.getAllFrames()) {
-//		for (JInternalFrame item : pane.getAllFrames()) {
 			final Point	pt = new Point(item.getWidth(),item.getHeight());
 			
 			SwingUtilities.convertPointToScreen(pt,item);
 			SwingUtilities.convertPointFromScreen(pt,pipeManager);
-//			SwingUtilities.convertPointFromScreen(pt,pane);
 			
 			x = Math.max(x,pt.x);
 			y = Math.max(y,pt.y);
@@ -521,8 +555,19 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			final Dimension	newSize = new Dimension(x > xOld ? x+30 : x, y > yOld ? y+30 : y);
 
 			pipeManager.setPreferredSize(newSize);
-//			pane.setPreferredSize(newSize);
 			scroll.revalidate();
 		}
+	}
+
+	private void serializeGlobal(final JsonStaxPrinter printer) throws PrintingException, IOException {
+		final Dimension	prefSize = pipeManager.getPreferredSize();
+		
+		printer.splitter().name(JSON_PIPE_NAME).value(pipeName);
+		printer.splitter().name(JSON_PIPE_DESCRIPTION).value(pipeDescription);
+		printer.splitter().name(JSON_LAST_UNIQUE_ID).value(uniquePipeItemId);
+		printer.splitter().name(JSON_GEOMETRY).startObject();
+			printer.name(JSON_GEOMETRY_WIDTH).value(prefSize.width);
+			printer.splitter().name(JSON_GEOMETRY_HEIGHT).value(prefSize.height);
+		printer.endObject();
 	}
 }

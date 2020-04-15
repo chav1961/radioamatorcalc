@@ -29,6 +29,7 @@ import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.exceptions.PrintingException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.LocalizerFactory;
@@ -38,6 +39,7 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
@@ -67,6 +69,8 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	private static final URI				PIPE_MENU_TARGET_ROOT = URI.create("ui:/model/navigation.top.calc.targetToolbar");	
 	private static final String				PIPE_MENU_REMOVE_SOURCE_FIELD = "chav1961.calc.pipe.calc.sourceToolbar.removefield";	
 	private static final String				PIPE_MENU_REMOVE_TARGET_FIELD = "chav1961.calc.pipe.calc.targetToolbar.removefield";	
+
+	private static final String				JSON_PIPE_ITEM_PROGRAM = "program";
 	
 	private final ContentMetadataInterface	mdi;
 	private final Localizer					localizer;
@@ -82,7 +86,7 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	private final TitledBorder				targetFieldsTitle = new TitledBorder(new LineBorder(Color.BLACK));
 	private final JToolBar					sourceToolbar;
 	private final JToolBar					targetToolbar;
-	private final ScriptEditor				expression = new ScriptEditor();
+	private final ScriptEditor				program = new ScriptEditor();
 	private final JTabbedPane				tabs = new JTabbedPane(); 
 	@LocaleResource(value="chav1961.calc.pipe.calc.caption",tooltip="chav1961.calc.pipe.calc.caption.tt")
 	@Format("9.2pz")
@@ -137,7 +141,7 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 				centerPanel.add(pane2);
 				
 				tabs.addTab("",centerPanel);
-				tabs.addTab("",new JScrollPane(expression));
+				tabs.addTab("",new JScrollPane(program));
 				tabs.setSelectedIndex(0);
 				
 				tabs.setPreferredSize(new Dimension(props.width(),props.height()));
@@ -261,6 +265,18 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
 		fillLocalizedStrings(oldLocale,newLocale);
 	}
+
+	@Override
+	public void serializeFrame(final JsonStaxPrinter printer) throws PrintingException, IOException {
+		if (printer == null) {
+			throw new NullPointerException("Json printer can't be null");
+		}
+		else {
+			printer.splitter().name(JSON_PIPE_CONTENT).startObject();
+				printer.name(JSON_PIPE_ITEM_PROGRAM).value(program.getText());
+			printer.endObject();
+		}
+	}	
 	
 	@OnAction("action:/removeSourceField")
 	private void removeSourceField() throws LocalizationException {

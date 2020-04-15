@@ -15,18 +15,23 @@ import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.exceptions.PrintingException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.swing.SwingUtils;
 
 public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeContainerInterface, PipeItemRuntime {
 	private static final long serialVersionUID = 1L;
 
-	private final PipeManager	parent;
-	private final Localizer		localizer;
-	private final PipeItemType	itemType;
-	private final int 			uniqueId;
+	protected static final String	JSON_PIPE_CONTENT = "content";
+	protected static final String	JSON_PIPE_LINKS = "links";
+	
+	private final PipeManager		parent;
+	private final Localizer			localizer;
+	private final PipeItemType		itemType;
+	private final int 				uniqueId;
 	
 	public PipePluginFrame(final int uniqueId, final PipeManager parent, final Localizer localizer, final Class<T> classInstance, final PipeItemType itemType) throws ContentException {
 		super(classInstance);
@@ -48,6 +53,7 @@ public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeCo
 	}
 
 	public abstract void removeLink(final PipeLink link);
+	public abstract void serializeFrame(JsonStaxPrinter printer) throws PrintingException, IOException;
 	
 	@Override
 	public String getPipeItemName() {
@@ -157,4 +163,5 @@ public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeCo
 			}
 		});
 	}
+
 }

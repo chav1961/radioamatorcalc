@@ -3,6 +3,7 @@ package chav1961.calc.pipe;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.exceptions.PrintingException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
@@ -35,9 +37,11 @@ import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.FieldFormat;
+import chav1961.purelib.model.ModelUtils;
 import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
@@ -70,6 +74,9 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 //	private static final String				PIPE_MENU_ADD_FIELD = "chav1961.calc.pipe.initial.toolbar.addfield";	
 	private static final String				PIPE_MENU_REMOVE_FIELD = "chav1961.calc.pipe.initial.toolbar.removefield";	
 	private static final String				PIPE_MENU_EDIT_FIELD = "chav1961.calc.pipe.initial.toolbar.editfield";	
+
+	private static final String				JSON_PIPE_ITEM_INITIAL_CODE = "initialCode";
+	private static final String				JSON_PIPE_ITEM_FIELDS = "fields";
 	
 	private final ContentMetadataInterface	mdi;
 	private final Localizer					localizer;
@@ -213,6 +220,29 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 		fillLocalizedStrings(oldLocale,newLocale);
 	}
 
+	@Override
+	public void serializeFrame(final JsonStaxPrinter printer) throws PrintingException, IOException {
+		if (printer == null) {
+			throw new NullPointerException("Json printer can't be null");
+		}
+		else {
+			printer.splitter().name(JSON_PIPE_CONTENT).startObject();
+				printer.name(JSON_PIPE_ITEM_INITIAL_CODE).value(initialCode.getText());
+				printer.splitter().name(JSON_PIPE_ITEM_FIELDS).startArray();
+					boolean	splitterRequired = false;
+					
+					for (PipeLink item : controls) {
+						if (splitterRequired) {
+							printer.splitter();
+						}
+						ModelUtils.serializeToJson(item.getMetadata(),printer);
+						splitterRequired = true;
+					}
+				printer.endArray();
+			printer.endObject();
+		}
+	}	
+	
 	@OnAction("action:/addField")
 	private void addField() throws LocalizationException, ContentException {
 		final ContentNodeMetadata		meta = new MutableContentNodeMetadata("name",String.class,"name",null,"testSet1","testSet2","testSet3",new FieldFormat(String.class),URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":/name"), null); 

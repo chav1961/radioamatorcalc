@@ -2,6 +2,7 @@ package chav1961.calc;
 
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -10,13 +11,17 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -57,10 +62,13 @@ import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.PreparationException;
+import chav1961.purelib.basic.exceptions.PrintingException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
+import chav1961.purelib.fsys.FileSystemFactory;
 import chav1961.purelib.fsys.FileSystemOnFile;
+import chav1961.purelib.fsys.interfaces.FileSystemInterface;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.PureLibLocalizer;
 import chav1961.purelib.i18n.interfaces.Localizer;
@@ -68,12 +76,15 @@ import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
 import chav1961.purelib.ui.swing.SimpleNavigatorTree;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 import chav1961.purelib.ui.swing.useful.JCloseableTab;
 import chav1961.purelib.ui.swing.useful.JFileContentManipulator;
+import chav1961.purelib.ui.swing.useful.JFileSelectionDialog;
+import chav1961.purelib.ui.swing.useful.JFileSelectionDialog.FilterCallback;
 import chav1961.purelib.ui.swing.useful.JStateString;
 
 public class Application extends JFrame implements LocaleChangeListener {
@@ -249,6 +260,66 @@ public class Application extends JFrame implements LocaleChangeListener {
 			placeTab(tabs,pipe,true);
 		} catch (LocalizationException | ContentException | MalformedURLException e) {
 			stateString.message(Severity.error,e.getLocalizedMessage());
+		}
+	}
+
+	@OnAction("action:/savePipe")
+	private void savePipe() {
+		final Component	comp = tabs.getSelectedComponent();
+		
+		if (comp instanceof PipeTab) {
+			final PipeTab	pipe = (PipeTab)comp; 
+			
+			if (pipe.getFileAssciated() == null) {
+				savePipeAs();
+			}
+			else {
+				try(final FileWriter		fw = new FileWriter(pipe.getFileAssciated(),Charset.forName("UTF-8"));
+					final JsonStaxPrinter	jp = new JsonStaxPrinter(fw)) {
+
+					pipe.serialize(jp);
+					jp.flush();
+				} catch (IOException | PrintingException e) {
+					stateString.message(Severity.error,e.getLocalizedMessage());
+				}
+			}
+		}
+	}
+	
+	@OnAction("action:/savePipeAs")
+	private void savePipeAs() {
+		final Component	comp = tabs.getSelectedComponent();
+		
+		if (comp instanceof PipeTab) {
+			@SuppressWarnings("resource")
+			final PipeTab			pipe = (PipeTab)comp;
+			final File				file = pipe.getFileAssciated() != null ? pipe.getFileAssciated() : new File("./").getAbsoluteFile(); 
+			
+			try(final FileSystemInterface	fsi = FileSystemFactory.createFileSystem(URI.create(FileSystemInterface.FILESYSTEM_URI_SCHEME+":"+file.toURL().toString()))) {
+				final FilterCallback		pipeFilter = new FilterCallback() {
+												final String[]	fileMask = new String[]{"*.pip"};
+												
+												@Override public String getFilterName() {return "Funny Prolog Fact/rule base";}
+												@Override public String[] getFileMask() {return fileMask;}
+												@Override public boolean accept(FileSystemInterface item) throws IOException {return item.isDirectory() || item.getName().endsWith(".pip");}
+											};
+				
+				for (String item : JFileSelectionDialog.select(this,localizer,fsi,JFileSelectionDialog.OPTIONS_CAN_SELECT_FILE|JFileSelectionDialog.OPTIONS_FOR_SAVE,pipeFilter)) {
+					final String	relativeURI = item.endsWith(".pip") ? item : item+".pip";
+					
+					try(final FileSystemInterface	frb = fsi.clone().open(relativeURI).push("../").mkDir().pop().create()) {
+						try(final Writer			wr = frb.charWrite("UTF-8");
+							final JsonStaxPrinter	jp = new JsonStaxPrinter(wr)) {
+
+							pipe.serialize(jp);
+							jp.flush();
+						}
+						stateString.message(Severity.info,"New fact/rule base %1$s was prepared",relativeURI);
+					}
+				}
+			} catch (IOException | PrintingException | LocalizationException e) {
+				stateString.message(Severity.error,e.getLocalizedMessage());
+			}
 		}
 	}
 	

@@ -30,6 +30,7 @@ import chav1961.calc.windows.PipeManager;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.exceptions.PrintingException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
@@ -40,6 +41,7 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
@@ -69,6 +71,9 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	
 	private static final URI				PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.terminal.toolbar");	
 	private static final String				PIPE_MENU_REMOVE_FIELD = "chav1961.calc.pipe.terminal.toolbar.removefield";	
+
+	private static final String				JSON_PIPE_ITEM_MESSAGE = "message";
+	private static final String				JSON_PIPE_ITEM_IS_ERROR = "isError";
 	
 	private final ContentMetadataInterface	mdi;
 	private final Localizer					localizer;
@@ -82,6 +87,7 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	private final JCheckBox					terminalFailure = new JCheckBox();
 	private final JLabel					terminalLabel = new JLabel();
 	private final JTextField				terminalMessage = new JTextField();
+	
 	@LocaleResource(value="chav1961.calc.pipe.terminal.caption",tooltip="chav1961.calc.pipe.terminal.caption.tt")
 	@Format("9.2pz")
 	public float temp = 0;
@@ -242,6 +248,19 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 		fillLocalizedStrings(oldLocale,newLocale);
 	}
 
+	@Override
+	public void serializeFrame(final JsonStaxPrinter printer) throws PrintingException, IOException {
+		if (printer == null) {
+			throw new NullPointerException("Json printer can't be null");
+		}
+		else {
+			printer.splitter().name(JSON_PIPE_CONTENT).startObject();
+				printer.name(JSON_PIPE_ITEM_MESSAGE).value(terminalMessage.getText());
+				printer.splitter().name(JSON_PIPE_ITEM_IS_ERROR).value(terminalFailure.isSelected());
+			printer.endObject();
+		}
+	}
+	
 	@OnAction("action:/removeField")
 	private void removeField() throws LocalizationException {
 		if (new JLocalizedOptionPane(localizer).confirm(this,FIELDS_REMOVE_QUESTION,FIELDS_REMOVE_TITLE,JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {

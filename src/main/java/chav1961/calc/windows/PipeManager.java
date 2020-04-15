@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
@@ -50,6 +51,7 @@ import chav1961.purelib.basic.SequenceIterator;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.exceptions.PrintingException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
@@ -59,6 +61,7 @@ import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.model.interfaces.NodeMetadataOwner;
+import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.swing.useful.JLocalizedOptionPane;
 
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
@@ -72,6 +75,28 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 	private static final String				VALIDATION_NO_WAY_TO_TERMINAL = "chav1961.calc.windows.pipemanager.validation.noWayToTerminal";
 	private static final String				VALIDATION_UNCONDITIONAL_LOOP = "chav1961.calc.windows.pipemanager.validation.unconditionalLoop";
 	private static final String				VALIDATION_OK = "chav1961.calc.windows.pipemanager.validation.OK";
+
+	private static final String				JSON_PIPE_ITEMS = "items";
+	private static final String				JSON_PIPE_ITEM_COUNT = "itemCount";
+	private static final String				JSON_PIPE_ITEM_LIST = "itemList";
+	private static final String				JSON_PIPE_ITEM_ID = "id";
+	private static final String				JSON_PIPE_ITEM_TYPE = "type";
+	private static final String				JSON_PIPE_ITEM_GEOMETRY = "geometry";
+	private static final String				JSON_PIPE_ITEM_GEOMETRY_X = "x";
+	private static final String				JSON_PIPE_ITEM_GEOMETRY_Y = "y";
+	private static final String				JSON_PIPE_ITEM_GEOMETRY_WIDTH = "width";
+	private static final String				JSON_PIPE_ITEM_GEOMETRY_HEIGHT = "height";
+	private static final String				JSON_PIPE_ITEM_GEOMETRY_ICONIZED = "iconized";
+	private static final String				JSON_PIPE_ITEM_GEOMETRY_MAXIMIZED = "maximized";
+	private static final String				JSON_PIPE_ITEM_LINKS = "links";
+
+	private static final String				JSON_PIPE_ITEM_LINK_TYPE = "type";
+	private static final String				JSON_PIPE_ITEM_LINK_TYPE_CONTROL = "control";
+	private static final String				JSON_PIPE_ITEM_LINK_TYPE_DATA = "data";
+	private static final String				JSON_PIPE_ITEM_LINK_SOURCE = "source";
+	private static final String				JSON_PIPE_ITEM_LINK_SOURCE_CONTROL = "sourceControl";
+	private static final String				JSON_PIPE_ITEM_LINK_TARGET = "target";
+	private static final String				JSON_PIPE_ITEM_LINK_TARGET_CONTROL = "targetControl";
 	
 	private final PipeTab					parent;
 	private final Localizer					localizer;
@@ -299,6 +324,76 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 			
 			repaint(minX,minY,Math.abs(pair.from.x-pair.to.x),Math.abs(pair.from.y-pair.to.y));
 		}
+	}
+
+	void serializeFrames(final JsonStaxPrinter printer) throws PrintingException, IOException {
+		printer.splitter().name(JSON_PIPE_ITEMS).startObject();
+			printer.name(JSON_PIPE_ITEM_COUNT).value(frames.size());
+			printer.splitter().name(JSON_PIPE_ITEM_LIST).startArray();
+			
+			boolean		splitterRequired = false;
+			
+			for (PipePluginFrame<?> frame : frames) {
+				final Rectangle	rect = frame.getBounds();
+				
+				if (splitterRequired) {
+					printer.splitter();
+				}
+				printer.startObject();
+					printer.name(JSON_PIPE_ITEM_ID).value(frame.getPipeItemName());
+					printer.splitter().name(JSON_PIPE_ITEM_TYPE).value(frame.getType().toString());
+					printer.splitter().name(JSON_PIPE_ITEM_GEOMETRY).startObject();
+						printer.name(JSON_PIPE_ITEM_GEOMETRY_X).value(rect.x);
+						printer.splitter().name(JSON_PIPE_ITEM_GEOMETRY_Y).value(rect.y);
+						printer.splitter().name(JSON_PIPE_ITEM_GEOMETRY_WIDTH).value(rect.width);
+						printer.splitter().name(JSON_PIPE_ITEM_GEOMETRY_HEIGHT).value(rect.height);
+						printer.splitter().name(JSON_PIPE_ITEM_GEOMETRY_ICONIZED).value(frame.isIcon());
+						printer.splitter().name(JSON_PIPE_ITEM_GEOMETRY_MAXIMIZED).value(frame.isMaximum());
+					printer.endObject();
+					frame.serializeFrame(printer);
+				printer.endObject();
+				splitterRequired = true;
+			}
+			printer.endArray();
+
+			printer.splitter().name(JSON_PIPE_ITEM_LINKS).startArray();
+			splitterRequired = false;
+			for (PipePluginFrame<?> frame : frames) {
+				for (PipeLink ctrl : frame.getLinks()) {
+					if (splitterRequired) {
+						printer.splitter();
+					}
+					printer.startObject();
+						printer.name(JSON_PIPE_ITEM_LINK_TYPE).value(JSON_PIPE_ITEM_LINK_TYPE_CONTROL);
+						printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE).value(ctrl.getSource().getPipeItemName());
+						printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE_CONTROL).value(ctrl.getSourcePoint().getClass().getSimpleName());
+						printer.splitter().name(JSON_PIPE_ITEM_LINK_TARGET).value(ctrl.getTarget().getPipeItemName());
+						printer.splitter().name(JSON_PIPE_ITEM_LINK_TARGET_CONTROL).value(ctrl.getTargetPoint().getClass().getSimpleName());
+					printer.endObject();
+					splitterRequired = true;
+				}
+				for (PipeLink data : frame.getIncomingControls()) {
+					if (splitterRequired) {
+						printer.splitter();
+					}
+					printer.startObject();
+						printer.name(JSON_PIPE_ITEM_LINK_TYPE).value(JSON_PIPE_ITEM_LINK_TYPE_DATA);
+						if (data.getSource() == null) {
+							printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE).nullValue();
+							printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE_CONTROL).nullValue();
+						}
+						else {
+							printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE).value(data.getSource().getPipeItemName());
+							printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE_CONTROL).value(data.getAssociatedMeta() != null ? data.getAssociatedMeta().getName() : data.getMetadata().getName());
+						}
+						printer.splitter().name(JSON_PIPE_ITEM_LINK_TARGET).value(data.getTarget().getPipeItemName());
+						printer.splitter().name(JSON_PIPE_ITEM_LINK_TARGET_CONTROL).value(data.getMetadata().getName());
+					printer.endObject();
+					splitterRequired = true;
+				}
+			}
+			printer.endArray();
+		printer.endObject();
 	}
 	
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) {
