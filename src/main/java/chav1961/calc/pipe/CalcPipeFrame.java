@@ -27,7 +27,9 @@ import chav1961.calc.script.ScriptEditor;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
+import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
 import chav1961.purelib.basic.exceptions.ContentException;
+import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.PrintingException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
@@ -167,6 +169,7 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 						default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
 					}
 				});
+				sourceFields.setName("sourceFields");
 				enableSourceButtons(!sourceFields.isSelectionEmpty());
 				targetFields.addListSelectionListener((e)->{
 					enableTargetButtons(!sourceFields.isSelectionEmpty());
@@ -184,6 +187,7 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 						default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
 					}
 				});
+				targetFields.setName("targetFields");
 				enableTargetButtons(!targetFields.isSelectionEmpty());
 				targetControl.addContentChangeListener((changeType,source,current)->{
 					switch (changeType) {
@@ -242,23 +246,35 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	public PipeLink[] getIncomingControls() {
 		return sourceControls.toArray(new PipeLink[sourceControls.size()]);
 	}
-	
-	@Override
-	public <T> void storeIncomingValue(ContentNodeMetadata meta, T value) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
-	public <T> T getOutgoingValue(ContentNodeMetadata meta) {
+	public Object preparePipeItem() throws FlowException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep() {
+	public void storeIncomingValue(Object temp, ContentNodeMetadata meta, Object value) throws ContentException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger) throws FlowException {
 		// TODO Auto-generated method stub
 		return PipeStepReturnCode.CONTINUE;
+	}
+
+	@Override
+	public Object getOutgoingValue(Object temp, ContentNodeMetadata meta) throws ContentException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void unpreparePipeItem(Object temp) throws FlowException {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	@Override
@@ -267,7 +283,7 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	}
 
 	@Override
-	public void serializeFrame(final JsonStaxPrinter printer) throws PrintingException, IOException {
+	public void serializeFrame(final JsonStaxPrinter printer) throws IOException {
 		if (printer == null) {
 			throw new NullPointerException("Json printer can't be null");
 		}
@@ -277,6 +293,11 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 			printer.endObject();
 		}
 	}	
+	
+	@Override
+	public void deserializeFrame(final PluginSpecific specific) throws IOException {
+		program.setText(specific.program);
+	}
 	
 	@OnAction("action:/removeSourceField")
 	private void removeSourceField() throws LocalizationException {
@@ -312,4 +333,5 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	private void enableTargetButtons(final boolean buttonsState) {
 		((JButton)SwingUtils.findComponentByName(targetToolbar,PIPE_MENU_REMOVE_TARGET_FIELD)).setEnabled(buttonsState);
 	}
+
 }

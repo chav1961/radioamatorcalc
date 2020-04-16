@@ -16,7 +16,7 @@ public class PipeLink {
 	private final ContentNodeMetadata		metadata;
 	private final ContentNodeMetadata		associatedMeta;
 	
-	public PipeLink(final PipeLink.PipeLinkType type, final PipeContainerInterface source, final Component sourcePoint, final PipeContainerInterface target,final Component targetPoint, final ContentNodeMetadata metadata, final ContentNodeMetadata associatedMeta) {
+	public PipeLink(final PipeLinkType type, final PipeContainerInterface source, final Component sourcePoint, final PipeContainerInterface target,final Component targetPoint, final ContentNodeMetadata metadata, final ContentNodeMetadata associatedMeta) {
 		this.type = type;
 		this.source = source;
 		this.target = target;

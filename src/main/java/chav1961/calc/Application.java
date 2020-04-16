@@ -76,6 +76,7 @@ import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.streams.JsonStaxParser;
 import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
 import chav1961.purelib.ui.swing.SimpleNavigatorTree;
@@ -263,6 +264,39 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
+	@OnAction("action:/loadPipe")
+	private void loadPipe() {
+		final File						file = new File("./").getAbsoluteFile(); 
+
+		try(final FileSystemInterface	fsi = FileSystemFactory.createFileSystem(URI.create(FileSystemInterface.FILESYSTEM_URI_SCHEME+":"+file.toURI().toString()))) {
+			final FilterCallback		pipeFilter = new FilterCallback() {
+											final String[]	fileMask = new String[]{"*.pip"};
+											
+											@Override public String getFilterName() {return "Funny Prolog Fact/rule base";}
+											@Override public String[] getFileMask() {return fileMask;}
+											@Override public boolean accept(FileSystemInterface item) throws IOException {return item.isDirectory() || item.getName().endsWith(".pip");}
+										};
+			
+			for (String item : JFileSelectionDialog.select(this,localizer,fsi,JFileSelectionDialog.OPTIONS_CAN_SELECT_FILE|JFileSelectionDialog.OPTIONS_FOR_OPEN,pipeFilter)) {
+				final String	relativeURI = item.endsWith(".pip") ? item : item+".pip";
+				final PipeTab	pipe = new PipeTab(tabs,localizer,stateString);
+				
+				placeTab(tabs,pipe,true);
+				
+				try(final FileSystemInterface	frb = fsi.clone().open(relativeURI)) {
+					try(final Reader			rdr = frb.charRead("UTF-8");
+						final JsonStaxParser	jp = new JsonStaxParser(rdr)) {
+
+						pipe.deserialize(jp);
+					}
+					stateString.message(Severity.info,"New fact/rule base %1$s was prepared",relativeURI);
+				}
+			}
+		} catch (IOException | LocalizationException | ContentException e) {
+			stateString.message(Severity.error,e.getLocalizedMessage());
+		}
+	}
+	
 	@OnAction("action:/savePipe")
 	private void savePipe() {
 		final Component	comp = tabs.getSelectedComponent();
@@ -279,13 +313,13 @@ public class Application extends JFrame implements LocaleChangeListener {
 
 					pipe.serialize(jp);
 					jp.flush();
-				} catch (IOException | PrintingException e) {
+				} catch (IOException e) {
 					stateString.message(Severity.error,e.getLocalizedMessage());
 				}
 			}
 		}
 	}
-	
+
 	@OnAction("action:/savePipeAs")
 	private void savePipeAs() {
 		final Component	comp = tabs.getSelectedComponent();
@@ -295,7 +329,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			final PipeTab			pipe = (PipeTab)comp;
 			final File				file = pipe.getFileAssciated() != null ? pipe.getFileAssciated() : new File("./").getAbsoluteFile(); 
 			
-			try(final FileSystemInterface	fsi = FileSystemFactory.createFileSystem(URI.create(FileSystemInterface.FILESYSTEM_URI_SCHEME+":"+file.toURL().toString()))) {
+			try(final FileSystemInterface	fsi = FileSystemFactory.createFileSystem(URI.create(FileSystemInterface.FILESYSTEM_URI_SCHEME+":"+file.toURI().toString()))) {
 				final FilterCallback		pipeFilter = new FilterCallback() {
 												final String[]	fileMask = new String[]{"*.pip"};
 												
@@ -317,7 +351,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 						stateString.message(Severity.info,"New fact/rule base %1$s was prepared",relativeURI);
 					}
 				}
-			} catch (IOException | PrintingException | LocalizationException e) {
+			} catch (IOException | LocalizationException e) {
 				stateString.message(Severity.error,e.getLocalizedMessage());
 			}
 		}

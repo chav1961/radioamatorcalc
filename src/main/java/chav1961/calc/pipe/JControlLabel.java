@@ -45,6 +45,7 @@ public class JControlLabel extends JLabel implements NodeMetadataOwner, LocaleCh
 				fillLocalizedStrings(l.currentLocale().getLocale(),l.currentLocale().getLocale());
 				enableEvents(AWTEvent.MOUSE_EVENT_MASK);
 				setCursor(new Cursor(Cursor.HAND_CURSOR));
+				setName(this.getClass().getSimpleName());
 			} catch (LocalizationException e) {
 				throw new ContentException(e);
 			}

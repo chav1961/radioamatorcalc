@@ -9,6 +9,7 @@ import chav1961.calc.interfaces.PipeContainerInterface;
 import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
 import chav1961.calc.interfaces.PipeItemRuntime;
 import chav1961.calc.interfaces.PipeItemRuntime.PipeStepReturnCode;
+import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 
@@ -32,53 +33,72 @@ public class PipeExecutor {
 	}
 	
 	public void run() throws Exception {
+		final Object[]					temporaries = new Object[content.length];
 		final Set<PipePluginFrame<?>>	completedAsTrue = new HashSet<>();
 		final Set<PipePluginFrame<?>>	completedAsFalse = new HashSet<>();
 		PipeStepReturnCode				rc;
 		
-		while(!Thread.interrupted()) {
-			for (PipePluginFrame<?> item : getReadyToProcess(completedAsTrue,completedAsFalse)) {
-				for (PipeLink value : item.getIncomingControls()) {
-					if (value.getSource() != null) {
-						item.storeIncomingValue(value.getMetadata(),((PipeItemRuntime)value.getSource()).getOutgoingValue(value.getAssociatedMeta() != null ? value.getAssociatedMeta() : value.getMetadata()));
+		for (int index = 0, maxIndex = temporaries.length; index < maxIndex; index++) {
+			temporaries[index] = content[index].preparePipeItem();
+		}
+		try{
+			while(!Thread.interrupted()) {
+				for (int itemIndex : getReadyToProcess(completedAsTrue,completedAsFalse)) {
+					final PipePluginFrame<?>	item = content[itemIndex];
+					
+					for (PipeLink value : item.getIncomingControls()) {
+						if (value.getSource() != null) {
+							for (int index = 0, maxIndex = content.length; index < maxIndex; index++) {
+								if (content[index] == value.getSource()) {
+									final Object	toStore = ((PipeItemRuntime)value.getSource()).getOutgoingValue(temporaries[index],value.getAssociatedMeta() != null ? value.getAssociatedMeta() : value.getMetadata()); 
+									
+									item.storeIncomingValue(temporaries[itemIndex],value.getMetadata(),toStore);
+									break;
+								}
+							}
+						}
+					}
+					switch (rc = item.processPipeStep(temporaries[itemIndex],PureLibSettings.SYSTEM_ERR_LOGGER)) {
+						case CONTINUE			:
+							completedAsTrue.add(item);
+							completedAsFalse.add(item);
+							break;
+						case CONTINUE_FALSE		:
+							completedAsFalse.add(item);
+							break;
+						case CONTINUE_TRUE		:
+							completedAsTrue.add(item);
+							break;
+						case TERMINATE_FALSE	:
+							throw new FlowException("Pipe was terminated abnormally");
+						case TERMINATE_TRUE		:
+							return;
+						default :
+							throw new UnsupportedOperationException("Pipe step ret.code ["+rc+"] is not supported yet");
 					}
 				}
-				switch (rc = item.processPipeStep()) {
-					case CONTINUE			:
-						completedAsTrue.add(item);
-						completedAsFalse.add(item);
-						break;
-					case CONTINUE_FALSE		:
-						completedAsFalse.add(item);
-						break;
-					case CONTINUE_TRUE		:
-						completedAsTrue.add(item);
-						break;
-					case TERMINATE_FALSE	:
-						throw new FlowException("Pipe was terminated abnormally");
-					case TERMINATE_TRUE		:
-						return;
-					default :
-						throw new UnsupportedOperationException("Pipe step ret.code ["+rc+"] is not supported yet");
-				}
+			}
+		} finally {
+			for (int index = 0, maxIndex = temporaries.length; index < maxIndex; index++) {
+				 content[index].unpreparePipeItem(temporaries[index]);
 			}
 		}
 	}
 
-	Iterable<PipePluginFrame<?>> getReadyToProcess(final Set<PipePluginFrame<?>> completedAsTrue, final Set<PipePluginFrame<?>> completedAsFalse) throws FlowException {
-		final List<PipePluginFrame<?>>	result = new ArrayList<>();
+	Integer[] getReadyToProcess(final Set<PipePluginFrame<?>> completedAsTrue, final Set<PipePluginFrame<?>> completedAsFalse) throws FlowException {
+		final List<Integer>	result = new ArrayList<>();
 		
 		if (completedAsTrue.isEmpty() && completedAsFalse.isEmpty()) {
-			for (PipePluginFrame<?> item : content) {
-				if (item.getType() == PipeItemType.INITIAL_ITEM) {
-					result.add(item);
+			for (int index = 0, maxIndex = content.length; index < maxIndex; index++) {
+				if (content[index].getType() == PipeItemType.INITIAL_ITEM) {
+					result.add(index);
 					break;
 				}
 			}
 		}
 		else {
-			for (PipePluginFrame<?> item : content) {
-				final PipeLink[]	links = item.getLinks();
+			for (int index = 0, maxIndex = content.length; index < maxIndex; index++) {
+				final PipeLink[]	links = content[index].getLinks();
 				int 				count = 0;
 				
 				for (PipeLink link : links) {
@@ -86,8 +106,8 @@ public class PipeExecutor {
 						count++;
 					}
 				}
-				if (count == links.length) {
-					result.add(item);
+				if (count == links.length && content[index].getType() != PipeItemType.INITIAL_ITEM) {
+					result.add(index);
 				}
 			}
 		}
@@ -95,7 +115,7 @@ public class PipeExecutor {
 			throw new FlowException("Pipe error: unresolved completion state in the pipe");
 		}
 		else {
-			return result;
+			return result.toArray(new Integer[result.size()]);
 		}
 	}
 }

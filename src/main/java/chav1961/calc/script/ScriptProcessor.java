@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import chav1961.calc.script.LocalVarStack.ValueType;
+import chav1961.calc.script.ScriptProcessor.DataManager;
+import chav1961.calc.script.ScriptProcessor.Lexema;
 import chav1961.purelib.basic.AndOrTree;
 import chav1961.purelib.basic.CharUtils;
 import chav1961.purelib.basic.SequenceIterator;
@@ -391,6 +393,11 @@ loop:	for (;;) {
 		void setVar(int pluginId, String name, Object value);
 		void print(Object value);
 	}
+	
+	public static void execute(final String code, final DataManager mgr) throws SyntaxException {
+		final List<Lexema>	list = ScriptProcessor.buildLexemaList(code,false,false);						
+		ScriptProcessor.execute(list.toArray(new Lexema[list.size()]), mgr);
+	}	
 	
 	public static void execute(final Lexema[] lex, final DataManager mgr) throws SyntaxException {
 		try(final LocalVarStack 			locals = new LocalVarStack()) {

@@ -164,7 +164,7 @@ public class ModelItemListContainer extends JList<PipeLink> implements LocaleCha
 	public DropAction getDropAction() {
 		return action;
 	}
-	
+
 	public PipeContainerInterface getOwner() {
 		return owner;
 	}

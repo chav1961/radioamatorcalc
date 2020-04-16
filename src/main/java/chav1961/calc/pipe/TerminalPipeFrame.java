@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -26,7 +28,10 @@ import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
 import chav1961.calc.pipe.ModelItemListContainer.DropAction;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
+import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.windows.PipeManager;
+import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
+import chav1961.purelib.basic.CharUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
@@ -39,6 +44,7 @@ import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.model.ContentModelFactory;
+import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.streams.JsonStaxPrinter;
@@ -165,6 +171,7 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 						default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
 					}
 				});
+				fields.setName("fields");
 				enableButtons(!fields.isSelectionEmpty());
 				
 				fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
@@ -201,33 +208,54 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	}
 	
 	@Override
-	public <T> void storeIncomingValue(final ContentNodeMetadata meta, final T value) {
-		// TODO Auto-generated method stub
+	public Object preparePipeItem() throws FlowException {
+		final Map<String,Object>	variables = new HashMap<>();
 		
+		for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {
+			variables.put(fields.getModel().getElementAt(index).getMetadata().getName(),null);
+		}
+		return variables;
 	}
 
 	@Override
-	public <T> T getOutgoingValue(final ContentNodeMetadata meta) {
-		throw new UnsupportedOperationException("method getOutgoingValue(...) is not applicable for terminal node");
+	public void storeIncomingValue(final Object temp, final ContentNodeMetadata meta, final Object value) throws ContentException {
+		final Map<String,Object>	variables = (Map<String,Object>)temp;
+		
+		variables.replace(meta.getName(),value);
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep() throws FlowException {
-		try{final String	title = localizer.getValue(RUNTIME_TERMINATE_TITLE); 
-			
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger) throws FlowException {
+		final Map<String,Object>	variables = (Map<String,Object>)temp;
+		
+		try{final String	title = localizer.getValue(RUNTIME_TERMINATE_TITLE);
+			final String	message = CharUtils.substitute("message",terminalMessage.getText(),(name)->variables.get(name) == null ? "<"+name+" is missing>" : variables.get(name).toString());
+		
 			if (terminalFailure.isSelected()) {
-				JOptionPane.showMessageDialog(this,terminalMessage.getText(),title,JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this,message,title,JOptionPane.ERROR_MESSAGE);
 				return PipeStepReturnCode.TERMINATE_FALSE;
 			}
 			else {
-				JOptionPane.showMessageDialog(this,terminalMessage.getText(),title,JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this,message,title,JOptionPane.INFORMATION_MESSAGE);
 				return PipeStepReturnCode.TERMINATE_TRUE;
 			}
 		} catch (LocalizationException e) {
 			throw new FlowException(e.getLocalizedMessage(),e);
 		}
 	}
-	
+
+	@Override
+	public Object getOutgoingValue(final Object temp, final ContentNodeMetadata meta) throws ContentException {
+		throw new IllegalStateException("Initial node doesn't support this operation");
+	}
+
+	@Override
+	public void unpreparePipeItem(final Object temp) throws FlowException {
+		final Map<String,Object>	variables = (Map<String,Object>)temp;
+		
+		variables.clear();
+	}
+
 	@Override
 	public PipeLink[] getLinks() {
 		return links.toArray(new PipeLink[links.size()]);
@@ -249,7 +277,7 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	}
 
 	@Override
-	public void serializeFrame(final JsonStaxPrinter printer) throws PrintingException, IOException {
+	public void serializeFrame(final JsonStaxPrinter printer) throws IOException {
 		if (printer == null) {
 			throw new NullPointerException("Json printer can't be null");
 		}
@@ -260,6 +288,13 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 			printer.endObject();
 		}
 	}
+	
+	@Override
+	public void deserializeFrame(final PluginSpecific specific) throws IOException {
+		terminalMessage.setText(specific.message);
+		terminalFailure.setSelected(specific.isError);
+	}	
+	
 	
 	@OnAction("action:/removeField")
 	private void removeField() throws LocalizationException {

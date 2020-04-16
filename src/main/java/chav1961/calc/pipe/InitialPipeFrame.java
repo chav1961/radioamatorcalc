@@ -6,8 +6,10 @@ import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,16 +23,23 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
+import chav1961.calc.interfaces.PipeItemRuntime.PipeStepReturnCode;
 import chav1961.calc.pipe.ModelItemListContainer.DropAction;
 import chav1961.calc.script.ScriptEditor;
+import chav1961.calc.script.ScriptProcessor;
+import chav1961.calc.script.ScriptProcessor.DataManager;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
+import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
 import chav1961.purelib.basic.exceptions.ContentException;
+import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.PrintingException;
+import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
@@ -152,6 +161,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 						default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
 					}
 				});
+				fields.setName("fields");
 				enableButtons(!fields.isSelectionEmpty());
 				
 				fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
@@ -194,25 +204,75 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	
 	@Override
 	public PipeLink[] getIncomingControls() {
-		return controls.toArray(new PipeLink[controls.size()]);
+		return new PipeLink[0];
 	}
 	
 	@Override
-	public <T> void storeIncomingValue(ContentNodeMetadata meta, T value) {
-		// TODO Auto-generated method stub
+	public Object preparePipeItem() throws FlowException {
+		final Map<String,Object>	variables = new HashMap<>();
 		
+		for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {
+			variables.put(fields.getModel().getElementAt(index).getMetadata().getName(),null);
+		}
+		return variables;
 	}
 
 	@Override
-	public <T> T getOutgoingValue(ContentNodeMetadata meta) {
-		// TODO Auto-generated method stub
-		return null;
+	public void storeIncomingValue(final Object temp, final ContentNodeMetadata meta, final Object value) throws ContentException {
+		throw new IllegalStateException("Initial node doesn't support this operation");
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep() {
-		// TODO Auto-generated method stub
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger) throws FlowException {
+		final Map<String,Object>	variables = (Map<String,Object>)temp;
+		final String				code = initialCode.getText().trim();
+		
+		if (!code.isEmpty()) {
+			try{ScriptProcessor.execute(code,new DataManager() {
+					@Override
+					public boolean exists(final int pluginId, final String name) {
+						if (pluginId < 0) {
+							return variables.containsKey(name);
+						}
+						else {
+							return false;
+						}
+					}
+
+					@Override
+					public Object getVar(final int pluginId, final String name) {
+						return variables.get(name);
+					}
+
+					@Override
+					public void setVar(final int pluginId, final String name, final Object value) {
+						variables.replace(name,value);
+					}
+
+					@Override
+					public void print(final Object value) {
+						logger.message(Severity.debug,value.toString());
+					}
+				});
+			} catch (SyntaxException e) {
+				throw new FlowException(e);
+			}
+		}
 		return PipeStepReturnCode.CONTINUE;
+	}
+
+	@Override
+	public Object getOutgoingValue(final Object temp, final ContentNodeMetadata meta) throws ContentException {
+		final Map<String,Object>	variables = (Map<String,Object>)temp;
+		
+		return variables.get(meta.getName());
+	}
+
+	@Override
+	public void unpreparePipeItem(final Object temp) throws FlowException {
+		final Map<String,Object>	variables = (Map<String,Object>)temp;
+		
+		variables.clear();
 	}
 
 	@Override
@@ -221,7 +281,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	}
 
 	@Override
-	public void serializeFrame(final JsonStaxPrinter printer) throws PrintingException, IOException {
+	public void serializeFrame(final JsonStaxPrinter printer) throws IOException {
 		if (printer == null) {
 			throw new NullPointerException("Json printer can't be null");
 		}
@@ -240,6 +300,15 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 					}
 				printer.endArray();
 			printer.endObject();
+		}
+	}	
+	
+	@Override
+	public void deserializeFrame(final PluginSpecific specific) throws IOException {
+		initialCode.setText(specific.initialCode);
+
+		for (MutableContentNodeMetadata item : specific.fields) {
+			fields.addContent(new PipeLink(PipeLinkType.DATA_LINK,null,null,this,fields,item,null));
 		}
 	}	
 	

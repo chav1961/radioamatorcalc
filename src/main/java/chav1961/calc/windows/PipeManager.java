@@ -1,5 +1,6 @@
 package chav1961.calc.windows;
 
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -22,10 +23,12 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JComponent;
@@ -39,13 +42,25 @@ import javax.swing.SwingUtilities;
 import chav1961.calc.LocalizationKeys;
 import chav1961.calc.interfaces.ContentEnumerator;
 import chav1961.calc.interfaces.DragMode;
+import chav1961.calc.interfaces.MetadataTarget;
 import chav1961.calc.interfaces.PipeContainerInterface;
 import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
 import chav1961.calc.interfaces.PipeContainerItemInterface;
+import chav1961.calc.interfaces.PipeSerialLinkType;
+import chav1961.calc.pipe.CalcPipeFrame;
+import chav1961.calc.pipe.ConditionalPipeFrame;
+import chav1961.calc.pipe.DialogPipeFrame;
+import chav1961.calc.pipe.InitialPipeFrame;
 import chav1961.calc.pipe.JControlLabel;
 import chav1961.calc.pipe.JControlTargetLabel;
+import chav1961.calc.pipe.ModelItemListContainer;
+import chav1961.calc.pipe.ModelItemListContainer.DropAction;
+import chav1961.calc.pipe.TerminalPipeFrame;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
+import chav1961.calc.utils.PipeLink.PipeLinkType;
+import chav1961.calc.windows.PipeManagerSerialForm.PluginSerialForm;
+import chav1961.calc.windows.PipeManagerSerialForm.PluginSerialLink;
 import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.SequenceIterator;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -58,10 +73,14 @@ import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
+import chav1961.purelib.json.JsonSerializer;
+import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.model.interfaces.NodeMetadataOwner;
+import chav1961.purelib.streams.JsonStaxParser;
 import chav1961.purelib.streams.JsonStaxPrinter;
+import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.useful.JLocalizedOptionPane;
 
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
@@ -76,7 +95,6 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 	private static final String				VALIDATION_UNCONDITIONAL_LOOP = "chav1961.calc.windows.pipemanager.validation.unconditionalLoop";
 	private static final String				VALIDATION_OK = "chav1961.calc.windows.pipemanager.validation.OK";
 
-	private static final String				JSON_PIPE_ITEMS = "items";
 	private static final String				JSON_PIPE_ITEM_COUNT = "itemCount";
 	private static final String				JSON_PIPE_ITEM_LIST = "itemList";
 	private static final String				JSON_PIPE_ITEM_ID = "id";
@@ -91,8 +109,6 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 	private static final String				JSON_PIPE_ITEM_LINKS = "links";
 
 	private static final String				JSON_PIPE_ITEM_LINK_TYPE = "type";
-	private static final String				JSON_PIPE_ITEM_LINK_TYPE_CONTROL = "control";
-	private static final String				JSON_PIPE_ITEM_LINK_TYPE_DATA = "data";
 	private static final String				JSON_PIPE_ITEM_LINK_SOURCE = "source";
 	private static final String				JSON_PIPE_ITEM_LINK_SOURCE_CONTROL = "sourceControl";
 	private static final String				JSON_PIPE_ITEM_LINK_TARGET = "target";
@@ -326,8 +342,8 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		}
 	}
 
-	void serializeFrames(final JsonStaxPrinter printer) throws PrintingException, IOException {
-		printer.splitter().name(JSON_PIPE_ITEMS).startObject();
+	void serializeFrames(final JsonStaxPrinter printer) throws IOException {
+		printer.startObject();
 			printer.name(JSON_PIPE_ITEM_COUNT).value(frames.size());
 			printer.splitter().name(JSON_PIPE_ITEM_LIST).startArray();
 			
@@ -364,7 +380,7 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 						printer.splitter();
 					}
 					printer.startObject();
-						printer.name(JSON_PIPE_ITEM_LINK_TYPE).value(JSON_PIPE_ITEM_LINK_TYPE_CONTROL);
+						printer.name(JSON_PIPE_ITEM_LINK_TYPE).value(PipeSerialLinkType.CONTROL.name());
 						printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE).value(ctrl.getSource().getPipeItemName());
 						printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE_CONTROL).value(ctrl.getSourcePoint().getClass().getSimpleName());
 						printer.splitter().name(JSON_PIPE_ITEM_LINK_TARGET).value(ctrl.getTarget().getPipeItemName());
@@ -373,27 +389,106 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 					splitterRequired = true;
 				}
 				for (PipeLink data : frame.getIncomingControls()) {
-					if (splitterRequired) {
-						printer.splitter();
-					}
-					printer.startObject();
-						printer.name(JSON_PIPE_ITEM_LINK_TYPE).value(JSON_PIPE_ITEM_LINK_TYPE_DATA);
-						if (data.getSource() == null) {
-							printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE).nullValue();
-							printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE_CONTROL).nullValue();
+					if (data.getSource() != null) {
+						if (splitterRequired) {
+							printer.splitter();
 						}
-						else {
+						printer.startObject();
+							printer.name(JSON_PIPE_ITEM_LINK_TYPE).value(PipeSerialLinkType.DATA.name());
 							printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE).value(data.getSource().getPipeItemName());
-							printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE_CONTROL).value(data.getAssociatedMeta() != null ? data.getAssociatedMeta().getName() : data.getMetadata().getName());
-						}
-						printer.splitter().name(JSON_PIPE_ITEM_LINK_TARGET).value(data.getTarget().getPipeItemName());
-						printer.splitter().name(JSON_PIPE_ITEM_LINK_TARGET_CONTROL).value(data.getMetadata().getName());
-					printer.endObject();
-					splitterRequired = true;
+							printer.splitter().name(JSON_PIPE_ITEM_LINK_SOURCE_CONTROL).value(data.getSourcePoint().getName()+"#"+(data.getAssociatedMeta() != null ? data.getAssociatedMeta().getName() : data.getMetadata().getName()));
+							printer.splitter().name(JSON_PIPE_ITEM_LINK_TARGET).value(data.getTarget().getPipeItemName());
+							printer.splitter().name(JSON_PIPE_ITEM_LINK_TARGET_CONTROL).value(data.getTargetPoint().getName()+"#"+data.getMetadata().getName());
+						printer.endObject();
+						splitterRequired = true;
+					}
 				}
 			}
 			printer.endArray();
 		printer.endObject();
+	}
+
+	void deserializeFrames(final JsonStaxParser parser) throws IOException {
+		try{final JsonSerializer<PipeManagerSerialForm>	ser = JsonSerializer.buildSerializer(PipeManagerSerialForm.class);
+			final PipeManagerSerialForm					data = ser.deserialize(parser);
+			final Map<String,PipePluginFrame<?>>		pluginList = new HashMap<>();
+
+			for (int index = 0, maxIndex = data.itemCount; index < maxIndex; index++) {
+				final PluginSerialForm	psf = data.itemList[index];
+				final int 				uniqueId = Integer.valueOf(psf.id.split("#")[1]); 
+				PipePluginFrame<?>		ppf = null;
+				
+				switch (psf.type) {
+					case CALC_ITEM			:
+						ppf = parent.newCalc(uniqueId);
+						break;
+					case CONDITIONAL_ITEM	:
+						ppf = parent.newConditional(uniqueId);
+						break;
+					case DIALOG_ITEM		:
+						ppf = parent.newDialog(uniqueId);
+						break;
+					case INITIAL_ITEM		:
+						ppf = parent.newInitial(uniqueId);
+						break;
+					case PLUGIN_ITEM		:
+//						final InitialPipeFrame	initial = parent.newInitial();
+//
+//						if ((ppf = initial) != null) {
+//						}
+						break;
+					case TERMINAL_ITEM		:
+						ppf = parent.newTerminal(uniqueId);
+						break;
+					default :
+						throw new UnsupportedOperationException("Item type ["+data.itemList[index].type+"] is not implemented yet");
+				}
+				if (ppf != null) {
+					ppf.setBounds(psf.geometry.x,psf.geometry.y,psf.geometry.width,psf.geometry.height);
+					ppf.deserializeFrame(psf.content);
+					pluginList.put(ppf.getPipeItemName(),ppf);
+				}
+				else {
+					throw new IOException("Pipe item ["+psf.type+": "+psf.id+"] not created");
+				}
+			}
+			
+			for (PluginSerialLink link : data.links) {
+				PipeLink	pl;
+				
+				final PipePluginFrame<?>	fromOwner = pluginList.get(link.source), toOwner = pluginList.get(link.target);
+				final String[]				fromItemAndName = link.sourceControl.split("#"), toItemAndName = link.targetControl.split("#"); 
+				final Component				from = SwingUtils.findComponentByName(fromOwner,fromItemAndName[0]), to = SwingUtils.findComponentByName(toOwner,toItemAndName[0]);
+				
+				switch (link.type) {
+					case CONTROL	:
+						pl = new PipeLink(PipeLinkType.CONTROL_LINK,fromOwner,from,toOwner,to,(MutableContentNodeMetadata)((JControlLabel)from).getNodeMetadata(),null);
+						((MetadataTarget)to).drop(pl,0,0,0,0);
+						break;
+					case DATA		:
+						final MutableContentNodeMetadata	fromNode = getNode((ModelItemListContainer)from,fromItemAndName[1]); 
+						final Point			fromPoint = getPoint((ModelItemListContainer)from,fromItemAndName[1]);
+						
+						if (((ModelItemListContainer)to).getDropAction() == DropAction.LINK) {
+							final MutableContentNodeMetadata	toNode = getNode((ModelItemListContainer)to,toItemAndName[1]);
+							final Point			toPoint = getPoint((ModelItemListContainer)to,toItemAndName[1]);
+							
+							pl = new PipeLink(PipeLinkType.DATA_LINK,fromOwner,from,toOwner,to,fromNode,toNode);
+							((MetadataTarget)to).drop(pl,fromPoint.x,fromPoint.y,toPoint.x,toPoint.y);
+						}
+						else {
+							pl = new PipeLink(PipeLinkType.DATA_LINK,fromOwner,from,toOwner,to,fromNode,null);
+							((MetadataTarget)to).drop(pl,fromPoint.x,fromPoint.y,0,0);
+						}
+						break;
+					default	:
+						throw new UnsupportedOperationException("Link type ["+link.type+"] is not supported yet");
+				}
+			}
+			repaint();
+		} catch (EnvironmentException | ContentException e) {
+			throw new IOException(e); 
+		}
 	}
 	
 	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) {
@@ -515,7 +610,24 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		return null;
 	}
 
-	
+	private Point getPoint(final ModelItemListContainer container, final String name) {
+		for (int index = 0, maxIndex = container.getModel().getSize(); index < maxIndex; index++) {
+			if (name.equals(container.getModel().getElementAt(index).getMetadata().getName())) {
+				return new Point(container.getCellBounds(index,index).x+1,container.getCellBounds(index,index).y+1);
+			}
+		}
+		throw new IllegalArgumentException(); 
+	}
+
+	private MutableContentNodeMetadata getNode(final ModelItemListContainer container, final String name) {
+		for (int index = 0, maxIndex = container.getModel().getSize(); index < maxIndex; index++) {
+			if (name.equals(container.getModel().getElementAt(index).getMetadata().getName())) {
+				return (MutableContentNodeMetadata)container.getModel().getElementAt(index).getMetadata();
+			}
+		}
+		throw new IllegalArgumentException(); 
+	}
+
 	
 	/**
 	 * Draw an arrow line between two points.

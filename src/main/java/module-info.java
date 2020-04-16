@@ -2,6 +2,8 @@ module chav1961.radioamatorcalc {
 	requires transitive chav1961.purelib;
 	requires java.desktop;
 	
+	exports chav1961.calc.interfaces;
+	
 	opens chav1961.calc to chav1961.purelib;
 	opens chav1961.calc.pipe to chav1961.purelib;
 	opens chav1961.calc.windows to chav1961.purelib;

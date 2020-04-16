@@ -24,12 +24,14 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
+import chav1961.calc.interfaces.PipeItemRuntime.PipeStepReturnCode;
 import chav1961.calc.pipe.ModelItemListContainer.DropAction;
 import chav1961.calc.utils.InnerSVGPluginWindow;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
+import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
 import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
@@ -235,6 +237,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 					default 		: throw new UnsupportedOperationException("Change type ["+changeType+"] is not supported yet"); 
 				}
 			});
+			fields.setName("fields");
 			targetControl.addContentChangeListener((changeType,source,current)->{
 				switch (changeType) {
 					case CHANGED	:
@@ -294,25 +297,37 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	}
 	
 	@Override
-	public <T> void storeIncomingValue(ContentNodeMetadata meta, T value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public <T> T getOutgoingValue(ContentNodeMetadata meta) {
+	public Object preparePipeItem() throws FlowException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep() {
+	public void storeIncomingValue(Object temp, ContentNodeMetadata meta, Object value) throws ContentException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger) throws FlowException {
 		// TODO Auto-generated method stub
 		return PipeStepReturnCode.CONTINUE;
 	}
 
 	@Override
-	public void serializeFrame(final JsonStaxPrinter printer) throws PrintingException, IOException {
+	public Object getOutgoingValue(Object temp, ContentNodeMetadata meta) throws ContentException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void unpreparePipeItem(Object temp) throws FlowException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void serializeFrame(final JsonStaxPrinter printer) throws IOException {
 		if (printer == null) {
 			throw new NullPointerException("Json printer can't be null");
 		}
@@ -321,6 +336,11 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 				printer.name(JSON_PIPE_ITEM_PLUGIN_CLASS).value(instanceClass.getCanonicalName());
 			printer.endObject();
 		}
+	}	
+	
+	@Override
+	public void deserializeFrame(final PluginSpecific specific) throws IOException {
+		// pluginClass
 	}	
 	
 	private void refresh() {

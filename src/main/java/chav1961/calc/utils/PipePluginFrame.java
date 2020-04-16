@@ -12,6 +12,7 @@ import chav1961.calc.interfaces.PipeContainerInterface;
 import chav1961.calc.interfaces.PipeContainerItemInterface;
 import chav1961.calc.interfaces.PipeItemRuntime;
 import chav1961.calc.windows.PipeManager;
+import chav1961.calc.windows.PipeManagerSerialForm;
 import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
@@ -53,7 +54,8 @@ public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeCo
 	}
 
 	public abstract void removeLink(final PipeLink link);
-	public abstract void serializeFrame(JsonStaxPrinter printer) throws PrintingException, IOException;
+	public abstract void serializeFrame(JsonStaxPrinter printer) throws IOException;
+	public abstract void deserializeFrame(PipeManagerSerialForm.PluginSpecific specific) throws IOException;
 	
 	@Override
 	public String getPipeItemName() {
