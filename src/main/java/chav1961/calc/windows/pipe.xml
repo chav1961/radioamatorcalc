@@ -38,9 +38,6 @@
 	<app:menu id="calc.sourceToolbar">
 		<app:item name="chav1961.calc.pipe.calc.sourceToolbar.removefield" caption="chav1961.calc.pipe.calc.toolbar.removefield" tooltip="chav1961.calc.pipe.calc.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeSourceField"/>
 	</app:menu>
-	<app:menu id="calc.targetToolbar">
-		<app:item name="chav1961.calc.pipe.calc.targetToolbar.removefield" caption="chav1961.calc.pipe.calc.toolbar.removefield" tooltip="chav1961.calc.pipe.calc.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeTargetField"/>
-	</app:menu>
 	<app:menu id="container.toolbar">
 		<app:item name="chav1961.calc.pipe.container.toolbar.removelink" caption="chav1961.calc.pipe.container.toolbar.removelink" tooltip="chav1961.calc.pipe.container.toolbar.removelink.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteLinkIcon.png" action="removeLink"/>
 	</app:menu>

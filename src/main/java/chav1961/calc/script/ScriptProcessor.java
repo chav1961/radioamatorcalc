@@ -393,12 +393,12 @@ loop:	for (;;) {
 		void setVar(int pluginId, String name, Object value);
 		void print(Object value);
 	}
-	
+
 	public static void execute(final String code, final DataManager mgr) throws SyntaxException {
 		final List<Lexema>	list = ScriptProcessor.buildLexemaList(code,false,false);						
 		ScriptProcessor.execute(list.toArray(new Lexema[list.size()]), mgr);
 	}	
-	
+
 	public static void execute(final Lexema[] lex, final DataManager mgr) throws SyntaxException {
 		try(final LocalVarStack 			locals = new LocalVarStack()) {
 			final List<Object> 				stack = new ArrayList<>();
@@ -408,6 +408,14 @@ loop:	for (;;) {
 		}
 	}
 
+	public static int executeExpression(final String code, final DataManager mgr, final List<Object> stack) throws SyntaxException {
+		try(final LocalVarStack	locals = new LocalVarStack()) {
+			final List<Lexema>	list = ScriptProcessor.buildLexemaList(code,false,false);						
+		
+			return executeExpression(list.toArray(new Lexema[list.size()]),0,GroupType.GroupOr,mgr,locals,stack);
+		}
+	}
+	
 	static int executeSequence(final Lexema[] lex, final int from, final boolean loopControlAllows, final DataManager mgr, final TerminalSet<LexemaType> terminals, final LocalVarStack locals, final List<Object> stack) throws SyntaxException {
 		int	current = from - 1;	// -1 - to pass semicolons on do/while
 		

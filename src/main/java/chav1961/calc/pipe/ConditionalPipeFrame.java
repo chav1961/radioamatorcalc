@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,6 +25,8 @@ import javax.swing.border.TitledBorder;
 import chav1961.calc.interfaces.PluginProperties;
 import chav1961.calc.interfaces.PipeItemRuntime.PipeStepReturnCode;
 import chav1961.calc.pipe.ModelItemListContainer.DropAction;
+import chav1961.calc.script.ScriptProcessor;
+import chav1961.calc.script.ScriptProcessor.DataManager;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
@@ -31,6 +35,7 @@ import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.PrintingException;
+import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
@@ -216,32 +221,73 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 	
 	@Override
 	public Object preparePipeItem() throws FlowException {
-		// TODO Auto-generated method stub
-		return null;
+		final Map<String,Object>	variables = new HashMap<>();
+		
+		for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {
+			variables.put(buildVarName(fields.getModel().getElementAt(index).getMetadata()),null);
+		}
+		return variables;
 	}
 
 	@Override
 	public void storeIncomingValue(Object temp, ContentNodeMetadata meta, Object value) throws ContentException {
-		// TODO Auto-generated method stub
+		final Map<String,Object>	variables = (Map<String,Object>)temp;
 		
+		variables.replace(buildVarName(meta),value);
 	}
 
 	@Override
 	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger) throws FlowException {
-		// TODO Auto-generated method stub
-		return PipeStepReturnCode.CONTINUE_TRUE;
+		final Map<String,Object>	variables = (Map<String,Object>)temp;
+		final String				code = expression.getText().trim();
+		final List<Object>			stack = new ArrayList<>();
+		
+		if (!code.isEmpty()) {
+			try{ScriptProcessor.executeExpression(code,new DataManager() {
+					@Override
+					public boolean exists(final int pluginId, final String name) {
+						return variables.containsKey(buildVarName(pluginId,name));
+					}
+
+					@Override
+					public Object getVar(final int pluginId, final String name) {
+						return variables.get(buildVarName(pluginId,name));
+					}
+
+					@Override
+					public void setVar(final int pluginId, final String name, final Object value) {
+						variables.replace(buildVarName(pluginId,name),value);
+					}
+
+					@Override
+					public void print(final Object value) {
+						logger.message(Severity.debug,value.toString());
+					}
+				}, stack);
+			} catch (SyntaxException e) {
+				throw new FlowException(e);
+			}
+		}
+		if (stack.size() == 1 && (stack.get(0) instanceof Boolean)) {
+			return (Boolean)stack.get(0) ? PipeStepReturnCode.CONTINUE_TRUE : PipeStepReturnCode.CONTINUE_FALSE;
+		}
+		else {
+			throw new FlowException("Missing or illegal expression result");
+		}
 	}
 
 	@Override
 	public Object getOutgoingValue(Object temp, ContentNodeMetadata meta) throws ContentException {
-		// TODO Auto-generated method stub
-		return null;
+		final Map<String,Object>	variables = (Map<String,Object>)temp;
+		
+		return variables.get(buildVarName(meta));
 	}
 
 	@Override
 	public void unpreparePipeItem(Object temp) throws FlowException {
-		// TODO Auto-generated method stub
+		final Map<String,Object>	variables = (Map<String,Object>)temp;
 		
+		variables.clear();
 	}
 	
 	@Override

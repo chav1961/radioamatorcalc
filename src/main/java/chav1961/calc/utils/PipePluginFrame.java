@@ -166,4 +166,11 @@ public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeCo
 		});
 	}
 
+	protected String buildVarName(final ContentNodeMetadata var) {
+		return "#"+uniqueId+"."+var.getName();
+	}
+	
+	protected String buildVarName(final int pluginId, final String name) {
+		return "#"+(pluginId < 0 ? uniqueId : pluginId)+"."+name;
+	}
 }

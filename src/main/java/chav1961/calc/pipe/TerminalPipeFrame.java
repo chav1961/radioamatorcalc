@@ -212,7 +212,7 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 		final Map<String,Object>	variables = new HashMap<>();
 		
 		for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {
-			variables.put(fields.getModel().getElementAt(index).getMetadata().getName(),null);
+			variables.put(buildVarName(fields.getModel().getElementAt(index).getMetadata()),null);
 		}
 		return variables;
 	}
@@ -221,7 +221,7 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	public void storeIncomingValue(final Object temp, final ContentNodeMetadata meta, final Object value) throws ContentException {
 		final Map<String,Object>	variables = (Map<String,Object>)temp;
 		
-		variables.replace(meta.getName(),value);
+		variables.replace(buildVarName(meta),value);
 	}
 
 	@Override
@@ -229,7 +229,7 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 		final Map<String,Object>	variables = (Map<String,Object>)temp;
 		
 		try{final String	title = localizer.getValue(RUNTIME_TERMINATE_TITLE);
-			final String	message = CharUtils.substitute("message",terminalMessage.getText(),(name)->variables.get(name) == null ? "<"+name+" is missing>" : variables.get(name).toString());
+			final String	message = CharUtils.substitute("message",terminalMessage.getText(),(name)->variables.get(buildVarName(-1,name)) == null ? "<"+name+" is missing>" : variables.get(buildVarName(-1,name)).toString());
 		
 			if (terminalFailure.isSelected()) {
 				JOptionPane.showMessageDialog(this,message,title,JOptionPane.ERROR_MESSAGE);
@@ -246,7 +246,7 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 
 	@Override
 	public Object getOutgoingValue(final Object temp, final ContentNodeMetadata meta) throws ContentException {
-		throw new IllegalStateException("Initial node doesn't support this operation");
+		throw new IllegalStateException("Terminal node doesn't support this operation");
 	}
 
 	@Override

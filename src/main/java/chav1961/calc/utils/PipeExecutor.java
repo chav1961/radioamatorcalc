@@ -9,6 +9,10 @@ import chav1961.calc.interfaces.PipeContainerInterface;
 import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
 import chav1961.calc.interfaces.PipeItemRuntime;
 import chav1961.calc.interfaces.PipeItemRuntime.PipeStepReturnCode;
+import chav1961.calc.pipe.JControlFalse;
+import chav1961.calc.pipe.JControlSource;
+import chav1961.calc.pipe.JControlTarget;
+import chav1961.calc.pipe.JControlTrue;
 import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
@@ -36,6 +40,7 @@ public class PipeExecutor {
 		final Object[]					temporaries = new Object[content.length];
 		final Set<PipePluginFrame<?>>	completedAsTrue = new HashSet<>();
 		final Set<PipePluginFrame<?>>	completedAsFalse = new HashSet<>();
+		final Set<Integer>				processed = new HashSet<>();
 		PipeStepReturnCode				rc;
 		
 		for (int index = 0, maxIndex = temporaries.length; index < maxIndex; index++) {
@@ -43,7 +48,7 @@ public class PipeExecutor {
 		}
 		try{
 			while(!Thread.interrupted()) {
-				for (int itemIndex : getReadyToProcess(completedAsTrue,completedAsFalse)) {
+				for (int itemIndex : getReadyToProcess(completedAsTrue,completedAsFalse,processed)) {
 					final PipePluginFrame<?>	item = content[itemIndex];
 					
 					for (PipeLink value : item.getIncomingControls()) {
@@ -76,6 +81,7 @@ public class PipeExecutor {
 						default :
 							throw new UnsupportedOperationException("Pipe step ret.code ["+rc+"] is not supported yet");
 					}
+					processed.add(itemIndex);
 				}
 			}
 		} finally {
@@ -85,7 +91,7 @@ public class PipeExecutor {
 		}
 	}
 
-	Integer[] getReadyToProcess(final Set<PipePluginFrame<?>> completedAsTrue, final Set<PipePluginFrame<?>> completedAsFalse) throws FlowException {
+	Integer[] getReadyToProcess(final Set<PipePluginFrame<?>> completedAsTrue, final Set<PipePluginFrame<?>> completedAsFalse, final Set<Integer> processed) throws FlowException {
 		final List<Integer>	result = new ArrayList<>();
 		
 		if (completedAsTrue.isEmpty() && completedAsFalse.isEmpty()) {
@@ -102,7 +108,8 @@ public class PipeExecutor {
 				int 				count = 0;
 				
 				for (PipeLink link : links) {
-					if (completedAsTrue.contains(link.getSource()) || completedAsFalse.contains(link.getSource())) {
+					if (completedAsTrue.contains(link.getSource()) && ((link.getSourcePoint() instanceof JControlSource) || (link.getSourcePoint() instanceof JControlTrue))   
+						|| completedAsFalse.contains(link.getSource()) && ((link.getSourcePoint() instanceof JControlSource) || (link.getSourcePoint() instanceof JControlFalse))) {
 						count++;
 					}
 				}
@@ -115,6 +122,7 @@ public class PipeExecutor {
 			throw new FlowException("Pipe error: unresolved completion state in the pipe");
 		}
 		else {
+			result.removeAll(processed);
 			return result.toArray(new Integer[result.size()]);
 		}
 	}

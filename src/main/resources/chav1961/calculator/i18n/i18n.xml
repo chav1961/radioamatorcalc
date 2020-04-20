@@ -23,83 +23,10 @@
 		<key name="menu.exit">Quit</key>
 		<key name="menu.ttExit">Quit application</key>
 
-		<key name="menu.elements">Item</key>
-		<key name="menu.ttElements">Calculation of circuit elements (coils, contours, filters etc)</key>
-
-		<key name="menu.elements.coils">Coils</key>
-		<key name="menu.ttElements.coils">Coils parameters calculation</key>
-
-		<key name="menu.elements.coils.onelayer">One-layer coils</key>
-		<key name="menu.ttElements.coils.onelayer">One-layer coils calculation</key>
-
-		<key name="menu.elements.coils.ringlayer">Coils on rings</key>
-		<key name="menu.ttElements.coils.ringlayer">Coils on rings calculation</key>
-
-		<key name="menu.components">Components</key>
-		<key name="menu.ttComponents">Components of the schemes</key> 
-
-		<key name="menu.components.lccontour">LC-contour</key>
-		<key name="menu.ttComponents.lccontour">Calculate LC-contour parameters</key>
-
-		<key name="menu.components.rcgenerator">RC-generator</key>
-		<key name="menu.ttComponents.rcgenerator">Calculate RC-generator parameters</key>
-
-		<key name="menu.schemes">Schemes</key>
-		<key name="menu.ttSchemes">Calculation of the schematic blocks</key>
-			
-		<key name="menu.schemes.powerfactor">Power factors</key>
-		<key name="menu.ttSchemes.powerfactor">Calculation of the power factors</key>
-
-		<key name="menu.schemes.powerfactor.mc34262">MC34262 power factor chip</key>
-		<key name="menu.ttSchemes.powerfactor.mc34262">Calculation of the power factor based on MC34262 chip</key>
-
-		<key name="menu.schemes.stepup">Step-up convertor</key>
-		<key name="menu.ttSchemes.stepup">Calculation of the step-up convertors</key>
-
-		<key name="menu.schemes.stepup.ucX84X">UCX84X convertor chips</key>
-		<key name="menu.ttSchemes.stepup.ucX84X">Calculation of the step-up convertor based on UCX84X chips</key>
-
-		<key name="menu.schemes.stepup.mc34063">MC34063 convertor chip</key>
-		<key name="menu.ttSchemes.stepup.mc34063">Calculation of the step-up convertor based on MC34063 chip</key>
-
-		<key name="menu.schemes.stepdown">Step-down convertor</key>
-		<key name="menu.ttSchemes.stepdown">Calculation of the step-down convertors</key>
-
-		<key name="menu.schemes.stepdown.mc34063">MC34063 convertor chip</key>
-		<key name="menu.ttSchemes.stepdown.mc34063">Calculation of the step-down convertor based on MC34063 chip</key>
-
-		<key name="menu.schemes.stepdown.tps40200">TPS40200 convertor chip</key>
-		<key name="menu.ttSchemes.stepdown.tps40200">Calculation of the step-down convertor based on TPS40200 chip</key>
-
-		<key name="menu.schemes.transmitter">Transmitter</key>
-		<key name="menu.ttSchemes.transmitter">Calculate transmitter components</key>
-
-		<key name="menu.schemes.transmitter.pcontour">P-contours</key>
-		<key name="menu.ttSchemes.transmitter.pcontour">Calculate single and double P-contours</key>
-
-		<key name="menu.schemes.transmitter.quartzfilter">Quartz filters</key>
-		<key name="menu.ttSchemes.transmitter.quartzfilter">Calculate different quartz filters</key>
-
-		<key name="menu.pipes">Pipes</key>
-		<key name="menu.ttPipes">Use pipes infrastructure to build calculation pipes</key>
-
-		<key name="menu.pipes.startnode">Start node</key>
-		<key name="menu.ttPipes.Startnode">Insert start node into your pipe</key>
-
-		<key name="menu.pipes.formulanode">Formula node</key>
-		<key name="menu.ttPipes.formulanode">Insert formula node for non-standard calculation into your pipe</key>
-
-		<key name="menu.pipes.switchnode">Switch node</key>
-		<key name="menu.ttPipes.switchnode">Insert switch node for conditional jump in your pipe</key>
-
-		<key name="menu.pipes.mapnode">Map node</key>
-		<key name="menu.ttPipes.mapnode">Insert map node to split calculations into parallel threads</key> 
-
-		<key name="menu.pipes.reducenode">Reduce node</key>
-		<key name="menu.ttPipes.reducenode">Insert map node to join calculations were split</key> 
-
-		<key name="menu.pipes.terminalnode">Terminal node</key>
-		<key name="menu.ttPipes.terminalnode">Insert terminal node into your pipe</key> 
+		<key name="menu.references">Guides</key>
+		<key name="menu.references.tt">Reference guides for electronic components</key>
+		<key name="menu.references.tubes">Tubes</key>
+		<key name="menu.references.tubes.tt">Electronic tubes references</key>
 
 		<key name="menu.tools">Tools</key>
 		<key name="menu.ttTools">Set of tools to manage application</key>
@@ -164,6 +91,11 @@
 		<key name="menu.curcuits.wienbridge.tt">Calculate Wien's bridge parameters</key>
 		<key name="menu.curcuits.phaseshift">Phase-shift generator parameters</key>
 		<key name="menu.curcuits.phaseshift.tt">Calculate phase-shift generator parameters</key>
+		
+		<key name="menu.details">Details parameters</key>
+		<key name="menu.details.tt">Calculate Details parameter</key>
+		<key name="menu.details.coils">Coils parameters</key>
+		<key name="menu.details.coils.tt">Calculate coils parameter</key>
 
 <!-- Localization for settings -->
 		<key name="settings.save">Save</key>
@@ -319,6 +251,9 @@
 		<key name="chav1961.calc.pipe">%1$s Pipe %2$s</key>
 		<key name="chav1961.calc.pipe.tt">Pipe is used to build calculation's chains (similar to block-schemas)</key>
 
+		<key name="chav1961.calc.reference">References</key>
+		<key name="chav1961.calc.reference.tt">Electronic component references</key>
+	
 <!-- localization for standard pipe components -->
 		<key name="chav1961.calc.pipe.screen.source.tt">Control source starts execution for other pipe nodes</key>
 		<key name="chav1961.calc.pipe.screen.target.tt">Control target waits all incoming contorls to complete</key>
@@ -435,6 +370,45 @@
 		<key name="chav1961.calc.windows.pipemanager.validation.unconditionalLoop">Pipe error: unconditional loop in the pipe</key> 
 		<key name="chav1961.calc.windows.pipemanager.validation.OK">Pipe validation OK</key> 
 
+<!-- localization for standard reference components -->
+		<key name="chav1961.calc.reference.name">Reference name</key>
+		<key name="chav1961.calc.reference.name.tt">Name of the reference guide</key>
+		<key name="chav1961.calc.reference.description">Description</key>
+		<key name="chav1961.calc.reference.description.tt">Reference description</key>
+
+<!-- Localization for tubes reference -->
+		<key name="chav1961.calc.reference.tubesReference">Tubes reference</key>
+		<key name="chav1961.calc.reference.tubesReference.tt">Electronic tubes reference</key>
+		<key name="chav1961.calc.reference.tubesReference.typesType">Tube type</key>
+		<key name="chav1961.calc.reference.tubesReference.typesType.tt">Electronic tube type</key>
+		
+		<key name="chav1961.calc.references.tubes.tubesType.diode">Diode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.diode.tt">Diode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doubleDiode">Double diode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doubleDiode.tt">Double diode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.triode">Triode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.triode.tt">Triode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doubleTriode">Double triode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doubleTriode.tt">Double triode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.tetrode">Tetrode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.tetrode.tt">Tetrode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doubleTetrode">Double tetrode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doubleTetrode.tt">Double tetrode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.pentode">Pentode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.pentode.tt">Pentode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doublePentode">Double pentode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doublePentode.tt">Double pentode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.triodePentode">Triode-pentode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.triodePentode.tt">Triode-pentode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.heptode">Heptode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.heptode.tt">Heptode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.triodeHeptode">Triode-heptode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.triodeHeptode.tt">Triode-heptode</key>
+		<key name="chav1961.calc.references.tubes.tubesType.stabilovolt">Stabilovolt</key>
+		<key name="chav1961.calc.references.tubes.tubesType.stabilovolt.tt">Stabilovolt</key>
+		<key name="chav1961.calc.references.tubes.tubesType.baretter">Baretter</key>
+		<key name="chav1961.calc.references.tubes.tubesType.baretter.tt">Baretter</key>
+
 <!-- Localization for plugins -->
 
 <!-- Localization for chav1961.calc.plugins.calc.contour --> 
@@ -484,6 +458,181 @@
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.res.tt">Calculate resistance</key>
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap">C</key>
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap.tt">Calculate capacitance</key>
+		
+<!-- Localization for chav1961.calc.plugins.details.coils -->
+		<key name="menu.details.coils">Coil parameters</key>
+		<key name="menu.details.coils.tt">Calculation number of coils for the inductance typed or inductance for the numer of coils typed</key>
+		<key name="chav1961.calc.plugins.details.coils.button.inductance">Inductance</key>
+		<key name="chav1961.calc.plugins.details.coils.button.inductance.tt">Calculate inductance for number of coils typed</key>
+		<key name="chav1961.calc.plugins.details.coils.button.coils">Coils</key>
+		<key name="chav1961.calc.plugins.details.coils.button.coils.tt">Calculate numer of coils for inductance typed</key>
+		<key name="chav1961.calc.plugins.details.coils.coilsDiameter">[D] Inner diameter  (mm)</key>
+		<key name="chav1961.calc.plugins.details.coils.coilsDiameter.tt">Type inner diameter in millimeters</key>
+		<key name="chav1961.calc.plugins.details.coils.coilsLength">[Len] Length (mm)</key>
+		<key name="chav1961.calc.plugins.details.coils.coilsLength.tt">type coil length in millimeters</key>
+		<key name="chav1961.calc.plugins.details.coils.numberOfCoils">[w] Number of coils</key>
+		<key name="chav1961.calc.plugins.details.coils.numberOfCoils.tt">Type number of coils if you will calculate inductance. Number of coils can have fractional part</key>
+		<key name="chav1961.calc.plugins.details.coils.inductance">[L] Inductance (uH)</key>
+		<key name="chav1961.calc.plugins.details.coils.inductance.tt">Type inductance in microHenry if yiu will calculate numer of coils</key>
+		<key name="chav1961.calc.plugins.details.coils.wireDiameter">[Dw] Wire (mm)</key>
+		<key name="chav1961.calc.plugins.details.coils.wireDiameter.tt">Type wire diameter for the coil in millimeters</key>
+		<key name="chav1961.calc.plugins.details.coils.frequency">Frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.details.coils.frequency.tt">Type frequency in kHz, what you are planning to use coil. Optional patameter. If missing, quality will not be calculated</key>
+		<key name="chav1961.calc.plugins.details.coils.length">Wire length (mm)</key>
+		<key name="chav1961.calc.plugins.details.coils.length.tt">Approx length of the wire, without connection tails</key>
+		<key name="chav1961.calc.plugins.details.coils.quality">Quality</key>
+		<key name="chav1961.calc.plugins.details.coils.quality.tt">Approx quatily of the coil for the frequency typed</key>
+		<key name="chav1961.calc.plugins.details.coils.coilType">Type</key>
+		<key name="chav1961.calc.plugins.details.coils.coilType.tt">Select construction type if the coil</key>
+		<key name="chav1961.calc.plugins.details.coils.coilType.single">Sinlge-layer</key>
+		<key name="chav1961.calc.plugins.details.coils.coilType.single.tt">Single-layer coil without step</key>
+		<key name="chav1961.calc.plugins.details.coils.coilType.multilayer">Multi-layer</key>
+		<key name="chav1961.calc.plugins.details.coils.coilType.multilayer.tt">Multi-layer coil</key>
+		<key name="chav1961.calc.plugins.details.coils.coiltype.stepped">Single-layer with step</key>
+		<key name="chav1961.calc.plugins.details.coils.coiltype.stepped.tt">Single-layer coil with step</key>
+
+<!-- Localization for chav1961.calc.plugins.details.ringcoils -->
+		<key name="menu.details.ringcoils">Ring coils parameters</key>
+		<key name="menu.details.ringcoils.tt">Calculation number of coils for the inductance typed or inductance for the numer of coils typed</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.button.inductance">Inductance</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.button.inductance.tt">Calculate inductance for number of coils typed</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.button.coils">Coils</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.button.coils.tt">Calculate numer of coils for inductance typed</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.numberOfCoils">[w] Number of coils</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.numberOfCoils.tt">Type number of coils if you will calculate inductance. Number of coils can have fractional part</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.inductance">[L] Inductance (uH)</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.inductance.tt">Type inductance in microHenry if yiu will calculate numer of coils</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.wireDiameter">[Dw] Wire (mm)</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.wireDiameter.tt">Type wire diameter for the coil in millimeters</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringType">Ring type</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringType.tt">Ring type from standard set</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringMyu">Рermeability (u)</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringMyu.tt">Magnetic permeability from standard set</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.frequency">Frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.frequency.tt">Type frequency in kHz, what you are planning to use coil. Optional patameter. If missing, quality will not be calculated</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.length">Wire length (mm)</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.length.tt">Approx length of the wire, without connection tails</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.quality">Quality</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.quality.tt">Approx quatily of the coil for the frequency typed</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.32">32</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.32.tt">32</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.50">50</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.50.tt">50</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.60">60</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.60.tt">60</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.75">75</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.75.tt">75</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.100">100</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.100.tt">100</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.140">140</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.140.tt">140</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.400">400</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.400.tt">400</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.600">600</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.600.tt">600</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.1000">1000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.1000.tt">1000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.1500">1500</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.1500.tt">1500</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.2000">2000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.2000.tt">2000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.2500">2500</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.2500.tt">2500</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.3000">3000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.3000.tt">3000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.6000">6000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.6000.tt">6000</key>		
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K4x2d5x1d2">К 4х2.5х1.2</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K4x2d5x1d2.tt">К 4х2.5х1.2</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K4x2d5x1d6">К 4х2.5х1.6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K4x2d5x1d6.tt">К 4х2.5х1.6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K5x3x1">К 5х3х1</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K5x3x1.tt">К 5х3х1</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K5x3x1d5">К 5х3х1.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K5x3x1d5.tt">К 5х3х1.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K7x4x2">К 7х4х2</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K7x4x2.tt">К 7х4х2</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K10x6x3">К 10х6х3</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K10x6x3.tt">К 10х6х3</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K10x6x4d5">К 10х6х4.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K10x6x4d5.tt">К 10х6х4.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K10x6x5">К 10х6х5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K10x6x5.tt">К 10х6х5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x5x5d5">К 12х5х5.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x5x5d5.tt">К 12х5х5.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x6x4d5">К 12х6х4.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x6x4d5.tt">К 12х6х4.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x8x3">К 12х8х3</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x8x3.tt">К 12х8х3</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x8x6">К 12х8х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x8x6.tt">К 12х8х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K16x10x4d5">К 16х10х4.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K16x10x4d5.tt">К 16х10х4.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K17d5x8x5">К 17.5х8х5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K17d5x8x5.tt">К 17.5х8х5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K20x10x5">К 20х10х5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K20x10x5.tt">К 20х10х5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K20x12x6">К 20х12х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K20x12x6.tt">К 20х12х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K28x16x9">К 28х16х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K28x16x9.tt">К 28х16х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K31x18d5x7">К 31х18.5х7</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K31x18d5x7.tt">К 31х18.5х7</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x16x8">К 32х16х8</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x16x8.tt">К 32х16х8</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x16x12">К 32х16х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x16x12.tt">К 32х16х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x20x6">К 32х20х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x20x6.tt">К 32х20х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x20x9">К 32х20х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x20x9.tt">К 32х20х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K38x24x7">К 38х24х7</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K38x24x7.tt">К 38х24х7</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K40x25x7d5">К 40х25х7.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K40x25x7d5.tt">К 40х25х7.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K40x25x11">К 40х25х11</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K40x25x11.tt">К 40х25х11</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K45x28x8">К 45х28х8</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K45x28x8.tt">К 45х28х8</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K45x28x12">К 45х28х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K45x28x12.tt">К 45х28х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K45x28x16">К 45х28х16</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K45x28x16.tt">К 45х28х16</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x6">К 65х40х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x6.tt">К 65х40х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x9">К 65х40х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x9.tt">К 65х40х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x10">К 65х40х10</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x10.tt">К 65х40х10</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x12">К 65х40х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x12.tt">К 65х40х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x15">К 65х40х15</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x15.tt">К 65х40х15</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x50x6">К 65х50х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x50x6.tt">К 65х50х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x50x9">К 65х50х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x50x9.tt">К 65х50х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x50x12">К 65х50х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x50x12.tt">К 65х50х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K80x50x7d5">К 80х50х7.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K80x50x7d5.tt">К 80х50х7.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K80x50x11">К 80х50х11</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K80x50x11.tt">К 80х50х11</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K80x50x12">К 80х50х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K80x50x12.tt">К 80х50х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K100x60x7d5">К 100х60х7.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K100x60x7d5.tt">К 100х60х7.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K100x60x10">К 100х60х10</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K100x60x10.tt">К 100х60х10</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K100x60x15">К 100х60х15</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K100x60x15.tt">К 100х60х15</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K125x80x8">К 125х80х8</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K125x80x8.tt">К 125х80х8</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K125x80x12">К 125х80х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K125x80x12.tt">К 125х80х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K125x80x18">К 125х80х18</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K125x80x18.tt">К 125х80х18</key>
+		
 	</lang>
 	<lang name="ru">
 <!-- Локализация меню приложения --> 
@@ -508,83 +657,10 @@
 		<key name="menu.savePipeAs">Сохранить конвейер как...</key>
 		<key name="menu.ttSavePipeAs">Сохранить содержимое правой части экрана под новым именем</key>
 
-		<key name="menu.elements">Элементы</key>
-		<key name="menu.ttElements">Расчет элементов радиотехнических цепей (катушки, контуры, фильтры)</key>
-
-		<key name="menu.elements.coils">Катушки</key>
-		<key name="menu.ttElements.coils">Расчет параметров различных катушек</key>
-
-		<key name="menu.elements.coils.onelayer">Однослойные круглые</key>
-		<key name="menu.ttElements.coils.onelayer">Расчет параметров однослойных круглых катушек</key>
-
-		<key name="menu.elements.coils.ringlayer">На кольцах</key>
-		<key name="menu.ttElements.coils.ringlayer">Расчет параметров катушек на кольцах</key>
-
-		<key name="menu.components">Компоненты</key>
-		<key name="menu.ttComponents">Расчет компонентов схем</key> 
-
-		<key name="menu.components.lccontour">LC-контур</key>
-		<key name="menu.ttComponents.lccontour">Расчет параметров LC-контура</key>
-
-		<key name="menu.components.rcgenerator">RC-генератор</key>
-		<key name="menu.ttComponents.rcgenerator">Расчет параметров RC-генератора</key>
-
-		<key name="menu.schemes">Схемы</key>
-		<key name="menu.ttSchemes">Расчет готовых схем</key>
-			
-		<key name="menu.schemes.powerfactor">Корректоры коэфф. мощности</key>
-		<key name="menu.ttSchemes.powerfactor">Расчет схем корректоров коэффициента мощности</key>
-
-		<key name="menu.schemes.powerfactor.mc34262">микросхема MC34262</key>
-		<key name="menu.ttSchemes.powerfactor.mc34262">Расчет корректора коэффициента мощности на базе MC34262</key>
-
-		<key name="menu.schemes.stepup">Повышающие преобразователи</key>
-		<key name="menu.ttSchemes.stepup">Расчет повышающих преобразователей</key>
-
-		<key name="menu.schemes.stepup.mc34063">Микросхема преобразователя MC34063</key>
-		<key name="menu.ttSchemes.stepup.mc34063">Расчет повышающего преобразователя на микросхеме MC34063</key>
-
-		<key name="menu.schemes.stepup.ucX84X">Семейство микросхем UCX84X</key>
-		<key name="menu.ttSchemes.stepup.ucX84X">Расчет повышающего преобразователя на микросхемах семейства UCX84X</key>
-
-		<key name="menu.schemes.stepdown">Понижающие преобразователи</key>
-		<key name="menu.ttSchemes.stepdown">Расчет понижающих преобразователей</key>
-
-		<key name="menu.schemes.stepdown.mc34063">Микросхема преобразователя MC34063</key>
-		<key name="menu.ttSchemes.stepdown.mc34063">Расчет понижающего преобразователя на микросхеме MC34063</key>
-
-		<key name="menu.schemes.stepdown.tps40200">Микросхема преобразователя TPS40200</key>
-		<key name="menu.ttSchemes.stepdown.tps40200">Расчет понижающего преобразователя на микросхеме TPS40200</key>
-
-		<key name="menu.schemes.transmitter">Передатчик</key>
-		<key name="menu.ttSchemes.transmitter">Расчет компонент и узлов передатчика</key>
-
-		<key name="menu.schemes.transmitter.pcontour">П-контур</key>
-		<key name="menu.ttSchemes.transmitter.pcontour">Расчет параметров LC-контура</key>
-
-		<key name="menu.schemes.transmitter.quartzfilter">Кварцевые фильтры</key>
-		<key name="menu.ttSchemes.transmitter.quartzfilter">Расчет различных кварецвых фильтров</key>
-
-		<key name="menu.pipes">Конвейеры</key>
-		<key name="menu.ttPipes">Инфраструктура конвейеров для построения цепочек вычислений</key>
-
-		<key name="menu.pipes.startnode">Начальный узел</key>
-		<key name="menu.ttPipes.Startnode">Включить начальный узел в ваш конвейер</key>
-
-		<key name="menu.pipes.formulanode">Узел-формула</key>
-		<key name="menu.ttPipes.formulanode">Включить узел-формулу для настандартных вычислений в ваш конвейер</key>
-
-		<key name="menu.pipes.switchnode">Узел-переключатель</key>
-		<key name="menu.ttPipes.switchnode">Включить узел-переключатель для условных ветвлений в вашем конвейере</key>
-
-		<key name="menu.pipes.mapnode">Узел-разветвитель</key>
-		<key name="menu.ttPipes.mapnode">Включить узел-разветвитель для разделения вычислений на параллельные ветки</key> 
-
-		<key name="menu.pipes.reducenode">Узел-сборщик</key>
-		<key name="menu.ttPipes.reducenode">Включить узел-сборщик для завершения параллельных ветвей вычислений</key>
-
-		<key name="menu.pipes.terminalnode">Конечный узел</key>
-		<key name="menu.ttPipes.terminalnode">Включить конечный узел в ваш конвейер</key> 
+		<key name="menu.references">Справочники</key>
+		<key name="menu.references.tt">Справочники по электронным компонентам</key>
+		<key name="menu.references.tubes">Лампы</key>
+		<key name="menu.references.tubes.tt">Справочники по электронным лампам</key>
 
 		<key name="menu.tools">Инструменты</key>
 		<key name="menu.ttTools">Набор инструментов для настройки приложения</key>
@@ -649,6 +725,12 @@
 		<key name="menu.curcuits.wienbridge.tt">Расчет параметров моста Вина</key>
 		<key name="menu.curcuits.phaseshift">Параметры фазосдвигающего генератора</key>
 		<key name="menu.curcuits.phaseshift.tt">Расчет параметров фазосдвигающего генератора</key>
+
+		
+		<key name="menu.details">Параметры компонентов</key>
+		<key name="menu.details.tt">Расчет парамеров компонентов</key>
+		<key name="menu.details.coils">Параметры катушки индуктивности</key>
+		<key name="menu.details.coils.tt">Расчет параметров катушки индуктивности</key>
 
 <!-- Локализация настроек приложения -->
 		<key name="settings.save">Сохранить</key>
@@ -804,6 +886,9 @@
 		<key name="chav1961.calc.pipe">%1$s Конв. %2$s</key>
 		<key name="chav1961.calc.pipe.tt">Конвейер позволяет собирать из плагинов цепочки вычислений (наподобие блок-схем)</key>
 
+		<key name="chav1961.calc.reference">Справочник</key>
+		<key name="chav1961.calc.reference.tt">Справочник по электронным компонентам</key>
+
 <!-- Локализация для стандартных компонент конвейера -->
 		<key name="chav1961.calc.pipe.screen.source.tt">Стартовый узел запускает выполнение других узлов конвейера</key>
 		<key name="chav1961.calc.pipe.screen.target.tt">Приемный узел ожизает завершение работы всех входящих узлов конвейера</key>
@@ -920,6 +1005,45 @@
 		<key name="chav1961.calc.windows.pipemanager.validation.unconditionalLoop">Ошибка конвейера: безусловный бесконечный цикл в конвейере</key> 
 		<key name="chav1961.calc.windows.pipemanager.validation.OK">Проверка конвейера успешна</key> 
 
+<!-- Локализация для стандартных компонентов справочника -->
+		<key name="chav1961.calc.reference.name">Наименование</key>
+		<key name="chav1961.calc.reference.name.tt">Наименование справочника электронных компонент</key>
+		<key name="chav1961.calc.reference.description">Описание</key>
+		<key name="chav1961.calc.reference.description.tt">Описание справочника электронных компонент</key>
+
+<!-- Локализация для справочника по лампам -->
+		<key name="chav1961.calc.reference.tubesReference">Справочник по лампам</key>
+		<key name="chav1961.calc.reference.tubesReference.tt">Справочник по электронным лампам</key>
+		<key name="chav1961.calc.reference.tubesReference.typesType">Тип</key>
+		<key name="chav1961.calc.reference.tubesReference.typesType.tt">Тип электронной лампы</key>
+
+		<key name="chav1961.calc.references.tubes.tubesType.diode">Диод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.diode.tt">Диод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doubleDiode">Двойной диод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doubleDiode.tt">Двойной диод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.triode">Триод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.triode.tt">Триод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doubleTriode">Двойной триод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doubleTriode.tt">Двойной триод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.tetrode">Тетрод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.tetrode.tt">Тетрод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doubleTetrode">Двойной тетрод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doubleTetrode.tt">Двойной тетрод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.pentode">Пентод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.pentode.tt">Пентод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doublePentode">Двойной пентод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.doublePentode.tt">Двойной пентод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.triodePentode">Триод-пентод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.triodePentode.tt">Триод-пентод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.heptode">Гептод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.heptode.tt">Гептод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.triodeHeptode">Триод-гептод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.triodeHeptode.tt">Триод-гептод</key>
+		<key name="chav1961.calc.references.tubes.tubesType.stabilovolt">Стабиловольт</key>
+		<key name="chav1961.calc.references.tubes.tubesType.stabilovolt.tt">Стабиловольт</key>
+		<key name="chav1961.calc.references.tubes.tubesType.baretter">Бареттер</key>
+		<key name="chav1961.calc.references.tubes.tubesType.baretter.tt">Бареттер</key>
+
 <!-- Локализация для плагинов -->
 
 <!-- Локализация для chav1961.calc.plugins.calc.contour --> 
@@ -969,5 +1093,180 @@
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.res.tt">Расчет сопротивления</key>
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap">C</key>
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap.tt">Расчет емкости</key>
+
+<!-- Локализация для chav1961.calc.plugins.details.coils -->
+		<key name="menu.details.coils">Параметры катушки индуктивности</key>
+		<key name="menu.details.coils.tt">Расчет числа витков катушки для заданной индуктивности или индуктивности катушки для заданного числа витков</key>
+		<key name="chav1961.calc.plugins.details.coils.button.inductance">Индуктивность</key>
+		<key name="chav1961.calc.plugins.details.coils.button.inductance.tt">Расчет индуктивности катушки по заданному числу витков</key>
+		<key name="chav1961.calc.plugins.details.coils.button.coils">Витки</key>
+		<key name="chav1961.calc.plugins.details.coils.button.coils.tt">Расчет числа витков катушки для заданной инуктивности</key>
+		<key name="chav1961.calc.plugins.details.coils.coilsDiameter">[D] Внутр.диаметр (мм)</key>
+		<key name="chav1961.calc.plugins.details.coils.coilsDiameter.tt">Введите внутренний диаметр катушки в миллиметрах</key>
+		<key name="chav1961.calc.plugins.details.coils.coilsLength">[Len] Длина (мм)</key>
+		<key name="chav1961.calc.plugins.details.coils.coilsLength.tt">Введите длину катушки в миллиметрах</key>
+		<key name="chav1961.calc.plugins.details.coils.numberOfCoils">[w] Число витков</key>
+		<key name="chav1961.calc.plugins.details.coils.numberOfCoils.tt">Введите число витков катушки, если будете рассчитывать индуктивность. Число витков может быть дробным</key>
+		<key name="chav1961.calc.plugins.details.coils.inductance">[L] Индуктивность (uH)</key>
+		<key name="chav1961.calc.plugins.details.coils.inductance.tt">Введите индуктивность катушки в микрогенри, если будете рассчитывать число витков</key>
+		<key name="chav1961.calc.plugins.details.coils.wireDiameter">[Dw] Провод (мм)</key>
+		<key name="chav1961.calc.plugins.details.coils.wireDiameter.tt">Введите диаметр провода катушки в миллиметрах</key>
+		<key name="chav1961.calc.plugins.details.coils.frequency">Частота (кгц)</key>
+		<key name="chav1961.calc.plugins.details.coils.frequency.tt">Введите частоту, на которой планируется работа катушки. Параметр необязательный, при его отсутствии конструктивная добротность рассчитываться не будет</key>
+		<key name="chav1961.calc.plugins.details.coils.length">Длина провода (мм)</key>
+		<key name="chav1961.calc.plugins.details.coils.length.tt">Примерная длина провода без учета длины выводов</key>
+		<key name="chav1961.calc.plugins.details.coils.quality">Констр. добротность</key>
+		<key name="chav1961.calc.plugins.details.coils.quality.tt">Примерная конструктивная добротность катушки на заданной частоте</key>
+		<key name="chav1961.calc.plugins.details.coils.coilType">Конструкция</key>
+		<key name="chav1961.calc.plugins.details.coils.coilType.tt">Выберите тип конструктивного исполнения катушки</key>
+		<key name="chav1961.calc.plugins.details.coils.coilType.single">Однослойная</key>
+		<key name="chav1961.calc.plugins.details.coils.coilType.single.tt">Однослойная катушка без принудительного шага</key>
+		<key name="chav1961.calc.plugins.details.coils.coilType.multilayer">Многослойная</key>
+		<key name="chav1961.calc.plugins.details.coils.coilType.multilayer.tt">Многослойная катушка</key>
+		<key name="chav1961.calc.plugins.details.coils.coiltype.stepped">С шагом</key>
+		<key name="chav1961.calc.plugins.details.coils.coiltype.stepped.tt">Однослойная катушка с принудительным шагом</key>
+
+<!-- Локализация для chav1961.calc.plugins.details.ringcoils -->
+		<key name="menu.details.ringcoils">Параметры катушки на кольце</key>
+		<key name="menu.details.ringcoils.tt">Расчет числа витков катушки для заданной индуктивности или индуктивности катушки для заданного числа витков</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.button.inductance">Индуктивность</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.button.inductance.tt">Расчет индуктивности катушки по заданному числу витков</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.button.coils">Витки</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.button.coils.tt">Расчет числа витков катушки для заданной инуктивности</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.numberOfCoils">[w] Число витков</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.numberOfCoils.tt">Введите число витков катушки, если будете рассчитывать индуктивность. Число витков может быть дробным</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.inductance">[L] Индуктивность (uH)</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.inductance.tt">Введите индуктивность катушки в микрогенри, если будете рассчитывать число витков</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.wireDiameter">[Dw] Провод (мм)</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.wireDiameter.tt">Введите диаметр провода катушки в миллиметрах</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringType">Типоразмер</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringType.tt">Типоразмер кольца из стандартного ряда</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringMyu">Проницаемось (u)</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringMyu.tt">Магнитная проницаемость материала кольца из стандартного ряда</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.frequency">Частота (кгц)</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.frequency.tt">Введите частоту, на которой планируется работа катушки. Параметр необязательный, при его отсутствии конструктивная добротность рассчитываться не будет</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.length">Длина провода (мм)</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.length.tt">Примерная длина провода без учета длины выводов</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.quality">Констр. добротность</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.quality.tt">Примерная конструктивная добротность катушки на заданной частоте</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.32">32</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.32.tt">32</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.50">50</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.50.tt">50</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.60">60</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.60.tt">60</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.75">75</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.75.tt">75</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.100">100</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.100.tt">100</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.140">140</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.140.tt">140</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.400">400</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.400.tt">400</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.600">600</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.600.tt">600</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.1000">1000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.1000.tt">1000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.1500">1500</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.1500.tt">1500</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.2000">2000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.2000.tt">2000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.2500">2500</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.2500.tt">2500</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.3000">3000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.3000.tt">3000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.6000">6000</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringmyu.6000.tt">6000</key>		
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K4x2d5x1d2">К 4х2.5х1.2</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K4x2d5x1d2.tt">К 4х2.5х1.2</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K4x2d5x1d6">К 4х2.5х1.6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K4x2d5x1d6.tt">К 4х2.5х1.6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K5x3x1">К 5х3х1</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K5x3x1.tt">К 5х3х1</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K5x3x1d5">К 5х3х1.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K5x3x1d5.tt">К 5х3х1.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K7x4x2">К 7х4х2</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K7x4x2.tt">К 7х4х2</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K10x6x3">К 10х6х3</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K10x6x3.tt">К 10х6х3</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K10x6x4d5">К 10х6х4.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K10x6x4d5.tt">К 10х6х4.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K10x6x5">К 10х6х5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K10x6x5.tt">К 10х6х5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x5x5d5">К 12х5х5.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x5x5d5.tt">К 12х5х5.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x6x4d5">К 12х6х4.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x6x4d5.tt">К 12х6х4.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x8x3">К 12х8х3</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x8x3.tt">К 12х8х3</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x8x6">К 12х8х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K12x8x6.tt">К 12х8х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K16x10x4d5">К 16х10х4.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K16x10x4d5.tt">К 16х10х4.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K17d5x8x5">К 17.5х8х5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K17d5x8x5.tt">К 17.5х8х5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K20x10x5">К 20х10х5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K20x10x5.tt">К 20х10х5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K20x12x6">К 20х12х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K20x12x6.tt">К 20х12х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K28x16x9">К 28х16х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K28x16x9.tt">К 28х16х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K31x18d5x7">К 31х18.5х7</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K31x18d5x7.tt">К 31х18.5х7</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x16x8">К 32х16х8</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x16x8.tt">К 32х16х8</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x16x12">К 32х16х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x16x12.tt">К 32х16х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x20x6">К 32х20х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x20x6.tt">К 32х20х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x20x9">К 32х20х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K32x20x9.tt">К 32х20х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K38x24x7">К 38х24х7</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K38x24x7.tt">К 38х24х7</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K40x25x7d5">К 40х25х7.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K40x25x7d5.tt">К 40х25х7.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K40x25x11">К 40х25х11</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K40x25x11.tt">К 40х25х11</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K45x28x8">К 45х28х8</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K45x28x8.tt">К 45х28х8</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K45x28x12">К 45х28х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K45x28x12.tt">К 45х28х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K45x28x16">К 45х28х16</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K45x28x16.tt">К 45х28х16</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x6">К 65х40х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x6.tt">К 65х40х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x9">К 65х40х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x9.tt">К 65х40х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x10">К 65х40х10</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x10.tt">К 65х40х10</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x12">К 65х40х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x12.tt">К 65х40х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x15">К 65х40х15</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x40x15.tt">К 65х40х15</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x50x6">К 65х50х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x50x6.tt">К 65х50х6</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x50x9">К 65х50х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x50x9.tt">К 65х50х9</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x50x12">К 65х50х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K65x50x12.tt">К 65х50х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K80x50x7d5">К 80х50х7.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K80x50x7d5.tt">К 80х50х7.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K80x50x11">К 80х50х11</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K80x50x11.tt">К 80х50х11</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K80x50x12">К 80х50х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K80x50x12.tt">К 80х50х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K100x60x7d5">К 100х60х7.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K100x60x7d5.tt">К 100х60х7.5</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K100x60x10">К 100х60х10</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K100x60x10.tt">К 100х60х10</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K100x60x15">К 100х60х15</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K100x60x15.tt">К 100х60х15</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K125x80x8">К 125х80х8</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K125x80x8.tt">К 125х80х8</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K125x80x12">К 125х80х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K125x80x12.tt">К 125х80х12</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K125x80x18">К 125х80х18</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringtype.K125x80x18.tt">К 125х80х18</key>
+
 	</lang>	
 </localization>

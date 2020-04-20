@@ -625,6 +625,7 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 				return (MutableContentNodeMetadata)container.getModel().getElementAt(index).getMetadata();
 			}
 		}
+		System.err.println("Not found in "+container.getModel().getSize());
 		throw new IllegalArgumentException(); 
 	}
 

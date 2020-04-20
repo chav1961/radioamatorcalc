@@ -51,8 +51,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.TabContent;
 import chav1961.calc.pipe.ContainerPipeFrame;
+import chav1961.calc.references.tubes.TubesReferences;
 import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.calc.windows.PipeTab;
+import chav1961.calc.windows.ReferenceTab;
 import chav1961.calc.windows.WorkbenchTab;
 import chav1961.purelib.basic.ArgParser;
 import chav1961.purelib.basic.MimeType;
@@ -376,6 +378,18 @@ public class Application extends JFrame implements LocaleChangeListener {
 			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
+	
+	@OnAction("action:/references.tubes")
+	private void refTubes() {
+		try{final TubesReferences	tr = new TubesReferences(localizer, logger);
+			final ReferenceTab		tube = new ReferenceTab(tabs,localizer,stateString,tr.getTable(),tr.getForm());
+			
+			placeTab(tabs,tube,true);
+		} catch (LocalizationException | ContentException | MalformedURLException e) {
+			stateString.message(Severity.error,e.getLocalizedMessage());
+		}
+	}
+	
 
 	@OnAction("action:/builtin.languages")
 	private void selectLang(final Hashtable<String,String[]> langs) throws LocalizationException {

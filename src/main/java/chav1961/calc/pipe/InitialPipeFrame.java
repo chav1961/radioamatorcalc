@@ -212,7 +212,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 		final Map<String,Object>	variables = new HashMap<>();
 		
 		for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {
-			variables.put(fields.getModel().getElementAt(index).getMetadata().getName(),null);
+			variables.put(buildVarName(fields.getModel().getElementAt(index).getMetadata()),null);
 		}
 		return variables;
 	}
@@ -231,22 +231,17 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 			try{ScriptProcessor.execute(code,new DataManager() {
 					@Override
 					public boolean exists(final int pluginId, final String name) {
-						if (pluginId < 0) {
-							return variables.containsKey(name);
-						}
-						else {
-							return false;
-						}
+						return variables.containsKey(buildVarName(pluginId,name));
 					}
 
 					@Override
 					public Object getVar(final int pluginId, final String name) {
-						return variables.get(name);
+						return variables.get(buildVarName(pluginId,name));
 					}
 
 					@Override
 					public void setVar(final int pluginId, final String name, final Object value) {
-						variables.replace(name,value);
+						variables.replace(buildVarName(pluginId,name),value);
 					}
 
 					@Override
@@ -265,7 +260,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	public Object getOutgoingValue(final Object temp, final ContentNodeMetadata meta) throws ContentException {
 		final Map<String,Object>	variables = (Map<String,Object>)temp;
 		
-		return variables.get(meta.getName());
+		return variables.get(buildVarName(meta));
 	}
 
 	@Override
