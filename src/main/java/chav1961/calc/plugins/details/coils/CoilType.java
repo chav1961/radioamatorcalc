@@ -9,6 +9,6 @@ public enum CoilType {
 	SINGLE_LAYER, 
 	@LocaleResource(value="chav1961.calc.plugins.details.coils.coilType.multilayer",tooltip="chav1961.calc.plugins.details.coils.coilType.multilayer.tt")
 	MULTI_LAYER, 
-	@LocaleResource(value="chav1961.calc.plugins.details.coils.coiltype.stepped",tooltip="chav1961.calc.plugins.details.coils.coiltype.stepped.tt")
-	STEPPED
+	@LocaleResource(value="chav1961.calc.plugins.details.coils.coiltype.pitched",tooltip="chav1961.calc.plugins.details.coils.coiltype.pitched.tt")
+	PITCHED
 }

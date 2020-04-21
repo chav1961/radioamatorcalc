@@ -488,8 +488,8 @@
 		<key name="chav1961.calc.plugins.details.coils.coilType.single.tt">Single-layer coil without step</key>
 		<key name="chav1961.calc.plugins.details.coils.coilType.multilayer">Multi-layer</key>
 		<key name="chav1961.calc.plugins.details.coils.coilType.multilayer.tt">Multi-layer coil</key>
-		<key name="chav1961.calc.plugins.details.coils.coiltype.stepped">Single-layer with step</key>
-		<key name="chav1961.calc.plugins.details.coils.coiltype.stepped.tt">Single-layer coil with step</key>
+		<key name="chav1961.calc.plugins.details.coils.coiltype.pitched">Single-layer with pitch</key>
+		<key name="chav1961.calc.plugins.details.coils.coiltype.pitched.tt">Single-layer coil with pitch</key>
 
 <!-- Localization for chav1961.calc.plugins.details.ringcoils -->
 		<key name="menu.details.ringcoils">Ring coils parameters</key>
@@ -1123,8 +1123,8 @@
 		<key name="chav1961.calc.plugins.details.coils.coilType.single.tt">Однослойная катушка без принудительного шага</key>
 		<key name="chav1961.calc.plugins.details.coils.coilType.multilayer">Многослойная</key>
 		<key name="chav1961.calc.plugins.details.coils.coilType.multilayer.tt">Многослойная катушка</key>
-		<key name="chav1961.calc.plugins.details.coils.coiltype.stepped">С шагом</key>
-		<key name="chav1961.calc.plugins.details.coils.coiltype.stepped.tt">Однослойная катушка с принудительным шагом</key>
+		<key name="chav1961.calc.plugins.details.coils.coiltype.pitched">С шагом</key>
+		<key name="chav1961.calc.plugins.details.coils.coiltype.pitched.tt">Однослойная катушка с принудительным шагом</key>
 
 <!-- Локализация для chav1961.calc.plugins.details.ringcoils -->
 		<key name="menu.details.ringcoils">Параметры катушки на кольце</key>

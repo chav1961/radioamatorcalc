@@ -1,8 +1,7 @@
 package chav1961.calc.plugins.details.coils;
 
 import chav1961.calc.interfaces.PluginProperties;
-
-
+import chav1961.calc.plugins.details.CoilsUtil;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
@@ -20,7 +19,6 @@ import chav1961.purelib.ui.interfaces.Action;
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.details.coils.button.coils",tooltip="chav1961.calc.plugins.details.coils.button.coils.tt"),actionString="calcCoils")
 @PluginProperties(width=600,height=300,leftWidth=250,svgURI="schema.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
 public class CoilsPlugin implements FormManager<Object,CoilsPlugin> {
-	private static final double		MYU0 = 4e-7 * Math.PI;
 	private static final double		MYUr = 1;
 	private static final double		R_CUPRUM =  0.0171;	// Ohm • mm²/m;
 	private static final double		K_SKIN1000 = 1.98;	// mm 1000 Hz;
@@ -89,7 +87,7 @@ public class CoilsPlugin implements FormManager<Object,CoilsPlugin> {
 							coilsInductance = (float)singleLayerInductance(coilsDiameter,coilsLength,coilsNumberOfCoils,wireDiameter);
 							wireLength = (float) (Math.PI * (coilsDiameter+wireDiameter) * coilsNumberOfCoils);
 							break;
-						case STEPPED		:
+						case PITCHED		:
 							coilsInductance = (float)steppedInductance(coilsDiameter,coilsLength,coilsNumberOfCoils,wireDiameter);
 							wireLength = (float) (Math.PI * (coilsDiameter+wireDiameter) * coilsNumberOfCoils + coilsLength);
 							break;
@@ -97,7 +95,7 @@ public class CoilsPlugin implements FormManager<Object,CoilsPlugin> {
 							throw new UnsupportedOperationException("Coil type ["+coilType+"] is not supported yet");
 					}
 					if (frequency > 0) {
-						quality = (float) calcQuality(frequency,coilsInductance,wireLength,wireDiameter);
+						quality = (float) calcQuality(frequency,coilsInductance,coilsNumberOfCoils,coilsDiameter,wireDiameter);
 					}
 					return RefreshMode.RECORD_ONLY;
 				}
@@ -136,14 +134,14 @@ public class CoilsPlugin implements FormManager<Object,CoilsPlugin> {
 							final double	midDiameter = coilsDiameter;
 							final double	sq = Math.PI*midDiameter*midDiameter/4;
 							
-							coilsNumberOfCoils = (float)Math.sqrt((coilsInductance*1e-6*coilsLength*1e-3)/(MYU0*MYUr*sq*1e-6));
+							coilsNumberOfCoils = (float)Math.sqrt((coilsInductance*1e-6*coilsLength*1e-3)/(CoilsUtil.MYU0*MYUr*sq*1e-6));
 							wireLength = (float) (Math.PI * (coilsDiameter+wireDiameter) * coilsNumberOfCoils);
 							break;
-						case STEPPED		:
+						case PITCHED		:
 							final double	midDiameterS = coilsDiameter;
 							final double	sqS = Math.PI*midDiameterS*midDiameterS/4;
 							
-							coilsNumberOfCoils = (float)Math.sqrt((coilsInductance*1e-6*coilsLength*1e-3)/(MYU0*MYUr*sqS*1e-6));
+							coilsNumberOfCoils = (float)Math.sqrt((coilsInductance*1e-6*coilsLength*1e-3)/(CoilsUtil.MYU0*MYUr*sqS*1e-6));
 							while (coilsNumberOfCoils > 0 && steppedInductance(coilsDiameter,coilsLength,coilsNumberOfCoils,wireDiameter) > coilsInductance) {
 								coilsNumberOfCoils -= 0.25; 
 							}
@@ -158,7 +156,7 @@ public class CoilsPlugin implements FormManager<Object,CoilsPlugin> {
 							throw new UnsupportedOperationException("Coil type ["+coilType+"] is not supported yet");
 					}
 					if (frequency > 0) {
-						quality = (float) calcQuality(frequency,coilsInductance,wireLength,wireDiameter);
+						quality = (float) calcQuality(frequency,coilsInductance,coilsNumberOfCoils,coilsDiameter,wireDiameter);
 					}
 					return RefreshMode.RECORD_ONLY;
 				}
@@ -171,145 +169,30 @@ public class CoilsPlugin implements FormManager<Object,CoilsPlugin> {
 	public LoggerFacade getLogger() {
 		return logger;
 	}
-
-	private static double getA(final double wireDiameter, final double step) {
-		final double	k = wireDiameter / step;
-		
-		if (k < 0.05) {
-			return -2.2;
-		}
-		else if (k < 0.1) {
-			return -1.8;
-		}
-		else if (k < 0.15) {
-			return -1.4;
-		}
-		else if (k < 0.2) {
-			return -1.1;
-		}
-		else if (k < 0.25) {
-			return -0.8;
-		}
-		else if (k < 0.3) {
-			return -0.65;
-		}
-		else if (k < 0.35) {
-			return -0.5;
-		}
-		else if (k < 0.4) {
-			return -0.35;
-		}
-		else if (k < 0.45) {
-			return -0.2;
-		}
-		else if (k < 0.5) {
-			return -0.15;
-		}
-		else if (k < 0.55) {
-			return -0.05;
-		}
-		else if (k < 0.6) {
-			return 0.05;
-		}
-		else if (k < 0.65) {
-			return 0.1;
-		}
-		else if (k < 0.7) {
-			return 0.18;
-		}
-		else if (k < 0.75) {
-			return 0.25;
-		}
-		else if (k < 0.8) {
-			return 0.3;
-		}
-		else if (k < 0.85) {
-			return 0.37;
-		}
-		else if (k < 0.9) {
-			return 0.45;
-		}
-		else if (k < 0.95) {
-			return 0.50;
-		}
-		else if (k < 1.0) {
-			return 0.55;
-		}
-		else {
-			return 0.6;
-		}
-	}
-	
-	private static double getB(final double numberOfCoils) {
-		final double[][]	tmp = B_COEFF;
-		
-		for (int index = 1, maxIndex = tmp.length; index < maxIndex; index++) {
-			if (numberOfCoils >= tmp[index-1][0] && numberOfCoils <= tmp[index-1][0]) {	// Simple linear interpolation...
-				return tmp[index-1][1]+(tmp[index][1]-tmp[index-1][1])*(numberOfCoils-tmp[index-1][0])/(tmp[index][0]-tmp[index-1][0]);
-			}
-		}
-		return 0.327; 
-	}
-	
-	private static double getAlpha(final float wireDiameter) {
-		if (wireDiameter < 0.08) {
-			return 1.35;
-		}
-		else if (wireDiameter < 0.11) {
-			return 1.3;
-		}
-		else if (wireDiameter < 0.15) {
-			return 1.275;
-		}
-		else if (wireDiameter < 0.25) {
-			return 1.25;
-		}
-		else if (wireDiameter < 0.35) {
-			return 1.225;
-		}
-		else if (wireDiameter < 0.41) {
-			return 1.2;
-		}
-		else if (wireDiameter < 0.51) {
-			return 1.15;
-		}
-		else if (wireDiameter < 0.91) {
-			return 1.1;
-		}
-		else {
-			return 1.05;
-		}
-	}
 	
 	private static double singleLayerInductance(final float diameter, final float length, final float coils, final float wireDiameter) {
 		final double	n2 = coils*coils;
 		final double	midDiameter = diameter;
 		final double	sq = Math.PI*midDiameter*midDiameter/4;
 		
-		return MYU0*MYUr*n2*sq/(length*1e-3);
+		return CoilsUtil.MYU0*MYUr*n2*sq/(length*1e-3);
 	}
 
 	private static double steppedInductance(final float diameter, final float length, final float coils, final float wireDiameter) {
 		final double	midDiameterS = diameter;
 		
-		return singleLayerInductance(diameter,length,coils,wireDiameter) - 2 * Math.PI * midDiameterS*1e-1 * coils * getA(wireDiameter,(length-wireDiameter*coils)/coils) * getB(coils);
+		return singleLayerInductance(diameter,length,coils,wireDiameter) - 2 * Math.PI * midDiameterS*1e-1 * coils * CoilsUtil.getAForInductance(wireDiameter,(length-wireDiameter*coils)/coils) * CoilsUtil.getBForInductance(coils);
 	}	
 
 	private static double multiLayerInductance(final float diameter, final float length, final float coils, final float wireDiameter) {
 		final double	n2M = coils*coils;
-		final double	thick = (wireDiameter*wireDiameter) * coils / (length * getAlpha(wireDiameter));
+		final double	thick = (wireDiameter*wireDiameter) * coils / (length * CoilsUtil.getFillFactorForWire(wireDiameter));
 		final double	midDiameterM = diameter + thick;
 		
 		return 0.08*(midDiameterM*1e-1)*(midDiameterM*1e-1)*n2M/(1e-1*(3*midDiameterM + 9*length + 10*thick));
 	}	
 
-	private static double calcQuality(final float frequency, final float inductance, final float length, final float diameter) {
-		final double	lSkin = K_SKIN1000 / Math.sqrt(frequency);
-		final double	sq = Math.PI * diameter * diameter / 4;
-		final double	sqWithoutSkin = lSkin > diameter/2 ? 0 : Math.PI * (diameter-2*lSkin) * (diameter-2*lSkin) / 4;
-		final double	sqSkin = sq - sqWithoutSkin; 
-		final double	rSkin = 1e-3 * R_CUPRUM * length / sqSkin;
-		
-		return 1e-3 * 2 * Math.PI * frequency * inductance / rSkin;
+	private static double calcQuality(final float frequency, final float inductance, final float numberOfCoils, float innerDiameter, final float wireDiameter) {
+		return CoilsUtil.solve_Qr(inductance,innerDiameter,wireDiameter,wireDiameter,frequency/1000,numberOfCoils,CoilsUtil.Material.COPPER);
 	}
 }

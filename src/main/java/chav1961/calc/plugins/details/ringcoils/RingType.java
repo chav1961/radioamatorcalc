@@ -109,4 +109,24 @@ public enum RingType {
 		this.lMid = lMid;
 		this.sqA = sqA;
 	}
+	
+	public float getOuterDiameter() {
+		return dn;
+	}
+
+	public float getInnerDiameter() {
+		return dvn;
+	}
+
+	public float getHeight() {
+		return height;
+	}
+
+	public float getMiddleLen() {
+		return lMid;
+	}
+
+	public float getSquare() {
+		return sqA;
+	}
 }

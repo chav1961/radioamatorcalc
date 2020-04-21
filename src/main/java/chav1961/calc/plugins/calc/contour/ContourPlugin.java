@@ -1,8 +1,7 @@
 package chav1961.calc.plugins.calc.contour;
 
 import chav1961.calc.interfaces.PluginProperties;
-
-
+import chav1961.purelib.basic.CSSUtils.Frequency;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
@@ -56,7 +55,7 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin> {
 					return RefreshMode.NONE;
 				}
 				else {
-					frequency = (float) (159154.943 / Math.sqrt(inductance*capacity));
+					frequency = (float) frequencyByInductanceAndCapacity(inductance,capacity);
 					return RefreshMode.RECORD_ONLY;
 				}
 			case "app:action:/ContourPlugin.calcInd"	:
@@ -65,7 +64,7 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin> {
 					return RefreshMode.NONE;
 				}
 				else {
-					inductance = (float) (2533.029e7 / (frequency * frequency * capacity));
+					inductance = (float) inductanceByFrequencyAndCapacity(frequency,capacity);
 					return RefreshMode.RECORD_ONLY;
 				}
 			case "app:action:/ContourPlugin.calcCap"	:
@@ -74,7 +73,7 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin> {
 					return RefreshMode.NONE;
 				}
 				else {
-					capacity = (float) (2533.029e7 / (frequency * frequency * inductance));
+					capacity = (float) capacityByFrequencyAndInductance(frequency,inductance);
 					return RefreshMode.RECORD_ONLY;
 				}
 			default :
@@ -85,5 +84,35 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin> {
 	@Override
 	public LoggerFacade getLogger() {
 		return logger;
+	}
+	
+	/**
+	 * <p>Calculate capacity by frequency and inductance</p>
+	 * @param frequency frequency to calculate (kHz)
+	 * @param inductance inductance to calculate (uH)
+	 * @return capacity calculated (pF)
+	 */
+	public static double capacityByFrequencyAndInductance(final double frequency, final double inductance) {
+		return 2533.029e7 / (frequency * frequency * inductance);
+	}
+
+	/**
+	 * <p>Calculate inductance by frequency and capacity</p>
+	 * @param frequency frequency to calculate (kHz)
+	 * @param capacity capacity to calculate (pF)
+	 * @return inductance calculated (uH)
+	 */
+	public static double inductanceByFrequencyAndCapacity(final double frequency, final double capacity) {
+		return 2533.029e7 / (frequency * frequency * capacity);
+	}
+
+	/**
+	 * <p>Calculate {@link Frequency} by inductance and capacity</p>
+	 * @param inductance inductance to calculate (uH)
+	 * @param capacity capacity to calculate (pF)
+	 * @return frequency calculated (kHz)
+	 */
+	public static double frequencyByInductanceAndCapacity(final double inductance, final double capacity) {
+		return 159154.943 / Math.sqrt(inductance*capacity);
 	}
 }
