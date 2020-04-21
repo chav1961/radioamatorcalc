@@ -97,7 +97,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private static final String				SEARCH_WINDOW = "SearchWindow";
 
 	private final CurrentSettings			settings;
-	private final Localizer					localizer;
+	private final Localizer			 		localizer;
 	private final LoggerFacade				logger;
 	private final JMenuBar					menu;
 	private final SimpleNavigatorTree		leftMenu;
