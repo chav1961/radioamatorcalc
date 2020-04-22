@@ -110,7 +110,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private final List<PipeTab>				pipes = new ArrayList<>();
 			
 	private File							currentPipeFile = null;
-	private File							currentWorkingDir = new File("./");
+	private File				 			currentWorkingDir = new File("./");
 
 	public Application(final ContentMetadataInterface xda, final Localizer parentLocalizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException, SyntaxException, PreparationException, ContentException {
 		if (xda == null) {
