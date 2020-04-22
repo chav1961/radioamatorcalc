@@ -103,7 +103,6 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private final SimpleNavigatorTree		leftMenu;
 	private final File						luceneDir = new File("./lucene");
 	private final JTabbedPane				tabs = new JTabbedPane();
-	private final Timer						timer = new Timer(true);
 	private final JStateString				stateString;
 	private final JFileContentManipulator	contentManipulator;
 	private final WorkbenchTab				wbt;

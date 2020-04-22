@@ -1,6 +1,8 @@
 package chav1961.calc.plugins.details.ringcoils;
 
 import chav1961.calc.interfaces.PluginProperties;
+import chav1961.calc.interfaces.RingMyu;
+import chav1961.calc.interfaces.RingType;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;

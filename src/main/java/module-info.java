@@ -14,5 +14,6 @@ module chav1961.radioamatorcalc {
 		, chav1961.calc.plugins.calc.wienbridge.WienBridgeFactory
 		, chav1961.calc.plugins.calc.phaseshift.PhaseShiftFactory
 		, chav1961.calc.plugins.details.coils.CoilsFactory
-		, chav1961.calc.plugins.details.ringcoils.RingCoilsFactory;
+		, chav1961.calc.plugins.details.ringcoils.RingCoilsFactory
+		, chav1961.calc.plugins.details.ringpulsetrans.RingPulseTransFactory;
 }
