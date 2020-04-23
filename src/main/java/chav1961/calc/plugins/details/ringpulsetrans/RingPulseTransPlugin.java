@@ -1,5 +1,7 @@
 package chav1961.calc.plugins.details.ringpulsetrans;
 
+import java.nio.channels.UnsupportedAddressTypeException;
+
 import chav1961.calc.interfaces.PluginProperties;
 import chav1961.calc.interfaces.RingMyu;
 import chav1961.calc.interfaces.RingType;
@@ -93,19 +95,19 @@ public class RingPulseTransPlugin implements FormManager<Object,RingPulseTransPl
 
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputDiameter",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputDiameter.tt")
 	@Format("9.2r")
-	public int			inputDiameter;
+	public float		inputDiameter;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter1",tooltip="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter1.tt")
 	@Format("9.2r")
-	public int			outputDiameter1;
+	public float		outputDiameter1;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter2",tooltip="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter2.tt")
 	@Format("9.2r")
-	public int			outputDiameter2;
+	public float		outputDiameter2;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter3",tooltip="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter3.tt")
 	@Format("9.2r")
-	public int			outputDiameter3;
+	public float		outputDiameter3;
 	
  	public RingPulseTransPlugin(final LoggerFacade logger) {
 		if (logger == null) {
@@ -125,33 +127,23 @@ public class RingPulseTransPlugin implements FormManager<Object,RingPulseTransPl
 	public RefreshMode onAction(final RingPulseTransPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/RingPulseTransPlugin.calculate"	:
-			case "app:action:/RingPulseTransPlugin.calculateDetailed"	:
-//				if (coilsDiameter == 0 || coilsLength == 0 || wireDiameter == 0 || coilsNumberOfCoils == 0) {
-//					getLogger().message(Severity.warning,"D == 0 || len == 0 || w == 0 || Dw == 0");
-//					return RefreshMode.NONE;
-//				}
-//				else {
-//					switch (coilType) {
-//						case MULTI_LAYER	:
-//							coilsInductance = (float)multiLayerInductance(coilsDiameter,coilsLength,coilsNumberOfCoils,wireDiameter);
-//							wireLength = (float) (Math.PI * (coilsDiameter + wireDiameter * wireDiameter * coilsNumberOfCoils / coilsLength) * coilsNumberOfCoils);
-//							break;
-//						case SINGLE_LAYER	:
-//							coilsInductance = (float)singleLayerInductance(coilsDiameter,coilsLength,coilsNumberOfCoils,wireDiameter);
-//							wireLength = (float) (Math.PI * (coilsDiameter+wireDiameter) * coilsNumberOfCoils);
-//							break;
-//						case PITCHED		:
-//							coilsInductance = (float)steppedInductance(coilsDiameter,coilsLength,coilsNumberOfCoils,wireDiameter);
-//							wireLength = (float) (Math.PI * (coilsDiameter+wireDiameter) * coilsNumberOfCoils + coilsLength);
-//							break;
-//						default:
-//							throw new UnsupportedOperationException("Coil type ["+coilType+"] is not supported yet");
-//					}
-//					if (frequency > 0) {
-//						quality = (float) calcQuality(frequency,coilsInductance,coilsNumberOfCoils,coilsDiameter,wireDiameter);
-//					}
+				if (inputVoltage == 0 || outputVoltage1 == 0 || outputCurrent1 == 0 || induction == 0 || frequency == 0) {
+					getLogger().message(Severity.warning,"Ui == 0 || Uo1 == 0 || Io1 == 0 || Bn == 0 || F == 0");
+					return RefreshMode.NONE;
+				}
+				else {
+					calculate(false);
 					return RefreshMode.RECORD_ONLY;
-//				}
+				}
+			case "app:action:/RingPulseTransPlugin.calculateDetailed"	:
+				if (inputVoltage == 0 || outputVoltage1 == 0 || outputCurrent1 == 0 || induction == 0 || frequency == 0) {
+					getLogger().message(Severity.warning,"Ui == 0 || Uo1 == 0 || Io1 == 0 || Bn == 0 || F == 0");
+					return RefreshMode.NONE;
+				}
+				else {
+					calculate(true);
+					return RefreshMode.RECORD_ONLY;
+				}
 			default :
 				throw new UnsupportedOperationException("Unknown action string ["+actionName+"]");
 		}
@@ -160,5 +152,95 @@ public class RingPulseTransPlugin implements FormManager<Object,RingPulseTransPl
 	@Override
 	public LoggerFacade getLogger() {
 		return logger;
+	}
+	
+	// @see http://vicgain.sdot.ru/Programs/Calculation_pulsed_transformer.pdf
+	private void calculate(final boolean detailed) {
+		final double	pTarget = outputVoltage1 * outputCurrent1 + outputVoltage2 * outputCurrent2 + outputVoltage3 * outputCurrent3;
+		final double	etha = 0.99 - 0.175/frequency - (1 + 9.95 / Math.pow(frequency,1.3))/pTarget;
+		final double	pUsed = pTarget / etha;
+		final double	squareC = ringType.getSquare() * 1e-6;
+		final double	squareO = Math.PI * ringType.getInnerDiameter() * ringType.getInnerDiameter() / 4e6;
+		final double	lMid = ringType.getMiddleLen() * 1e-3;
+		final double	bm = 0.625 * induction;
+		final double	s = 1;
+		final double	kc = 1;
+		final double	km = pTarget < 15 ? 0.1 : 0.15;
+		final double	kf = 1;
+		final double	wireN = 1;
+
+		double	j = 1.87, jOld = 0;	// 1.5 + 24/Math.sqrt(pGab); 
+		double	pGab = 2e9 * squareC * squareO * frequency * bm * etha * j * s * kc * km * kf;
+
+		while (Math.abs(jOld - j)/j > 0.1) {	// Iterate value...
+			jOld = j;
+			j = 1.5 + 24/Math.sqrt(pGab);
+			pGab = 2e9 * squareC * squareO * frequency * bm * etha * j * s * kc * km * kf;
+		}
+		
+		if (pGab > 1.2 * pTarget) {
+			final double	uI;
+			final double	inputCurrentM; 
+			
+			switch (schemaType) {
+				case BRIDGE			:
+					uI = inputVoltage;
+					inputCurrentM = pUsed / uI;
+					break;
+				case HALF_BRIDGE	:
+					uI = inputVoltage / 2;
+					inputCurrentM = pUsed / uI;
+					break;
+				case MIDDLE_POINT	:
+					uI = 2 * inputVoltage;
+					inputCurrentM = 2 * pUsed / uI;
+					break;
+				default:
+					throw new UnsupportedOperationException("Schema type ["+schemaType+"] is not supported yet");
+			}
+			inputCoils = (int) (uI / (4e3 * frequency * bm * squareC * kc * kf));
+			
+			final double 	inputInductance = inputCoils * inputCoils * ringMui.getMyu() * CoilsUtil.MYU0 * squareC / lMid;
+			final double	inputCurrentT;
+			
+			switch (schemaType) {
+				case BRIDGE			:
+					inputCurrentT = uI / (4e3 * frequency * inputInductance);
+					break;
+				case HALF_BRIDGE	:
+					inputCurrentT = uI / (4e3 * frequency * inputInductance);
+					break;
+				case MIDDLE_POINT	:
+					inputCurrentT = uI / (2e3 * frequency * inputInductance);
+					break;
+				default:
+					throw new UnsupportedOperationException("Schema type ["+schemaType+"] is not supported yet");
+			}
+			
+			if (inputCurrentT > 0.1 * inputCurrentM) {
+				inputCurrent = (float) (inputCurrentM + inputCurrentT);
+			
+				inputDiameter = (float) (1.13 * Math.sqrt(inputCurrent / (j * wireN)));
+				
+				outputCoils1 = (int) (inputCoils * outputVoltage1 / uI);
+				outputDiameter1 = (float) (1.13 * Math.sqrt(outputCurrent1 / (j * wireN)));
+				
+				if (outputVoltage2 * outputCurrent2 != 0) {
+					outputCoils2 = (int) (inputCoils * outputVoltage2 / uI); 
+					outputDiameter2 = (float) (1.13 * Math.sqrt(outputCurrent2 / (j * wireN)));
+				}
+
+				if (outputVoltage3 * outputCurrent3 != 0) {
+					outputCoils3 = (int) (inputCoils * outputVoltage3 / uI); 
+					outputDiameter3 = (float) (1.13 * Math.sqrt(outputCurrent3 / (j * wireN)));
+				}
+			}
+			else {
+				getLogger().message(Severity.warning,"It > 0.1 Im");
+			}
+		}
+		else {
+			getLogger().message(Severity.warning,"pGab < 1.2 pTarget");
+		}
 	}
 }
