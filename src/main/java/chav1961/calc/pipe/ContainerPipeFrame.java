@@ -87,7 +87,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 
 	private static final String					JSON_PIPE_ITEM_PLUGIN_CLASS = "pluginClass";
 	
-	private final Class<?>						instanceClass; 
+	private final Class<T>						instanceClass; 
 	private final ContentMetadataInterface		mdi, innerMdi;
 	private final Localizer						localizer, pluginLocalizer;
 	private final JStateString					state;
@@ -110,7 +110,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	public ContainerPipeFrame(final int uniqueId, final PipeManager parent, final Localizer localizer, final FormManager<?,?> content, final ContentMetadataInterface general) throws ContentException {
 		super(uniqueId,parent, localizer, ContainerPipeFrame.class, PipeItemType.PLUGIN_ITEM);
 		
-		try{this.instanceClass = content.getClass();
+		try{this.instanceClass = (Class<T>) content.getClass();
 			this.mdi = ContentModelFactory.forAnnotatedClass(this.getClass());
 			this.innerMdi = ContentModelFactory.forAnnotatedClass(instanceClass);
 			this.localizer = LocalizerFactory.getLocalizer(mdi.getRoot().getLocalizerAssociated());
@@ -134,7 +134,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 				for (Module m : abf.getUnnamedModules()) {
 					instanceClass.getModule().addExports(instanceClass.getPackageName(),m);
 				}
-				w = new InnerSVGPluginWindow<T>(instanceClass.getResource(pp.svgURI()).toURI(),abf,(src)->{
+				w = new InnerSVGPluginWindow<T>(instanceClass,pp.svgURI(),abf,(src)->{
 					try{final Object result = instanceClass.getField(src).get(content);
 					
 						return result == null ? "" : result.toString();
@@ -159,7 +159,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 				else {
 					abf.setPreferredSize(new Dimension(pp.width() - pp.leftWidth(),pp.height()));
 				}
-			} catch (IllegalArgumentException | LocalizationException | NullPointerException |  IOException | URISyntaxException exc) {
+			} catch (IllegalArgumentException | LocalizationException | NullPointerException |  IOException exc) {
 				throw new ContentException(exc);
 			}
 			

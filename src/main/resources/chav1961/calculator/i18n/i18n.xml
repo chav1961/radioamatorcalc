@@ -576,7 +576,47 @@
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.res.tt">Calculate resistance</key>
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap">C</key>
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap.tt">Calculate capacitance</key>
-		
+
+<!-- Localization for chav1961.calc.plugins.calc.timbre --> 
+		<key name="menu.curcuits.timbre">Timbre block parameters</key>
+		<key name="menu.curcuits.timbre.tt">Calculate timbre block parameters</key>
+		<key name="chav1961.calc.plugins.calc.timbre.button.calc">Calculate</key>
+		<key name="chav1961.calc.plugins.calc.timbre.button.calc.tt">Calculate timbre block parameters</key>
+		<key name="chav1961.calc.plugins.calc.timbre.type">Type</key>
+		<key name="chav1961.calc.plugins.calc.timbre.type.tt">Timbre block type</key>
+		<key name="chav1961.calc.plugins.calc.timbre.resistance">[R] resistance (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.resistance.tt">Resistance of the regulated elements (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.ku">AFC pull-up (dB)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.ku.tt">Amplitude-frequency characteristics pull-up (dB)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.lowFrequency">[Fb] lowest frequency (Hz)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.lowFrequency.tt">The lowest frequency of signal (Hz)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.highFrequency">[Ft] high frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.highFrequency.tt">The highest frequency of signal (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r1">R1 (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r1.tt">R1 (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r2">R2 (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r2.tt">R2 (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r3">R3 (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r3.tt">R3 (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r4">R4 (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r4.tt">R4 (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r5">R5 (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r5.tt">R5 (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r6">R6 (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r6.tt">R6 (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c1">C1 (nF)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c1.tt">C1 (nF)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c2">C2 (nF)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c2.tt">C2 (nF)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c3">C3 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c3.tt">C3 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c4">C4 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c4.tt">C4 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.timbreType.active">Active</key>
+		<key name="chav1961.calc.plugins.calc.timbre.timbreType.active.tt">Active timbre block</key>
+		<key name="chav1961.calc.plugins.calc.timbre.timbreType.passive">Passive</key>
+		<key name="chav1961.calc.plugins.calc.timbre.timbreType.passive.tt">Passive timbre block</key>
+
 <!-- Localization for chav1961.calc.plugins.details.coils -->
 		<key name="menu.details.coils">Coil parameters</key>
 		<key name="menu.details.coils.tt">Calculation number of coils for the inductance typed or inductance for the numer of coils typed</key>
@@ -1267,6 +1307,47 @@
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap">C</key>
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap.tt">Расчет емкости</key>
 
+<!-- Локализация для chav1961.calc.plugins.calc.timbre --> 
+		<key name="menu.curcuits.timbre">Параметры темброблока</key>
+		<key name="menu.curcuits.timbre.tt">Расчет параметров темброблока</key>
+		<key name="chav1961.calc.plugins.calc.timbre.button.calc">Расчет</key>
+		<key name="chav1961.calc.plugins.calc.timbre.button.calc.tt">Расситать параметры темброблока</key>
+		<key name="chav1961.calc.plugins.calc.timbre.type">Тип</key>
+		<key name="chav1961.calc.plugins.calc.timbre.type.tt">Тип схемы темброблока</key>
+		<key name="chav1961.calc.plugins.calc.timbre.resistance">[R] сопротивление (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.resistance.tt">Сопротивление регулирующих резисторов (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.ku">Подъем АЧХ (дБ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.ku.tt">Величина подъема АЧХ (дБ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.lowFrequency">[Fb] нижняя частота (Гц)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.lowFrequency.tt">Нижняя частота темброблока (Гц)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.highFrequency">[Ft] верхняя частота (кГц)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.highFrequency.tt">Верхняя частота темброблока (кГц)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r1">R1 (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r1.tt">R1 (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r2">R2 (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r2.tt">R2 (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r3">R3 (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r3.tt">R3 (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r4">R4 (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r4.tt">R4 (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r5">R5 (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r5.tt">R5 (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r6">R6 (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.r6.tt">R6 (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c1">C1 (нФ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c1.tt">C1 (нФ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c2">C2 (нФ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c2.tt">C2 (нФ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c3">C3 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c3.tt">C3 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c4">C4 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c4.tt">C4 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.timbreType.active">Активный</key>
+		<key name="chav1961.calc.plugins.calc.timbre.timbreType.active.tt">Схема активного темброблока</key>
+		<key name="chav1961.calc.plugins.calc.timbre.timbreType.passive">Пассивный</key>
+		<key name="chav1961.calc.plugins.calc.timbre.timbreType.passive.tt">Схема пассивного темброблока</key>
+		
+
 <!-- Локализация для chav1961.calc.plugins.details.coils -->
 		<key name="menu.details.coils">Параметры катушки индуктивности</key>
 		<key name="menu.details.coils.tt">Расчет числа витков катушки для заданной индуктивности или индуктивности катушки для заданного числа витков</key>
@@ -1368,9 +1449,9 @@
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.inputDiameter.tt">Диаметр провода первичной обмотки (с учетом скин-эффекта)</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter1">[do1] Провод вторичной 1 (мм)</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter1.tt">Диаметр провода первой вторичной обмотки (с учетом скин-эффекта)</key>
-		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter2">[do2] Провод вторичной 1 (мм)</key>
+		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter2">[do2] Провод вторичной 2 (мм)</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter2.tt">Диаметр провода второй вторичной обмотки (с учетом скин-эффекта), если она есть</key>
-		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter3">[do3] Провод вторичной 1 (мм)</key>
+		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter3">[do3] Провод вторичной 3 (мм)</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter3.tt">Диаметр провода третьей вторичной обмотки (с учетом скин-эффекта), если она есть</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.halfbridge">Полумост</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.halfbridge.tt">Полумостовая схем конвертора</key>

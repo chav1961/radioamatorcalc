@@ -1,6 +1,7 @@
 module chav1961.radioamatorcalc {
 	requires transitive chav1961.purelib;
 	requires java.desktop;
+	requires java.base;
 	
 	exports chav1961.calc.interfaces;
 	
@@ -13,6 +14,7 @@ module chav1961.radioamatorcalc {
 		  chav1961.calc.plugins.calc.contour.ContourFactory
 		, chav1961.calc.plugins.calc.wienbridge.WienBridgeFactory
 		, chav1961.calc.plugins.calc.phaseshift.PhaseShiftFactory
+		, chav1961.calc.plugins.calc.timbre.TimbreFactory
 		, chav1961.calc.plugins.details.coils.CoilsFactory
 		, chav1961.calc.plugins.details.ringcoils.RingCoilsFactory
 		, chav1961.calc.plugins.details.ringpulsetrans.RingPulseTransFactory;

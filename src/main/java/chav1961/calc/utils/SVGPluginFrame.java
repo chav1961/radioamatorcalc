@@ -1,24 +1,33 @@
 package chav1961.calc.utils;
 
+
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Base64;
 import java.util.Locale;
 
 import chav1961.calc.interfaces.PluginProperties;
+import chav1961.calc.interfaces.SVGIconKeeper;
 import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.Utils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.i18n.LocalizerFactory;
+import chav1961.purelib.i18n.interfaces.LocaleResource;
+import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.model.ContentModelFactory;
+import chav1961.purelib.model.FieldFormat;
 import chav1961.purelib.ui.interfaces.FormManager;
+import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.interfaces.RefreshMode;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
 import chav1961.purelib.ui.swing.SwingUtils;
@@ -50,19 +59,40 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
 
         	this.localizer = localizer;
         	
-			try{final FormManager<Object,T>	wrapper = new FormManagerWrapper<>((FormManager<Object,T>)instance, ()-> {refresh();}); 
+			try{final FormManager<Object,T>	wrapper = new FormManagerWrapper<>((FormManager<Object,T>)instance, ()-> {refresh();},(name)->{selectIcon(name);}); 
 				
 				abf = new AutoBuiltForm<T>(ContentModelFactory.forAnnotatedClass(instanceClass),localizer, instance, wrapper);
 				
 				for (Module m : abf.getUnnamedModules()) {
 					instanceClass.getModule().addExports(instanceClass.getPackageName(),m);
 				}
-				w = new InnerSVGPluginWindow<T>(instanceClass.getResource(pp.svgURI()).toURI(),abf,(src)->
-				{
-					try{final Object result = instanceClass.getField(src).get(instance);
-					
-						return result == null ? "" : result.toString();
-					} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e1) {
+				w = new InnerSVGPluginWindow<T>(instanceClass,pp.svgURI(),abf,(src)->{
+					try{final Field		field = instanceClass.getField(src); 
+						final Object 	result = field.get(instance);
+						
+						if (result instanceof Enum<?>) {
+							final Class<?>	enumClass = result.getClass();
+							final Field		enumField = enumClass.getField(((Enum<?>)result).name()); 
+						
+							if (enumClass.isAnnotationPresent(LocaleResourceLocation.class) && enumField.isAnnotationPresent(LocaleResource.class)) {
+								final LocaleResource	res = enumField.getAnnotation(LocaleResource.class);
+								final Localizer			loc = LocalizerFactory.getLocalizer(URI.create(enumClass.getAnnotation(LocaleResourceLocation.class).value())); 
+							
+								return loc.getValue(res.value());
+							}
+							else {
+								return result.toString();
+							}
+						}
+						else if (field.isAnnotationPresent(Format.class)) {
+							final FieldFormat	ff = new FieldFormat(field.getType(),field.getAnnotation(Format.class).value());
+							
+							return result == null ? "" : ff.print(result,FieldFormat.PrintMode.SINGLE_TEXT);
+						}
+						else {
+							return result == null ? "" : result.toString();
+						}
+					} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | SyntaxException | LocalizationException e1) {
 						return "<"+src+">";
 					}
 				});
@@ -87,7 +117,7 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
 				else {
 					abf.setPreferredSize(new Dimension(pp.width() - pp.leftWidth(),pp.height()));
 				}
-			} catch (IllegalArgumentException | LocalizationException | NullPointerException |  IOException | URISyntaxException exc) {
+			} catch (IllegalArgumentException | LocalizationException | NullPointerException |  IOException exc) {
 				throw new ContentException(exc);
 			}
         }
@@ -113,25 +143,41 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
 	private void refresh() {
 		w.refresh();
 	}
+
+	private void selectIcon(final String icon) {
+		w.selectIcon(icon);
+	}
 	
 	private static class FormManagerWrapper<T> implements FormManager<Object, T> {
 		@FunctionalInterface
 		private interface Refresher {
 			void refresh();
 		}		
+
+		@FunctionalInterface
+		private interface Iconizer {
+			void setIcon(String icon);
+		}		
 		
 		private final FormManager<Object, T>	delegate;
 		private final Refresher					refresher;
+		private final Iconizer					iconizer;
 		
-		private FormManagerWrapper(final FormManager<Object, T> delegate, final Refresher refresher) {
+		private FormManagerWrapper(final FormManager<Object, T> delegate, final Refresher refresher, final Iconizer iconizer) {
 			this.delegate = delegate;
 			this.refresher = refresher;
+			this.iconizer = iconizer;
 		}
 
 		@Override
 		public RefreshMode onField(T inst, Object id, String fieldName, Object oldValue) throws FlowException, LocalizationException {
 			final RefreshMode	mode = delegate.onField(inst, id, fieldName, oldValue);
-			
+
+			if (oldValue instanceof SVGIconKeeper) {
+				try{iconizer.setIcon(((SVGIconKeeper)inst.getClass().getField(fieldName).get(inst)).getSVGIcon());
+				} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				}
+			}
 			if (mode != RefreshMode.NONE && mode != RefreshMode.REJECT) {
 				refresher.refresh();
 			}
