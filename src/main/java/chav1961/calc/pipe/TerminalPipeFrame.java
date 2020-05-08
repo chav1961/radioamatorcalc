@@ -78,8 +78,6 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	private static final URI				PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.terminal.toolbar");	
 	private static final String				PIPE_MENU_REMOVE_FIELD = "chav1961.calc.pipe.terminal.toolbar.removefield";	
 
-	private static final String				JSON_PIPE_ITEM_MESSAGE = "message";
-	private static final String				JSON_PIPE_ITEM_IS_ERROR = "isError";
 	
 	private final ContentMetadataInterface	mdi;
 	private final Localizer					localizer;
@@ -219,28 +217,45 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 
 	@Override
 	public void storeIncomingValue(final Object temp, final ContentNodeMetadata meta, final Object value) throws ContentException {
-		final Map<String,Object>	variables = (Map<String,Object>)temp;
-		
-		variables.replace(buildVarName(meta),value);
+		if (temp == null || !(temp instanceof Map)) {
+			throw new IllegalArgumentException("Temporary object is null or is not an implementation of Map interface"); 
+		}
+		else {
+			final Map<String,Object>	variables = (Map<String,Object>)temp;
+			
+			variables.replace(buildVarName(meta),value);
+		}
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger) throws FlowException {
-		final Map<String,Object>	variables = (Map<String,Object>)temp;
-		
-		try{final String	title = localizer.getValue(RUNTIME_TERMINATE_TITLE);
-			final String	message = CharUtils.substitute("message",terminalMessage.getText(),(name)->variables.get(buildVarName(-1,name)) == null ? "<"+name+" is missing>" : variables.get(buildVarName(-1,name)).toString());
-		
-			if (terminalFailure.isSelected()) {
-				JOptionPane.showMessageDialog(this,message,title,JOptionPane.ERROR_MESSAGE);
-				return PipeStepReturnCode.TERMINATE_FALSE;
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final boolean confirmAll) throws FlowException {
+		if (temp == null || !(temp instanceof Map)) {
+			throw new IllegalArgumentException("Temporary object is null or is not an implementation of Map interface"); 
+		}
+		else if (logger == null) {
+			throw new NullPointerException("Logger can't be null"); 
+		}
+		else {
+			final Map<String,Object>	variables = (Map<String,Object>)temp;
+			
+			try{final String	title = localizer.getValue(RUNTIME_TERMINATE_TITLE);
+				final String	message = CharUtils.substitute("message",terminalMessage.getText(),(name)->variables.get(buildVarName(-1,name)) == null ? "<"+name+" is missing>" : variables.get(buildVarName(-1,name)).toString());
+			
+				if (terminalFailure.isSelected()) {
+					if (!confirmAll) {
+						JOptionPane.showMessageDialog(this,message,title,JOptionPane.ERROR_MESSAGE);
+					}
+					return PipeStepReturnCode.TERMINATE_FALSE;
+				}
+				else {
+					if (!confirmAll) {
+						JOptionPane.showMessageDialog(this,message,title,JOptionPane.INFORMATION_MESSAGE);
+					}
+					return PipeStepReturnCode.TERMINATE_TRUE;
+				}
+			} catch (LocalizationException e) {
+				throw new FlowException(e.getLocalizedMessage(),e);
 			}
-			else {
-				JOptionPane.showMessageDialog(this,message,title,JOptionPane.INFORMATION_MESSAGE);
-				return PipeStepReturnCode.TERMINATE_TRUE;
-			}
-		} catch (LocalizationException e) {
-			throw new FlowException(e.getLocalizedMessage(),e);
 		}
 	}
 
@@ -251,9 +266,14 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 
 	@Override
 	public void unpreparePipeItem(final Object temp) throws FlowException {
-		final Map<String,Object>	variables = (Map<String,Object>)temp;
-		
-		variables.clear();
+		if (temp == null || !(temp instanceof Map)) {
+			throw new IllegalArgumentException("Temporary object is null or is not an implementation of Map interface"); 
+		}
+		else {
+			final Map<String,Object>	variables = (Map<String,Object>)temp;
+			
+			variables.clear();
+		}
 	}
 
 	@Override
@@ -277,22 +297,36 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	}
 
 	@Override
-	public void serializeFrame(final JsonStaxPrinter printer) throws IOException {
-		if (printer == null) {
-			throw new NullPointerException("Json printer can't be null");
+	public void serializeFrame(final PluginSpecific specific) throws IOException {
+		if (specific == null) {
+			throw new NullPointerException("Plugin specific can't be null");
 		}
 		else {
-			printer.splitter().name(JSON_PIPE_CONTENT).startObject();
-				printer.name(JSON_PIPE_ITEM_MESSAGE).value(terminalMessage.getText());
-				printer.splitter().name(JSON_PIPE_ITEM_IS_ERROR).value(terminalFailure.isSelected());
-			printer.endObject();
+			specific.message = terminalMessage.getText();
+			specific.isError = terminalFailure.isSelected();
+			if (!controls.isEmpty()) {
+				specific.fields = new MutableContentNodeMetadata[controls.size()];
+				for (int index = 0, maxIndex = specific.fields.length; index < maxIndex; index++) {
+					specific.fields[index] = (MutableContentNodeMetadata) controls.get(index).getMetadata();
+				}
+			}
 		}
 	}
 	
 	@Override
 	public void deserializeFrame(final PluginSpecific specific) throws IOException {
-		terminalMessage.setText(specific.message);
-		terminalFailure.setSelected(specific.isError);
+		if (specific == null) {
+			throw new NullPointerException("Plugin specific can't be null");
+		}
+		else {
+			terminalMessage.setText(specific.message);
+			terminalFailure.setSelected(specific.isError);
+			if (specific.fields != null) {
+				for (MutableContentNodeMetadata item : specific.fields) {
+					fields.addContent(new PipeLink(PipeLinkType.DATA_LINK,null,null,this,fields,item,null));
+				}
+			}
+		}
 	}	
 	
 	

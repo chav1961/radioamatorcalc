@@ -12,7 +12,7 @@ public interface PipeItemRuntime {
 
 	Object preparePipeItem() throws FlowException;
 	<T> void storeIncomingValue(Object temp,ContentNodeMetadata meta, T value) throws ContentException;
-	PipeStepReturnCode processPipeStep(Object temp, LoggerFacade logger) throws FlowException;
+	PipeStepReturnCode processPipeStep(Object temp, LoggerFacade logger, boolean confirmAll) throws FlowException;
 	<T> T getOutgoingValue(Object temp,ContentNodeMetadata meta) throws ContentException;
 	void unpreparePipeItem(Object temp) throws FlowException;
 }

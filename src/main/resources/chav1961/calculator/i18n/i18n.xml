@@ -242,7 +242,7 @@
 		<key name="chav1961.calc.pipe">%1$s Pipe %2$s</key>
 		<key name="chav1961.calc.pipe.tt">Pipe is used to build calculation's chains (similar to block-schemas)</key>
 
-		<key name="chav1961.calc.reference">References</key>
+		<key name="chav1961.calc.reference">%1$s</key>
 		<key name="chav1961.calc.reference.tt">Electronic component references</key>
 	
 <!-- localization for standard pipe components -->
@@ -330,6 +330,8 @@
 		<key name="chav1961.calc.pipe.container.tabs.plugin.tt">Full-functional nested plugin</key>
 		<key name="chav1961.calc.pipe.container.tabs.meta">Meta</key>
 		<key name="chav1961.calc.pipe.container.tabs.meta.tt">Contains plugin fields list and plugin actions list</key>
+		<key name="chav1961.calc.pipe.container.tabs.expressions">Initial code</key>	
+		<key name="chav1961.calc.pipe.container.tabs.expressions.tt">Contains initial code will be executed before starting plugin. Use it to set initial values for the plugin fields</key>	
 		<key name="chav1961.calc.pipe.container.fields">Plugin fields</key>
 		<key name="chav1961.calc.pipe.container.fields.tt">List of the plugin fields, available to other pipe nodes</key>
 		<key name="chav1961.calc.pipe.container.actions">Plugin actions</key>
@@ -362,6 +364,7 @@
 		<key name="chav1961.calc.windows.pipemanager.validation.OK">Pipe validation OK</key> 
 
 <!-- localization for standard reference components -->
+		<key name="chav1961.calc.reference.seek">Find</key>
 		<key name="chav1961.calc.reference.name">Reference name</key>
 		<key name="chav1961.calc.reference.name.tt">Name of the reference guide</key>
 		<key name="chav1961.calc.reference.description">Description</key>
@@ -590,8 +593,8 @@
 		<key name="chav1961.calc.plugins.calc.timbre.ku.tt">Amplitude-frequency characteristics pull-up (dB)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.lowFrequency">[Fb] lowest frequency (Hz)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.lowFrequency.tt">The lowest frequency of signal (Hz)</key>
-		<key name="chav1961.calc.plugins.calc.timbre.highFrequency">[Ft] high frequency (kHz)</key>
-		<key name="chav1961.calc.plugins.calc.timbre.highFrequency.tt">The highest frequency of signal (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.highFrequency">[Ft] high frequency (Hz)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.highFrequency.tt">The highest frequency of signal (Hz)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.r1">R1 (kOhm)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.r1.tt">R1 (kOhm)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.r2">R2 (kOhm)</key>
@@ -608,10 +611,10 @@
 		<key name="chav1961.calc.plugins.calc.timbre.c1.tt">C1 (nF)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.c2">C2 (nF)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.c2.tt">C2 (nF)</key>
-		<key name="chav1961.calc.plugins.calc.timbre.c3">C3 (pF)</key>
-		<key name="chav1961.calc.plugins.calc.timbre.c3.tt">C3 (pF)</key>
-		<key name="chav1961.calc.plugins.calc.timbre.c4">C4 (pF)</key>
-		<key name="chav1961.calc.plugins.calc.timbre.c4.tt">C4 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c3">C3 (nF)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c3.tt">C3 (nF)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c4">C4 (nF)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c4.tt">C4 (nF)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.timbreType.active">Active</key>
 		<key name="chav1961.calc.plugins.calc.timbre.timbreType.active.tt">Active timbre block</key>
 		<key name="chav1961.calc.plugins.calc.timbre.timbreType.passive">Passive</key>
@@ -972,7 +975,7 @@
 		<key name="chav1961.calc.pipe">%1$s Конв. %2$s</key>
 		<key name="chav1961.calc.pipe.tt">Конвейер позволяет собирать из плагинов цепочки вычислений (наподобие блок-схем)</key>
 
-		<key name="chav1961.calc.reference">Справочник</key>
+		<key name="chav1961.calc.reference">%1$s</key>
 		<key name="chav1961.calc.reference.tt">Справочник по электронным компонентам</key>
 
 <!-- Локализация для стандартных компонент конвейера -->
@@ -1060,6 +1063,8 @@
 		<key name="chav1961.calc.pipe.container.tabs.plugin.tt">Вкладка с полнофункциональным вложенным плагином</key>
 		<key name="chav1961.calc.pipe.container.tabs.meta">Метаинформация</key>
 		<key name="chav1961.calc.pipe.container.tabs.meta.tt">Вкладка содержит список полей и действий данного плагина</key>
+		<key name="chav1961.calc.pipe.container.tabs.expressions">Начальный код</key>	
+		<key name="chav1961.calc.pipe.container.tabs.expressions.tt">Начальный код, выоплняемый перед запуском плагина (например, инициализация полей)</key>	
 		<key name="chav1961.calc.pipe.container.fields">Поля плагина</key>
 		<key name="chav1961.calc.pipe.container.fields.tt">Список полей плагина, к которым можно обращаться при работе конвейера</key>
 		<key name="chav1961.calc.pipe.container.actions">Действия плагина</key>
@@ -1092,6 +1097,7 @@
 		<key name="chav1961.calc.windows.pipemanager.validation.OK">Проверка конвейера успешна</key> 
 
 <!-- Локализация для стандартных компонентов справочника -->
+		<key name="chav1961.calc.reference.seek">Поиск</key>
 		<key name="chav1961.calc.reference.name">Наименование</key>
 		<key name="chav1961.calc.reference.name.tt">Наименование справочника электронных компонент</key>
 		<key name="chav1961.calc.reference.description">Описание</key>
@@ -1320,8 +1326,8 @@
 		<key name="chav1961.calc.plugins.calc.timbre.ku.tt">Величина подъема АЧХ (дБ)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.lowFrequency">[Fb] нижняя частота (Гц)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.lowFrequency.tt">Нижняя частота темброблока (Гц)</key>
-		<key name="chav1961.calc.plugins.calc.timbre.highFrequency">[Ft] верхняя частота (кГц)</key>
-		<key name="chav1961.calc.plugins.calc.timbre.highFrequency.tt">Верхняя частота темброблока (кГц)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.highFrequency">[Ft] верхняя частота (Гц)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.highFrequency.tt">Верхняя частота темброблока (Гц)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.r1">R1 (кОм)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.r1.tt">R1 (кОм)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.r2">R2 (кОм)</key>
@@ -1338,10 +1344,10 @@
 		<key name="chav1961.calc.plugins.calc.timbre.c1.tt">C1 (нФ)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.c2">C2 (нФ)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.c2.tt">C2 (нФ)</key>
-		<key name="chav1961.calc.plugins.calc.timbre.c3">C3 (пФ)</key>
-		<key name="chav1961.calc.plugins.calc.timbre.c3.tt">C3 (пФ)</key>
-		<key name="chav1961.calc.plugins.calc.timbre.c4">C4 (пФ)</key>
-		<key name="chav1961.calc.plugins.calc.timbre.c4.tt">C4 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c3">C3 (нФ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c3.tt">C3 (нФ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c4">C4 (нФ)</key>
+		<key name="chav1961.calc.plugins.calc.timbre.c4.tt">C4 (нФ)</key>
 		<key name="chav1961.calc.plugins.calc.timbre.timbreType.active">Активный</key>
 		<key name="chav1961.calc.plugins.calc.timbre.timbreType.active.tt">Схема активного темброблока</key>
 		<key name="chav1961.calc.plugins.calc.timbre.timbreType.passive">Пассивный</key>

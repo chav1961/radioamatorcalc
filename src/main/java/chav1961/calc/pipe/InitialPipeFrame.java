@@ -84,8 +84,6 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	private static final String				PIPE_MENU_REMOVE_FIELD = "chav1961.calc.pipe.initial.toolbar.removefield";	
 	private static final String				PIPE_MENU_EDIT_FIELD = "chav1961.calc.pipe.initial.toolbar.editfield";	
 
-	private static final String				JSON_PIPE_ITEM_INITIAL_CODE = "initialCode";
-	private static final String				JSON_PIPE_ITEM_FIELDS = "fields";
 	
 	private final ContentMetadataInterface	mdi;
 	private final Localizer					localizer;
@@ -197,7 +195,6 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 
 	@Override
 	public boolean validate(LoggerFacade logger) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 	
@@ -223,51 +220,72 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger) throws FlowException {
-		final Map<String,Object>	variables = (Map<String,Object>)temp;
-		final String				code = initialCode.getText().trim();
-		
-		if (!code.isEmpty()) {
-			try{ScriptProcessor.execute(code,new DataManager() {
-					@Override
-					public boolean exists(final int pluginId, final String name) {
-						return variables.containsKey(buildVarName(pluginId,name));
-					}
-
-					@Override
-					public Object getVar(final int pluginId, final String name) {
-						return variables.get(buildVarName(pluginId,name));
-					}
-
-					@Override
-					public void setVar(final int pluginId, final String name, final Object value) {
-						variables.replace(buildVarName(pluginId,name),value);
-					}
-
-					@Override
-					public void print(final Object value) {
-						logger.message(Severity.debug,value.toString());
-					}
-				});
-			} catch (SyntaxException e) {
-				throw new FlowException(e);
-			}
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final boolean confirmAll) throws FlowException {
+		if (temp == null || !(temp instanceof Map)) {
+			throw new IllegalArgumentException("Temporary object is null or is not an implementation of Map interface"); 
 		}
-		return PipeStepReturnCode.CONTINUE;
+		else if (logger == null) {
+			throw new NullPointerException("Logger can't be null"); 
+		}
+		else {
+			final Map<String,Object>	variables = (Map<String,Object>)temp;
+			final String				code = initialCode.getText().trim();
+			
+			if (!code.isEmpty()) {
+				try{ScriptProcessor.execute(code,new DataManager() {
+						@Override
+						public boolean exists(final int pluginId, final String name) {
+							return variables.containsKey(buildVarName(pluginId,name));
+						}
+	
+						@Override
+						public Object getVar(final int pluginId, final String name) {
+							return variables.get(buildVarName(pluginId,name));
+						}
+	
+						@Override
+						public void setVar(final int pluginId, final String name, final Object value) {
+							variables.replace(buildVarName(pluginId,name),value);
+						}
+	
+						@Override
+						public void print(final Object value) {
+							logger.message(Severity.debug,value.toString());
+						}
+					});
+				} catch (SyntaxException e) {
+					throw new FlowException(e);
+				}
+			}
+			return PipeStepReturnCode.CONTINUE;
+		}
 	}
 
 	@Override
 	public Object getOutgoingValue(final Object temp, final ContentNodeMetadata meta) throws ContentException {
-		final Map<String,Object>	variables = (Map<String,Object>)temp;
-		
-		return variables.get(buildVarName(meta));
+		if (temp == null || !(temp instanceof Map)) {
+			throw new IllegalArgumentException("Temporary object is null or is not an implementation of Map interface"); 
+		}
+		else if (meta == null) {
+			throw new NullPointerException("Metadata can't be null"); 
+		}
+		else {
+			final Map<String,Object>	variables = (Map<String,Object>)temp;
+			
+			return variables.get(buildVarName(meta));
+		}
 	}
 
 	@Override
 	public void unpreparePipeItem(final Object temp) throws FlowException {
-		final Map<String,Object>	variables = (Map<String,Object>)temp;
-		
-		variables.clear();
+		if (temp == null || !(temp instanceof Map)) {
+			throw new IllegalArgumentException("Temporary object is null or is not an implementation of Map interface"); 
+		}
+		else {
+			final Map<String,Object>	variables = (Map<String,Object>)temp;
+			
+			variables.clear();
+		}
 	}
 
 	@Override
@@ -276,34 +294,36 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	}
 
 	@Override
-	public void serializeFrame(final JsonStaxPrinter printer) throws IOException {
-		if (printer == null) {
-			throw new NullPointerException("Json printer can't be null");
+	public void serializeFrame(final PluginSpecific specific) throws IOException {
+		if (specific == null) {
+			throw new NullPointerException("Plugin specific can't be null");
 		}
 		else {
-			printer.splitter().name(JSON_PIPE_CONTENT).startObject();
-				printer.name(JSON_PIPE_ITEM_INITIAL_CODE).value(initialCode.getText());
-				printer.splitter().name(JSON_PIPE_ITEM_FIELDS).startArray();
-					boolean	splitterRequired = false;
-					
-					for (PipeLink item : controls) {
-						if (splitterRequired) {
-							printer.splitter();
-						}
-						ModelUtils.serializeToJson(item.getMetadata(),printer);
-						splitterRequired = true;
-					}
-				printer.endArray();
-			printer.endObject();
+			specific.initialCode = initialCode.getText();
+			
+			if (!controls.isEmpty()) {
+				specific.fields = new MutableContentNodeMetadata[controls.size()];
+				
+				for (int index = 0, maxIndex = specific.fields.length; index < maxIndex; index++) {
+					specific.fields[index] = (MutableContentNodeMetadata) controls.get(index).getMetadata();
+				}
+			}
 		}
 	}	
 	
 	@Override
 	public void deserializeFrame(final PluginSpecific specific) throws IOException {
-		initialCode.setText(specific.initialCode);
-
-		for (MutableContentNodeMetadata item : specific.fields) {
-			fields.addContent(new PipeLink(PipeLinkType.DATA_LINK,null,null,this,fields,item,null));
+		if (specific == null) {
+			throw new NullPointerException("Plugin specific can't be null");
+		}
+		else {
+			initialCode.setText(specific.initialCode);
+	
+			if (specific.fields != null) {
+				for (MutableContentNodeMetadata item : specific.fields) {
+					fields.addContent(new PipeLink(PipeLinkType.DATA_LINK,null,null,this,fields,item,null));
+				}
+			}
 		}
 	}	
 	

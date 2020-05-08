@@ -241,7 +241,7 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger) throws FlowException {
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final boolean ConfirmAll) throws FlowException {
 		// TODO Auto-generated method stub
 		return PipeStepReturnCode.CONTINUE_TRUE;
 	}
@@ -264,13 +264,12 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 	}
 
 	@Override
-	public void serializeFrame(final JsonStaxPrinter printer) throws IOException {
-		if (printer == null) {
-			throw new NullPointerException("Json printer can't be null");
+	public void serializeFrame(final PluginSpecific specific) throws IOException {
+		if (specific == null) {
+			throw new NullPointerException("Plugin specific can't be null");
 		}
 		else {
-			printer.splitter().name(JSON_PIPE_CONTENT).startObject();
-			printer.endObject();
+			specific.message = dialogMessageText.getText(); 
 		}
 	}	
 	

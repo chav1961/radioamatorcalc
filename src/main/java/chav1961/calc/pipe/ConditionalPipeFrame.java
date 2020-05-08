@@ -72,7 +72,6 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 	private static final URI				PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.conditional.toolbar");	
 	private static final String				PIPE_MENU_REMOVE_FIELD = "chav1961.calc.pipe.conditional.toolbar.removefield";	
 
-	private static final String				JSON_PIPE_ITEM_EXPRESSION = "expression";
 	
 	private final ContentMetadataInterface	mdi;
 	private final Localizer					localizer;
@@ -237,7 +236,7 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger) throws FlowException {
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final boolean ConfirmAll) throws FlowException {
 		final Map<String,Object>	variables = (Map<String,Object>)temp;
 		final String				code = expression.getText().trim();
 		final List<Object>			stack = new ArrayList<>();
@@ -296,14 +295,12 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 	}
 
 	@Override
-	public void serializeFrame(final JsonStaxPrinter printer) throws IOException {
-		if (printer == null) {
-			throw new NullPointerException("Json printer can't be null");
+	public void serializeFrame(final PluginSpecific specific) throws IOException {
+		if (specific == null) {
+			throw new NullPointerException("Plugin specific can't be null");
 		}
 		else {
-			printer.splitter().name(JSON_PIPE_CONTENT).startObject();
-				printer.name(JSON_PIPE_ITEM_EXPRESSION).value(expression.getText());
-			printer.endObject();
+			specific.expression = expression.getText();
 		}
 	}	
 	

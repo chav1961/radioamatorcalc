@@ -24,8 +24,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
-import chav1961.calc.interfaces.PipeItemRuntime.PipeStepReturnCode;
 import chav1961.calc.pipe.ModelItemListContainer.DropAction;
+import chav1961.calc.script.ScriptEditor;
 import chav1961.calc.utils.InnerSVGPluginWindow;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
@@ -36,8 +36,6 @@ import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
-import chav1961.purelib.basic.exceptions.PrintingException;
-import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.enumerations.ContinueMode;
 import chav1961.purelib.enumerations.NodeEnterMode;
@@ -45,7 +43,6 @@ import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
-import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.model.Constants;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.MutableContentNodeMetadata;
@@ -64,7 +61,7 @@ import chav1961.purelib.ui.swing.useful.JStateString;
 
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="chav1961.calc.pipe.container.caption",tooltip="chav1961.calc.pipe.container.caption.tt",help="help.aboutApplication")
-@PluginProperties(width=500,height=200,pluginIconURI="containerFrameIcon.png",desktopIconURI="conditionalDesktopIcon.png")
+@PluginProperties(width=100,height=100,pluginIconURI="containerFrameIcon.png",desktopIconURI="conditionalDesktopIcon.png")
 public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	private static final long serialVersionUID = 1846704657961834483L;
 
@@ -72,6 +69,8 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	private static final String					TABS_PLUGIN_TITLE_TT = "chav1961.calc.pipe.container.tabs.plugin.tt";	
 	private static final String					TABS_META_TITLE = "chav1961.calc.pipe.container.tabs.meta";	
 	private static final String					TABS_META_TITLE_TT = "chav1961.calc.pipe.container.tabs.meta.tt";	
+	private static final String					TABS_CODE_TITLE = "chav1961.calc.pipe.container.tabs.expressions";	
+	private static final String					TABS_CODE_TITLE_TT = "chav1961.calc.pipe.container.tabs.expressions.tt";	
 
 	private static final String					FIELDS_TITLE = "chav1961.calc.pipe.container.fields"; 
 	private static final String					FIELDS_TITLE_TT = "chav1961.calc.pipe.container.fields.tt"; 
@@ -85,7 +84,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	private static final URI					PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.container.toolbar");	
 	private static final String					PIPE_MENU_REMOVE_LINK = "chav1961.calc.pipe.container.toolbar.removelink";	
 
-	private static final String					JSON_PIPE_ITEM_PLUGIN_CLASS = "pluginClass";
+	private static final String					JSON_PIPE_ITEM_INITIAL_CODE = "initialCode";
 	
 	private final Class<T>						instanceClass; 
 	private final ContentMetadataInterface		mdi, innerMdi;
@@ -101,6 +100,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	private final TitledBorder					fieldsTitle = new TitledBorder(new LineBorder(Color.BLACK)); 
 	private final TitledBorder					actionsTitle = new TitledBorder(new LineBorder(Color.BLACK)); 
 	private final InnerSVGPluginWindow<T>		w;
+	private final ScriptEditor					initialCode = new ScriptEditor();
 	private final JTabbedPane					tabs = new JTabbedPane();
 	private final AutoBuiltForm<T>				abf;
 	@LocaleResource(value="chav1961.calc.pipe.container.caption",tooltip="chav1961.calc.pipe.container.caption.tt")
@@ -124,6 +124,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 			this.toolbar.setFloatable(false);
 			
 	    	final PluginProperties			pp = instanceClass.getAnnotation(PluginProperties.class);
+	    	final PluginProperties			ownPP = this.getClass().getAnnotation(PluginProperties.class);
 			
 	    	SwingUtils.assignActionListeners(this.toolbar,this);
         	
@@ -145,20 +146,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 
 				SwingUtils.assignActionKey(w,SwingUtils.KS_HELP,(e)->{showHelp(e.getActionCommand());},abf.getContentModel().getRoot().getHelpId());
 
-				if (pp.leftWidth() == -1) {
-					final Dimension		viewSize = w.getInnerSVGSize(), preferences;
-					
-					if (viewSize.width > viewSize.height) {
-						preferences = new Dimension(pp.width() - pp.height() * viewSize.height / viewSize.width, pp.height());
-					}
-					else {
-						preferences = new Dimension(pp.width() - pp.height() * viewSize.width / viewSize.height, pp.height());
-					}
-					abf.setPreferredSize(preferences.width > pp.width()/2 ? new Dimension(pp.width()/2,pp.height()) : preferences);
-				}
-				else {
-					abf.setPreferredSize(new Dimension(pp.width() - pp.leftWidth(),pp.height()));
-				}
+				setSize(new Dimension(pp.width()+ownPP.width(),pp.height()+ownPP.height()));
 			} catch (IllegalArgumentException | LocalizationException | NullPointerException |  IOException exc) {
 				throw new ContentException(exc);
 			}
@@ -203,9 +191,11 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 			metaTab.setLeftComponent(metaFieldsPanel);
 			metaActions.setBorder(actionsTitle);
 			metaTab.setRightComponent(metaActions);
+			metaTab.setDividerLocation((int)(0.8f*pp.width()));
 			
 			tabs.addTab("",w);
 			tabs.addTab("",metaTab);
+			tabs.addTab("",new JScrollPane(initialCode));
 			tabs.setSelectedIndex(0);
 			
 			final JPanel			bottom = new JPanel(new BorderLayout());
@@ -309,7 +299,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger) throws FlowException {
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final boolean ConfirmAll) throws FlowException {
 		// TODO Auto-generated method stub
 		return PipeStepReturnCode.CONTINUE;
 	}
@@ -327,14 +317,12 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	}
 
 	@Override
-	public void serializeFrame(final JsonStaxPrinter printer) throws IOException {
-		if (printer == null) {
-			throw new NullPointerException("Json printer can't be null");
+	public void serializeFrame(final PluginSpecific specific) throws IOException {
+		if (specific == null) {
+			throw new NullPointerException("Plugin specific can't be null");
 		}
 		else {
-			printer.splitter().name(JSON_PIPE_CONTENT).startObject();
-				printer.name(JSON_PIPE_ITEM_PLUGIN_CLASS).value(instanceClass.getCanonicalName());
-			printer.endObject();
+			specific.pluginClass = instanceClass.getCanonicalName();
 		}
 	}	
 	
@@ -366,6 +354,8 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 		tabs.setToolTipTextAt(0,localizer.getValue(TABS_PLUGIN_TITLE_TT));
 		tabs.setTitleAt(1,localizer.getValue(TABS_META_TITLE));
 		tabs.setToolTipTextAt(1,localizer.getValue(TABS_META_TITLE_TT));
+		tabs.setTitleAt(2,localizer.getValue(TABS_CODE_TITLE));
+		tabs.setToolTipTextAt(2,localizer.getValue(TABS_CODE_TITLE_TT));
 		
 		for (JRadioButtonWithMeta item : actions) {
 			String s = item.getNodeMetadata().getLabelId();

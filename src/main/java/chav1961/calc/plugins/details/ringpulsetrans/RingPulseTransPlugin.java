@@ -1,7 +1,5 @@
 package chav1961.calc.plugins.details.ringpulsetrans;
 
-import java.nio.channels.UnsupportedAddressTypeException;
-
 import chav1961.calc.interfaces.PluginProperties;
 import chav1961.calc.interfaces.RingMyu;
 import chav1961.calc.interfaces.RingType;
@@ -12,10 +10,10 @@ import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
+import chav1961.purelib.ui.interfaces.Action;
 import chav1961.purelib.ui.interfaces.FormManager;
 import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.interfaces.RefreshMode;
-import chav1961.purelib.ui.interfaces.Action;
 
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.plugins.details.ringpulsetrans.RingPulseTransPlugin/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="menu.details.ringpulsetrans",tooltip="menu.details.ringpulsetrans.tt",help="help.aboutApplication")
@@ -42,7 +40,7 @@ public class RingPulseTransPlugin implements FormManager<Object,RingPulseTransPl
 	public float 		outputVoltage3;
 
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputCurrent",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputCurrent.tt")
-	@Format("9.2r")
+	@Format("9.2or")
 	public float		inputCurrent;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.outputCurrent1",tooltip="chav1961.calc.plugins.details.ringpulsetrans.outputCurrent1.tt")
@@ -78,35 +76,35 @@ public class RingPulseTransPlugin implements FormManager<Object,RingPulseTransPl
 	public SchemaType	schemaType = SchemaType.HALF_BRIDGE;
 
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputCoils",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputCoils.tt")
-	@Format("9r")
+	@Format("9or")
 	public int			inputCoils;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.outputCoils1",tooltip="chav1961.calc.plugins.details.ringpulsetrans.outputCoils1.tt")
-	@Format("9r")
+	@Format("9or")
 	public int			outputCoils1;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.outputCoils2",tooltip="chav1961.calc.plugins.details.ringpulsetrans.outputCoils2.tt")
-	@Format("9r")
+	@Format("9or")
 	public int			outputCoils2;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.outputCoils3",tooltip="chav1961.calc.plugins.details.ringpulsetrans.outputCoils3.tt")
-	@Format("9r")
+	@Format("9or")
 	public int			outputCoils3;
 
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputDiameter",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputDiameter.tt")
-	@Format("9.2r")
+	@Format("9.2or")
 	public float		inputDiameter;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter1",tooltip="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter1.tt")
-	@Format("9.2r")
+	@Format("9.2or")
 	public float		outputDiameter1;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter2",tooltip="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter2.tt")
-	@Format("9.2r")
+	@Format("9.2or")
 	public float		outputDiameter2;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter3",tooltip="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter3.tt")
-	@Format("9.2r")
+	@Format("9.2or")
 	public float		outputDiameter3;
 	
  	public RingPulseTransPlugin(final LoggerFacade logger) {

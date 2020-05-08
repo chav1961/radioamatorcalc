@@ -63,7 +63,7 @@ public class PipeExecutor {
 							}
 						}
 					}
-					switch (rc = item.processPipeStep(temporaries[itemIndex],PureLibSettings.SYSTEM_ERR_LOGGER)) {
+					switch (rc = item.processPipeStep(temporaries[itemIndex],PureLibSettings.SYSTEM_ERR_LOGGER,false)) {
 						case CONTINUE			:
 							completedAsTrue.add(item);
 							completedAsFalse.add(item);

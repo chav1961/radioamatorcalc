@@ -61,6 +61,7 @@ import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.windows.PipeManagerSerialForm.PluginSerialForm;
 import chav1961.calc.windows.PipeManagerSerialForm.PluginSerialLink;
+import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
 import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.SequenceIterator;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -74,6 +75,7 @@ import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.json.JsonSerializer;
+import chav1961.purelib.model.ModelUtils;
 import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
@@ -350,7 +352,8 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 			boolean		splitterRequired = false;
 			
 			for (PipePluginFrame<?> frame : frames) {
-				final Rectangle	rect = frame.getBounds();
+				final Rectangle			rect = frame.getBounds();
+				final PluginSpecific	spec = new PluginSpecific();
 				
 				if (splitterRequired) {
 					printer.splitter();
@@ -358,6 +361,7 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 				printer.startObject();
 					printer.name(JSON_PIPE_ITEM_ID).value(frame.getPipeItemName());
 					printer.splitter().name(JSON_PIPE_ITEM_TYPE).value(frame.getType().toString());
+					
 					printer.splitter().name(JSON_PIPE_ITEM_GEOMETRY).startObject();
 						printer.name(JSON_PIPE_ITEM_GEOMETRY_X).value(rect.x);
 						printer.splitter().name(JSON_PIPE_ITEM_GEOMETRY_Y).value(rect.y);
@@ -366,7 +370,73 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 						printer.splitter().name(JSON_PIPE_ITEM_GEOMETRY_ICONIZED).value(frame.isIcon());
 						printer.splitter().name(JSON_PIPE_ITEM_GEOMETRY_MAXIMIZED).value(frame.isMaximum());
 					printer.endObject();
-					frame.serializeFrame(printer);
+					
+					frame.serializeFrame(spec);
+					
+					printer.splitter().name(PipePluginFrame.JSON_PIPE_CONTENT).startObject();
+						boolean	needSplitter = false;
+						
+						if (spec.initialCode != null) {
+							if (needSplitter) {
+								printer.splitter();
+							}
+							printer.name(PipePluginFrame.JSON_PIPE_ITEM_INITIAL_CODE).value(spec.initialCode);
+							needSplitter = true;
+						}
+						if (spec.program != null) {
+							if (needSplitter) {
+								printer.splitter();
+							}
+							printer.name(PipePluginFrame.JSON_PIPE_ITEM_PROGRAM).value(spec.program);
+							needSplitter = true;
+						}
+						if (spec.expression != null) {
+							if (needSplitter) {
+								printer.splitter();
+							}
+							printer.name(PipePluginFrame.JSON_PIPE_ITEM_EXPRESSION).value(spec.expression);
+							needSplitter = true;
+						}
+						if (spec.pluginClass != null) {
+							if (needSplitter) {
+								printer.splitter();
+							}
+							printer.name(PipePluginFrame.JSON_PIPE_ITEM_PLUGIN_CLASS).value(spec.pluginClass);
+							needSplitter = true;
+						}
+						if (spec.message != null) {
+							if (needSplitter) {
+								printer.splitter();
+							}
+							printer.name(PipePluginFrame.JSON_PIPE_ITEM_MESSAGE).value(spec.message);
+							needSplitter = true;
+						}
+						if (spec.isError) {
+							if (needSplitter) {
+								printer.splitter();
+							}
+							printer.name(PipePluginFrame.JSON_PIPE_ITEM_IS_ERROR).value(spec.isError);
+							needSplitter = true;
+						}
+
+						if (spec.fields != null && spec.fields.length > 0) {
+							if (needSplitter) {
+								printer.splitter();
+							}
+							printer.name(PipePluginFrame.JSON_PIPE_ITEM_FIELDS).startArray();
+								boolean	needInnerSplitter = false;
+								
+								for (ContentNodeMetadata item : spec.fields) {
+									if (needInnerSplitter) {
+										printer.splitter();
+									}
+									ModelUtils.serializeToJson(item,printer);
+									needInnerSplitter = true;
+								}
+							printer.endArray();
+							needSplitter = true;
+						}
+					printer.endObject();
 				printer.endObject();
 				splitterRequired = true;
 			}

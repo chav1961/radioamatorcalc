@@ -7,12 +7,15 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Locale;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.TabContent;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -38,7 +41,8 @@ import chav1961.purelib.ui.swing.useful.JCloseableTab;
 public class ReferenceTab<T> extends JPanel implements AutoCloseable, LocaleChangeListener, TabContent {
 	private static final long serialVersionUID = 441497501005942523L;
 
-	private static final URI				PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.referenceMenu");	
+	private static final String				REFERENCE_FIND = "chav1961.calc.reference.seek";	
+	private static final URI				REFERENCE_MENU_ROOT = URI.create("ui:/model/navigation.top.referenceMenu");	
 	
 	private final Localizer 				localizer;
 	private final URI 						localizerURI;
@@ -49,6 +53,7 @@ public class ReferenceTab<T> extends JPanel implements AutoCloseable, LocaleChan
 	private final JPopupMenu 				popup;
 	private final JToolBar 					toolbar;
 	private final AutoBuiltForm<T>			findForm;
+	private final TitledBorder				border = new TitledBorder("????");
 	
 	@LocaleResource(value="chav1961.calc.reference.name",tooltip="chav1961.calc.reference.name.tt")
 	@Format("50r")
@@ -58,7 +63,7 @@ public class ReferenceTab<T> extends JPanel implements AutoCloseable, LocaleChan
 	@Format("50r")
 	private String 							referenceDescription = "";
 	
-	public ReferenceTab(final JTabbedPane tabs, final Localizer localizer, final LoggerFacade logger, final JTable innerComponent, final AutoBuiltForm<T> findForm) throws SyntaxException, LocalizationException, ContentException {
+	public ReferenceTab(final JTabbedPane tabs, final Localizer localizer, final LoggerFacade logger, final String referenceId, final JTable innerComponent, final AutoBuiltForm<T> findForm) throws SyntaxException, LocalizationException, ContentException {
 		if (tabs == null) {
 			throw new NullPointerException("Tabbed pane can't be null");
 		}
@@ -67,6 +72,12 @@ public class ReferenceTab<T> extends JPanel implements AutoCloseable, LocaleChan
 		}
 		else if (logger == null) {
 			throw new NullPointerException("Logger can't be null");
+		}
+		else if (referenceId == null || referenceId.isEmpty()) {
+			throw new IllegalArgumentException("Reference Id can't be null or empty");
+		}
+		else if (!localizer.containsKey(referenceId)) {
+			throw new IllegalArgumentException("Reference Id ["+referenceId+"] not found in the ["+localizer.getLocalizerId()+"] localizer");
 		}
 		else if (innerComponent == null) {
 			throw new NullPointerException("Inner component can't be null");
@@ -81,6 +92,9 @@ public class ReferenceTab<T> extends JPanel implements AutoCloseable, LocaleChan
 			this.ownModel = ContentModelFactory.forAnnotatedClass(this.getClass());
 			this.findForm = findForm;
 			
+			localizer.associateValue(this.getClass().getAnnotation(LocaleResource.class).value(),()->new Object[] {
+					localizer.getValue(referenceId)});
+			
 			try(final InputStream	is = this.getClass().getResourceAsStream("reference.xml")) {
 				
 				this.xmlModel = ContentModelFactory.forXmlDescription(is);
@@ -89,14 +103,28 @@ public class ReferenceTab<T> extends JPanel implements AutoCloseable, LocaleChan
 			}
 			
 			this.tab = new JCloseableTab(localizer,this.ownModel.getRoot());
-			this.popup = SwingUtils.toJComponent(xmlModel.byUIPath(PIPE_MENU_ROOT),JPopupMenu.class);
-			this.toolbar = SwingUtils.toJComponent(xmlModel.byUIPath(PIPE_MENU_ROOT),JToolBar.class);
+			this.popup = SwingUtils.toJComponent(xmlModel.byUIPath(REFERENCE_MENU_ROOT),JPopupMenu.class);
+			this.toolbar = SwingUtils.toJComponent(xmlModel.byUIPath(REFERENCE_MENU_ROOT),JToolBar.class);
 			SwingUtils.assignActionListeners(this.toolbar,this);
+			
+			final JPanel		leftPanel = new JPanel(new BorderLayout());
+			final JScrollPane	scroll = new JScrollPane();
+			final JTable		leftBar = new JTable(innerComponent.getModel());
+
+			innerComponent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			innerComponent.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			scroll.setRowHeaderView(leftBar);
+			scroll.setViewportView(innerComponent);
+			
+			findForm.setBorder(border);
+			leftPanel.add(findForm,BorderLayout.NORTH);
+			leftPanel.add(new JLabel("assa"),BorderLayout.CENTER);
 			
 			setLayout(new BorderLayout());
 			add(toolbar,BorderLayout.NORTH);
-			add(new JScrollPane(innerComponent),BorderLayout.CENTER);
-			add(findForm,BorderLayout.WEST);
+			add(scroll,BorderLayout.CENTER);
+			add(leftPanel,BorderLayout.WEST);
+			
 			
 			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
 		}
@@ -118,6 +146,7 @@ public class ReferenceTab<T> extends JPanel implements AutoCloseable, LocaleChan
 			SwingUtils.refreshLocale(item,oldLocale,newLocale);
 		}
 		tab.localeChanged(oldLocale, newLocale);
+		fillLocalizedStrings(oldLocale,newLocale);
 	}
 
 	@Override
@@ -131,8 +160,7 @@ public class ReferenceTab<T> extends JPanel implements AutoCloseable, LocaleChan
 		
 	}
 
-	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) {
-		// TODO Auto-generated method stub
-		
+	private void fillLocalizedStrings(final Locale oldLocale, final Locale newLocale) throws LocalizationException, IllegalArgumentException {
+		border.setTitle(localizer.getValue(REFERENCE_FIND));
 	}
 }

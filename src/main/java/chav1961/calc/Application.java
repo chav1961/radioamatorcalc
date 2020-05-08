@@ -381,14 +381,13 @@ public class Application extends JFrame implements LocaleChangeListener {
 	@OnAction("action:/references.tubes")
 	private void refTubes() {
 		try{final TubesReferences	tr = new TubesReferences(localizer, logger);
-			final ReferenceTab		tube = new ReferenceTab(tabs,localizer,stateString,tr.getTable(),tr.getForm());
+			final ReferenceTab		tube = new ReferenceTab(tabs,localizer,stateString,TubesReferences.REFERENCE_NAME,tr.getTable(),tr.getForm());
 			
 			placeTab(tabs,tube,true);
 		} catch (LocalizationException | ContentException | MalformedURLException e) {
 			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
-	
 
 	@OnAction("action:/builtin.languages")
 	private void selectLang(final Hashtable<String,String[]> langs) throws LocalizationException {
@@ -456,6 +455,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 		label.setCloseEnable(canClose);
 		pane.addTab("",tab);
 		pane.setTabComponentAt(pane.getTabCount()-1,label);
+		pane.setSelectedIndex(pane.getTabCount()-1);
 	}
 
 	public static void main(final String[] args) throws IOException, EnvironmentException, FlowException, ContentException, HeadlessException, URISyntaxException {
