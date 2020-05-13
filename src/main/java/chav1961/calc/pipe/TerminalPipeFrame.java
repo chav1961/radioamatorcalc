@@ -228,12 +228,15 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final boolean confirmAll) throws FlowException {
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final PipeConfigmation confirm) throws FlowException {
 		if (temp == null || !(temp instanceof Map)) {
 			throw new IllegalArgumentException("Temporary object is null or is not an implementation of Map interface"); 
 		}
 		else if (logger == null) {
 			throw new NullPointerException("Logger can't be null"); 
+		}
+		else if (confirm == null) {
+			throw new NullPointerException("Confirmation type can't be null"); 
 		}
 		else {
 			final Map<String,Object>	variables = (Map<String,Object>)temp;
@@ -242,14 +245,14 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 				final String	message = CharUtils.substitute("message",terminalMessage.getText(),(name)->variables.get(buildVarName(-1,name)) == null ? "<"+name+" is missing>" : variables.get(buildVarName(-1,name)).toString());
 			
 				if (terminalFailure.isSelected()) {
-					if (!confirmAll) {
-						JOptionPane.showMessageDialog(this,message,title,JOptionPane.ERROR_MESSAGE);
+					if (confirm == PipeConfigmation.ASK) {
+						new JLocalizedOptionPane(localizer,true).message(this,new JLabel(message),title,JOptionPane.ERROR_MESSAGE);
 					}
 					return PipeStepReturnCode.TERMINATE_FALSE;
 				}
 				else {
-					if (!confirmAll) {
-						JOptionPane.showMessageDialog(this,message,title,JOptionPane.INFORMATION_MESSAGE);
+					if (confirm == PipeConfigmation.ASK) {
+						new JLocalizedOptionPane(localizer,true).message(this,new JLabel(message),title,JOptionPane.INFORMATION_MESSAGE);
 					}
 					return PipeStepReturnCode.TERMINATE_TRUE;
 				}
@@ -302,8 +305,9 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 			throw new NullPointerException("Plugin specific can't be null");
 		}
 		else {
-			specific.message = terminalMessage.getText();
+			specific.message = toSerial(terminalMessage.getText());
 			specific.isError = terminalFailure.isSelected();
+			
 			if (!controls.isEmpty()) {
 				specific.fields = new MutableContentNodeMetadata[controls.size()];
 				for (int index = 0, maxIndex = specific.fields.length; index < maxIndex; index++) {

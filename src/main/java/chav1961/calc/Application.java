@@ -124,7 +124,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 		else {
 			this.localizer = LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated());
 			this.logger = logger;
-			this.stateString = new JStateString(this.localizer,10);
+			this.stateString = new JStateString(this.localizer,10,true);
 			this.settings = new CurrentSettings(this.localizer,this.logger);
 			
 			stateString.setAutomaticClearTime(Severity.error,1,TimeUnit.MINUTES);

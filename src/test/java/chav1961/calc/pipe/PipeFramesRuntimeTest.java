@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import chav1961.calc.interfaces.PipeItemRuntime.PipeConfigmation;
 import chav1961.calc.interfaces.PipeItemRuntime.PipeStepReturnCode;
 import chav1961.calc.windows.PipeManager;
 import chav1961.calc.windows.PipeTab;
@@ -55,7 +56,7 @@ public class PipeFramesRuntimeTest {
 		final InitialPipeFrame		ipf = new InitialPipeFrame(1,mgr,localizer, initial, general);
 		final PluginSpecific		ps = new PluginSpecific(), ps2 = new PluginSpecific();
 		
-		ps.initialCode = "test := \"123456\"; ";
+		ps.initialCode = "test := \"123456\";";
 		ps.fields = new MutableContentNodeMetadata[] {new MutableContentNodeMetadata("test",String.class,"./test",localizerURI,"testSet1",null,null,new FieldFormat(String.class), ModelUtils.buildUriByClassAndField(TestClass.class,"test"), null)};
 		
 		// Serialization test
@@ -75,7 +76,7 @@ public class PipeFramesRuntimeTest {
 
 		Assert.assertNull(ipf.getOutgoingValue(temporary,ps.fields[0]));
 		
-		Assert.assertEquals(PipeStepReturnCode.CONTINUE,ipf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,false));
+		Assert.assertEquals(PipeStepReturnCode.CONTINUE,ipf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES));
 		
 		Assert.assertEquals("123456",ipf.getOutgoingValue(temporary,ps.fields[0]));
 		
@@ -91,16 +92,20 @@ public class PipeFramesRuntimeTest {
 		} catch (NullPointerException exc) {
 		}
 
-		try{ipf.processPipeStep(null,PureLibSettings.CURRENT_LOGGER,false);
+		try{ipf.processPipeStep(null,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES);
 			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
 		} catch (IllegalArgumentException exc) {
 		}
-		try{ipf.processPipeStep("illegal",PureLibSettings.CURRENT_LOGGER,false);
+		try{ipf.processPipeStep("illegal",PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES);
 			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
 		} catch (IllegalArgumentException exc) {
 		}
-		try{ipf.processPipeStep(temporary,null,false);
+		try{ipf.processPipeStep(temporary,null,PipeConfigmation.ALWAYS_YES);
 			Assert.fail("Mandatory exception was not detected (null 2-nd argument)");
+		} catch (NullPointerException exc) {
+		}
+		try{ipf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,null);
+			Assert.fail("Mandatory exception was not detected (null 3-rd argument)");
 		} catch (NullPointerException exc) {
 		}
 		
@@ -149,7 +154,7 @@ public class PipeFramesRuntimeTest {
 		
 		tpf.storeIncomingValue(temporary,ps.fields[0],"123");
 
-		Assert.assertEquals(PipeStepReturnCode.TERMINATE_FALSE,tpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,true));
+		Assert.assertEquals(PipeStepReturnCode.TERMINATE_FALSE,tpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES));
 		
 		try{tpf.getOutgoingValue(temporary,ps.fields[0]);
 			Assert.fail("Mandatory exception was not detected (initial node doesn't support this method)");
@@ -170,16 +175,20 @@ public class PipeFramesRuntimeTest {
 		} catch (NullPointerException exc) {
 		}
 
-		try{tpf.processPipeStep(null,PureLibSettings.CURRENT_LOGGER,false);
+		try{tpf.processPipeStep(null,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES);
 			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
 		} catch (IllegalArgumentException exc) {
 		}
-		try{tpf.processPipeStep("illegal",PureLibSettings.CURRENT_LOGGER,false);
+		try{tpf.processPipeStep("illegal",PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES);
 			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
 		} catch (IllegalArgumentException exc) {
 		}
-		try{tpf.processPipeStep(temporary,null,false);
+		try{tpf.processPipeStep(temporary,null,PipeConfigmation.ALWAYS_YES);
 			Assert.fail("Mandatory exception was not detected (null 2-nd argument)");
+		} catch (NullPointerException exc) {
+		}
+		try{tpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,null);
+			Assert.fail("Mandatory exception was not detected (null 3-rd argument)");
 		} catch (NullPointerException exc) {
 		}
 		
@@ -213,7 +222,7 @@ public class PipeFramesRuntimeTest {
 		final CalcPipeFrame			cpf = new CalcPipeFrame(1,mgr,localizer,inner,outer,general);
 		final PluginSpecific		ps = new PluginSpecific(), ps2 = new PluginSpecific();
 		
-		ps.program = "test := test+test; ";
+		ps.program = "test := test+test;";
 		ps.fields = new MutableContentNodeMetadata[] {new MutableContentNodeMetadata("test",String.class,"./test",localizerURI,"testSet1",null,null,new FieldFormat(String.class), ModelUtils.buildUriByClassAndField(TestClass.class,"test"), null)};
 		
 		// Serialization test
@@ -228,7 +237,7 @@ public class PipeFramesRuntimeTest {
 		
 		cpf.storeIncomingValue(temporary,ps.fields[0],"123");
 
-		Assert.assertEquals(PipeStepReturnCode.CONTINUE,cpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,false));
+		Assert.assertEquals(PipeStepReturnCode.CONTINUE,cpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES));
 		
 		Assert.assertEquals("123123",cpf.getOutgoingValue(temporary,ps.fields[0]));
 		
@@ -244,16 +253,20 @@ public class PipeFramesRuntimeTest {
 		} catch (NullPointerException exc) {
 		}
 
-		try{cpf.processPipeStep(null,PureLibSettings.CURRENT_LOGGER,false);
+		try{cpf.processPipeStep(null,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES);
 			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
 		} catch (IllegalArgumentException exc) {
 		}
-		try{cpf.processPipeStep("illegal",PureLibSettings.CURRENT_LOGGER,false);
+		try{cpf.processPipeStep("illegal",PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES);
 			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
 		} catch (IllegalArgumentException exc) {
 		}
-		try{cpf.processPipeStep(temporary,null,false);
+		try{cpf.processPipeStep(temporary,null,PipeConfigmation.ALWAYS_YES);
 			Assert.fail("Mandatory exception was not detected (null 2-nd argument)");
+		} catch (NullPointerException exc) {
+		}
+		try{cpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,null);
+			Assert.fail("Mandatory exception was not detected (null 3-rd argument)");
 		} catch (NullPointerException exc) {
 		}
 		
@@ -291,6 +304,172 @@ public class PipeFramesRuntimeTest {
 			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
 		} catch (IllegalArgumentException exc) {
 		}
+	}
+
+	@Test
+	public void conditionalPipeFrameTest() throws ContentException, IOException, FlowException {
+		final ContentNodeMetadata	inner = new MutableContentNodeMetadata("inner",ConditionalPipeFrame.class,"./inner",localizerURI,"testSet1","testSet1",null,null,URI.create("app:action:/inner"),null); 
+		final ContentNodeMetadata	onTrue = new MutableContentNodeMetadata("onTrue",ConditionalPipeFrame.class,"./ontrue",localizerURI,"testSet1","testSet1",null,null,URI.create("app:action:/ontrue"),null); 
+		final ContentNodeMetadata	onFalse = new MutableContentNodeMetadata("onFalse",ConditionalPipeFrame.class,"./onfalse",localizerURI,"testSet1","testSet1",null,null,URI.create("app:action:/onfalse"),null); 
+		final ConditionalPipeFrame	cpf = new ConditionalPipeFrame(1,mgr,localizer,inner,onTrue,onFalse,general);
+		final PluginSpecific		ps = new PluginSpecific(), ps2 = new PluginSpecific();
 		
+		ps.expression = "test = \"123\"";
+		ps.fields = new MutableContentNodeMetadata[] {new MutableContentNodeMetadata("test",String.class,"./test",localizerURI,"testSet1",null,null,new FieldFormat(String.class), ModelUtils.buildUriByClassAndField(TestClass.class,"test"), null)};
+		
+		// Serialization test
+		cpf.deserializeFrame(ps);
+		cpf.serializeFrame(ps2);
+		Assert.assertEquals(ps,ps2);
+		
+		// Pipe processing test
+		final Object	temporary = cpf.preparePipeItem();
+		
+		Assert.assertTrue(temporary instanceof Map);
+		
+		cpf.storeIncomingValue(temporary,ps.fields[0],"123");
+		Assert.assertEquals(PipeStepReturnCode.CONTINUE_TRUE,cpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES));
+		
+		cpf.storeIncomingValue(temporary,ps.fields[0],"456");
+		Assert.assertEquals(PipeStepReturnCode.CONTINUE_FALSE,cpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES));
+		
+		try{cpf.getOutgoingValue(temporary,ps.fields[0]);
+			Assert.fail("Mandatory exception was not detected (conditional node doesn't support this method)");
+		} catch (IllegalStateException exc) {
+		}
+		
+		cpf.unpreparePipeItem(temporary);
+
+		// Exceptions test
+		try{cpf.deserializeFrame(null);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (NullPointerException exc) {
+		}
+		try{cpf.serializeFrame(null);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (NullPointerException exc) {
+		}
+
+		try{cpf.processPipeStep(null,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{cpf.processPipeStep("illegal",PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES);
+			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{cpf.processPipeStep(temporary,null,PipeConfigmation.ALWAYS_YES);
+			Assert.fail("Mandatory exception was not detected (null 2-nd argument)");
+		} catch (NullPointerException exc) {
+		}
+		try{cpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,null);
+			Assert.fail("Mandatory exception was not detected (null 3-rd argument)");
+		} catch (NullPointerException exc) {
+		}
+		
+		try{cpf.storeIncomingValue(null,ps.fields[0],null);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{cpf.storeIncomingValue("illegal",ps.fields[0],null);
+			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{cpf.storeIncomingValue(temporary,null,null);
+			Assert.fail("Mandatory exception was not detected (null 2-nd argument)");
+		} catch (NullPointerException exc) {
+		}
+
+		try{cpf.unpreparePipeItem(null);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{cpf.unpreparePipeItem("illegal");
+			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+	}
+
+	@Test
+	public void dialogPipeFrameTest() throws ContentException, IOException, FlowException {
+		final ContentNodeMetadata	inner = new MutableContentNodeMetadata("inner",ConditionalPipeFrame.class,"./inner",localizerURI,"testSet1","testSet1",null,null,URI.create("app:action:/inner"),null); 
+		final ContentNodeMetadata	onTrue = new MutableContentNodeMetadata("onTrue",ConditionalPipeFrame.class,"./ontrue",localizerURI,"testSet1","testSet1",null,null,URI.create("app:action:/ontrue"),null); 
+		final ContentNodeMetadata	onFalse = new MutableContentNodeMetadata("onFalse",ConditionalPipeFrame.class,"./onfalse",localizerURI,"testSet1","testSet1",null,null,URI.create("app:action:/onfalse"),null); 
+		final DialogPipeFrame		dpf = new DialogPipeFrame(1,mgr,localizer,inner,onTrue,onFalse,general);
+		final PluginSpecific		ps = new PluginSpecific(), ps2 = new PluginSpecific();
+		
+		ps.initialCode = "test := \"123\";";
+		ps.terminalCodeOK = "test := test + test;";
+		ps.terminalCodeCancel = "test := \"\";";
+		ps.fields = new MutableContentNodeMetadata[] {new MutableContentNodeMetadata("test",String.class,"./test",localizerURI,"testSet1",null,null,new FieldFormat(String.class), ModelUtils.buildUriByClassAndField(TestClass.class,"test"), null)};
+		
+		// Serialization test
+		dpf.deserializeFrame(ps);
+		dpf.serializeFrame(ps2);
+		Assert.assertEquals(ps,ps2);
+		
+		// Pipe processing test
+		final Object	temporary = dpf.preparePipeItem();
+		
+		Assert.assertTrue(temporary instanceof Map);
+		
+		dpf.storeIncomingValue(temporary,ps.fields[0],"0");
+		Assert.assertEquals(PipeStepReturnCode.CONTINUE_TRUE,dpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES));
+		Assert.assertEquals("123123",dpf.getOutgoingValue(temporary,ps.fields[0]));
+		
+		dpf.storeIncomingValue(temporary,ps.fields[0],"0");
+		Assert.assertEquals(PipeStepReturnCode.CONTINUE_FALSE,dpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_NO));
+		Assert.assertEquals("",dpf.getOutgoingValue(temporary,ps.fields[0]));
+		
+		dpf.unpreparePipeItem(temporary);
+
+		// Exceptions test
+		try{dpf.deserializeFrame(null);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (NullPointerException exc) {
+		}
+		try{dpf.serializeFrame(null);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (NullPointerException exc) {
+		}
+
+		try{dpf.processPipeStep(null,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{dpf.processPipeStep("illegal",PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES);
+			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{dpf.processPipeStep(temporary,null,PipeConfigmation.ALWAYS_YES);
+			Assert.fail("Mandatory exception was not detected (null 2-nd argument)");
+		} catch (NullPointerException exc) {
+		}
+		try{dpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,null);
+			Assert.fail("Mandatory exception was not detected (null 3-rd argument)");
+		} catch (NullPointerException exc) {
+		}
+		
+		try{dpf.storeIncomingValue(null,ps.fields[0],null);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{dpf.storeIncomingValue("illegal",ps.fields[0],null);
+			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{dpf.storeIncomingValue(temporary,null,null);
+			Assert.fail("Mandatory exception was not detected (null 2-nd argument)");
+		} catch (NullPointerException exc) {
+		}
+
+		try{dpf.unpreparePipeItem(null);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{dpf.unpreparePipeItem("illegal");
+			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
 	}
 }

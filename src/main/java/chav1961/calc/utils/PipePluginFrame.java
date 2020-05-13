@@ -181,4 +181,17 @@ public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeCo
 	protected String buildVarName(final int pluginId, final String name) {
 		return "#"+(pluginId < 0 ? uniqueId : pluginId)+"."+name;
 	}
+	
+	protected int getPluginId() {
+		return uniqueId;
+	}
+	
+	protected static String toSerial(final String source) {
+		if (source == null || source.trim().isEmpty()) {
+			return null;
+		}
+		else {
+			return source.trim();
+		}
+	}
 }

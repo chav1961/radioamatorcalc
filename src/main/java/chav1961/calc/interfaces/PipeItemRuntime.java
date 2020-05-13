@@ -10,9 +10,13 @@ public interface PipeItemRuntime {
 		CONTINUE, CONTINUE_TRUE, CONTINUE_FALSE, TERMINATE_TRUE, TERMINATE_FALSE
 	}
 
+	public enum PipeConfigmation {
+		ALWAYS_YES, ALWAYS_NO, ASK
+	}
+	
 	Object preparePipeItem() throws FlowException;
 	<T> void storeIncomingValue(Object temp,ContentNodeMetadata meta, T value) throws ContentException;
-	PipeStepReturnCode processPipeStep(Object temp, LoggerFacade logger, boolean confirmAll) throws FlowException;
+	PipeStepReturnCode processPipeStep(Object temp, LoggerFacade logger, PipeConfigmation confirmation) throws FlowException;
 	<T> T getOutgoingValue(Object temp,ContentNodeMetadata meta) throws ContentException;
 	void unpreparePipeItem(Object temp) throws FlowException;
 }

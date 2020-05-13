@@ -36,11 +36,11 @@ public class PipeManagerSerialForm {
 	}
 	
 	public static class PluginSpecific {
-		public String		initialCode;
+		public String		initialCode, terminalCodeOK, terminalCodeCancel;
 		public String		program;
 		public String		expression;
 		public String		pluginClass;
-		public String		message;
+		public String		caption, message;
 		public boolean		isError;
 		public MutableContentNodeMetadata[] fields;
 		
@@ -48,6 +48,7 @@ public class PipeManagerSerialForm {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
+			result = prime * result + ((caption == null) ? 0 : caption.hashCode());
 			result = prime * result + ((expression == null) ? 0 : expression.hashCode());
 			result = prime * result + Arrays.hashCode(fields);
 			result = prime * result + ((initialCode == null) ? 0 : initialCode.hashCode());
@@ -55,6 +56,8 @@ public class PipeManagerSerialForm {
 			result = prime * result + ((message == null) ? 0 : message.hashCode());
 			result = prime * result + ((pluginClass == null) ? 0 : pluginClass.hashCode());
 			result = prime * result + ((program == null) ? 0 : program.hashCode());
+			result = prime * result + ((terminalCodeCancel == null) ? 0 : terminalCodeCancel.hashCode());
+			result = prime * result + ((terminalCodeOK == null) ? 0 : terminalCodeOK.hashCode());
 			return result;
 		}
 		
@@ -64,6 +67,9 @@ public class PipeManagerSerialForm {
 			if (obj == null) return false;
 			if (getClass() != obj.getClass()) return false;
 			PluginSpecific other = (PluginSpecific) obj;
+			if (caption == null) {
+				if (other.caption != null) return false;
+			} else if (!caption.equals(other.caption)) return false;
 			if (expression == null) {
 				if (other.expression != null) return false;
 			} else if (!expression.equals(other.expression)) return false;
@@ -81,14 +87,22 @@ public class PipeManagerSerialForm {
 			if (program == null) {
 				if (other.program != null) return false;
 			} else if (!program.equals(other.program)) return false;
+			if (terminalCodeCancel == null) {
+				if (other.terminalCodeCancel != null) return false;
+			} else if (!terminalCodeCancel.equals(other.terminalCodeCancel)) return false;
+			if (terminalCodeOK == null) {
+				if (other.terminalCodeOK != null) return false;
+			} else if (!terminalCodeOK.equals(other.terminalCodeOK)) return false;
+			
 			return true;
 		}
-
+		
 		@Override
 		public String toString() {
-			return "PluginSpecific [initialCode=" + initialCode + ", program=" + program + ", expression=" + expression
-					+ ", pluginClass=" + pluginClass + ", message=" + message + ", isError=" + isError + ", fields="
-					+ Arrays.toString(fields) + "]";
+			return "PluginSpecific [initialCode=" + initialCode + ", terminalCodeOK=" + terminalCodeOK
+					+ ", terminalCodeCancel=" + terminalCodeCancel + ", program=" + program + ", expression="
+					+ expression + ", pluginClass=" + pluginClass + ", caption=" + caption + ", message=" + message
+					+ ", isError=" + isError + ", fields=" + Arrays.toString(fields) + "]";
 		}
 	}
 }

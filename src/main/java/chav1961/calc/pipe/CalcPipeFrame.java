@@ -233,12 +233,15 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final boolean ConfirmAll) throws FlowException {
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final PipeConfigmation confirm) throws FlowException {
 		if (temp == null || !(temp instanceof Map)) {
 			throw new IllegalArgumentException("Temporary object is null or is not an implementation of Map interface"); 
 		}
 		else if (logger == null) {
 			throw new NullPointerException("Logger can't be null"); 
+		}
+		else if (confirm == null) {
+			throw new NullPointerException("Confirmation type can't be null"); 
 		}
 		else {
 			final Map<String,Object>	variables = (Map<String,Object>)temp;
@@ -267,7 +270,7 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 						}
 					});
 				} catch (SyntaxException e) {
-					throw new FlowException(e);
+					throw new FlowException("Node ["+getPipeItemName()+"] script error: "+e);
 				}
 			}
 			return PipeStepReturnCode.CONTINUE;
@@ -312,7 +315,7 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 			throw new NullPointerException("Plugin specific can't be null");
 		}
 		else {
-			specific.program = program.getText();
+			specific.program = toSerial(program.getText());
 			
 			if (!sourceControls.isEmpty()) {
 				specific.fields = new MutableContentNodeMetadata[sourceControls.size()];

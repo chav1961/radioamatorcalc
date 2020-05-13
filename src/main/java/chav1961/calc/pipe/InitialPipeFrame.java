@@ -44,6 +44,7 @@ import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
+import chav1961.purelib.model.Constants;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.FieldFormat;
 import chav1961.purelib.model.ModelUtils;
@@ -220,12 +221,15 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final boolean confirmAll) throws FlowException {
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final PipeConfigmation confirm) throws FlowException {
 		if (temp == null || !(temp instanceof Map)) {
 			throw new IllegalArgumentException("Temporary object is null or is not an implementation of Map interface"); 
 		}
 		else if (logger == null) {
 			throw new NullPointerException("Logger can't be null"); 
+		}
+		else if (confirm == null) {
+			throw new NullPointerException("Confirmation type can't be null"); 
 		}
 		else {
 			final Map<String,Object>	variables = (Map<String,Object>)temp;
@@ -254,7 +258,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 						}
 					});
 				} catch (SyntaxException e) {
-					throw new FlowException(e);
+					throw new FlowException("Node ["+getPipeItemName()+"] script error: "+e);
 				}
 			}
 			return PipeStepReturnCode.CONTINUE;
@@ -299,7 +303,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 			throw new NullPointerException("Plugin specific can't be null");
 		}
 		else {
-			specific.initialCode = initialCode.getText();
+			specific.initialCode = toSerial(initialCode.getText());
 			
 			if (!controls.isEmpty()) {
 				specific.fields = new MutableContentNodeMetadata[controls.size()];
@@ -329,7 +333,7 @@ public class InitialPipeFrame extends PipePluginFrame<InitialPipeFrame> {
 	
 	@OnAction("action:/addField")
 	private void addField() throws LocalizationException, ContentException {
-		final ContentNodeMetadata		meta = new MutableContentNodeMetadata("name",String.class,"name",null,"testSet1","testSet2","testSet3",new FieldFormat(String.class),URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":/name"), null); 
+		final ContentNodeMetadata		meta = new MutableContentNodeMetadata("name",String.class,"name",null,"testSet1","testSet2","testSet3",new FieldFormat(String.class),URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":"+Constants.MODEL_APPLICATION_SCHEME_FIELD+":/clazz/name"), null); 
 		final JContentMetadataEditor	ed = new JContentMetadataEditor(localizer);
 
 		ed.setPreferredSize(new Dimension(350,350));

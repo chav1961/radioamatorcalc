@@ -8,6 +8,7 @@ import java.util.Set;
 import chav1961.calc.interfaces.PipeContainerInterface;
 import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
 import chav1961.calc.interfaces.PipeItemRuntime;
+import chav1961.calc.interfaces.PipeItemRuntime.PipeConfigmation;
 import chav1961.calc.interfaces.PipeItemRuntime.PipeStepReturnCode;
 import chav1961.calc.pipe.JControlFalse;
 import chav1961.calc.pipe.JControlSource;
@@ -63,7 +64,7 @@ public class PipeExecutor {
 							}
 						}
 					}
-					switch (rc = item.processPipeStep(temporaries[itemIndex],PureLibSettings.SYSTEM_ERR_LOGGER,false)) {
+					switch (rc = item.processPipeStep(temporaries[itemIndex],logger,PipeConfigmation.ASK)) {
 						case CONTINUE			:
 							completedAsTrue.add(item);
 							completedAsFalse.add(item);
@@ -103,18 +104,22 @@ public class PipeExecutor {
 			}
 		}
 		else {
-			for (int index = 0, maxIndex = content.length; index < maxIndex; index++) {
-				final PipeLink[]	links = content[index].getLinks();
-				int 				count = 0;
-				
-				for (PipeLink link : links) {
-					if (completedAsTrue.contains(link.getSource()) && ((link.getSourcePoint() instanceof JControlSource) || (link.getSourcePoint() instanceof JControlTrue))   
-						|| completedAsFalse.contains(link.getSource()) && ((link.getSourcePoint() instanceof JControlSource) || (link.getSourcePoint() instanceof JControlFalse))) {
-						count++;
+loop:		for (int index = 0, maxIndex = content.length; index < maxIndex; index++) {
+				if (content[index].getType() != PipeItemType.INITIAL_ITEM) {
+					final PipeLink[]	links = content[index].getLinks();
+					
+					for (PipeLink link : links) {
+						if (!completedAsTrue.contains(link.getSource()) && !completedAsFalse.contains(link.getSource())) {
+							continue loop;
+						}
 					}
-				}
-				if (count == links.length && content[index].getType() != PipeItemType.INITIAL_ITEM) {
-					result.add(index);
+					
+					for (PipeLink link : links) {
+						if (completedAsTrue.contains(link.getSource()) && ((link.getSourcePoint() instanceof JControlSource) || (link.getSourcePoint() instanceof JControlTrue))   
+							|| completedAsFalse.contains(link.getSource()) && ((link.getSourcePoint() instanceof JControlSource) || (link.getSourcePoint() instanceof JControlFalse))) {
+							result.add(index);
+						}
+					}
 				}
 			}
 		}

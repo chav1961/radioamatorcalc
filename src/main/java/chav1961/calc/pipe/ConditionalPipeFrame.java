@@ -29,6 +29,7 @@ import chav1961.calc.script.ScriptProcessor;
 import chav1961.calc.script.ScriptProcessor.DataManager;
 import chav1961.calc.utils.PipeLink;
 import chav1961.calc.utils.PipePluginFrame;
+import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.windows.PipeManager;
 import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -44,6 +45,7 @@ import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.model.ContentModelFactory;
+import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.streams.JsonStaxPrinter;
@@ -230,63 +232,82 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 
 	@Override
 	public void storeIncomingValue(Object temp, ContentNodeMetadata meta, Object value) throws ContentException {
-		final Map<String,Object>	variables = (Map<String,Object>)temp;
-		
-		variables.replace(buildVarName(meta),value);
+		if (temp == null || !(temp instanceof Map)) {
+			throw new IllegalArgumentException("Temporary object is null or is not an implementation of Map interface"); 
+		}
+		else {
+			final Map<String,Object>	variables = (Map<String,Object>)temp;
+			
+			variables.replace(buildVarName(meta),value);
+		}
 	}
 
 	@Override
-	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final boolean ConfirmAll) throws FlowException {
-		final Map<String,Object>	variables = (Map<String,Object>)temp;
-		final String				code = expression.getText().trim();
-		final List<Object>			stack = new ArrayList<>();
-		
-		if (!code.isEmpty()) {
-			try{ScriptProcessor.executeExpression(code,new DataManager() {
-					@Override
-					public boolean exists(final int pluginId, final String name) {
-						return variables.containsKey(buildVarName(pluginId,name));
-					}
-
-					@Override
-					public Object getVar(final int pluginId, final String name) {
-						return variables.get(buildVarName(pluginId,name));
-					}
-
-					@Override
-					public void setVar(final int pluginId, final String name, final Object value) {
-						variables.replace(buildVarName(pluginId,name),value);
-					}
-
-					@Override
-					public void print(final Object value) {
-						logger.message(Severity.debug,value.toString());
-					}
-				}, stack);
-			} catch (SyntaxException e) {
-				throw new FlowException(e);
-			}
+	public PipeStepReturnCode processPipeStep(final Object temp, final LoggerFacade logger, final PipeConfigmation confirm) throws FlowException {
+		if (temp == null || !(temp instanceof Map)) {
+			throw new IllegalArgumentException("Temporary object is null or is not an implementation of Map interface"); 
 		}
-		if (stack.size() == 1 && (stack.get(0) instanceof Boolean)) {
-			return (Boolean)stack.get(0) ? PipeStepReturnCode.CONTINUE_TRUE : PipeStepReturnCode.CONTINUE_FALSE;
+		else if (logger == null) {
+			throw new NullPointerException("Logger can't be null"); 
+		}
+		else if (confirm == null) {
+			throw new NullPointerException("Confirmation type can't be null"); 
 		}
 		else {
-			throw new FlowException("Missing or illegal expression result");
+			final Map<String,Object>	variables = (Map<String,Object>)temp;
+			final String				code = expression.getText().trim();
+			final List<Object>			stack = new ArrayList<>();
+			
+			if (!code.isEmpty()) {
+				try{ScriptProcessor.executeExpression(code,new DataManager() {
+						@Override
+						public boolean exists(final int pluginId, final String name) {
+							return variables.containsKey(buildVarName(pluginId,name));
+						}
+	
+						@Override
+						public Object getVar(final int pluginId, final String name) {
+							return variables.get(buildVarName(pluginId,name));
+						}
+	
+						@Override
+						public void setVar(final int pluginId, final String name, final Object value) {
+							variables.replace(buildVarName(pluginId,name),value);
+						}
+	
+						@Override
+						public void print(final Object value) {
+							logger.message(Severity.debug,value.toString());
+						}
+					}, stack);
+				} catch (SyntaxException e) {
+					throw new FlowException("Node ["+getPipeItemName()+"] script error: "+e);
+				}
+			}
+			if (stack.size() == 1 && (stack.get(0) instanceof Boolean)) {
+				return (Boolean)stack.get(0) ? PipeStepReturnCode.CONTINUE_TRUE : PipeStepReturnCode.CONTINUE_FALSE;
+			}
+			else {
+				throw new FlowException("Missing or illegal expression result");
+			}
 		}
 	}
 
 	@Override
 	public Object getOutgoingValue(Object temp, ContentNodeMetadata meta) throws ContentException {
-		final Map<String,Object>	variables = (Map<String,Object>)temp;
-		
-		return variables.get(buildVarName(meta));
+		throw new IllegalStateException("Conditional code doesn't support this method");
 	}
 
 	@Override
 	public void unpreparePipeItem(Object temp) throws FlowException {
-		final Map<String,Object>	variables = (Map<String,Object>)temp;
-		
-		variables.clear();
+		if (temp == null || !(temp instanceof Map)) {
+			throw new IllegalArgumentException("Temporary object is null or is not an implementation of Map interface"); 
+		}
+		else {
+			final Map<String,Object>	variables = (Map<String,Object>)temp;
+			
+			variables.clear();
+		}
 	}
 	
 	@Override
@@ -300,13 +321,31 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 			throw new NullPointerException("Plugin specific can't be null");
 		}
 		else {
-			specific.expression = expression.getText();
+			specific.expression = toSerial(expression.getText());
+			
+			if (!controls.isEmpty()) {
+				specific.fields = new MutableContentNodeMetadata[controls.size()];
+				for (int index = 0, maxIndex = specific.fields.length; index < maxIndex; index++) {
+					specific.fields[index] = (MutableContentNodeMetadata) controls.get(index).getMetadata();
+				}
+			}
 		}
 	}	
 	
 	@Override
 	public void deserializeFrame(final PluginSpecific specific) throws IOException {
-		expression.setText(specific.expression);
+		if (specific == null) {
+			throw new NullPointerException("Plugin specific can't be null");
+		}
+		else {
+			expression.setText(specific.expression);
+			
+			if (specific.fields != null) {
+				for (MutableContentNodeMetadata item : specific.fields) {
+					fields.addContent(new PipeLink(PipeLinkType.DATA_LINK,null,null,this,fields,item,null));
+				}
+			}
+		}
 	}	
 	
 	@OnAction("action:/removeField")
