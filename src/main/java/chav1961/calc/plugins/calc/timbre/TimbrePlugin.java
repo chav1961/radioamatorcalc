@@ -7,6 +7,7 @@ import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
+import chav1961.purelib.basic.interfaces.ModuleAccessor;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.ui.interfaces.FormManager;
@@ -36,7 +37,7 @@ import chav1961.purelib.ui.interfaces.Action;
 @LocaleResource(value="menu.curcuits.timbre",tooltip="menu.curcuits.timbre.tt",help="help.aboutApplication")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.timbre.button.calc",tooltip="chav1961.calc.plugins.calc.timbre.button.calc.tt"),actionString="calculate")
 @PluginProperties(width=500,height=460,leftWidth=250,svgURI="schema1.SVG,schema2.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
-public class TimbrePlugin implements FormManager<Object,TimbrePlugin> {
+public class TimbrePlugin implements FormManager<Object,TimbrePlugin>, ModuleAccessor {
 	private final LoggerFacade 	logger;
 	
 	@LocaleResource(value="chav1961.calc.plugins.calc.timbre.type",tooltip="chav1961.calc.plugins.calc.timbre.type.tt")
@@ -155,5 +156,12 @@ public class TimbrePlugin implements FormManager<Object,TimbrePlugin> {
 	@Override
 	public LoggerFacade getLogger() {
 		return logger;
+	}
+
+	@Override
+	public void allowUnnamedModuleAccess(final Module... unnamedModules) {
+		for (Module item : unnamedModules) {
+			this.getClass().getModule().addExports(this.getClass().getPackageName(),item);
+		}
 	}
 }

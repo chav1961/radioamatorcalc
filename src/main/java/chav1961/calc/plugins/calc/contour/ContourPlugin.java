@@ -6,6 +6,7 @@ import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
+import chav1961.purelib.basic.interfaces.ModuleAccessor;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.ui.interfaces.FormManager;
@@ -19,7 +20,7 @@ import chav1961.purelib.ui.interfaces.Action;
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.contour.button.ind",tooltip="chav1961.calc.plugins.calc.contour.button.ind.tt"),actionString="calcInd")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.contour.button.cap",tooltip="chav1961.calc.plugins.calc.contour.button.cap.tt"),actionString="calcCap")
 @PluginProperties(width=500,height=150,leftWidth=250,svgURI="schema.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
-public class ContourPlugin implements FormManager<Object,ContourPlugin> {
+public class ContourPlugin implements FormManager<Object,ContourPlugin>, ModuleAccessor {
 	private final LoggerFacade 	logger;
 	
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductanñe",tooltip="chav1961.calc.plugins.calc.contour.inductanñe.tt")
@@ -84,6 +85,13 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin> {
 	@Override
 	public LoggerFacade getLogger() {
 		return logger;
+	}
+
+	@Override
+	public void allowUnnamedModuleAccess(final Module... unnamedModules) {
+		for (Module item : unnamedModules) {
+			this.getClass().getModule().addExports(this.getClass().getPackageName(),item);
+		}
 	}
 	
 	/**

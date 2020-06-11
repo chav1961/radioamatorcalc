@@ -6,6 +6,7 @@ import chav1961.calc.interfaces.PluginProperties;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.basic.interfaces.ModuleAccessor;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
@@ -20,7 +21,7 @@ import chav1961.purelib.ui.interfaces.Action;
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.wienbridge.button.res",tooltip="chav1961.calc.plugins.calc.wienbridge.button.res.tt"),actionString="calcRes")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.wienbridge.button.cap",tooltip="chav1961.calc.plugins.calc.wienbridge.button.cap.tt"),actionString="calcCap")
 @PluginProperties(width=500,height=150,leftWidth=250,svgURI="schema.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
-public class WienBridgePlugin implements FormManager<Object,WienBridgePlugin> {
+public class WienBridgePlugin implements FormManager<Object,WienBridgePlugin>, ModuleAccessor {
 	private final LoggerFacade 	logger;
 	
 	@LocaleResource(value="chav1961.calc.plugins.calc.wienbridge.resistance",tooltip="chav1961.calc.plugins.calc.wienbridge.resistance.tt")
@@ -85,5 +86,12 @@ public class WienBridgePlugin implements FormManager<Object,WienBridgePlugin> {
 	@Override
 	public LoggerFacade getLogger() {
 		return logger;
+	}
+
+	@Override
+	public void allowUnnamedModuleAccess(final Module... unnamedModules) {
+		for (Module item : unnamedModules) {
+			this.getClass().getModule().addExports(this.getClass().getPackageName(),item);
+		}
 	}
 }

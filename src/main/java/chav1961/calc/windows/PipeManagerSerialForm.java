@@ -42,12 +42,14 @@ public class PipeManagerSerialForm {
 		public String		pluginClass;
 		public String		caption, message;
 		public boolean		isError;
+		public String		action;
 		public MutableContentNodeMetadata[] fields;
 		
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
+			result = prime * result + ((action == null) ? 0 : action.hashCode());
 			result = prime * result + ((caption == null) ? 0 : caption.hashCode());
 			result = prime * result + ((expression == null) ? 0 : expression.hashCode());
 			result = prime * result + Arrays.hashCode(fields);
@@ -67,6 +69,9 @@ public class PipeManagerSerialForm {
 			if (obj == null) return false;
 			if (getClass() != obj.getClass()) return false;
 			PluginSpecific other = (PluginSpecific) obj;
+			if (action == null) {
+				if (other.action != null) return false;
+			} else if (!action.equals(other.action)) return false;
 			if (caption == null) {
 				if (other.caption != null) return false;
 			} else if (!caption.equals(other.caption)) return false;
@@ -102,7 +107,7 @@ public class PipeManagerSerialForm {
 			return "PluginSpecific [initialCode=" + initialCode + ", terminalCodeOK=" + terminalCodeOK
 					+ ", terminalCodeCancel=" + terminalCodeCancel + ", program=" + program + ", expression="
 					+ expression + ", pluginClass=" + pluginClass + ", caption=" + caption + ", message=" + message
-					+ ", isError=" + isError + ", fields=" + Arrays.toString(fields) + "]";
+					+ ", isError=" + isError + ", action=" + action + ", fields=" + Arrays.toString(fields) + "]";
 		}
 	}
 }

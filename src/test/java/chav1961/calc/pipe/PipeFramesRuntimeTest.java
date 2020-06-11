@@ -20,7 +20,7 @@ import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.FlowException;
-import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.model.ContentModelFactory;
@@ -30,6 +30,8 @@ import chav1961.purelib.model.ModelUtilsTest;
 import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.ui.interfaces.FormManager;
+import chav1961.purelib.ui.interfaces.Format;
 
 public class PipeFramesRuntimeTest {
 	private final JTabbedPane			pane = new JTabbedPane();
@@ -420,6 +422,83 @@ public class PipeFramesRuntimeTest {
 		dpf.storeIncomingValue(temporary,ps.fields[0],"0");
 		Assert.assertEquals(PipeStepReturnCode.CONTINUE_FALSE,dpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_NO));
 		Assert.assertEquals("",dpf.getOutgoingValue(temporary,ps.fields[0]));
+		
+		dpf.unpreparePipeItem(temporary);
+
+		// Exceptions test
+		try{dpf.deserializeFrame(null);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (NullPointerException exc) {
+		}
+		try{dpf.serializeFrame(null);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (NullPointerException exc) {
+		}
+
+		try{dpf.processPipeStep(null,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{dpf.processPipeStep("illegal",PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES);
+			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{dpf.processPipeStep(temporary,null,PipeConfigmation.ALWAYS_YES);
+			Assert.fail("Mandatory exception was not detected (null 2-nd argument)");
+		} catch (NullPointerException exc) {
+		}
+		try{dpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,null);
+			Assert.fail("Mandatory exception was not detected (null 3-rd argument)");
+		} catch (NullPointerException exc) {
+		}
+		
+		try{dpf.storeIncomingValue(null,ps.fields[0],null);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{dpf.storeIncomingValue("illegal",ps.fields[0],null);
+			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{dpf.storeIncomingValue(temporary,null,null);
+			Assert.fail("Mandatory exception was not detected (null 2-nd argument)");
+		} catch (NullPointerException exc) {
+		}
+
+		try{dpf.unpreparePipeItem(null);
+			Assert.fail("Mandatory exception was not detected (null 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+		try{dpf.unpreparePipeItem("illegal");
+			Assert.fail("Mandatory exception was not detected (illegal 1-st argument)");
+		} catch (IllegalArgumentException exc) {
+		}
+	}
+
+	@Test
+	public void containerPipeFrameTest() throws ContentException, IOException, FlowException {
+		final PP						inst = new PP(PureLibSettings.CURRENT_LOGGER);
+		final ContainerPipeFrame<PP>	dpf = new ContainerPipeFrame<>(1,mgr, localizer, (FormManager<?,PP>)inst, general);
+		final PluginSpecific			ps = new PluginSpecific(), ps2 = new PluginSpecific();
+
+		ps.pluginClass = PP.class.getCanonicalName();
+		ps.fields = new MutableContentNodeMetadata[] {new MutableContentNodeMetadata("test",String.class,"./test",localizerURI,"testSet1",null,null,new FieldFormat(String.class), ModelUtils.buildUriByClassAndField(TestClass.class,"test"), null)};
+		ps.initialCode = "test := \"123\";";
+		ps.action = "app:action:/PP.calculate";
+		
+		// Serialization test
+		dpf.deserializeFrame(ps);
+		dpf.serializeFrame(ps2);
+		Assert.assertEquals(ps,ps2);
+		
+		// Pipe processing test
+		final Object	temporary = dpf.preparePipeItem();
+		
+		Assert.assertTrue(temporary instanceof Map);
+		
+		dpf.storeIncomingValue(temporary,ps.fields[0],"0");
+		Assert.assertEquals(PipeStepReturnCode.CONTINUE,dpf.processPipeStep(temporary,PureLibSettings.CURRENT_LOGGER,PipeConfigmation.ALWAYS_YES));
+		Assert.assertEquals("123123",dpf.getOutgoingValue(temporary,ps.fields[0]));
 		
 		dpf.unpreparePipeItem(temporary);
 

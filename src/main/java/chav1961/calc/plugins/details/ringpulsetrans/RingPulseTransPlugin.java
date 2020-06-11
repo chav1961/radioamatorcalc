@@ -8,6 +8,7 @@ import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
+import chav1961.purelib.basic.interfaces.ModuleAccessor;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.ui.interfaces.Action;
@@ -20,7 +21,7 @@ import chav1961.purelib.ui.interfaces.RefreshMode;
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.button.calc",tooltip="chav1961.calc.plugins.details.ringpulsetrans.button.calc.tt"),actionString="calculate")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.button.calcdetailed",tooltip="chav1961.calc.plugins.details.ringpulsetrans.button.calcdetailed.tt"),actionString="calculateDetailed")
 @PluginProperties(width=680,height=620,leftWidth=320,svgURI="schema.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
-public class RingPulseTransPlugin implements FormManager<Object,RingPulseTransPlugin> {
+public class RingPulseTransPlugin implements FormManager<Object,RingPulseTransPlugin>, ModuleAccessor {
 	private final LoggerFacade 	logger;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
@@ -150,6 +151,13 @@ public class RingPulseTransPlugin implements FormManager<Object,RingPulseTransPl
 	@Override
 	public LoggerFacade getLogger() {
 		return logger;
+	}
+
+	@Override
+	public void allowUnnamedModuleAccess(final Module... unnamedModules) {
+		for (Module item : unnamedModules) {
+			this.getClass().getModule().addExports(this.getClass().getPackageName(),item);
+		}
 	}
 	
 	// @see http://vicgain.sdot.ru/Programs/Calculation_pulsed_transformer.pdf

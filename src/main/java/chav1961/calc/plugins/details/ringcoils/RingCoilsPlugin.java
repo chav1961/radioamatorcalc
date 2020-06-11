@@ -7,6 +7,7 @@ import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
+import chav1961.purelib.basic.interfaces.ModuleAccessor;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.ui.interfaces.FormManager;
@@ -19,7 +20,7 @@ import chav1961.purelib.ui.interfaces.Action;
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.details.ringcoils.button.inductance",tooltip="chav1961.calc.plugins.details.ringcoils.button.inductance.tt"),actionString="calcInductance")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.details.ringcoils.button.coils",tooltip="chav1961.calc.plugins.details.ringcoils.button.coils.tt"),actionString="calcCoils")
 @PluginProperties(width=600,height=300,leftWidth=300,svgURI="schema.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
-public class RingCoilsPlugin implements FormManager<Object,RingCoilsPlugin> {
+public class RingCoilsPlugin implements FormManager<Object,RingCoilsPlugin>, ModuleAccessor {
 	private static final double		R_CUPRUM =  0.0171;	// Ohm • mm²/m;
 	private static final double		K_SKIN1000 = 1.98;	// mm 1000 Hz;
 	
@@ -124,6 +125,13 @@ public class RingCoilsPlugin implements FormManager<Object,RingCoilsPlugin> {
 		return logger;
 	}
 
+	@Override
+	public void allowUnnamedModuleAccess(final Module... unnamedModules) {
+		for (Module item : unnamedModules) {
+			this.getClass().getModule().addExports(this.getClass().getPackageName(),item);
+		}
+	}
+	
 	private static double getAlpha(final float wireDiameter) {
 		if (wireDiameter < 0.08) {
 			return 1.35;
