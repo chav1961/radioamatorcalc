@@ -768,6 +768,12 @@
 		<key name="chav1961.calc.plugins.devices.pulsestab.indictance.tt">Inductance (in uH)</key>
 		<key name="chav1961.calc.plugins.devices.pulsestab.capacitance">Capacitance (uF)</key>
 		<key name="chav1961.calc.plugins.devices.pulsestab.capacitance.tt">Capacitance (in uF)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uSat">Key saturation voltage (V)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uSat.tt">Key saturation voltage (V). Type '0' for MOSFETs</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uF">Diode forward voltage (V)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uF.tt">Diode forward voltage (V)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uRipple">Output ripple (V)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uRipple.tt">Output ripple amplitude (V)</key>
 
 		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.stepup">Step-Up</key>
 		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.stepup.tt">Step-up pulse stabilizer</key>
@@ -1528,14 +1534,21 @@
 		<key name="chav1961.calc.plugins.devices.pulsestab.button.tt">Выполнить расчет параметров стабилизатора</key>
 		<key name="chav1961.calc.plugins.devices.pulsestab.schematics">Схемотехника</key>
 		<key name="chav1961.calc.plugins.devices.pulsestab.schematics.tt">Тип схемы стабилизатора</key>
-		<key name="chav1961.calc.plugins.devices.pulsestab.uIn">Входное напряжение (V)</key>
-		<key name="chav1961.calc.plugins.devices.pulsestab.uIn.tt">Входное напряжение (Volts)</key>
-		<key name="chav1961.calc.plugins.devices.pulsestab.uOut">Выходное напряжение (V)</key>
-		<key name="chav1961.calc.plugins.devices.pulsestab.uOut.tt">Выходное напряжение (Volts)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uIn">Входное напряжение (B)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uIn.tt">Входное напряжение (B)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uOut">Выходное напряжение (B)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uOut.tt">Выходное напряжение (B)</key>
 		<key name="chav1961.calc.plugins.devices.pulsestab.iOut">Ток нагрузки (A)</key>
-		<key name="chav1961.calc.plugins.devices.pulsestab.iOut.tt">Ток нагрузки (Ampers)</key>
-		<key name="chav1961.calc.plugins.devices.pulsestab.frequency">Частота (kHz)</key>
-		<key name="chav1961.calc.plugins.devices.pulsestab.frequency.tt">Частота преобразования (kHz)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iOut.tt">Ток нагрузки (AB)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.frequency">Частота (кГц)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.frequency.tt">Частота преобразования (кГц)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uSat">Напр. насыщения ключа (В)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uSat.tt">Напряжение насыщения ключа (В). для полевого транзистора следует задавать равным нулю</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uF">Напр. на диоде (В)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uF.tt">Прямое падение напряжения на диоде (В)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uRipple">Нестабильность (В)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uRipple.tt">Амплитуда "дрожания" напряжения на выходе стабилизатора (В)</key>
+		
 		<key name="chav1961.calc.plugins.devices.pulsestab.iInMid">Средний входной ток (A)</key>
 		<key name="chav1961.calc.plugins.devices.pulsestab.iInMid.tt">Средний входной ток (Ampers)</key>
 		<key name="chav1961.calc.plugins.devices.pulsestab.iInPeak">Пиковый ток ключа (A)</key>

@@ -92,7 +92,7 @@ import chav1961.purelib.ui.swing.useful.JStateString;
 
 public class Application extends JFrame implements LocaleChangeListener {
 	private static final long 				serialVersionUID = -2663340436788182341L;
-
+	
 	private static final String				DESKTOP_WINDOW = "DesktopWindow";
 	private static final String				SEARCH_WINDOW = "SearchWindow";
 
