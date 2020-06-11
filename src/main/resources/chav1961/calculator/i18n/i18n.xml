@@ -87,6 +87,8 @@
 		<key name="menu.curcuits.tt">Calculate circuit's parameter</key>
 		<key name="menu.details">Details parameters</key>
 		<key name="menu.details.tt">Calculate Details parameter</key>
+		<key name="menu.devices">Devices parameters</key>
+		<key name="menu.devices.tt">Calculate Devices parameter</key>
 
 <!-- Localization for settings -->
 		<key name="settings.save">Save</key>
@@ -733,12 +735,47 @@
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter2.tt">Wire diameter of the second target coil (with skin-effect), if exists</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter3">[do3] Target wire diameter 3 (мм)</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter3.tt">Wire diameter of the third target coil (with skin-effect), if exists</key>
+		
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.halfbridge">Half-bridge</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.halfbridge.tt">Half-bridge converter</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.bridge">Bridge</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.bridge.tt">Bridge converter</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.middlepoint">MidPoint</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.middlepoint.tt">Middle point converter</key>
+
+<!-- Localization for chav1961.calc.plugins.devices.pulsestab --> 
+		<key name="menu.devices.pulsestab">Pulse stabilizer</key>
+		<key name="menu.devices.pulsestab.tt">Calculate pulse stabilizer parameters</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.button">Calculate</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.button.tt">Calculate stabilizer parameters</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematics">Schematics</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematics.tt">Pulse stabilizer schematics</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uIn">Input voltage (V)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uIn.tt">Input voltage (Volts)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uOut">Output voltage (V)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uOut.tt">Output voltage (Volts)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iOut">Output current (A)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iOut.tt">Output current (Ampers)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.frequency">Frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.frequency.tt">Conversion frequenct (kHz)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iInMid">Mid input current (A)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iInMid.tt">Middle input current (Ampers)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iInPeak">Peak input current (A)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iInPeak.tt">Peak input current (Ampers)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iDiodePeak">Peak diode current (A)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iDiodePeak.tt">Peak diode current (Ampers)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.indictance">Inductance (uH)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.indictance.tt">Inductance (in uH)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.capacitance">Capacitance (uF)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.capacitance.tt">Capacitance (in uF)</key>
+
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.stepup">Step-Up</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.stepup.tt">Step-up pulse stabilizer</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.stepdown">Step-Down</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.stepdown.tt">Step-down pulse stabilizer</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.inverted">Inverted</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.inverted.tt">Stabilizer, that inverts input voltage</key>
+
 		
 	</lang>
 	<lang name="ru">
@@ -827,7 +864,9 @@
 		<key name="menu.curcuits">Параметры цепей</key>
 		<key name="menu.curcuits.tt">Расчет параметров цепей</key> 
 		<key name="menu.details">Параметры компонентов</key>
-		<key name="menu.details.tt">Расчет парамеров компонентов</key>
+		<key name="menu.details.tt">Расчет параметров компонентов</key>
+		<key name="menu.devices">Параметры устройств</key>
+		<key name="menu.devices.tt">Расчет параметров устройств</key>
 
 <!-- Локализация настроек приложения -->
 		<key name="settings.save">Сохранить</key>
@@ -1369,7 +1408,6 @@
 		<key name="chav1961.calc.plugins.calc.timbre.timbreType.passive">Пассивный</key>
 		<key name="chav1961.calc.plugins.calc.timbre.timbreType.passive.tt">Схема пассивного темброблока</key>
 		
-
 <!-- Локализация для chav1961.calc.plugins.details.coils -->
 		<key name="menu.details.coils">Параметры катушки индуктивности</key>
 		<key name="menu.details.coils.tt">Расчет числа витков катушки для заданной индуктивности или индуктивности катушки для заданного числа витков</key>
@@ -1475,12 +1513,46 @@
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter2.tt">Диаметр провода второй вторичной обмотки (с учетом скин-эффекта), если она есть</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter3">[do3] Провод вторичной 3 (мм)</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.outputDiameter3.tt">Диаметр провода третьей вторичной обмотки (с учетом скин-эффекта), если она есть</key>
+		
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.halfbridge">Полумост</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.halfbridge.tt">Полумостовая схем конвертора</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.bridge">Мост</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.bridge.tt">Мостовая схема конвертора</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.middlepoint">Со средней точкой</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.middlepoint.tt">Конвертор со средней точкой</key>
+
+<!-- Локализация для chav1961.calc.plugins.devices.pulsestab --> 
+		<key name="menu.devices.pulsestab">Импульсный стабилизатор</key>
+		<key name="menu.devices.pulsestab.tt">Расчет парамеров импульсного стабилизатора</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.button">Расчет</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.button.tt">Выполнить расчет параметров стабилизатора</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematics">Схемотехника</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematics.tt">Тип схемы стабилизатора</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uIn">Входное напряжение (V)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uIn.tt">Входное напряжение (Volts)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uOut">Выходное напряжение (V)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.uOut.tt">Выходное напряжение (Volts)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iOut">Ток нагрузки (A)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iOut.tt">Ток нагрузки (Ampers)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.frequency">Частота (kHz)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.frequency.tt">Частота преобразования (kHz)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iInMid">Средний входной ток (A)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iInMid.tt">Средний входной ток (Ampers)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iInPeak">Пиковый ток ключа (A)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iInPeak.tt">Пиковый ток ключа (Ampers)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iDiodePeak">Пиковый ток диода (A)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.iDiodePeak.tt">Пиковый ток диода (Ampers)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.indictance">Индуктивность (uH)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.indictance.tt">Индуктивность катушки (в uH)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.capacitance">Емкость (uF)</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.capacitance.tt">Емкость конденсатора фильтра (в uF)</key>
+
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.stepup">Повышающий</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.stepup.tt">Повышающий импульсный стабилизатор</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.stepdown">Понижающий</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.stepdown.tt">Понижающий импульсный стабилизатор</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.inverted">Инвертирующий</key>
+		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.inverted.tt">Стабилизатор, вырабатывающий напряжение обратного знака</key>
 
 	</lang>	
 </localization>

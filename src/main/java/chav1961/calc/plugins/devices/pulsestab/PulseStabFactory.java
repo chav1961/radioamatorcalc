@@ -1,4 +1,4 @@
-package chav1961.calc.plugins.calc.contour;
+package chav1961.calc.plugins.devices.pulsestab;
 
 import java.net.URI;
 
@@ -10,9 +10,9 @@ import chav1961.purelib.model.Constants;
 import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
- 
-public class ContourFactory implements PluginInterface<ContourPlugin>{
-	private static final String	PLUGIN_NAME = "menu.curcuits.contour"; 
+
+public class PulseStabFactory implements PluginInterface<PulseStabPlugin>{
+	private static final String	PLUGIN_NAME = "menu.devices.pulsestab"; 
 	private static final URI	PLUGIN_URI = URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":"+Constants.MODEL_APPLICATION_SCHEME_ACTION+":/"+PLUGIN_NAME);
 
 	@Override
@@ -21,8 +21,8 @@ public class ContourFactory implements PluginInterface<ContourPlugin>{
 	}
 
 	@Override
-	public ContourPlugin newIstance(final LoggerFacade facade) {
-		return new ContourPlugin(facade);
+	public PulseStabPlugin newIstance(final LoggerFacade facade) {
+		return new PulseStabPlugin(facade);
 	}
 
 	@Override
@@ -33,12 +33,12 @@ public class ContourFactory implements PluginInterface<ContourPlugin>{
 	@Override
 	public ContentNodeMetadata getMetadata() {
 		return new MutableContentNodeMetadata(getPluginName()
-				, ContourPlugin.class
+				, PulseStabPlugin.class
 				, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
 				, null
-				, ContourPlugin.class.getAnnotation(LocaleResource.class).value()
-				, ContourPlugin.class.getAnnotation(LocaleResource.class).tooltip()
-				, ContourPlugin.class.getAnnotation(LocaleResource.class).help()
+				, PulseStabPlugin.class.getAnnotation(LocaleResource.class).value()
+				, PulseStabPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+				, PulseStabPlugin.class.getAnnotation(LocaleResource.class).help()
 				, null
 				, PLUGIN_URI
 				, null);

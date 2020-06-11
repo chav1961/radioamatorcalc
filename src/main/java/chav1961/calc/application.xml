@@ -34,6 +34,8 @@
 		</app:submenu>
 		<app:submenu name="menu.details" caption="menu.details" tooltip="menu.details.tt">  
 		</app:submenu>
+		<app:submenu name="menu.devices" caption="menu.devices" tooltip="menu.devices.tt">  
+		</app:submenu>
 	</app:menu>
 	<app:menu id="desktopToolbar">
 		<app:item name="desktop.toolbar.closeAll" caption="desktop.toolbar.closeAll" tooltip="desktop.toolbar.closeAllTT" icon="root://chav1961.calc.Application/chav1961/calc/closeAll.png" action="closeAll"/>
