@@ -75,6 +75,7 @@ import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.PureLibLocalizer;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
+import chav1961.purelib.i18n.interfaces.SupportedLanguages;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
@@ -391,7 +392,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 
 	@OnAction("action:/builtin.languages")
 	private void selectLang(final Hashtable<String,String[]> langs) throws LocalizationException {
-		localizer.setCurrentLocale(Locale.forLanguageTag(langs.get("lang")[0]));
+		localizer.setCurrentLocale(SupportedLanguages.valueOf(langs.get("lang")[0]).getLocale());
 	}
 
 	@OnAction("action:/settings")
