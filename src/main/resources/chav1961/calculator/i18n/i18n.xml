@@ -743,6 +743,24 @@
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.middlepoint">MidPoint</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.middlepoint.tt">Middle point converter</key>
 
+<!-- Localization for chav1961.calc.plugins.details.ringmagnetic -->
+		<key name="menu.details.ringmagnetic">Ring magnetic field</key>
+		<key name="menu.details.ringmagnetic.tt">Calculate ring magnetic field strength for given current or current for given magnetic field strength</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.button.inductance">Field strength</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.button.inductance.tt">Calculate field strength for given current</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.button.current">Current</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.button.current.tt">Calculate cirrent for given magnetic field strength</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.numberOfCoils">Number of coils</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.numberOfCoils.tt">Number of coils</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.current">Coils current (A)</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.current.tt">Coils current (A)</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.fieldInduction">Field strength (Tl)</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.fieldInduction.tt">Field strength (Tl)</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.ringType">Ring size</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.ringType.tt">RIng size from the standard set</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.ringMyu">Permeability</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.ringMyu.tt">Ring permeability from the standart set</key>
+
 <!-- Localization for chav1961.calc.plugins.devices.pulsestab --> 
 		<key name="menu.devices.pulsestab">Pulse stabilizer</key>
 		<key name="menu.devices.pulsestab.tt">Calculate pulse stabilizer parameters</key>
@@ -782,6 +800,36 @@
 		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.inverted">Inverted</key>
 		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.inverted.tt">Stabilizer, that inverts input voltage</key>
 
+<!-- Локализация для chav1961.calc.plugins.devices.powerfactor34262 --> 
+		<key name="menu.devices.powerfactor34262">PFC on МС34262</key>
+		<key name="menu.devices.powerfactor34262.tt">Rower factor correction curcuit on MC34262</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.button">Calculate</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.button.tt">Calculate parameters</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.uIn">Input voltage (V)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.uIn.tt">RMS input voltage (V). It's recommended to retain default</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.uOut">Output voltage (V)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.uOut.tt">Output pfc voltage (V)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.iOut">Output current (A)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.iOut.tt">PFC output current (A)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.tPulse">Pulse width (uSec)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.tPulse.tt">Pulse width (uSec). It's recommended to retain default</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.uCS">Current sence voltage (V)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.uCS.tt">Current sence voltage (V). It's recommended to retain default</key>
+	
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.iPeak">Peak current (A)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.iPeak.tt">Peak current thru key (A)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.inductance">Inductance (uH)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.inductance.tt">Choke inductance (uH)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.tOn">On-time (uSec)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.tOn.tt">Short key time (uSec)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.tOff">Off-time (uSec)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.tOff.tt">Closed key time (uSec)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.frequency">Frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.frequency.tt">PCF frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.rCS">Current sence value (Ohm)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.rCS.tt">Current sence resistor value (Ohm)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.r1">Voltage sence value (kOhm)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.r1.tt">Voltage sence resistor value (kOhm)</key>
 		
 	</lang>
 	<lang name="ru">
@@ -1527,6 +1575,24 @@
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.middlepoint">Со средней точкой</key>
 		<key name="chav1961.calc.plugins.details.ringpulsetrans.schematype.middlepoint.tt">Конвертор со средней точкой</key>
 
+<!-- Локализация для chav1961.calc.plugins.details.ringmagnetic -->
+		<key name="menu.details.ringmagnetic">Магнитное поле кольца</key>
+		<key name="menu.details.ringmagnetic.tt">Расчет величины магнитного поля кольца при заданном токе или тока при заданном магнитном поле</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.button.inductance">Напряженность поля</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.button.inductance.tt">Расчет напряженности поля при заданном токе</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.button.current">Ток обмотки</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.button.current.tt">Расчет тока обмотки при заданной напряженности поля</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.numberOfCoils">Число витков </key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.numberOfCoils.tt">Число витков обмотки</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.current">Ток обмотки (А)</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.current.tt">Ток обмотки (А)</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.fieldInduction">Напряженность (Тл)</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.fieldInduction.tt">Напряженгность поля в кольце (Тл)</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.ringType">Типоразмер кольца</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.ringType.tt">Типоразмер кольца из стандартных размеров</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.ringMyu">Проницаемость</key>
+		<key name="chav1961.calc.plugins.details.ringmagnetic.ringMyu.tt">ПРоницаемость кольца из стандартного ряда</key>
+
 <!-- Локализация для chav1961.calc.plugins.devices.pulsestab --> 
 		<key name="menu.devices.pulsestab">Импульсный стабилизатор</key>
 		<key name="menu.devices.pulsestab.tt">Расчет парамеров импульсного стабилизатора</key>
@@ -1566,6 +1632,37 @@
 		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.stepdown.tt">Понижающий импульсный стабилизатор</key>
 		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.inverted">Инвертирующий</key>
 		<key name="chav1961.calc.plugins.devices.pulsestab.schematype.inverted.tt">Стабилизатор, вырабатывающий напряжение обратного знака</key>
+
+<!-- Локализация для chav1961.calc.plugins.devices.powerfactor34262 --> 
+		<key name="menu.devices.powerfactor34262">ККМ на МС34262</key>
+		<key name="menu.devices.powerfactor34262.tt">Расчет корерктора коэффициента мощности на м/сх MC34262</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.button">Расчет</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.button.tt">Выполнить расчет параметров</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.uIn">Входное напряжение (В)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.uIn.tt">Действующее значение входного напряжения (В). Рекомендуется оставить значение по умолчанию</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.uOut">Выходное напряжение (В)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.uOut.tt">Выходное постоянное напряжение ККМ.</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.iOut">Ток наргузки (А)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.iOut.tt">Ток нагрузки ККМ (А)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.tPulse">Длительность импульса (мкСек)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.tPulse.tt">Длительность импульса (мкСек). Рекомендуется оставить значение по умолчанию</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.uCS">Напряжение датчика тока (В)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.uCS.tt">Напряжение датчика тока (В). Рекомендуется оставить значение по умолчанию</key>
+	
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.iPeak">Пиковый кот ключа (А)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.iPeak.tt">ПИковый ток через ключ инвертора (А)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.inductance">Инд. дросселя (мкГн)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.inductance.tt">Индуктивность дросселя (мкГн)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.tOn">Время откр (мкСек)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.tOn.tt">Время открытого ключа (мкСек)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.tOff">Время закр (мкСек)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.tOff.tt">Время открытого ключа (мкСек)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.frequency">Частота (кГц)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.frequency.tt">Частота работы инвертора (кГц)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.rCS">R датчика тока (Ом)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.rCS.tt">Сопротивление резистора датчика тока (Ом)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.r1">R датчика напр (кОм)</key>
+		<key name="chav1961.calc.plugins.devices.powerfactor34262.r1.tt">Сопротивление резистора датчика напряжения (кОм)</key>
 
 	</lang>	
 </localization>
