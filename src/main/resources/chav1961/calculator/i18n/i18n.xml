@@ -761,6 +761,45 @@
 		<key name="chav1961.calc.plugins.details.ringmagnetic.ringMyu">Permeability</key>
 		<key name="chav1961.calc.plugins.details.ringmagnetic.ringMyu.tt">Ring permeability from the standart set</key>
 
+<!-- Localization for chav1961.calc.plugins.details.ringcurrenttrans -->
+		<key name="menu.details.ringcurrenttrans">Ring current transformer</key>
+		<key name="menu.details.ringcurrenttrans.tt">Calculare current transformet on ring</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.button.calc">Calculate</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.button.calc.tt">Calculate ring current transformer</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.currentIn">Input current (A)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.currentIn.tt">Maximum measured input current (A)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.currentOut">Output current (A)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.currentOut.tt">Output current (A)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.bSaturation">Seturation inductance (Tl)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.bSaturation.tt">Ring saturation material inductance (Tl)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.currentFrequency">Input current frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.currentFrequency.tt">Input current frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.transType">Transformer type</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.transType.tt">Current transformer type</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.ringType">Ring type</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.ringType.tt">Ring type from the standard set</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.ringMyu">Permeability</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.ringMyu.tt">Ring permeability</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.coilIn">Primary coils</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.coilIn.tt">Number if coils in primary circuit</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.coilOut">Secondary coils</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.coilOut.tt">Number if coils in primary circuit</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.powerIn">Input power (Watt)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.powerIn.tt">Consumed power in the primary circuit (Watt)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.powerOut">Dissipated power (Watt)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.powerOut.tt">Dissipated power on secondary circuir resistor (Watt)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.resistance">Resistance (Ohm)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.resistance.tt">Value of the secondary circuit resisitor (Ohm)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.uOut">Output voltage (V)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.uOut.tt">VOltage on the secondary circuit resistor (V)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.maxFrequency">Maximum frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.maxFrequency.tt">Maximum frequency of the input current (kHz)</key>
+
+		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.oneWire">Ring on wire</key>
+		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.oneWire.tt">Primary coil as a simple wire thru ring</key>
+		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.coiled">Two coils</key>
+		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.coiled.tt">Primary coil identical to secondary one</key>
+
 <!-- Localization for chav1961.calc.plugins.devices.pulsestab --> 
 		<key name="menu.devices.pulsestab">Pulse stabilizer</key>
 		<key name="menu.devices.pulsestab.tt">Calculate pulse stabilizer parameters</key>
@@ -1592,6 +1631,45 @@
 		<key name="chav1961.calc.plugins.details.ringmagnetic.ringType.tt">Типоразмер кольца из стандартных размеров</key>
 		<key name="chav1961.calc.plugins.details.ringmagnetic.ringMyu">Проницаемость</key>
 		<key name="chav1961.calc.plugins.details.ringmagnetic.ringMyu.tt">ПРоницаемость кольца из стандартного ряда</key>
+
+<!-- Локализация для chav1961.calc.plugins.details.ringcurrenttrans -->
+		<key name="menu.details.ringcurrenttrans">Транс. тока на кольце</key>
+		<key name="menu.details.ringcurrenttrans.tt">Расчет трансформатора тока на кольце</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.button.calc">Расчет</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.button.calc.tt">Выполнить расчет трансформатора тока</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.currentIn">Входной ток (А)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.currentIn.tt">Предельная величина измеряемого тока (А)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.currentOut">Выходной ток (А)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.currentOut.tt">Величина выходного тока трансформатора (А)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.bSaturation">Инд. насыщения (Тл)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.bSaturation.tt">Индукция насыщения сердечника (Тл)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.currentFrequency">Частота входного тока (кГц)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.currentFrequency.tt">Частота измеряемого тока (кГц)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.transType">Конструкция</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.transType.tt">Конструкция трансформатора тока</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.ringType">Тип кольца</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.ringType.tt">Тип кольца магнитопровода</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.ringMyu">Проницаемость</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.ringMyu.tt">Проницаемость кольца магнитопровода</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.coilIn">Витки первичной</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.coilIn.tt">Число витков первичной обмотки</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.coilOut">Витки вторичной</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.coilOut.tt">Число витков вторичной обмотки</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.powerIn">Потребляемая мощность (Вт)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.powerIn.tt">Мощность, потребляемая трансформатором тока в измеряемой цепи (Вт)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.powerOut">Мощность резистора (Вт)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.powerOut.tt">Мощность нагрузочного резистора во вторичной обмотке (Вт)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.resistance">Сопротивление (Ом)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.resistance.tt">Сопротивление нагрузочного резистора во вторичной обмотке (Вт)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.uOut">Выходное напряжение (В)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.uOut.tt">Напряжение на нагрузочном резисторе при максимальном измеряемом токе (В)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.maxFrequency">Макс. частота (кГц)</key>
+		<key name="chav1961.calc.plugins.details.ringcurrenttrans.maxFrequency.tt">Максимальная частота тока нагрузки, измеряемая трансформатором (кГц)</key>
+
+		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.oneWire">Кольцо на проводе</key>
+		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.oneWire.tt">Первичная обмотка в виде провода, проходящего через кольцо</key>
+		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.coiled">Две обмотки</key>
+		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.coiled.tt">Первичная обмотка, идентичная по конструкции вторичной</key>
 
 <!-- Локализация для chav1961.calc.plugins.devices.pulsestab --> 
 		<key name="menu.devices.pulsestab">Импульсный стабилизатор</key>

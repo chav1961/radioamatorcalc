@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with "sPlan" (http://www.abacom-online.de) -->
+<svg version="1.1" baseProfile="full"
+xmlns="http://www.w3.org/2000/svg"
+width="475" height="460">
+<title>schema2</title>
+<defs>
+<style type="text/css">
+<![CDATA[
+polyline {stroke-linecap:round; stroke-linejoin:round}
+polygon {stroke-linecap:round; stroke-linejoin:round}
+path {stroke-linecap:round; stroke-linejoin:round}
+circle {stroke-linecap:round; stroke-linejoin:round}
+]]>
+</style>
+</defs>
+<polyline points="85.00 100.00 85.00 130.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<circle cx="85.00" cy="175.00" r="45.00" fill="rgb(255,255,255)" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="85.00 220.00 85.00 250.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<text x="45.00" y="179.00" font-family ="ARIAL" font-size ="17pt" font-weight="normal" font-style="normal" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${currentIn}</text>
+<path fill="none" stroke="rgb(0,0,0)" stroke-width="2" d=" M 285.51 295.85 Q 286.57 290.00 285.51 284.15 Q 284.44 278.29 281.29 272.67 Q 278.14 267.04 273.02 261.85 Q 267.90 256.67 261.01 252.12 Q 254.13 247.57 245.73 243.84 Q 237.34 240.11 227.76 237.34 Q 218.19 234.57 207.80 232.86 Q 197.41 231.15 186.61 230.58 Q 175.80 230.00 164.99 230.58 Q 154.19 231.15 143.80 232.86 Q 133.41 234.57 123.84 237.34 Q 114.26 240.11 105.87 243.84 Q 97.47 247.57 90.59 252.12 Q 83.70 256.67 78.58 261.85 Q 73.46 267.04 70.31 272.67 Q 67.16 278.29 66.09 284.15 Q 65.03 290.00 66.09 295.85 Q 67.16 301.71 70.31 307.33 Q 73.46 312.96 78.58 318.15 Q 83.70 323.33 90.59 327.88 Q 97.47 332.43 105.87 336.16 Q 114.26 339.89 123.84 342.66 Q 133.41 345.43 143.80 347.14 Q 154.19 348.85 164.99 349.42 Q 175.80 350.00 186.61 349.42 Q 197.41 348.85 207.80 347.14 Q 218.19 345.43 227.76 342.66 Q 237.34 339.89 245.73 336.16 Q 254.13 332.43 261.01 327.88 Q 267.90 323.33 273.02 318.15 Q 278.14 312.96 281.29 307.33 Q 284.44 301.71 285.51 295.85 Z" />
+<path fill="none" stroke="rgb(0,0,0)" stroke-width="2" d=" M 239.79 293.41 Q 240.42 290.00 239.79 286.59 Q 239.17 283.17 237.34 279.89 Q 235.50 276.61 232.51 273.58 Q 229.53 270.56 225.51 267.90 Q 221.49 265.25 216.59 263.07 Q 211.70 260.90 206.11 259.28 Q 200.53 257.66 194.47 256.67 Q 188.41 255.67 182.10 255.34 Q 175.80 255.00 169.50 255.34 Q 163.19 255.67 157.13 256.67 Q 151.07 257.66 145.49 259.28 Q 139.90 260.90 135.01 263.07 Q 130.11 265.25 126.09 267.90 Q 122.07 270.56 119.09 273.58 Q 116.10 276.61 114.26 279.89 Q 112.43 283.17 111.81 286.59 Q 111.18 290.00 111.81 293.41 Q 112.43 296.83 114.26 300.11 Q 116.10 303.39 119.09 306.42 Q 122.07 309.44 126.09 312.10 Q 130.11 314.75 135.01 316.93 Q 139.90 319.10 145.49 320.72 Q 151.07 322.34 157.13 323.33 Q 163.19 324.33 169.50 324.66 Q 175.80 325.00 182.10 324.66 Q 188.41 324.33 194.47 323.33 Q 200.53 322.34 206.11 320.72 Q 211.70 319.10 216.59 316.93 Q 221.49 314.75 225.51 312.10 Q 229.53 309.44 232.51 306.42 Q 235.50 303.39 237.34 300.11 Q 239.17 296.83 239.79 293.41 Z" />
+<path fill="none" stroke="rgb(0,0,0)" stroke-width="2" d=" M 65.80 320.00 Q 65.83 320.00 66.89 325.85 Q 67.96 331.71 71.11 337.33 Q 74.26 342.96 79.38 348.15 Q 84.50 353.33 91.39 357.88 Q 98.27 362.43 106.67 366.16 Q 115.06 369.89 124.64 372.66 Q 134.21 375.43 144.60 377.14 Q 154.99 378.85 165.79 379.42 Q 176.60 380.00 187.40 379.42 Q 198.21 378.85 208.60 377.14 Q 218.99 375.43 228.56 372.66 Q 238.14 369.89 246.53 366.16 Q 254.93 362.43 261.81 357.88 Q 268.70 353.33 273.82 348.15 Q 278.94 342.96 282.09 337.33 Q 285.24 331.71 286.30 325.85 Q 287.37 320.00 287.38 320.00 L 287.40 320.00" />
+<path fill="none" stroke="rgb(0,0,0)" stroke-width="2" d=" M 234.10 304.40 Q 230.33 300.56 226.31 297.90 Q 222.29 295.25 217.39 293.07 Q 212.50 290.90 206.91 289.28 Q 201.33 287.66 195.27 286.67 Q 189.21 285.67 182.90 285.34 Q 176.60 285.00 170.30 285.34 Q 163.99 285.67 157.93 286.67 Q 151.87 287.66 146.29 289.28 Q 140.70 290.90 135.81 293.07 Q 130.91 295.25 126.89 297.90 Q 122.87 300.56 120.74 302.73 L 118.60 304.90" />
+<polyline points="65.80 290.00 65.80 320.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="286.60 290.00 287.40 320.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="225.00 312.00 285.00 370.00 365.00 370.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="240.40 290.00 286.60 290.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="215.00 292.00 215.00 260.00 235.00 240.00 285.00 190.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="285.00 40.00 285.00 70.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<circle cx="285.00" cy="115.00" r="45.00" fill="rgb(255,255,255)" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="285.00 160.00 285.00 190.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<text x="245.00" y="119.00" font-family ="ARIAL" font-size ="17pt" font-weight="normal" font-style="normal" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${currentOut}</text>
+<path fill="rgb(255,255,255)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 355 300 L 375 300 375 350 355 350 355 300" />
+<polyline points="365.00 280.00 365.00 300.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="365.00 350.00 365.00 370.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<text x="335.00" y="319.00" font-family ="Arial" font-size ="17pt" font-weight="normal" font-style="italic" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">R</text>
+<text x="295.00" y="339.00" font-family ="Arial" font-size ="17pt" font-weight="normal" font-style="italic" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${resistance}</text>
+<polyline points="435.00 190.00 405.00 190.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<circle cx="360.00" cy="190.00" r="45.00" fill="rgb(255,255,255)" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="315.00 190.00 285.00 190.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<text x="325.00" y="199.00" font-family ="ARIAL" font-size ="17pt" font-weight="normal" font-style="normal" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${power2}</text>
+<polyline points="365.00 140.00 365.00 40.00 285.00 40.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="435.00 190.00 435.00 370.00 365.00 370.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="365.00 140.00 365.00 240.00" fill="none" stroke="rgb(0,0,0)" stroke-width="5" />
+<polyline points="365.00 240.00 365.00 280.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<circle cx="365" cy="370" r="6" fill="rgb(0,0,0)" stroke="none" stroke-width="2" />
+<circle cx="145" cy="250" r="6" fill="rgb(0,0,0)" stroke="none" stroke-width="2" />
+<polyline points="185.00 210.00 145.00 250.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polygon points="155.61 231.76 145.00 250.00 163.24 239.39" fill="rgb(0,0,0)" stroke="rgb(0,0,0)" stroke-width="2" />
+<text x="155.00" y="194.00" font-family ="Arial" font-size ="21pt" font-weight="normal" font-style="normal" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${ringMyu}</text>
+<text x="125.00" y="414.00" font-family ="Arial" font-size ="21pt" font-weight="normal" font-style="normal" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${ringType}</text>
+<text x="45.00" y="64.00" font-family ="Arial" font-size ="21pt" font-weight="normal" font-style="normal" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">~ ${maxFrequency}</text>
+<polyline points="85.00 100.00 85.00 70.00 45.00 70.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="85.00 250.00 115.00 280.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="115.00 280.00 115.00 300.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="115.00 300.00 65.00 300.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="125.00 310.00 85.00 350.00 85.00 410.00 45.00 410.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+</svg>

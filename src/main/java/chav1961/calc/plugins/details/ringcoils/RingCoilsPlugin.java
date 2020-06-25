@@ -79,12 +79,13 @@ public class RingCoilsPlugin implements FormManager<Object,RingCoilsPlugin>, Mod
 					return RefreshMode.NONE;
 				}
 				else {
-					if (ringType.getOuterDiameter()/ringType.getInnerDiameter() > 1.75f) {
-						coilsInductance = (float) (2e-4 * ringMyu.getMyu() * ringType.getHeight() * Math.log(ringType.getOuterDiameter()/ringType.getInnerDiameter()) * coilsNumberOfCoils * coilsNumberOfCoils); 
-					}
-					else {
-						coilsInductance = (float) (4e-4 * ringMyu.getMyu() * ringType.getHeight() * (ringType.getOuterDiameter() - ringType.getInnerDiameter()) * coilsNumberOfCoils * coilsNumberOfCoils / (ringType.getOuterDiameter() + ringType.getInnerDiameter()));
-					}
+					coilsInductance = calcInductance(ringType, ringMyu, coilsNumberOfCoils);
+//					if (ringType.getOuterDiameter()/ringType.getInnerDiameter() > 1.75f) {
+//						coilsInductance = (float) (2e-4 * ringMyu.getMyu() * ringType.getHeight() * Math.log(ringType.getOuterDiameter()/ringType.getInnerDiameter()) * coilsNumberOfCoils * coilsNumberOfCoils); 
+//					}
+//					else {
+//						coilsInductance = (float) (4e-4 * ringMyu.getMyu() * ringType.getHeight() * (ringType.getOuterDiameter() - ringType.getInnerDiameter()) * coilsNumberOfCoils * coilsNumberOfCoils / (ringType.getOuterDiameter() + ringType.getInnerDiameter()));
+//					}
 					wireLength = (float) calcLength(ringType,wireDiameter,coilsNumberOfCoils);
 					if (frequency > 0) {
 						quality = (float) calcQuality(frequency,coilsInductance,wireLength,wireDiameter);
@@ -129,6 +130,15 @@ public class RingCoilsPlugin implements FormManager<Object,RingCoilsPlugin>, Mod
 	public void allowUnnamedModuleAccess(final Module... unnamedModules) {
 		for (Module item : unnamedModules) {
 			this.getClass().getModule().addExports(this.getClass().getPackageName(),item);
+		}
+	}
+	
+	public static float calcInductance(final RingType ringType, final RingMyu ringMyu, final float numberOfCoils) {
+		if (ringType.getOuterDiameter()/ringType.getInnerDiameter() > 1.75f) {
+			return (float)(2e-4 * ringMyu.getMyu() * ringType.getHeight() * Math.log(ringType.getOuterDiameter()/ringType.getInnerDiameter()) * numberOfCoils * numberOfCoils); 
+		}
+		else {
+			return (float) (4e-4 * ringMyu.getMyu() * ringType.getHeight() * (ringType.getOuterDiameter() - ringType.getInnerDiameter()) * numberOfCoils * numberOfCoils / (ringType.getOuterDiameter() + ringType.getInnerDiameter()));
 		}
 	}
 	
