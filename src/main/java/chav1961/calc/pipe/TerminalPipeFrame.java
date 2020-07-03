@@ -242,7 +242,9 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 			final Map<String,Object>	variables = (Map<String,Object>)temp;
 			
 			try{final String	title = localizer.getValue(RUNTIME_TERMINATE_TITLE);
-				final String	message = CharUtils.substitute("message",terminalMessage.getText(),(name)->variables.get(buildVarName(-1,name)) == null ? "<"+name+" is missing>" : variables.get(buildVarName(-1,name)).toString());
+				final String	message = CharUtils.substitute("message",terminalMessage.getText(),
+										(name)->variables.get(buildVarName(-1,name)) == null ? "<"+name+" is missing>" : variables.get(buildVarName(-1,name)).toString()
+								);
 			
 				if (terminalFailure.isSelected()) {
 					if (confirm == PipeConfigmation.ASK) {

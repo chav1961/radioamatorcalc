@@ -488,9 +488,10 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 	}
 
 	private boolean showDialog(final LoggerFacade logger, final Map<String,Object> vars) throws FlowException {
-		final String						className = getClass().getPackageName()+".Dialog"+getPluginId();
+		final String	className = getClass().getPackageName()+".Dialog"+getPluginId();
+		final URI		localizerURI = URI.create(this.getClass().getAnnotation(LocaleResourceLocation.class).value());
 		
-		try{final MutableContentNodeMetadata	root = new MutableContentNodeMetadata(className,Map.class,"./Map",PureLibLocalizer.LOCALIZER_SCHEME_URI,dialogCaptionText.getText(),null,null,null,ModelUtils.buildUriByClass(Map.class),null); 
+		try{final MutableContentNodeMetadata	root = new MutableContentNodeMetadata(className,Map.class,"./Map",localizerURI,dialogCaptionText.getText(),null,null,null,ModelUtils.buildUriByClass(Map.class),null); 
 			
 			for (int index = 0, maxIndex = controls.size(); index < maxIndex; index++) {
 				ModelUtils.placeChildrenIntoRoot(root,controls.get(index).getMetadata());
@@ -504,7 +505,7 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 			for (Entry<String, Object> item : vars.entrySet()) {
 				dialog.put(item.getKey().substring(item.getKey().lastIndexOf('.')+1),item.getValue());
 			}
-			
+		
 			logger.message(Severity.tooltip,dialogMessageText.getText());
 			
 			final AutoBuiltForm<Object>		abf = new AutoBuiltForm<>(new SimpleContentMetadata(root),localizer,dialog,new FormManager<Object,Object>() {

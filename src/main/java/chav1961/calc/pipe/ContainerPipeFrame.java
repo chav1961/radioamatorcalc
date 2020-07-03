@@ -40,6 +40,8 @@ import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
 import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
+import chav1961.purelib.basic.GettersAndSettersFactory;
+import chav1961.purelib.basic.GettersAndSettersFactory.GetterAndSetter;
 import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
@@ -98,6 +100,8 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	private static final URI					PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.container.toolbar");	
 	private static final String					PIPE_MENU_REMOVE_LINK = "chav1961.calc.pipe.container.toolbar.removelink";	
 
+	private static final String					VALIDATION_NO_ACTION_SELECTED = "chav1961.calc.pipe.container.validation.noactionselected"; 
+	
 	private static final String					JSON_PIPE_ITEM_INITIAL_CODE = "initialCode";
 	
 	private static final String					ACCESSOR_NAME = "<accessor>";
@@ -208,11 +212,23 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 			fields.addContentChangeListener((changeType,source,current)->{
 				switch (changeType) {
 					case CHANGED	:
+						boolean	found = false;
+						
 						for (int index = 0, maxIndex = controls.size(); index < maxIndex; index++) {
 							if (controls.get(index).getMetadata() == ((PipeLink)current).getMetadata()) {
 								controls.set(index,(PipeLink)current);
 								enableButtons(!fields.isSelectionEmpty() && fields.getSelectedValue().getSource() != null);
+								found= true;
 								break;
+							}
+						}
+						if (!found) {
+							for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {
+								if (fields.getModel().getElementAt(index).getMetadata() == ((PipeLink)current).getMetadata()) {
+									controls.add((PipeLink)current);
+									enableButtons(!fields.isSelectionEmpty() && fields.getSelectedValue().getSource() != null);
+									break;
+								}
 							}
 						}
 						break;
@@ -267,9 +283,19 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	}
 
 	@Override
-	public boolean validate(LoggerFacade logger) {
-		// TODO Auto-generated method stub
-		return true;
+	public boolean validate(final LoggerFacade logger) {
+		boolean	selected = false;
+		
+		for (JRadioButtonWithMeta item : actions) {
+			selected |= item.isSelected();
+		}
+		if (!selected) {
+			logger.message(Severity.warning,VALIDATION_NO_ACTION_SELECTED,getPipeItemName());
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 	
 	
@@ -280,15 +306,18 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	
 	@Override
 	public Object preparePipeItem() throws FlowException {
-		final Map<String,Object>	variables = new HashMap<>();
+		final Map<String,Object>		variables = new HashMap<>();
 		
-		for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {
-			variables.put(buildVarName(fields.getModel().getElementAt(index).getMetadata()),null);
-		}
-		try{final Object	acc = paf.contentAccessor.getConstructor(paf.instanceClass).newInstance(paf.abf.getInstance());
+		try{final Map<String,Object>	acc = paf.contentAccessor.getConstructor(paf.instanceClass).newInstance(paf.abf.getInstance());
 			
 			variables.put(ACCESSOR_NAME,acc);
 			((ModuleAccessor)paf.abf.getInstance()).allowUnnamedModuleAccess(((ModuleExporter)acc).getUnnamedModules());
+			
+			for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {
+				final ContentNodeMetadata	meta = fields.getModel().getElementAt(index).getMetadata();
+				
+				variables.put(buildVarName(meta),acc.get(meta.getName()));
+			}
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException exc) {
 			throw new FlowException(exc.getLocalizedMessage(),exc);
 		}
@@ -353,17 +382,19 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 
 				for (String item : acc.keySet()) {			// Copy variable's values to plugin fields
 					final String	key = "#"+getPluginId()+"."+item;
+					final Object	value = variables.get(key); 
 					
-					if (variables.containsKey(key)) {
-						acc.replace(item,variables.get(key));
+					if (value != null) {
+						acc.replace(item,value);
 					}
 				}
 				paf.abf.process(MonitorEvent.Action,paf.innerMdi.byApplicationPath(getSelectedAction())[0],null);
 				for (String item : acc.keySet()) {			// Extract variable's values from plugin fields
 					final String	key = "#"+getPluginId()+"."+item;
+					final Object	value = acc.get(item); 
 					
-					if (variables.containsKey(key)) {
-						variables.replace(key,acc.get(item));
+					if (value != null) {
+						variables.replace(key,value);
 					}
 				}
 			} catch (ContentException e) {

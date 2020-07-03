@@ -346,6 +346,7 @@
 		<key name="chav1961.calc.pipe.container.fields.tt">List of the plugin fields, available to other pipe nodes</key>
 		<key name="chav1961.calc.pipe.container.actions">Plugin actions</key>
 		<key name="chav1961.calc.pipe.container.actions.tt">List of the plugin actions (buttons)</key>
+		<key name="chav1961.calc.pipe.container.validation.noactionselected">Container node [%1$s] error - no actions were selected in meta</key>
 
 		<key name="chav1961.calc.pipe.terminal.caption">Terminal pipe node</key>
 		<key name="chav1961.calc.pipe.terminal.caption.tt">Terminates pipe execution</key>
@@ -1217,6 +1218,7 @@
 		<key name="chav1961.calc.pipe.container.fields.tt">Список полей плагина, к которым можно обращаться при работе конвейера</key>
 		<key name="chav1961.calc.pipe.container.actions">Действия плагина</key>
 		<key name="chav1961.calc.pipe.container.actions.tt">Список действий (кнопок) плагина</key>
+		<key name="chav1961.calc.pipe.container.validation.noactionselected">Ошибка контейнера [%1$s] - не выбрано никаких действий в метаинформации</key>
 
 		<key name="chav1961.calc.pipe.terminal.caption">Конечный узел</key>
 		<key name="chav1961.calc.pipe.terminal.caption.tt">Конечный узел (или конечные узлы) завершает работу конвейера</key>

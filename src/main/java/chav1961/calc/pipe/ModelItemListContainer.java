@@ -1,6 +1,7 @@
 package chav1961.calc.pipe;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
 import java.net.MalformedURLException;
@@ -133,6 +134,18 @@ public class ModelItemListContainer extends JList<PipeLink> implements LocaleCha
 		return isSelectionEmpty() ? (getModel().getSize() == 0 ? null : getModel().getElementAt(0).getMetadata()) : getSelectedValue().getMetadata();
 	}
 
+	@Override
+	public ContentNodeMetadata getNodeMetadata(final int x, final int y) {
+		final int	index = locationToIndex(new Point(x,y));
+
+		if (index < 0) {
+			return null;
+		}
+		else {
+			return getModel().getElementAt(index).getMetadata();
+		}
+	}
+	
 	@Override
 	public void drop(final PipeLink link, final int xFrom, final int yFrom, final int xTo, final int yTo) {
 		try{switch (action) {
