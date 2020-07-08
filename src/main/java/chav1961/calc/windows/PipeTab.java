@@ -230,7 +230,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	}
 
 	@Override
-	public Class<?> getSourceClass(final DnDMode currentMode, final Component component, final int x, final int y) {
+	public Class<?> getSourceContentClass(final DnDMode currentMode, final Component component, final int x, final int y) {
 		if (component instanceof NodeMetadataOwner) {
 			return ContentNodeMetadata.class;
 		}
@@ -240,7 +240,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	}
 
 	@Override
-	public Object getSource(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo) {
+	public Object getSourceContent(final DnDMode currentMode, final Component from, final int xFrom, final int yFrom, final Component to, final int xTo, final int yTo) {
 		if (from instanceof NodeMetadataOwner) {
 			return ((NodeMetadataOwner)from).getNodeMetadata(xFrom,yFrom);
 		}
