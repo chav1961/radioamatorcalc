@@ -83,12 +83,16 @@
 		<key name="pipeMenu.stop.tt">Stop pipe started</key>
 
 <!-- Localization for navigator menu --> 
+		<key name="menu.favorites">Favorites</key>
+		<key name="menu.favorites.tt">Most popular calculations</key>
 		<key name="menu.curcuits">Circuit's parameters</key>
 		<key name="menu.curcuits.tt">Calculate circuit's parameter</key>
 		<key name="menu.details">Details parameters</key>
 		<key name="menu.details.tt">Calculate Details parameter</key>
 		<key name="menu.devices">Devices parameters</key>
 		<key name="menu.devices.tt">Calculate Devices parameter</key>
+		<key name="menu.heatAndMech">Heat &amp; mechanical</key>
+		<key name="menu.heatAndMech.tt">Heat and mechanical calculations</key>
 
 <!-- Localization for settings -->
 		<key name="settings.save">Save</key>
@@ -954,13 +958,17 @@
 		<key name="pipeMenu.stop">Стоп</key>
 		<key name="pipeMenu.stop.tt">Остановка конвейера</key>
 
-<!-- Локализация меню навигатора --> 
+<!-- Локализация меню навигатора -->
+		<key name="menu.favorites">Популярные</key>
+		<key name="menu.favorites.tt">Наиболее популярные расчеты</key>
 		<key name="menu.curcuits">Параметры цепей</key>
 		<key name="menu.curcuits.tt">Расчет параметров цепей</key> 
 		<key name="menu.details">Параметры компонентов</key>
 		<key name="menu.details.tt">Расчет параметров компонентов</key>
 		<key name="menu.devices">Параметры устройств</key>
 		<key name="menu.devices.tt">Расчет параметров устройств</key>
+		<key name="menu.heatAndMech">Тепло и механика</key>
+		<key name="menu.heatAndMech.tt">Тепловые и механические расчеты</key>
 
 <!-- Локализация настроек приложения -->
 		<key name="settings.save">Сохранить</key>

@@ -30,11 +30,20 @@
 		</app:submenu>
 	</app:menu>
 	<app:menu id="navigator">
+		<app:submenu name="menu.favorites" caption="menu.favorites" tooltip="menu.favorites.tt">  
+			<app:placeholder/>
+		</app:submenu>
 		<app:submenu name="menu.curcuits" caption="menu.curcuits" tooltip="menu.curcuits.tt">  
+			<app:placeholder/>
 		</app:submenu>
 		<app:submenu name="menu.details" caption="menu.details" tooltip="menu.details.tt">  
+			<app:placeholder/>
 		</app:submenu>
 		<app:submenu name="menu.devices" caption="menu.devices" tooltip="menu.devices.tt">  
+			<app:placeholder/>
+		</app:submenu>
+		<app:submenu name="menu.heatAndMech" caption="menu.heatAndMech" tooltip="menu.heatAndMech.tt">  
+			<app:placeholder/>
 		</app:submenu>
 	</app:menu>
 	<app:menu id="desktopToolbar">
