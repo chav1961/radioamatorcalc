@@ -1,12 +1,12 @@
 package chav1961.calc;
 
 
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
-import java.awt.datatransfer.MimeTypeParseException;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -63,6 +63,7 @@ import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.basic.exceptions.MimeParseException;
 import chav1961.purelib.basic.exceptions.PreparationException;
 import chav1961.purelib.basic.exceptions.PrintingException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
@@ -438,7 +439,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			});
 			
 			JOptionPane.showMessageDialog(this,pane,localizer.getValue(LocalizationKeys.TITLE_HELP_ABOUT_APPLICATION),JOptionPane.PLAIN_MESSAGE,icon);
-		} catch (LocalizationException | MimeTypeParseException | IOException e) {
+		} catch (LocalizationException | MimeParseException | IOException e) {
 			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
