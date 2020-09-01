@@ -32,6 +32,7 @@ import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.windows.PipeManager;
 import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
+import chav1961.purelib.basic.SimpleURLClassLoader;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
@@ -145,6 +146,12 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 				fields.addContentChangeListener((changeType,source,current)->{
 					switch (changeType) {
 						case CHANGED	:
+							for (int index = 0, maxIndex = controls.size(); index < maxIndex; index++) {
+								if (controls.get(index).getMetadata().equals(((PipeLink)current).getMetadata())) {
+									controls.set(index,(PipeLink)current);
+									break;
+								}
+							}
 							break;
 						case INSERTED	:
 							controls.add((PipeLink)current);
@@ -221,7 +228,7 @@ public class ConditionalPipeFrame extends PipePluginFrame<ConditionalPipeFrame> 
 	}
 	
 	@Override
-	public Object preparePipeItem() throws FlowException {
+	public Object preparePipeItem(final SimpleURLClassLoader loader) throws FlowException {
 		final Map<String,Object>	variables = new HashMap<>();
 		
 		for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {

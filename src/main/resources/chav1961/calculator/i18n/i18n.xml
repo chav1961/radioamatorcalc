@@ -226,7 +226,7 @@
 
 <!-- Localization for specific pipe items -->		
 		<key name="chav1961.calc.pipe.modelItemListContainer.tooltip.insertedFrom">Moved from %1$s</key>
-		<key name="chav1961.calc.pipe.modelItemListContainer.tooltip.linkedWith">Linked with %1$s</key>
+		<key name="chav1961.calc.pipe.modelItemListContainer.tooltip.linkedWith">Linked with %1$s (field %2$s)</key>
 		<key name="chav1961.calc.pipe.modelItemListContainer.noComponent.caption">Link setting error</key>
 		<key name="chav1961.calc.pipe.modelItemListContainer.noComponent.message">Drag&amp;drop action ended on empty space in the list. You must end this operation on any existent element inside</key>
 		<key name="chav1961.calc.pipe.modelItemListContainer.replaceLink.caption">Replace link</key>
@@ -1102,7 +1102,7 @@
 
 <!-- Локализация специфичных компонентов конвейера -->		
 		<key name="chav1961.calc.pipe.modelItemListContainer.tooltip.insertedFrom">Перенесено из %1$s</key>
-		<key name="chav1961.calc.pipe.modelItemListContainer.tooltip.linkedWith">Связано с %1$s</key>
+		<key name="chav1961.calc.pipe.modelItemListContainer.tooltip.linkedWith">Связано с %1$s (поле %2$s)</key>
 		<key name="chav1961.calc.pipe.modelItemListContainer.noComponent.caption">Ошибка установки связи</key>
 		<key name="chav1961.calc.pipe.modelItemListContainer.noComponent.message">Операция связи закончилась на пустом месте списка. Нужно закончить ее на одном из существующих элементов списка</key>
 		<key name="chav1961.calc.pipe.modelItemListContainer.replaceLink.caption">Заменить связь</key>

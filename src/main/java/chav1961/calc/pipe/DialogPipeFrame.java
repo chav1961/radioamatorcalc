@@ -41,6 +41,7 @@ import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.windows.PipeManager;
 import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
 import chav1961.purelib.basic.PureLibSettings;
+import chav1961.purelib.basic.SimpleURLClassLoader;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
@@ -126,6 +127,7 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 	private final JTabbedPane				tabs = new JTabbedPane();
 	
 	private Map<String,Object>				dialog = null;
+	private SimpleURLClassLoader			sucl = null;
 	
 	@LocaleResource(value="chav1961.calc.pipe.dialog.caption",tooltip="chav1961.calc.pipe.dialog.caption.tt")
 	@Format("9.2pz")
@@ -195,6 +197,12 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 				fields.addContentChangeListener((changeType,source,current)->{
 					switch (changeType) {
 						case CHANGED	:
+							for (int index = 0, maxIndex = controls.size(); index < maxIndex; index++) {
+								if (controls.get(index).getMetadata().equals(((PipeLink)current).getMetadata())) {
+									controls.set(index,(PipeLink)current);
+									break;
+								}
+							}
 							break;
 						case INSERTED	:
 							controls.add((PipeLink)current);
@@ -273,9 +281,10 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 	}
 
 	@Override
-	public Object preparePipeItem() throws FlowException {
+	public Object preparePipeItem(final SimpleURLClassLoader loader) throws FlowException {
 		final Map<String,Object>	variables = new HashMap<>();
-		
+
+		sucl = loader;
 		for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {
 			variables.put(buildVarName(fields.getModel().getElementAt(index).getMetadata()),null);
 		}
@@ -498,7 +507,7 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 			}
 			
 			if (dialog == null) {
-				final Class<Map<String,Object>>	clazz = ModelUtils.buildMappedClassByModel(root,className);
+				final Class<Map<String,Object>>	clazz = ModelUtils.buildMappedClassByModel(root,className,sucl);
 				
 				dialog = clazz.getConstructor().newInstance();
 			}
@@ -508,7 +517,7 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 		
 			logger.message(Severity.tooltip,dialogMessageText.getText());
 			
-			final AutoBuiltForm<Object>		abf = new AutoBuiltForm<>(new SimpleContentMetadata(root),localizer,dialog,new FormManager<Object,Object>() {
+			final AutoBuiltForm<Object>		abf = new AutoBuiltForm<>(new SimpleContentMetadata(root),localizer,sucl,dialog,new FormManager<Object,Object>() {
 													@Override
 													public RefreshMode onField(Object inst, Object id, String fieldName, Object oldValue) throws FlowException, LocalizationException {
 														return RefreshMode.DEFAULT;

@@ -227,6 +227,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 	public void close() throws Exception {
 		pipeManager.close();
 		dndManager.close();
+		
 	}
 
 	@Override
@@ -692,12 +693,19 @@ loop:		while (parser.hasNext()) {
 		((JButton)SwingUtils.findComponentByName(toolbar,PIPE_MENU_STOP_NAME)).setEnabled(stopButton);
 	}
 
+
+	public <T> PipePluginFrame<T> placePlugin(final PluginInterface<?> item, final T inst) {
+		return placePlugin(uniquePipeItemId++, item, inst);
+	}
 	
-	public <T> void placePlugin(final PluginInterface<?> item, final T inst) {
-		try{
-			putPlugin(new ContainerPipeFrame<T>(uniquePipeItemId++, pipeManager, localizer, (FormManager<?,T>)inst, xmlModel));
+	<T> PipePluginFrame<T> placePlugin(final int uniqueId, final PluginInterface<?> item, final T inst) {
+		try{final PipePluginFrame	ppf = new ContainerPipeFrame<T>(uniqueId, pipeManager, localizer, (FormManager<?,T>)inst, xmlModel); 
+			
+			putPlugin(ppf);
+			return ppf;
 		} catch (ContentException e) {
 			logger.message(Severity.error,e,e.getLocalizedMessage());
+			return null;
 		}
 	}
 	

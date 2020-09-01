@@ -31,6 +31,7 @@ import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
 import chav1961.calc.windows.PipeManager;
 import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
+import chav1961.purelib.basic.SimpleURLClassLoader;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
@@ -211,7 +212,7 @@ public class CalcPipeFrame extends PipePluginFrame<CalcPipeFrame> {
 	}
 
 	@Override
-	public Object preparePipeItem() throws FlowException {
+	public Object preparePipeItem(final SimpleURLClassLoader loader) throws FlowException {
 		final Map<String,Object>	sourceVariables = new HashMap<>(); 
 		
 		for (int index = 0, maxIndex = sourceFields.getModel().getSize(); index < maxIndex; index++) {

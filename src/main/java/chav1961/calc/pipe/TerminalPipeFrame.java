@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -24,19 +23,17 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import chav1961.calc.interfaces.PluginProperties;
-import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
 import chav1961.calc.pipe.ModelItemListContainer.DropAction;
 import chav1961.calc.utils.PipeLink;
-import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.utils.PipeLink.PipeLinkType;
+import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
 import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
 import chav1961.purelib.basic.CharUtils;
+import chav1961.purelib.basic.SimpleURLClassLoader;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
-import chav1961.purelib.basic.exceptions.PrintingException;
-import chav1961.purelib.basic.growablearrays.GrowableCharArray;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.LocalizerFactory;
@@ -47,7 +44,6 @@ import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
-import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
@@ -78,6 +74,8 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	private static final URI				PIPE_MENU_ROOT = URI.create("ui:/model/navigation.top.terminal.toolbar");	
 	private static final String				PIPE_MENU_REMOVE_FIELD = "chav1961.calc.pipe.terminal.toolbar.removefield";	
 
+	private static final String				MESSAGE_FORMAT_SUCCESS = "<html><body>%1$s%2$s</body></html>";
+	private static final String				MESSAGE_FORMAT_FAILURE = "<html><body><font color=red>%1$s</font></body></html>";
 	
 	private final ContentMetadataInterface	mdi;
 	private final Localizer					localizer;
@@ -146,6 +144,12 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 				fields.addContentChangeListener((changeType,source,current)->{
 					switch (changeType) {
 						case CHANGED	:
+							for (int index = 0, maxIndex = controls.size(); index < maxIndex; index++) {
+								if (controls.get(index).getMetadata().equals(((PipeLink)current).getMetadata())) {
+									controls.set(index,(PipeLink)current);
+									break;
+								}
+							}
 							break;
 						case INSERTED	:
 							controls.add((PipeLink)current);
@@ -206,7 +210,7 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 	}
 	
 	@Override
-	public Object preparePipeItem() throws FlowException {
+	public Object preparePipeItem(final SimpleURLClassLoader loader) throws FlowException {
 		final Map<String,Object>	variables = new HashMap<>();
 		
 		for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {
@@ -248,13 +252,19 @@ public class TerminalPipeFrame extends PipePluginFrame<TerminalPipeFrame> {
 			
 				if (terminalFailure.isSelected()) {
 					if (confirm == PipeConfigmation.ASK) {
-						new JLocalizedOptionPane(localizer,true).message(this,new JLabel(message),title,JOptionPane.ERROR_MESSAGE);
+						new JLocalizedOptionPane(localizer,true).message(this,new JLabel(String.format(MESSAGE_FORMAT_FAILURE,message)),title,JOptionPane.ERROR_MESSAGE);
 					}
 					return PipeStepReturnCode.TERMINATE_FALSE;
 				}
 				else {
 					if (confirm == PipeConfigmation.ASK) {
-						new JLocalizedOptionPane(localizer,true).message(this,new JLabel(message),title,JOptionPane.INFORMATION_MESSAGE);
+						final StringBuilder	sb = new StringBuilder();
+						
+						for (PipeLink item : fields.getContent()) {
+							sb.append("<br>").append(localizer.getValue(item.getMetadata().getLabelId())).append(" = ").append(variables.get(buildVarName(item.getMetadata())));
+						}
+					
+						new JLocalizedOptionPane(localizer,true).message(this,new JLabel(String.format(MESSAGE_FORMAT_SUCCESS,message,sb)),title,JOptionPane.INFORMATION_MESSAGE);
 					}
 					return PipeStepReturnCode.TERMINATE_TRUE;
 				}

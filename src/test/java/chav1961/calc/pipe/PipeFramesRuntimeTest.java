@@ -67,7 +67,7 @@ public class PipeFramesRuntimeTest {
 		Assert.assertEquals(ps,ps2);
 		
 		// Pipe processing test
-		final Object	temporary = ipf.preparePipeItem();
+		final Object	temporary = ipf.preparePipeItem(PureLibSettings.INTERNAL_LOADER);
 		
 		Assert.assertTrue(temporary instanceof Map);
 		
@@ -150,7 +150,7 @@ public class PipeFramesRuntimeTest {
 		Assert.assertEquals(ps,ps2);
 
 		// Pipe processing test
-		final Object	temporary = tpf.preparePipeItem();
+		final Object	temporary = tpf.preparePipeItem(PureLibSettings.INTERNAL_LOADER);
 		
 		Assert.assertTrue(temporary instanceof Map);
 		
@@ -233,7 +233,7 @@ public class PipeFramesRuntimeTest {
 		Assert.assertEquals(ps,ps2);
 		
 		// Pipe processing test
-		final Object	temporary = cpf.preparePipeItem();
+		final Object	temporary = cpf.preparePipeItem(PureLibSettings.INTERNAL_LOADER);
 		
 		Assert.assertTrue(temporary instanceof Map);
 		
@@ -325,7 +325,7 @@ public class PipeFramesRuntimeTest {
 		Assert.assertEquals(ps,ps2);
 		
 		// Pipe processing test
-		final Object	temporary = cpf.preparePipeItem();
+		final Object	temporary = cpf.preparePipeItem(PureLibSettings.INTERNAL_LOADER);
 		
 		Assert.assertTrue(temporary instanceof Map);
 		
@@ -411,7 +411,7 @@ public class PipeFramesRuntimeTest {
 		Assert.assertEquals(ps,ps2);
 		
 		// Pipe processing test
-		final Object	temporary = dpf.preparePipeItem();
+		final Object	temporary = dpf.preparePipeItem(PureLibSettings.INTERNAL_LOADER);
 		
 		Assert.assertTrue(temporary instanceof Map);
 		
@@ -482,7 +482,6 @@ public class PipeFramesRuntimeTest {
 		final PluginSpecific			ps = new PluginSpecific(), ps2 = new PluginSpecific();
 
 		ps.pluginClass = PP.class.getCanonicalName();
-		ps.fields = new MutableContentNodeMetadata[] {new MutableContentNodeMetadata("test",String.class,"./test",localizerURI,"testSet1",null,null,new FieldFormat(String.class), ModelUtils.buildUriByClassAndField(TestClass.class,"test"), null)};
 		ps.initialCode = "test := \"123\";";
 		ps.action = "app:action:/PP.calculate";
 		
@@ -492,7 +491,9 @@ public class PipeFramesRuntimeTest {
 		Assert.assertEquals(ps,ps2);
 		
 		// Pipe processing test
-		final Object	temporary = dpf.preparePipeItem();
+		ps.fields = new MutableContentNodeMetadata[] {new MutableContentNodeMetadata("test",String.class,"./test",localizerURI,"testSet1",null,null,new FieldFormat(String.class), ModelUtils.buildUriByClassAndField(TestClass.class,"test"), null)};
+		
+		final Object	temporary = dpf.preparePipeItem(PureLibSettings.INTERNAL_LOADER);
 		
 		Assert.assertTrue(temporary instanceof Map);
 		

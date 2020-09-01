@@ -106,7 +106,7 @@ public class ModelItemListContainer extends JList<PipeLink> implements LocaleCha
 		    				case LINK	:
 		        				label.setIcon(((PipeLink)value).getSource() != null ? ICON_LINK : ICON_MAYBE_LINKED);
 		        				if (((PipeLink)value).getSource() != null) {
-				        			label.setToolTipText(localizer.getValue(TOOLTIP_LINKED_WITH,((PipeLink)value).getSource().getPipeItemName()));
+				        			label.setToolTipText(localizer.getValue(TOOLTIP_LINKED_WITH,((PipeLink)value).getSource().getPipeItemName(),((PipeLink)value).getAssociatedMeta().getName()));
 		        				}
 		    					break;
 		    				case NONE	:
@@ -174,6 +174,13 @@ public class ModelItemListContainer extends JList<PipeLink> implements LocaleCha
 		}
 	}
 
+	public void deserialize(final PipeLink link, final int xFrom, final int yFrom, final int xTo, final int yTo) {
+		final int 		index = locationToIndex(new Point(xTo,yTo));
+		final PipeLink	existentLink = ((DefaultListModel<PipeLink>)getModel()).getElementAt(index);
+
+		changeContent(index,new PipeLink(existentLink.getType(),link.getSource(),link.getSourcePoint(),existentLink.getTarget(),existentLink.getTargetPoint(),existentLink.getMetadata(),link.getMetadata()));
+	}	
+	
 	public DropAction getDropAction() {
 		return action;
 	}
@@ -205,7 +212,7 @@ public class ModelItemListContainer extends JList<PipeLink> implements LocaleCha
 			throw new NullPointerException("Element to add can't be null");
 		}
 		else {
-			((DefaultListModel<PipeLink>)getModel()).add(getComponentCount()-1,metadata);
+			((DefaultListModel<PipeLink>)getModel()).addElement(metadata);
 			listeners.fireEvent((e)->e.contentChangePerformed(ChangeType.INSERTED, null,metadata));
 		}
 	}

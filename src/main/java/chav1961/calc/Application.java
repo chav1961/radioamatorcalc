@@ -11,7 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,12 +21,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Locale;
 import java.util.ServiceLoader;
-import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.Icon;
@@ -50,7 +46,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.TabContent;
-import chav1961.calc.pipe.ContainerPipeFrame;
 import chav1961.calc.references.tubes.TubesReferences;
 import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.calc.windows.PipeTab;
@@ -65,7 +60,6 @@ import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.MimeParseException;
 import chav1961.purelib.basic.exceptions.PreparationException;
-import chav1961.purelib.basic.exceptions.PrintingException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
@@ -94,9 +88,6 @@ import chav1961.purelib.ui.swing.useful.JStateString;
 
 public class Application extends JFrame implements LocaleChangeListener {
 	private static final long 				serialVersionUID = -2663340436788182341L;
-	
-	private static final String				DESKTOP_WINDOW = "DesktopWindow";
-	private static final String				SEARCH_WINDOW = "SearchWindow";
 
 	private final CurrentSettings			settings;
 	private final Localizer			 		localizer;
@@ -108,7 +99,6 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private final JStateString				stateString;
 	private final JFileContentManipulator	contentManipulator;
 	private final WorkbenchTab				wbt;
-	private final List<PipeTab>				pipes = new ArrayList<>();
 			
 	private File							currentPipeFile = null;
 	private File				 			currentWorkingDir = new File("./");
@@ -212,7 +202,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				if (item.canServe(actionURI)) {
 					if (tabs.getSelectedComponent() instanceof WorkbenchTab) {
 						try{final Object			inst = item.newIstance(stateString);
-							final SVGPluginFrame<?>	frame = new SVGPluginFrame(localizer,inst.getClass(),inst);
+							final SVGPluginFrame	frame = new SVGPluginFrame(localizer,inst.getClass(),inst);
 						        
 							 frame.setVisible(true);
 							 ((WorkbenchTab)tabs.getSelectedComponent()).placePlugin(frame);
@@ -296,6 +286,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 				}
 			}
 		} catch (IOException | LocalizationException | ContentException e) {
+			e.printStackTrace();
 			stateString.message(Severity.error,e.getLocalizedMessage());
 		}
 	}
@@ -305,6 +296,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 		final Component	comp = tabs.getSelectedComponent();
 		
 		if (comp instanceof PipeTab) {
+			@SuppressWarnings("resource")
 			final PipeTab	pipe = (PipeTab)comp; 
 			
 			if (pipe.getFileAssciated() == null) {
@@ -400,7 +392,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private void settings() {
 		try{final ContentMetadataInterface				mdi = ContentModelFactory.forAnnotatedClass(CurrentSettings.class);
 		
-			try(final AutoBuiltForm<CurrentSettings>	abf = new AutoBuiltForm<CurrentSettings>(mdi,localizer,settings,settings)) {
+			try(final AutoBuiltForm<CurrentSettings>	abf = new AutoBuiltForm<CurrentSettings>(mdi,localizer,PureLibSettings.INTERNAL_LOADER,settings,settings)) {
 				
 				for (Module m : abf.getUnnamedModules()) {
 					CurrentSettings.class.getModule().addExports(CurrentSettings.class.getPackageName(),m);

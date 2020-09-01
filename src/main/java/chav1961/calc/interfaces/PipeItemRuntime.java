@@ -1,5 +1,6 @@
 package chav1961.calc.interfaces;
 
+import chav1961.purelib.basic.SimpleURLClassLoader;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
@@ -14,9 +15,9 @@ public interface PipeItemRuntime {
 		ALWAYS_YES, ALWAYS_NO, ASK
 	}
 	
-	Object preparePipeItem() throws FlowException;
-	<T> void storeIncomingValue(Object temp,ContentNodeMetadata meta, T value) throws ContentException;
+	Object preparePipeItem(final SimpleURLClassLoader loader) throws FlowException;
+	<T> void storeIncomingValue(Object temp, ContentNodeMetadata meta, T value) throws ContentException;
 	PipeStepReturnCode processPipeStep(Object temp, LoggerFacade logger, PipeConfigmation confirmation) throws FlowException;
-	<T> T getOutgoingValue(Object temp,ContentNodeMetadata meta) throws ContentException;
+	<T> T getOutgoingValue(Object temp, ContentNodeMetadata meta) throws ContentException;
 	void unpreparePipeItem(Object temp) throws FlowException;
 }

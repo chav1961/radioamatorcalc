@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.swing.JComponent;
@@ -47,6 +48,7 @@ import chav1961.calc.interfaces.PipeContainerInterface;
 import chav1961.calc.interfaces.PipeContainerInterface.PipeItemType;
 import chav1961.calc.interfaces.PipeContainerItemInterface;
 import chav1961.calc.interfaces.PipeSerialLinkType;
+import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.pipe.CalcPipeFrame;
 import chav1961.calc.pipe.ConditionalPipeFrame;
 import chav1961.calc.pipe.DialogPipeFrame;
@@ -181,11 +183,14 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 	
 	@Override
 	public void close() throws IOException {
-		try{removeMouseMotionListener(listener);			
-			removeMouseListener(listener);
+		try{cleanContent();
 			this.localizer.pop();
 		} catch (LocalizationException e) {
 		}
+		frames.clear();
+		removeMouseMotionListener(listener);			
+		removeMouseListener(listener);
+		removeAll();
 	}	
 
 	@Override
@@ -258,24 +263,9 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		}
 	}
 	
-	public void loadPipe(final InputStream is, final LoggerFacade logger) throws IOException, ContentException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void storePipe(final OutputStream is, final LoggerFacade logger) throws IOException, ContentException {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public void clean(final LoggerFacade facade) throws LocalizationException {
 		if (new JLocalizedOptionPane(localizer).confirm(this, LocalizationKeys.CONFIRM_CLEAR_DESKTOP_MESSAGE, LocalizationKeys.CONFIRM_CLEAR_DESKTOP_CAPTION, JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-			for (JInternalFrame item : this.getAllFrames()) {
-				this.getDesktopManager().closeFrame(item);
-				if (item instanceof PipePluginFrame) {
-					frames.remove(item);
-				}
-			}
+			cleanContent();
 		}
 	}
 
@@ -404,6 +394,13 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 							printer.name(PipePluginFrame.JSON_PIPE_ITEM_PLUGIN_CLASS).value(spec.pluginClass);
 							needSplitter = true;
 						}
+						if (spec.caption != null) {
+							if (needSplitter) {
+								printer.splitter();
+							}
+							printer.name(PipePluginFrame.JSON_PIPE_ITEM_CAPTION).value(spec.caption);
+							needSplitter = true;
+						}
 						if (spec.message != null) {
 							if (needSplitter) {
 								printer.splitter();
@@ -416,6 +413,13 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 								printer.splitter();
 							}
 							printer.name(PipePluginFrame.JSON_PIPE_ITEM_IS_ERROR).value(spec.isError);
+							needSplitter = true;
+						}
+						if (spec.action != null) {
+							if (needSplitter) {
+								printer.splitter();
+							}
+							printer.name(PipePluginFrame.JSON_PIPE_ITEM_ACTION).value(spec.action);
 							needSplitter = true;
 						}
 
@@ -483,6 +487,7 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 			final PipeManagerSerialForm					data = ser.deserialize(parser);
 			final Map<String,PipePluginFrame<?>>		pluginList = new HashMap<>();
 
+			cleanContent();
 			for (int index = 0, maxIndex = data.itemCount; index < maxIndex; index++) {
 				final PluginSerialForm	psf = data.itemList[index];
 				final int 				uniqueId = Integer.valueOf(psf.id.split("#")[1]); 
@@ -502,10 +507,18 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 						ppf = parent.newInitial(uniqueId);
 						break;
 					case PLUGIN_ITEM		:
-//						final InitialPipeFrame	initial = parent.newInitial();
-//
-//						if ((ppf = initial) != null) {
-//						}
+						boolean		found = false;
+						
+						for (PluginInterface<?> item : ServiceLoader.load(PluginInterface.class)) {
+							if (item.getMetadata().getType().getCanonicalName().equals(psf.content.pluginClass)) {
+								ppf = (PipePluginFrame<?>)parent.placePlugin(uniqueId, item, item.newIstance(logger));
+								found = true;
+								break;
+							}
+						}						
+						if (!found) {
+							throw new IOException("Pipe item ["+psf.type+": "+psf.id+"] not created - unknown plugin service ["+psf.content.pluginClass+"]");
+						}
 						break;
 					case TERMINAL_ITEM		:
 						ppf = parent.newTerminal(uniqueId);
@@ -513,6 +526,7 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 					default :
 						throw new UnsupportedOperationException("Item type ["+data.itemList[index].type+"] is not implemented yet");
 				}
+				
 				if (ppf != null) {
 					ppf.setBounds(psf.geometry.x,psf.geometry.y,psf.geometry.width,psf.geometry.height);
 					ppf.deserializeFrame(psf.content);
@@ -538,18 +552,11 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 					case DATA		:
 						final MutableContentNodeMetadata	fromNode = getNode((ModelItemListContainer)from,fromItemAndName[1]); 
 						final Point			fromPoint = getPoint((ModelItemListContainer)from,fromItemAndName[1]);
+						final MutableContentNodeMetadata	toNode = getNode((ModelItemListContainer)to,toItemAndName[1]);
+						final Point			toPoint = getPoint((ModelItemListContainer)to,toItemAndName[1]);
 						
-						if (((ModelItemListContainer)to).getDropAction() == DropAction.LINK) {
-							final MutableContentNodeMetadata	toNode = getNode((ModelItemListContainer)to,toItemAndName[1]);
-							final Point			toPoint = getPoint((ModelItemListContainer)to,toItemAndName[1]);
-							
-							pl = new PipeLink(PipeLinkType.DATA_LINK,fromOwner,from,toOwner,to,fromNode,toNode);
-							((MetadataTarget)to).drop(pl,fromPoint.x,fromPoint.y,toPoint.x,toPoint.y);
-						}
-						else {
-							pl = new PipeLink(PipeLinkType.DATA_LINK,fromOwner,from,toOwner,to,fromNode,null);
-							((MetadataTarget)to).drop(pl,fromPoint.x,fromPoint.y,0,0);
-						}
+						pl = new PipeLink(PipeLinkType.DATA_LINK,fromOwner,from,toOwner,to,fromNode,toNode);
+						((ModelItemListContainer)to).deserialize(pl,fromPoint.x,fromPoint.y,toPoint.x,toPoint.y);
 						break;
 					default	:
 						throw new UnsupportedOperationException("Link type ["+link.type+"] is not supported yet");
@@ -565,6 +572,15 @@ public class PipeManager extends JDesktopPane implements Closeable, LocaleChange
 		// TODO Auto-generated method stub
 	}
 
+	void cleanContent() {
+		for (JInternalFrame item : this.getAllFrames()) {
+			this.getDesktopManager().closeFrame(item);
+			if (item instanceof PipePluginFrame) {
+				frames.remove(item);
+			}
+		}
+	}
+	
 	private boolean hasLoop(final PipeContainerInterface node, final Set<PipeContainerInterface> passed) {
 		if (passed.contains(node)) {
 			return true;

@@ -41,6 +41,8 @@ import chav1961.calc.utils.PipePluginFrame;
 import chav1961.calc.windows.PipeManager;
 import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
 import chav1961.purelib.basic.GettersAndSettersFactory;
+import chav1961.purelib.basic.PureLibSettings;
+import chav1961.purelib.basic.SimpleURLClassLoader;
 import chav1961.purelib.basic.GettersAndSettersFactory.GetterAndSetter;
 import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -305,7 +307,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	}
 	
 	@Override
-	public Object preparePipeItem() throws FlowException {
+	public Object preparePipeItem(final SimpleURLClassLoader loader) throws FlowException {
 		final Map<String,Object>		variables = new HashMap<>();
 		
 		try{final Map<String,Object>	acc = paf.contentAccessor.getConstructor(paf.instanceClass).newInstance(paf.abf.getInstance());
@@ -440,13 +442,13 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 			specific.pluginClass = paf.instanceClass.getCanonicalName();
 			specific.initialCode = initialCode.getText().trim().isEmpty() ? null : initialCode.getText().trim();
 			
-			if (fields.getComponentCount() > 0) {
-				specific.fields = new MutableContentNodeMetadata[fields.getComponentCount()];
-				
-				for (int index = 0, maxIndex = fields.getComponentCount(); index < maxIndex; index++) {
-					specific.fields[index] = (MutableContentNodeMetadata)((PipeLink)fields.getContent()[index]).getMetadata();
-				}
-			}
+//			if (fields.getModel().getSize() > 0) {
+//				specific.fields = new MutableContentNodeMetadata[fields.getModel().getSize()];
+//				
+//				for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {
+//					specific.fields[index] = (MutableContentNodeMetadata)((PipeLink)fields.getContent()[index]).getMetadata();
+//				}
+//			}
 			
 			final URI	actionUri = getSelectedAction();
 			
@@ -462,21 +464,28 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 			throw new NullPointerException("Plugin specific can't be null");
 		}
 		else {
-			try{final Class<T>			cl = (Class<T>) Class.forName(specific.pluginClass);
-				final Constructor<T>	c = cl.getConstructor(LoggerFacade.class);
-				final T					inst = c.newInstance(logger);
-				
-				this.paf = buildPluginAndForm((FormManager<?,T>)inst);
-				tabs.setTabComponentAt(0,paf.w);
-			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ContentException | LocalizationException e) {
-				throw new IOException(e.getLocalizedMessage(),e);
-			}
+//			try{
+//				final Class<T>			cl = (Class<T>) Class.forName(specific.pluginClass);
+//				final Constructor<T>	c = cl.getConstructor(LoggerFacade.class);
+//				final T					inst = c.newInstance(logger);
+//				
+//				this.paf = buildPluginAndForm((FormManager<?,T>)inst);
+//				tabs.setTabComponentAt(0,paf.w);
+//			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ContentException | LocalizationException e) {
+//			} catch (LocalizationException e) {
+//				throw new IOException(e.getLocalizedMessage(),e);
+//			}
 			
-			if (specific.fields != null) {
-				for (MutableContentNodeMetadata item : specific.fields) {
-					fields.addContent(new PipeLink(PipeLinkType.DATA_LINK,null,null,this,fields,item,null));
-				}
-			}
+//			if (specific.fields != null) {
+//				for (MutableContentNodeMetadata item : specific.fields) {
+//					for (int index = 0, maxIndex = fields.getModel().getSize(); index < maxIndex; index++) {
+//						final PipeLink l1 = 
+//						
+//						System.err.println("item="+fields.getModel().getElementAt(index));
+//					}
+//					fields.addContent(new PipeLink(PipeLinkType.DATA_LINK,null,null,this,fields,item,null));
+//				}
+//			}
 			
 			if (specific.initialCode != null) {
 				initialCode.setText(specific.initialCode);
@@ -562,7 +571,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
     	
 		try{final FormManager<Object,T>	wrapper = new FormManagerWrapper<>((FormManager<Object,T>)content, ()-> {refresh();}); 
 			
-			paf.abf = new AutoBuiltForm<T>(paf.innerMdi,localizer,(T) content, wrapper);
+			paf.abf = new AutoBuiltForm<T>(paf.innerMdi,localizer,PureLibSettings.INTERNAL_LOADER, (T) content, wrapper);
 			
 			for (Module m : paf.abf.getUnnamedModules()) {
 				paf.instanceClass.getModule().addExports(paf.instanceClass.getPackageName(),m);

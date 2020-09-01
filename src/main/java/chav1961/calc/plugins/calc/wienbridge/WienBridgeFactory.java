@@ -4,6 +4,7 @@ import java.net.URI;
 
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.plugins.calc.phaseshift.PhaseShiftPlugin;
+import chav1961.calc.plugins.calc.timbre.TimbrePlugin;
 import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.interfaces.LocaleResource;

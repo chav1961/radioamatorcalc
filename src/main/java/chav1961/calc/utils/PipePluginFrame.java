@@ -34,9 +34,11 @@ public abstract class PipePluginFrame<T> extends InnerFrame<T> implements PipeCo
 	public static final String		JSON_PIPE_ITEM_PROGRAM = "program";
 	public static final String		JSON_PIPE_ITEM_EXPRESSION = "expression";
 	public static final String		JSON_PIPE_ITEM_PLUGIN_CLASS = "pluginClass";
+	public static final String		JSON_PIPE_ITEM_CAPTION = "caption";
 	public static final String		JSON_PIPE_ITEM_MESSAGE = "message";
 	public static final String		JSON_PIPE_ITEM_IS_ERROR = "isError";
 	public static final String		JSON_PIPE_ITEM_FIELDS = "fields";
+	public static final String		JSON_PIPE_ITEM_ACTION = "action";
 	
 	private final PipeManager		parent;
 	private final Localizer			localizer;

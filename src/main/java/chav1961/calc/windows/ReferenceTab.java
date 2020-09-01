@@ -1,12 +1,33 @@
 package chav1961.calc.windows;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.FocusTraversalPolicy;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.HierarchyBoundsListener;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Locale;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -15,14 +36,29 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import chav1961.calc.interfaces.TabContent;
+import chav1961.purelib.basic.Utils;
+import chav1961.purelib.basic.exceptions.CalculationException;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.concurrent.LightWeightListenerList;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.i18n.interfaces.Localizer;
@@ -35,6 +71,7 @@ import chav1961.purelib.ui.swing.AutoBuiltForm;
 import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.interfaces.OnAction;
 import chav1961.purelib.ui.swing.useful.JCloseableTab;
+import chav1961.purelib.ui.swing.useful.JFreezableTable;
 
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value = "chav1961.calc.reference", tooltip = "chav1961.calc.reference.tt", icon = "root:/WorkbenchTab!")
@@ -107,14 +144,13 @@ public class ReferenceTab<T> extends JPanel implements AutoCloseable, LocaleChan
 			this.toolbar = SwingUtils.toJComponent(xmlModel.byUIPath(REFERENCE_MENU_ROOT),JToolBar.class);
 			SwingUtils.assignActionListeners(this.toolbar,this);
 			
-			final JPanel		leftPanel = new JPanel(new BorderLayout());
-			final JScrollPane	scroll = new JScrollPane();
-			final JTable		leftBar = new JTable(innerComponent.getModel());
-
-			innerComponent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			innerComponent.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			scroll.setRowHeaderView(leftBar);
-			scroll.setViewportView(innerComponent);
+			final JPanel			leftPanel = new JPanel(new BorderLayout());
+			final JFreezableTable	innerTable = new JFreezableTable(innerComponent.getModel(),"name");
+			
+			innerTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			innerTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			
+			final JScrollPane	scroll = new JScrollPane(innerTable);
 			
 			findForm.setBorder(border);
 			leftPanel.add(findForm,BorderLayout.NORTH);

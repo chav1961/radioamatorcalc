@@ -12,6 +12,7 @@ import javax.swing.table.TableModel;
 
 import chav1961.calc.references.ReferenceUtil;
 import chav1961.purelib.basic.GettersAndSettersFactory;
+import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.GettersAndSettersFactory.BooleanGetterAndSetter;
 import chav1961.purelib.basic.GettersAndSettersFactory.ByteGetterAndSetter;
 import chav1961.purelib.basic.GettersAndSettersFactory.CharGetterAndSetter;
@@ -72,7 +73,7 @@ public class TubesReferences implements FormManager<Object,TubesReferences>, Loc
 			this.localizer = localizer;
 			this.logger = logger;
 			this.mdi = ContentModelFactory.forAnnotatedClass(this.getClass());
-			this.form = new AutoBuiltForm<TubesReferences>(mdi, localizer,this,this);
+			this.form = new AutoBuiltForm<TubesReferences>(mdi,localizer,PureLibSettings.INTERNAL_LOADER,this,this);
 			
 			for (Module m : form.getUnnamedModules()) {
 				this.getClass().getModule().addExports(this.getClass().getPackageName(),m);
@@ -161,15 +162,16 @@ public class TubesReferences implements FormManager<Object,TubesReferences>, Loc
 
 		@Override
 		public String getColumnName(int columnIndex) {
-			if (content != null) {
-				try{return localizer.getValue(mdi.getRoot().getChild(columnIndex).getLabelId());
-				} catch (LocalizationException e) {
-					return mdi.getRoot().getChild(columnIndex).getLabelId();
-				}
-			}
-			else {
-				return "";
-			}
+			return mdi.getRoot().getChild(columnIndex).getName();
+//			if (content != null) {
+//				try{return localizer.getValue(mdi.getRoot().getChild(columnIndex).getLabelId());
+//				} catch (LocalizationException e) {
+//					return mdi.getRoot().getChild(columnIndex).getLabelId();
+//				}
+//			}
+//			else {
+//				return "";
+//			}
 		}
 
 		@Override

@@ -12,6 +12,7 @@ import java.util.Locale;
 
 import chav1961.calc.interfaces.PluginProperties;
 import chav1961.calc.interfaces.SVGIconKeeper;
+import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.Utils;
 import chav1961.purelib.basic.exceptions.ContentException;
@@ -61,7 +62,7 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
         	
 			try{final FormManager<Object,T>	wrapper = new FormManagerWrapper<>((FormManager<Object,T>)instance, ()-> {refresh();},(name)->{selectIcon(name);}); 
 				
-				abf = new AutoBuiltForm<T>(ContentModelFactory.forAnnotatedClass(instanceClass),localizer, instance, wrapper);
+				abf = new AutoBuiltForm<T>(ContentModelFactory.forAnnotatedClass(instanceClass),localizer,PureLibSettings.INTERNAL_LOADER,instance, wrapper);
 				
 				for (Module m : abf.getUnnamedModules()) {
 					instanceClass.getModule().addExports(instanceClass.getPackageName(),m);
