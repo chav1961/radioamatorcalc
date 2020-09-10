@@ -46,6 +46,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.TabContent;
+import chav1961.calc.internal.PureLibClient;
 import chav1961.calc.references.tubes.TubesReferences;
 import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.calc.windows.PipeTab;
@@ -114,7 +115,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			throw new NullPointerException("Logger can't be null");
 		}
 		else {
-			this.localizer = LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated());
+			this.localizer = parentLocalizer;//LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated());
 			this.logger = logger;
 			this.stateString = new JStateString(this.localizer,10,true);
 			this.settings = new CurrentSettings(this.localizer,this.logger);
@@ -123,7 +124,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			stateString.setAutomaticClearTime(Severity.warning,15,TimeUnit.SECONDS);
 			stateString.setAutomaticClearTime(Severity.info,5,TimeUnit.SECONDS);
 			
-			parentLocalizer.push(localizer);
+//			parentLocalizer.push(localizer);
 			localizer.addLocaleChangeListener(this);
 			
 			this.menu = SwingUtils.toJComponent(xda.byUIPath(URI.create("ui:/model/navigation.top.mainmenu")),JMenuBar.class); 
@@ -456,11 +457,11 @@ public class Application extends JFrame implements LocaleChangeListener {
 		final ArgParser		parser = new ApplicationArgParser().parse(args);
 		
 		try(final InputStream				is = Application.class.getResourceAsStream("application.xml");
-			final Localizer					localizer = new PureLibLocalizer();
 			final LoggerFacade				logger = PureLibSettings.CURRENT_LOGGER) {
 			final ContentMetadataInterface	xda = ContentModelFactory.forXmlDescription(is);
 			
-			new Application(xda,localizer,logger).setVisible(true);
+			PureLibClient.registerInPureLib();
+			new Application(xda,PureLibClient.ROOT_LOCALIZER,logger).setVisible(true);
 		}
 	}
 	
