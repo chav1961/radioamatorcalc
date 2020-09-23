@@ -20,9 +20,7 @@ import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
-import chav1961.purelib.sql.SimpleORMMapper;
 import chav1961.purelib.sql.content.ResultSetFactory;
-import chav1961.purelib.sql.interfaces.ORMMapper;
 
 public class ReferenceUtil {
 	public static <T> T[] loadCSV(final Class<T> resultType, final URI content) throws ContentException, LocalizationException {
@@ -55,13 +53,11 @@ public class ReferenceUtil {
 				final Class<ReferenceUtil>		currentClass = ReferenceUtil.class; 
 				final Instantiator<T> 			inst = GettersAndSettersFactory.buildInstantiator(resultType,(m)->allowAccess(m,currentClass,resultType));
 				final ContentMetadataInterface	instMdi = ContentModelFactory.forOrdinalClass(resultType);
-				final ORMMapper<T>				mapper = new SimpleORMMapper<>(instMdi.getRoot(),rsMdi.getRoot());
 				final List<T>					result = new ArrayList<>();
 				
 				while (rs.next()) {
 					final T		line = inst.newInstance();
 					
-					mapper.fromRecord(line,rs);
 					result.add(line);
 				}
 				return result.toArray(inst.newArray(result.size()));
