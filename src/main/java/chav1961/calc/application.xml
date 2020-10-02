@@ -26,6 +26,8 @@
 			<app:item name="menu.tools.settings" caption="menu.settings" tooltip="menu.ttSettings" action="settings"/>
 		</app:submenu>
 		<app:submenu name="menu.help" caption="menu.help" tooltip="menu.ttHelp">
+			<app:item name="menu.help.overview" caption="menu.overview" tooltip="menu.ttOverview" action="helpOverview"/>
+			<app:separator/>
 			<app:item name="menu.help.about" caption="menu.about" tooltip="menu.ttAbout" action="helpAbout"/>
 		</app:submenu>
 	</app:menu>

@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ServiceLoader;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.Icon;
@@ -46,7 +47,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.TabContent;
-import chav1961.calc.internal.PureLibClient;
 import chav1961.calc.references.tubes.TubesReferences;
 import chav1961.calc.utils.SVGPluginFrame;
 import chav1961.calc.windows.PipeTab;
@@ -55,6 +55,9 @@ import chav1961.calc.windows.WorkbenchTab;
 import chav1961.purelib.basic.ArgParser;
 import chav1961.purelib.basic.MimeType;
 import chav1961.purelib.basic.PureLibSettings;
+import chav1961.purelib.basic.SubstitutableProperties;
+import chav1961.purelib.basic.SystemErrLoggerFacade;
+import chav1961.purelib.basic.Utils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.FlowException;
@@ -75,6 +78,7 @@ import chav1961.purelib.i18n.interfaces.SupportedLanguages;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
+import chav1961.purelib.nanoservice.NanoServiceFactory;
 import chav1961.purelib.streams.JsonStaxParser;
 import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
@@ -89,11 +93,15 @@ import chav1961.purelib.ui.swing.useful.JStateString;
 
 public class Application extends JFrame implements LocaleChangeListener {
 	private static final long 				serialVersionUID = -2663340436788182341L;
-
+	private static final String				ARG_HELP_PORT = "helpPort";
+	private static final String				ARG_DEBUG = "debug";
+	
 	private final CurrentSettings			settings;
 	private final Localizer			 		localizer;
 	private final LoggerFacade				logger;
 	private final JMenuBar					menu;
+	private final int						localHelpPort;
+	private final CountDownLatch			latch;
 	private final SimpleNavigatorTree		leftMenu;
 	private final File						luceneDir = new File("./lucene");
 	private final JTabbedPane				tabs = new JTabbedPane();
@@ -104,7 +112,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private File							currentPipeFile = null;
 	private File				 			currentWorkingDir = new File("./");
 
-	public Application(final ContentMetadataInterface xda, final Localizer parentLocalizer, final LoggerFacade logger) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException, SyntaxException, PreparationException, ContentException {
+	public Application(final ContentMetadataInterface xda, final int helpPort, final Localizer parentLocalizer, final LoggerFacade logger, final CountDownLatch latch) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException, SyntaxException, PreparationException, ContentException {
 		if (xda == null) {
 			throw new NullPointerException("Application descriptor can't be null");
 		}
@@ -114,9 +122,14 @@ public class Application extends JFrame implements LocaleChangeListener {
 		else if (logger == null) {
 			throw new NullPointerException("Logger can't be null");
 		}
+		else if (latch == null) {
+			throw new NullPointerException("Latch can't be null");
+		}
 		else {
-			this.localizer = parentLocalizer;//LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated());
+			this.localizer = LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated());
 			this.logger = logger;
+			this.localHelpPort = helpPort;
+			this.latch = latch;
 			this.stateString = new JStateString(this.localizer,10,true);
 			this.settings = new CurrentSettings(this.localizer,this.logger);
 			
@@ -124,7 +137,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			stateString.setAutomaticClearTime(Severity.warning,15,TimeUnit.SECONDS);
 			stateString.setAutomaticClearTime(Severity.info,5,TimeUnit.SECONDS);
 			
-//			parentLocalizer.push(localizer);
+			parentLocalizer.push(localizer);
 			localizer.addLocaleChangeListener(this);
 			
 			this.menu = SwingUtils.toJComponent(xda.byUIPath(URI.create("ui:/model/navigation.top.mainmenu")),JMenuBar.class); 
@@ -175,7 +188,9 @@ public class Application extends JFrame implements LocaleChangeListener {
 						,KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_DOWN_MASK)
 						,SwingUtils.buildAnnotatedActionListener(this)
 						,"find");
+			SwingUtils.assignActionKey((JPanel)getContentPane(),SwingUtils.KS_HELP,(e)->showOverview(),"overview");
 			SwingUtils.centerMainWindow(this,0.75f);
+			
 			addWindowListener(new WindowListener() {
 				@Override public void windowOpened(WindowEvent e) {}
 				
@@ -370,6 +385,8 @@ public class Application extends JFrame implements LocaleChangeListener {
 			dispose();
 		} catch (IOException e) {
 			stateString.message(Severity.error,e.getLocalizedMessage());
+		} finally {
+			latch.countDown();
 		}
 	}
 	
@@ -406,6 +423,16 @@ public class Application extends JFrame implements LocaleChangeListener {
 		} catch (LocalizationException | ContentException e) {
 			stateString.message(Severity.error,e.getLocalizedMessage());
 		} 
+	}	
+
+	@OnAction("action:/helpOverview")
+	private void showOverview() {
+		if (Desktop.isDesktopSupported()) {
+			try{Desktop.getDesktop().browse(URI.create("http://localhost:"+localHelpPort+"/static/index.cre"));
+			} catch (IOException exc) {
+				exc.printStackTrace();
+			}
+		}
 	}	
 	
 	@OnAction("action:/helpAbout")
@@ -455,19 +482,31 @@ public class Application extends JFrame implements LocaleChangeListener {
 
 	public static void main(final String[] args) throws IOException, EnvironmentException, FlowException, ContentException, HeadlessException, URISyntaxException {
 		final ArgParser		parser = new ApplicationArgParser().parse(args);
+		final SubstitutableProperties		props = new SubstitutableProperties(Utils.mkProps(
+												 NanoServiceFactory.NANOSERVICE_PORT, ""+parser.getValue(ARG_HELP_PORT,int.class)
+												,NanoServiceFactory.NANOSERVICE_ROOT, "fsys:xmlReadOnly:root://chav1961.calc.Application/chav1961/calc/helptree.xml"
+												,NanoServiceFactory.NANOSERVICE_CREOLE_PROLOGUE_URI, Application.class.getResource("prolog.cre").toString() 
+												,NanoServiceFactory.NANOSERVICE_CREOLE_EPILOGUE_URI, Application.class.getResource("epilog.cre").toString() 
+											));
 		
 		try(final InputStream				is = Application.class.getResourceAsStream("application.xml");
+			final NanoServiceFactory		service = new NanoServiceFactory(PureLibSettings.CURRENT_LOGGER,props);
 			final LoggerFacade				logger = PureLibSettings.CURRENT_LOGGER) {
 			final ContentMetadataInterface	xda = ContentModelFactory.forXmlDescription(is);
+			final CountDownLatch			latch = new CountDownLatch(1);
 			
-			PureLibClient.registerInPureLib();
-			new Application(xda,PureLibClient.ROOT_LOCALIZER,logger).setVisible(true);
+			new Application(xda,parser.getValue(ARG_HELP_PORT,int.class),PureLibSettings.PURELIB_LOCALIZER,logger,latch).setVisible(true);
+			service.start();
+			latch.await();
+			service.stop();
+		} catch (InterruptedException e) {
 		}
 	}
 	
 	private static class ApplicationArgParser extends ArgParser {
 		private static final ArgParser.AbstractArg[]	KEYS = {
-			new BooleanArg("debug", false, "turn on debugging trace", false)
+			new IntegerArg(ARG_HELP_PORT, true, "Help port to use for help browser", PureLibSettings.instance().getProperty(PureLibSettings.BUILTIN_HELP_PORT,int.class)),
+			new BooleanArg(ARG_DEBUG, false, "turn on debugging trace", false)
 		};
 		
 		ApplicationArgParser() {

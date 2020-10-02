@@ -48,6 +48,8 @@
 
 		<key name="menu.help">Help</key>
 		<key name="menu.ttHelp">Help for the application</key>
+		<key name="menu.overview">Overview</key>
+		<key name="menu.ttOverview">Application overview</key>
 		<key name="menu.about">About</key>
 		<key name="menu.ttAbout">About application</key>
 
@@ -924,6 +926,8 @@
 
 		<key name="menu.help">Справка</key>
 		<key name="menu.ttHelp">Справка по программе</key>
+		<key name="menu.overview">Обзор</key>
+		<key name="menu.ttOverview">Обзор возможностей приложения</key>
 		<key name="menu.about">О программе</key>
 		<key name="menu.ttAbout">Информация о приложении</key>
 
