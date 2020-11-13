@@ -74,8 +74,8 @@ public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 	}
 	
 	@Override
-	public RefreshMode onField(final CurrentSettings inst, final Object id, final String fieldName, final Object oldValue) throws FlowException, LocalizationException {
-		return RefreshMode.FIELD_ONLY;
+	public RefreshMode onField(final CurrentSettings inst, final Object id, final String fieldName, final Object oldValue, boolean beforeCommit) throws FlowException, LocalizationException {
+		return RefreshMode.DEFAULT;
 	}
 	
 	@Override

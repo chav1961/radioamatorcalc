@@ -610,8 +610,8 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 		}
 
 		@Override
-		public RefreshMode onField(T inst, Object id, String fieldName, Object oldValue) throws FlowException, LocalizationException {
-			final RefreshMode	mode = delegate.onField(inst, id, fieldName, oldValue);
+		public RefreshMode onField(T inst, Object id, String fieldName, Object oldValue, boolean beforeCommit) throws FlowException, LocalizationException {
+			final RefreshMode	mode = delegate.onField(inst, id, fieldName, oldValue, beforeCommit);
 			
 			if (mode != RefreshMode.NONE && mode != RefreshMode.REJECT) {
 				refresher.refresh();

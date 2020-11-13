@@ -43,7 +43,7 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin>, ModuleA
 	}
 	
 	@Override
-	public RefreshMode onField(final ContourPlugin inst, final Object id, final String fieldName, final Object oldValue) throws FlowException, LocalizationException {
+	public RefreshMode onField(final ContourPlugin inst, final Object id, final String fieldName, final Object oldValue, final boolean beforeCommit) throws FlowException, LocalizationException {
 		return RefreshMode.DEFAULT;
 	}
 

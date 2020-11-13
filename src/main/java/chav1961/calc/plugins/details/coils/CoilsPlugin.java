@@ -66,7 +66,7 @@ public class CoilsPlugin implements FormManager<Object,CoilsPlugin>, ModuleAcces
 	}
 	
 	@Override
-	public RefreshMode onField(final CoilsPlugin inst, final Object id, final String fieldName, final Object oldValue) throws FlowException, LocalizationException {
+	public RefreshMode onField(final CoilsPlugin inst, final Object id, final String fieldName, final Object oldValue, final boolean beforeCommit) throws FlowException, LocalizationException {
 		return RefreshMode.DEFAULT;
 	}
 

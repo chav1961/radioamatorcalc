@@ -62,7 +62,7 @@ public class RingCoilsPlugin implements FormManager<Object,RingCoilsPlugin>, Mod
 	}
 	
 	@Override
-	public RefreshMode onField(final RingCoilsPlugin inst, final Object id, final String fieldName, final Object oldValue) throws FlowException, LocalizationException {
+	public RefreshMode onField(final RingCoilsPlugin inst, final Object id, final String fieldName, final Object oldValue, final boolean beforeCommit) throws FlowException, LocalizationException {
 		return RefreshMode.DEFAULT;
 	}
 

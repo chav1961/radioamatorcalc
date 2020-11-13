@@ -118,7 +118,7 @@ public class RingPulseTransPlugin implements FormManager<Object,RingPulseTransPl
 	}
 	
 	@Override
-	public RefreshMode onField(final RingPulseTransPlugin inst, final Object id, final String fieldName, final Object oldValue) throws FlowException, LocalizationException {
+	public RefreshMode onField(final RingPulseTransPlugin inst, final Object id, final String fieldName, final Object oldValue, final boolean beforeCommit) throws FlowException, LocalizationException {
 		return RefreshMode.DEFAULT;
 	}
 

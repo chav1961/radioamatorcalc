@@ -103,4 +103,13 @@ public class DiodeRecord {
 	@Format("9.2mpzs")
 	@ReferenceColumn("Pmax")	
 	public float		Pmax;
+
+	@Override
+	public String toString() {
+		return "DiodeRecord [name=" + name + ", description=" + description + ", corpus=" + corpus + ", analogs="
+				+ analogs + ", docRef=" + docRef + ", Ua=" + Ua + ", Uaimp=" + Uaimp + ", Uf=" + Uf + ", Ia=" + Ia
+				+ ", If=" + If + ", Ifimp=" + Ifimp + ", Rinner=" + Rinner + ", Capacity=" + Capacity + ", Unoise="
+				+ Unoise + ", Uamax=" + Uamax + ", Ufcmax=" + Ufcmax + ", Icmax=" + Icmax + ", Icimax=" + Icimax
+				+ ", Pmax=" + Pmax + "]";
+	}
 }

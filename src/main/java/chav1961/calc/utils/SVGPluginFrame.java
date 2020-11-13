@@ -171,8 +171,8 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
 		}
 
 		@Override
-		public RefreshMode onField(T inst, Object id, String fieldName, Object oldValue) throws FlowException, LocalizationException {
-			final RefreshMode	mode = delegate.onField(inst, id, fieldName, oldValue);
+		public RefreshMode onField(T inst, Object id, String fieldName, Object oldValue, boolean beforeCommit) throws FlowException, LocalizationException {
+			final RefreshMode	mode = delegate.onField(inst, id, fieldName, oldValue, beforeCommit);
 
 			if (oldValue instanceof SVGIconKeeper) {
 				try{iconizer.setIcon(((SVGIconKeeper)inst.getClass().getField(fieldName).get(inst)).getSVGIcon());

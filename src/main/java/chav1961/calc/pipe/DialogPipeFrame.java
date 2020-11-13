@@ -519,7 +519,7 @@ public class DialogPipeFrame extends PipePluginFrame<DialogPipeFrame> {
 			
 			final AutoBuiltForm<Object>		abf = new AutoBuiltForm<>(new SimpleContentMetadata(root),localizer,sucl,dialog,new FormManager<Object,Object>() {
 													@Override
-													public RefreshMode onField(Object inst, Object id, String fieldName, Object oldValue) throws FlowException, LocalizationException {
+													public RefreshMode onField(Object inst, Object id, String fieldName, Object oldValue, boolean beforeCommit) throws FlowException, LocalizationException {
 														return RefreshMode.DEFAULT;
 													}
 									

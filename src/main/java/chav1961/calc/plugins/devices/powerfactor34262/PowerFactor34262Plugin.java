@@ -80,7 +80,7 @@ public class PowerFactor34262Plugin implements FormManager<Object,PowerFactor342
 	}
 	
 	@Override
-	public RefreshMode onField(final PowerFactor34262Plugin inst, final Object id, final String fieldName, final Object oldValue) throws FlowException, LocalizationException {
+	public RefreshMode onField(final PowerFactor34262Plugin inst, final Object id, final String fieldName, final Object oldValue, final boolean beforeCommit) throws FlowException, LocalizationException {
 		return RefreshMode.DEFAULT;
 	}
 
