@@ -675,23 +675,49 @@
 		<key name="chav1961.calc.plugins.details.ringcoils.button.inductance">Inductance</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.button.inductance.tt">Calculate inductance for number of coils typed</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.button.coils">Coils</key>
-		<key name="chav1961.calc.plugins.details.ringcoils.button.coils.tt">Calculate numer of coils for inductance typed</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.button.coils.tt">Calculate number of coils for inductance typed</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.numberOfCoils">[w] Number of coils</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.numberOfCoils.tt">Type number of coils if you will calculate inductance. Number of coils can have fractional part</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.inductance">[L] Inductance (uH)</key>
-		<key name="chav1961.calc.plugins.details.ringcoils.inductance.tt">Type inductance in microHenry if yiu will calculate numer of coils</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.inductance.tt">Type inductance in microHenry if yiu will calculate number of coils</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.wireDiameter">[Dw] Wire (mm)</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.wireDiameter.tt">Type wire diameter for the coil in millimeters</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.ringType">Ring type</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.ringType.tt">Ring type from standard set</key>
-		<key name="chav1961.calc.plugins.details.ringcoils.ringMyu">Рermeability (u)</key>
-		<key name="chav1961.calc.plugins.details.ringcoils.ringMyu.tt">Magnetic permeability from standard set</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringMyu">Рermability (u)</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.ringMyu.tt">Magnetic permability from standard set</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.frequency">Frequency (kHz)</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.frequency.tt">Type frequency in kHz, what you are planning to use coil. Optional patameter. If missing, quality will not be calculated</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.length">Wire length (mm)</key>
-		<key name="chav1961.calc.plugins.details.ringcoils.length.tt">Approx length of the wire, without connection tails</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.length.tt">Approx. length of the wire, without connection tails</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.quality">Quality</key>
-		<key name="chav1961.calc.plugins.details.ringcoils.quality.tt">Approx quatily of the coil for the frequency typed</key>
+		<key name="chav1961.calc.plugins.details.ringcoils.quality.tt">Approx. quatily of the coil for the frequency typed</key>
+
+<!-- Localization for chav1961.calc.plugins.details.kerncoils -->
+		<key name="menu.details.kerncoils">Kern coils parameters</key>
+		<key name="menu.details.kerncoils.tt">Calculation number of coils for the inductance typed or inductance for the numer of coils typed</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.button.inductance">Inductance</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.button.inductance.tt">Calculate inductance for number of coils typed</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.button.coils">Coils</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.button.coils.tt">Calculate number of coils for inductance typed</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.numberOfCoils">[w] Number of coils</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.numberOfCoils.tt">Type number of coils if you will calculate inductance. Number of coils can have fractional part</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.inductance">[L] Inductance (uH)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.inductance.tt">Type inductance in microHenry if yiu will calculate numer of coils</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.wireDiameter">[Dw] Wire (mm)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.wireDiameter.tt">Type wire diameter for the coil in millimeters</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.kernMyu">Рermability (u)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.kernMyu.tt">Magnetic permability from standard set</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.frequency">Frequency (kHz)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.frequency.tt">Type frequency in kHz, what you are planning to use coil. Optional patameter. If missing, quality will not be calculated</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.diameter">Kern diameter (mm)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.diameter.tt">Diameter of coil kern, in mm</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.coilLength">Coil length (mm)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.coilLength.tt">Coil lengths, in mm</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.length">Wire length (mm)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.length.tt">Approx. length of the wire, without connection tails</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.quality">Quality</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.quality.tt">Approx. quatily of the coil for the frequency typed</key>
 
 <!-- Localization for chav1961.calc.plugins.details.ringpulsetrans -->
 		<key name="menu.details.ringpulsetrans">Ring transformer parameters</key>
@@ -1570,6 +1596,32 @@
 		<key name="chav1961.calc.plugins.details.ringcoils.length.tt">Примерная длина провода без учета длины выводов</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.quality">Констр. добротность</key>
 		<key name="chav1961.calc.plugins.details.ringcoils.quality.tt">Примерная конструктивная добротность катушки на заданной частоте</key>
+
+<!-- Локализация для chav1961.calc.plugins.details.kerncoils -->
+		<key name="menu.details.kerncoils">Параметры катушки на сердечнике</key>
+		<key name="menu.details.kerncoils.tt">Расчет числа витков катушки для заданной индуктивности или индуктивности катушки для заданного числа витков</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.button.inductance">Индуктивность</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.button.inductance.tt">Расчет индуктивности катушки по заданному числу витков</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.button.coils">Витки</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.button.coils.tt">Расчет числа витков катушки для заданной инуктивности</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.numberOfCoils">[w] Число витков</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.numberOfCoils.tt">Введите число витков катушки, если будете рассчитывать индуктивность. Число витков может быть дробным</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.inductance">[L] Индуктивность (uH)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.inductance.tt">Введите индуктивность катушки в микрогенри, если будете рассчитывать число витков</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.wireDiameter">[Dw] Провод (мм)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.wireDiameter.tt">Введите диаметр провода катушки в миллиметрах</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.kernMyu">Проницаемось (u)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.kernMyu.tt">Магнитная проницаемость материала сердечника из стандартного ряда</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.frequency">Частота (кгц)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.frequency.tt">Введите частоту, на которой планируется работа катушки. Параметр необязательный, при его отсутствии конструктивная добротность рассчитываться не будет</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.diameter">Диаметр сердечника (мм)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.diameter.tt">Диаметр сердечника катушки</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.coilLength">Длина намотки (мм)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.coilLength.tt">Длина намотки катушки, мм</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.length">Длина провода (мм)</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.length.tt">Примерная длина провода без учета длины выводов</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.quality">Констр. добротность</key>
+		<key name="chav1961.calc.plugins.details.kerncoils.quality.tt">Примерная конструктивная добротность катушки на заданной частоте</key>
 
 <!-- Локализация для chav1961.calc.plugins.details.ringpulsetrans -->
 		<key name="menu.details.ringpulsetrans">Параметры трансформатора на кольце</key>
