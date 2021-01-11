@@ -17,6 +17,7 @@ module chav1961.radioamatorcalc {
 		, chav1961.calc.plugins.calc.timbre.TimbreFactory
 		, chav1961.calc.plugins.details.coils.CoilsFactory
 		, chav1961.calc.plugins.details.ringcoils.RingCoilsFactory
+		, chav1961.calc.plugins.details.kerncoils.KernCoilsFactory
 		, chav1961.calc.plugins.details.ringcurrenttrans.RingCurrentTransFactory
 		, chav1961.calc.plugins.details.ringmagnetic.RingMagneticFactory
 		, chav1961.calc.plugins.details.ringpulsetrans.RingPulseTransFactory

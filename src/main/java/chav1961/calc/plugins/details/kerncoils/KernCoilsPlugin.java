@@ -3,6 +3,7 @@ package chav1961.calc.plugins.details.kerncoils;
 import chav1961.calc.interfaces.PluginProperties;
 import chav1961.calc.interfaces.RingMyu;
 import chav1961.calc.interfaces.RingType;
+import chav1961.calc.plugins.details.ringmagnetic.RingMagneticPlugin;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
@@ -21,8 +22,13 @@ import chav1961.purelib.ui.interfaces.Action;
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.details.kerncoils.button.coils",tooltip="chav1961.calc.plugins.details.kerncoils.button.coils.tt"),actionString="calcCoils")
 @PluginProperties(width=600,height=300,leftWidth=300,svgURI="schema.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
 public class KernCoilsPlugin implements FormManager<Object,KernCoilsPlugin>, ModuleAccessor {
+	public static final double		MYU_0 =  1.257e-3;
 	private static final double		R_CUPRUM =  0.0171;	// Ohm • mm²/m;
 	private static final double		K_SKIN1000 = 1.98;	// mm 1000 Hz;
+	
+	
+//	L=m*m*n 2 *S/l, где m – магнитная проницаемость материала сердечника, m – магнитная постоянная (она равна 12,56·10-7 Гн/м), S – площадь поперечного сечения катушки, l – длина намотки. Расчет витков катушки индуктивности производится очень просто: это число намотанных на сердечник слоёв проводника.	
+	
 	
 	private final LoggerFacade 	logger;
 	
@@ -38,13 +44,13 @@ public class KernCoilsPlugin implements FormManager<Object,KernCoilsPlugin>, Mod
 	@LocaleResource(value="chav1961.calc.plugins.details.kerncoils.kernMyu",tooltip="chav1961.calc.plugins.details.kerncoils.kernMyu.tt")
 	@Format("40m")
 	public RingMyu 	kernMyu = RingMyu.MUI_2000;
-	@LocaleResource(value="chav1961.calc.plugins.details.kerncoils.frequency",tooltip="chav1961.calc.plugins.details.kerncoils.frequency.tt")
-	@Format("9.2pzs")
-	public float diameter = 0;
 	@LocaleResource(value="chav1961.calc.plugins.details.kerncoils.diameter",tooltip="chav1961.calc.plugins.details.kerncoils.diameter.tt")
 	@Format("9.2pzs")
-	public float coilLength = 0;
+	public float diameter = 0;
 	@LocaleResource(value="chav1961.calc.plugins.details.kerncoils.coilLength",tooltip="chav1961.calc.plugins.details.kerncoils.coilLength.tt")
+	@Format("9.2pzs")
+	public float coilLength = 0;
+	@LocaleResource(value="chav1961.calc.plugins.details.kerncoils.frequency",tooltip="chav1961.calc.plugins.details.kerncoils.frequency.tt")
 	@Format("9.2pzs")
 	public float frequency = 0;
 	@LocaleResource(value="chav1961.calc.plugins.details.kerncoils.length",tooltip="chav1961.calc.plugins.details.kerncoils.length.tt")
@@ -72,54 +78,64 @@ public class KernCoilsPlugin implements FormManager<Object,KernCoilsPlugin>, Mod
 	@Override
 	public RefreshMode onAction(final KernCoilsPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
-			case "app:action:/RingCoilsPlugin.calcInductance"	:
-				if (wireDiameter == 0 || coilsNumberOfCoils == 0) {
-					getLogger().message(Severity.warning,"N == 0 || Dw == 0");
+			case "app:action:/KernCoilsPlugin.calcInductance"	:
+				if (wireDiameter == 0 || coilsNumberOfCoils == 0 || diameter == 0 || coilLength == 0) {
+					getLogger().message(Severity.warning,"N == 0 || Dw == 0 || D == 0 || Length == 0");
 					return RefreshMode.NONE;
 				}
 				else {
-//					coilsInductance = calcInductance(ringType, ringMyu, coilsNumberOfCoils);
-//					if (ringType.getOuterDiameter()/ringType.getInnerDiameter() > 1.75f) {
-//						coilsInductance = (float) (2e-4 * ringMyu.getMyu() * ringType.getHeight() * Math.log(ringType.getOuterDiameter()/ringType.getInnerDiameter()) * coilsNumberOfCoils * coilsNumberOfCoils); 
-//					}
-//					else {
-//						coilsInductance = (float) (4e-4 * ringMyu.getMyu() * ringType.getHeight() * (ringType.getOuterDiameter() - ringType.getInnerDiameter()) * coilsNumberOfCoils * coilsNumberOfCoils / (ringType.getOuterDiameter() + ringType.getInnerDiameter()));
-//					}
-//					wireLength = (float) calcLength(ringType,wireDiameter,coilsNumberOfCoils);
+					coilsInductance = calcInductance(diameter, coilLength, kernMyu, coilsNumberOfCoils);
+					wireLength = (float) calcLength(diameter, coilLength, wireDiameter,coilsNumberOfCoils);
 					if (frequency > 0) {
 						quality = (float) calcQuality(frequency,coilsInductance,wireLength,wireDiameter);
 					}
 					return RefreshMode.RECORD_ONLY;
 				}
-			case "app:action:/RingCoilsPlugin.calcCoils"	:
-				if (wireDiameter == 0 || coilsInductance == 0) {
-					getLogger().message(Severity.warning,"L == 0 || Dw == 0");
+			case "app:action:/KernCoilsPlugin.calcCoils"	:
+				if (wireDiameter == 0 || coilsInductance == 0 || diameter == 0 || coilLength == 0) {
+					getLogger().message(Severity.warning,"L == 0 || Dw == 0 || D == 0 || Length == 0");
 					return RefreshMode.NONE;
 				}
 				else {
-//					if (ringType.getOuterDiameter()/ringType.getInnerDiameter() > 1.75f) {
-//						coilsNumberOfCoils = (float) (100 * Math.sqrt(coilsInductance / (2 * ringMyu.getMyu() * ringType.getHeight() * Math.log(ringType.getOuterDiameter()/ringType.getInnerDiameter()))));
-//					}
-//					else {
-//						coilsNumberOfCoils = (float) (100 * Math.sqrt(coilsInductance * (ringType.getOuterDiameter() + ringType.getInnerDiameter())/ (4 * ringMyu.getMyu() * ringType.getHeight() * (ringType.getOuterDiameter() - ringType.getInnerDiameter()))));
-//					}
-//					if (!canFill(ringType.getInnerDiameter(),wireDiameter,coilsNumberOfCoils)) {
-//						getLogger().message(Severity.warning,"Coils not filled in the ring window");
-//						return RefreshMode.NONE;
-//					}
-//					else {
-//						wireLength = (float) calcLength(ringType,wireDiameter,coilsNumberOfCoils);
-//						if (frequency > 0) {
-//							quality = (float) calcQuality(frequency,coilsInductance,wireLength,wireDiameter);
-//						}
-						return RefreshMode.RECORD_ONLY;
-//					}
+					coilsNumberOfCoils = calcCoils(diameter, coilLength, kernMyu, coilsInductance);
+					wireLength = (float) calcLength(diameter, coilLength, wireDiameter,coilsNumberOfCoils);
+					if (frequency > 0) {
+						quality = (float) calcQuality(frequency,coilsInductance,wireLength,wireDiameter);
+					}
+					return RefreshMode.RECORD_ONLY;
 				}
 			default :
 				throw new UnsupportedOperationException("Unknown action string ["+actionName+"]");
 		}
 	}
-	
+
+	private float calcInductance(final float diameter, final float coilLength, final RingMyu kernMyu, final float coilsNumberOfCoils) {
+		return (float)(1e-6 * MYU_0 * kernMyu.getMyu() * coilsNumberOfCoils * coilsNumberOfCoils * Math.PI * diameter * diameter / (4 * coilLength)); 
+	}
+
+	private float calcCoils(final float diameter, final float coilLength, final RingMyu kernMyu, final float inductance) {
+		return (float)Math.sqrt((4 * coilLength * inductance) / (1e-3 * MYU_0 * kernMyu.getMyu() * Math.PI * diameter * diameter)); 
+	}
+
+	private float calcLength(final float diameter, final float coilLength, final float wireDiameter, final float coilsNumberOfCoils) {
+		final float	totalWidth = coilsNumberOfCoils * wireDiameter;
+		final float	layers = totalWidth / coilLength;
+		final float	inLayer = coilsNumberOfCoils / layers;
+		float		result = 0, currentDiameter = diameter + wireDiameter, currentNumberOfCoils = coilsNumberOfCoils;
+		
+		for (int index = 0; index < layers; index++) {
+			if (inLayer <= currentNumberOfCoils) {
+				result += Math.PI * currentDiameter * inLayer;
+				currentDiameter += 2 * wireDiameter;
+				currentNumberOfCoils -= inLayer;
+			}
+			else {
+				result += Math.PI * currentDiameter * currentNumberOfCoils;
+			}
+		}
+		return result;
+	}
+
 	@Override
 	public LoggerFacade getLogger() {
 		return logger;
@@ -129,15 +145,6 @@ public class KernCoilsPlugin implements FormManager<Object,KernCoilsPlugin>, Mod
 	public void allowUnnamedModuleAccess(final Module... unnamedModules) {
 		for (Module item : unnamedModules) {
 			this.getClass().getModule().addExports(this.getClass().getPackageName(),item);
-		}
-	}
-	
-	public static float calcInductance(final RingType ringType, final RingMyu ringMyu, final float numberOfCoils) {
-		if (ringType.getOuterDiameter()/ringType.getInnerDiameter() > 1.75f) {
-			return (float)(2e-4 * ringMyu.getMyu() * ringType.getHeight() * Math.log(ringType.getOuterDiameter()/ringType.getInnerDiameter()) * numberOfCoils * numberOfCoils); 
-		}
-		else {
-			return (float) (4e-4 * ringMyu.getMyu() * ringType.getHeight() * (ringType.getOuterDiameter() - ringType.getInnerDiameter()) * numberOfCoils * numberOfCoils / (ringType.getOuterDiameter() + ringType.getInnerDiameter()));
 		}
 	}
 	
@@ -171,10 +178,6 @@ public class KernCoilsPlugin implements FormManager<Object,KernCoilsPlugin>, Mod
 		}
 	}
 
-	private static boolean canFill(final float windowDiameter, final float wireDiameter, final float numberOfCoils) {
-		return (wireDiameter * getAlpha(wireDiameter)) * (wireDiameter * getAlpha(wireDiameter)) < windowDiameter * windowDiameter;  
-	}
-	
 	private static double calcLength(final RingType ringType, final float wireDiameter, final float numberOfCoils) {
 		float	restCoils = numberOfCoils;
 		float	currentInnerDiameter = ringType.getInnerDiameter() - wireDiameter;
