@@ -40,6 +40,7 @@ public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 	private static final String	KEY_AUTOSAVEFIELD = "autoSaveField";
 	private static final String	KEY_AUTOSAVELOCATION = "autoSaveLocation";
 	private static final String	KEY_AUTOUPDATE = "autoUpdate";
+	private static final String	KEY_LISTEN_COM_PORTS = "listenComPorts";
 
 	private static final File	SETTINGS_FILE = new File(SETTINGS_LOCATION);
 	
@@ -55,6 +56,10 @@ public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 @LocaleResource(value="settings.autoupdate",tooltip="settings.autoupdate.tooltip")
 @Format("1")
 	public boolean	autoUpdate = false;
+
+@LocaleResource(value="settings.listencomports",tooltip="settings.listencomports.tooltip")
+@Format("1")
+	public boolean	listenComPorts = false;
 
 	private final Localizer		localizer;
 	private final LoggerFacade	logger;
@@ -115,6 +120,7 @@ public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 				this.autoSaveField = props.getProperty(KEY_AUTOSAVEFIELD,boolean.class,"false");
 				this.autoSaveLocation = props.getProperty(KEY_AUTOSAVELOCATION,File.class,SETTINGS_LOCATION);
 				this.autoUpdate = props.getProperty(KEY_AUTOUPDATE,boolean.class,"false");
+				this.listenComPorts = props.getProperty(KEY_LISTEN_COM_PORTS,boolean.class,"false");
 			}
 			else {
 				throw new FlowException("Settings location ["+SETTINGS_FILE.getAbsolutePath()+"] is directory, not file!");
@@ -129,7 +135,8 @@ public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 	private void saveCurrent() throws FlowException {
 		final Properties	props = Utils.mkProps(KEY_AUTOSAVEFIELD, autoSaveField ? "true" : "false",
 												  KEY_AUTOSAVELOCATION, autoSaveLocation.getAbsolutePath(),
-												  KEY_AUTOUPDATE, autoUpdate ? "true" : "false");
+												  KEY_AUTOUPDATE, autoUpdate ? "true" : "false",
+												  KEY_LISTEN_COM_PORTS, listenComPorts ? "true" : "false");
 
 		try(final OutputStream	is = new FileOutputStream(SETTINGS_FILE);
 			final Writer		wr = new OutputStreamWriter(is,"UTF-8")) {

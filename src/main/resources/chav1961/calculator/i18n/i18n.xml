@@ -95,6 +95,8 @@
 		<key name="menu.devices.tt">Calculate Devices parameter</key>
 		<key name="menu.heatAndMech">Heat &amp; mechanical</key>
 		<key name="menu.heatAndMech.tt">Heat and mechanical calculations</key>
+		<key name="menu.comports">Measures</key>
+		<key name="menu.comports.tt">Device are connected to COM-ports</key>
 
 <!-- Localization for settings -->
 		<key name="settings.save">Save</key>
@@ -109,6 +111,8 @@
 		<key name="settings.autosave.location.tooltip">Directory for autosaving application field</key> 
 		<key name="settings.autoupdate">Autoupdate application</key>
 		<key name="settings.autoupdate.tooltip">Automatically update application to newer versions</key>
+		<key name="settings.listencomports">Listen for COM ports</key>
+		<key name="settings.listencomports.tooltip">Listen for changes in the available COM ports list</key>
 		<key name="settings.caption">Application settings</key>
 		<key name="settings.help">uri(settings.cre)</key>
 		<key name="settings.saved">New settings saved</key>
@@ -542,6 +546,40 @@
 		<key name="chav1961.calc.interfaces.ringmyu.3000.tt">3000</key>
 		<key name="chav1961.calc.interfaces.ringmyu.6000">6000</key>
 		<key name="chav1961.calc.interfaces.ringmyu.6000.tt">6000</key>		
+
+<!-- Localization for chav1961.calc.plugins.calc.barfilter --> 
+		<key name="menu.curcuits.barfilter">Input bar filter</key>
+		<key name="menu.curcuits.barfilter.tt">Input bar filter parameters</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.calc">Calculate</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.calc.tt">Calculate filter parameters</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.type">Filter type</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.type.tt">Filter type</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.nodecount">Items count</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.nodecount.tt">Number of items in the filter</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.centralfreq">Central freq (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.centralfreq.tt">Central frequency, kHz</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.passbarwidth">Passband (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.passbarwidth.tt">Filter pass band, kHz</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.inputresistance">Input resistance (Ohms)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.inputresistance.tt">Input filter resistance, Ohms</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.outputresistance">Input resistance (Ohms)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.outputresistance.tt">Output filter resistance, Ohms</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.inductance1">L1 (uH)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.inductance1.tt">L1 inductance, uH</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.capacitance1">C1 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.capacitance1.tt">C1 capacitance, pF</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.inductance2">L2 (uH)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.inductance2.tt">L2 inductance, uH</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.capacitance2">C2 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.capacitance2.tt">C2 capacitance, pF</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.capacitance3">C3 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.capacitance3.tt">C2 capacitance, pF</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.parallel">parallel</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.parallel.tt">Parallel contours</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.gtype">G-chain</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.gtype.tt">G-chain of contours</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.ptype">P-chain</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.ptype.tt">P-chain of contours</key>
 
 <!-- Localization for chav1961.calc.plugins.calc.contour --> 
 		<key name="menu.curcuits.contour">Contour parameters</key>
@@ -999,6 +1037,8 @@
 		<key name="menu.devices.tt">Расчет параметров устройств</key>
 		<key name="menu.heatAndMech">Тепло и механика</key>
 		<key name="menu.heatAndMech.tt">Тепловые и механические расчеты</key>
+		<key name="menu.comports">Приборы</key>
+		<key name="menu.comports.tt">Приборы, подсоединенные к COM-портам</key>
 
 <!-- Локализация настроек приложения -->
 		<key name="settings.save">Сохранить</key>
@@ -1013,6 +1053,8 @@
 		<key name="settings.autosave.location.tooltip">Директория, в которую будет автоматически сохраняться  состояние поля приложения</key>
 		<key name="settings.autoupdate">Автообновление</key>
 		<key name="settings.autoupdate.tooltip">Автоматически обновлять приложение при появлении новых версий</key>
+		<key name="settings.listencomports">Слушать COM-порты</key>
+		<key name="settings.listencomports.tooltip">Наблюдать за изменением списка доступных COM-портов</key>
 		<key name="settings.caption">Настройки приложения</key>
 		<key name="settings.help">uri(settings.cre)</key>
 		<key name="settings.saved">Новые настройки сохранены</key>
@@ -1446,6 +1488,41 @@
 		<key name="chav1961.calc.interfaces.ringmyu.3000.tt">3000</key>
 		<key name="chav1961.calc.interfaces.ringmyu.6000">6000</key>
 		<key name="chav1961.calc.interfaces.ringmyu.6000.tt">6000</key>		
+
+<!-- Локализация для chav1961.calc.plugins.calc.barfilter --> 
+		<key name="menu.curcuits.barfilter">Вх. полосовой фильтр</key>
+		<key name="menu.curcuits.barfilter.tt">Параметры входного полосового фильтра</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.calc">Расчет</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.calc.tt">Рассчитать параметры полосового фильтра</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.type">Тип фильтра</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.type.tt">Тип фильтра</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.nodecount">Число звеньев</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.nodecount.tt">Число звеньев фильтра</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.centralfreq">Центральная частота (кГц)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.centralfreq.tt">Центральная частота фильтра, кГц</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.passbarwidth">Полоса пропускания (кГц)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.passbarwidth.tt">Полоса пропускания фильтра, кГц</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.inputresistance">Вх. сопротивление (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.inputresistance.tt">Входное сопротивление фильтра, Ом</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.outputresistance">Вых. сопротивление (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.outputresistance.tt">Выходное сопротивление фильтра, Ом</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.inductance1">L1 (мкГн)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.inductance1.tt">Индуктивность L1, мкГн</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.capacitance1">C1 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.capacitance1.tt">Емкость C1, пФ</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.inductance2">L2 (мкГн)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.inductance2.tt">Индуктивность L2, мкГн</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.capacitance2">C2 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.capacitance2.tt">Емкость C2, пФ</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.capacitance3">C3 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.capacitance3.tt">Емкость C3, пФ</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.parallel">Параллельный</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.parallel.tt">Параллельне контуры, соединенные с землей</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.gtype">Г-образный</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.gtype.tt">Г-образные контуры</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.ptype">П-образный</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.ptype.tt">П-образные контуры</key>
+
 
 <!-- Локализация для chav1961.calc.plugins.calc.contour --> 
 		<key name="menu.curcuits.contour">Параметры контура</key>

@@ -53,10 +53,15 @@ public class InnerSVGPluginWindow<T> extends JPanel implements LocaleChangeListe
 		
 		for (int index = 0; index < svgItems.length; index++) {
 			try(final InputStream	is = instanceClass.getResourceAsStream(svgItems[index])) {
-				final SVGViewer		v = new SVGViewer(ss != null ? SVGParser.parse(is,ss) : SVGParser.parse(is));
-				
-				card.add(v,svgItems[index]);
-				this.viewers.put(svgItems[index],v);
+				if (is == null) {
+					throw new ContentException("Null SVG input stream for ["+svgItems[index]+"]");
+				}
+				else {
+					final SVGViewer		v = new SVGViewer(ss != null ? SVGParser.parse(is,ss) : SVGParser.parse(is));
+					
+					card.add(v,svgItems[index]);
+					this.viewers.put(svgItems[index],v);
+				}
 			}
 		}
 		

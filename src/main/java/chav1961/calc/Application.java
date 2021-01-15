@@ -7,6 +7,12 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.Image;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Taskbar;
+import java.awt.TrayIcon;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -27,6 +33,7 @@ import java.util.ServiceLoader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
@@ -90,6 +97,7 @@ import chav1961.purelib.ui.swing.useful.JFileContentManipulator;
 import chav1961.purelib.ui.swing.useful.JFileSelectionDialog;
 import chav1961.purelib.ui.swing.useful.JFileSelectionDialog.FilterCallback;
 import chav1961.purelib.ui.swing.useful.JStateString;
+import chav1961.purelib.ui.swing.useful.JSystemTray;
 
 public class Application extends JFrame implements LocaleChangeListener {
 	private static final long 				serialVersionUID = -2663340436788182341L;
@@ -100,6 +108,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private final Localizer			 		localizer;
 	private final LoggerFacade				logger;
 	private final JMenuBar					menu;
+	private final JPopupMenu				trayMenu;
 	private final int						localHelpPort;
 	private final CountDownLatch			latch;
 	private final SimpleNavigatorTree		leftMenu;
@@ -111,7 +120,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 	private File							currentPipeFile = null;
 	private File				 			currentWorkingDir = new File("./");
-
+	
 	public Application(final ContentMetadataInterface xda, final int helpPort, final Localizer parentLocalizer, final LoggerFacade logger, final CountDownLatch latch) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException, SyntaxException, PreparationException, ContentException {
 		if (xda == null) {
 			throw new NullPointerException("Application descriptor can't be null");
@@ -142,6 +151,8 @@ public class Application extends JFrame implements LocaleChangeListener {
 			
 			this.menu = SwingUtils.toJComponent(xda.byUIPath(URI.create("ui:/model/navigation.top.mainmenu")),JMenuBar.class); 
 			SwingUtils.assignActionListeners(this.menu,this);
+			this.trayMenu = SwingUtils.toJComponent(xda.byUIPath(URI.create("ui:/model/navigation.top.traymenu")),JPopupMenu.class); 
+			SwingUtils.assignActionListeners(this.trayMenu,this);
 			
 			final JPanel	centerPanel = new JPanel(new BorderLayout()); 
 			
@@ -494,11 +505,27 @@ public class Application extends JFrame implements LocaleChangeListener {
 			final LoggerFacade				logger = PureLibSettings.CURRENT_LOGGER) {
 			final ContentMetadataInterface	xda = ContentModelFactory.forXmlDescription(is);
 			final CountDownLatch			latch = new CountDownLatch(1);
-			
-			new Application(xda,parser.getValue(ARG_HELP_PORT,int.class),PureLibSettings.PURELIB_LOCALIZER,logger,latch).setVisible(true);
-			service.start();
-			latch.await();
-			service.stop();
+			final Application				app = new Application(xda,parser.getValue(ARG_HELP_PORT,int.class),PureLibSettings.PURELIB_LOCALIZER,logger,latch);
+
+			app.setVisible(true);
+			if (SystemTray.isSupported()) {
+				try(final JSystemTray		tray = new JSystemTray(LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated()), app.getClass().getResource("tray.png").toURI(), LocalizationKeys.TITLE_APPLICATION, app.trayMenu)) {
+					final ActionListener	al = (e)->{
+												app.setVisible(!app.isVisible());
+											};
+
+					tray.addActionListener(al);
+					service.start();
+					latch.await();
+					service.stop();
+					tray.removeActionListener(al);
+				}
+			}
+			else {
+				service.start();
+				latch.await();
+				service.stop();
+			}
 		} catch (InterruptedException e) {
 		}
 	}

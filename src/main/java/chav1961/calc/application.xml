@@ -31,6 +31,11 @@
 			<app:item name="menu.help.about" caption="menu.about" tooltip="menu.ttAbout" action="helpAbout"/>
 		</app:submenu>
 	</app:menu>
+	<app:menu id="traymenu">
+		<app:item name="menu.tools.settings" caption="menu.settings" tooltip="menu.ttSettings" action="settings"/>
+		<app:separator/>
+		<app:item name="menu.file.exit" caption="menu.exit" tooltip="menu.ttExit" action="exit"/>
+	</app:menu>
 	<app:menu id="navigator">
 		<app:submenu name="menu.favorites" caption="menu.favorites" tooltip="menu.favorites.tt">  
 			<app:placeholder/>
@@ -45,6 +50,9 @@
 			<app:placeholder/>
 		</app:submenu>
 		<app:submenu name="menu.heatAndMech" caption="menu.heatAndMech" tooltip="menu.heatAndMech.tt">  
+			<app:placeholder/>
+		</app:submenu>
+		<app:submenu name="menu.comports" caption="menu.comports" tooltip="menu.comports.tt">  
 			<app:placeholder/>
 		</app:submenu>
 	</app:menu>
