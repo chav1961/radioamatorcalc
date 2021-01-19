@@ -599,6 +599,39 @@
 		<key name="chav1961.calc.plugins.calc.contour.button.cap">C</key>
 		<key name="chav1961.calc.plugins.calc.contour.button.cap.tt">Calculate capacity</key>
 
+<!-- Localization for chav1961.calc.plugins.calc.superget --> 
+		<key name="menu.curcuits.superget">Super-heterodyne contours</key>
+		<key name="menu.curcuits.superget.tt">Calculate super-heterodyne contours</key>
+		<key name="help.curcuits.superget.help">uri(curcuits.superget.help.cre)</key>
+		<key name="chav1961.calc.plugins.calc.superget.button.calc">Calculate</key>
+		<key name="chav1961.calc.plugins.calc.superget.button.calc.tt">Calculate Super-seterodyne contours</key>
+		<key name="chav1961.calc.plugins.calc.superget.freqmin">Fmin (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.superget.freqmin.tt">Minimim range frequency, kHz</key>
+		<key name="chav1961.calc.plugins.calc.superget.freqmax">Fmax (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.superget.freqmax.tt">Maximim range frequency, kHz</key>
+		<key name="chav1961.calc.plugins.calc.superget.freqout">Fout (kHz)</key>
+		<key name="chav1961.calc.plugins.calc.superget.freqout.tt">Out frequency, kHz</key>
+		<key name="chav1961.calc.plugins.calc.superget.upperfreq">Frequency upper</key>
+		<key name="chav1961.calc.plugins.calc.superget.upperfreq.tt">Heterodyne frequency is upper than input frequency</key>
+		<key name="chav1961.calc.plugins.calc.superget.halffreq">Frequency/2</key>
+		<key name="chav1961.calc.plugins.calc.superget.halffreq.tt">Heterodyne frequency is dividing by 2</key>
+		<key name="chav1961.calc.plugins.calc.superget.capmin">Cmin (pF)</key>
+		<key name="chav1961.calc.plugins.calc.superget.capmin.tt">Minimum variable capacity, pF</key>
+		<key name="chav1961.calc.plugins.calc.superget.capmax">Cmax (pF)</key>
+		<key name="chav1961.calc.plugins.calc.superget.capmax.tt">Maximum variable capacity, pF</key>
+		<key name="chav1961.calc.plugins.calc.superget.ind1">L1 (uH)</key>
+		<key name="chav1961.calc.plugins.calc.superget.ind1.tt">Input contour inductance, uH</key>
+		<key name="chav1961.calc.plugins.calc.superget.ind2">L2 (uH)</key>
+		<key name="chav1961.calc.plugins.calc.superget.ind2.tt">Heterodyne contour inductance, uH</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap11">C1-1 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap11.tt">Sequential input contour capacity, pF</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap12">C1-2 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap12.tt">Parallel input contour capacity, pF</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap21">C2-1 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap21.tt">Sequential heterodyne contour capacity, pF</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap22">C2-2 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap22.tt">Parallel heterodyne contour capacity, pF</key>
+
 <!-- Localization for chav1961.calc.plugins.calc.winbridge --> 
 		<key name="menu.curcuits.wienbridge">Wien's bridge parameters</key>
 		<key name="menu.curcuits.wienbridge.tt">Calculate Wien's bridge parameters</key>
@@ -1523,7 +1556,6 @@
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.ptype">П-образный</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.ptype.tt">П-образные контуры</key>
 
-
 <!-- Локализация для chav1961.calc.plugins.calc.contour --> 
 		<key name="menu.curcuits.contour">Параметры контура</key>
 		<key name="menu.curcuits.contour.tt">Расчет параметров контура</key>
@@ -1541,6 +1573,39 @@
 		<key name="chav1961.calc.plugins.calc.contour.button.ind.tt">Расчет индуктивности</key>
 		<key name="chav1961.calc.plugins.calc.contour.button.cap">C</key>
 		<key name="chav1961.calc.plugins.calc.contour.button.cap.tt">Расчет емкости</key>
+
+<!-- Локализация для chav1961.calc.plugins.calc.superget --> 
+		<key name="menu.curcuits.superget">Контуры супергетеродина</key>
+		<key name="menu.curcuits.superget.tt">Расчет паарметров сопряженных контуров супергетеродина</key>
+		<key name="help.curcuits.superget.help">uri(curcuits.superget.help.cre)</key>
+		<key name="chav1961.calc.plugins.calc.superget.button.calc">Расчет</key>
+		<key name="chav1961.calc.plugins.calc.superget.button.calc.tt">Выполнить расчет параметров сопряженный контуров</key>
+		<key name="chav1961.calc.plugins.calc.superget.freqmin">Fmin (кГц)</key>
+		<key name="chav1961.calc.plugins.calc.superget.freqmin.tt">Минимальная частота перекрываемого диапазона частот, кГц</key>
+		<key name="chav1961.calc.plugins.calc.superget.freqmax">Fmax (кГц)</key>
+		<key name="chav1961.calc.plugins.calc.superget.freqmax.tt">Максимальная частота перекрываемого диапазона частот, кГц</key>
+		<key name="chav1961.calc.plugins.calc.superget.freqout">Fout (кГц)</key>
+		<key name="chav1961.calc.plugins.calc.superget.freqout.tt">Величина ПЧ, кГц</key>
+		<key name="chav1961.calc.plugins.calc.superget.upperfreq">Частота выше</key>
+		<key name="chav1961.calc.plugins.calc.superget.upperfreq.tt">Частота гетеродина выше частоты принимаемого сигнала</key>
+		<key name="chav1961.calc.plugins.calc.superget.halffreq">Частота пополам</key>
+		<key name="chav1961.calc.plugins.calc.superget.halffreq.tt">Частота гетеродина вдвое ниже расчетной</key>
+		<key name="chav1961.calc.plugins.calc.superget.capmin">Cmin (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.superget.capmin.tt">Минимальная емкость КПЕ, пФ</key>
+		<key name="chav1961.calc.plugins.calc.superget.capmax">Cmax (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.superget.capmax.tt">Минимальная емкость КПЕ, пФ</key>
+		<key name="chav1961.calc.plugins.calc.superget.ind1">L1 (мкГн)</key>
+		<key name="chav1961.calc.plugins.calc.superget.ind1.tt">Индуктивность входного контура, мкГн</key>
+		<key name="chav1961.calc.plugins.calc.superget.ind2">L2 (мкГн)</key>
+		<key name="chav1961.calc.plugins.calc.superget.ind2.tt">Индуктивность контура гетеродина, мкГн</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap11">C1-1 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap11.tt">Последовательная емкость входного контура гетеродина, пФ</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap12">C1-2 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap12.tt">Параллельная емкость входного контура, пФ</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap21">C2-1 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap21.tt">Последовательная емкость контура гетеродина, пФ</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap22">C2-2 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.superget.cap22.tt">Параллельная емкость входного контура гетеродина, пФ</key>
 
 <!-- Локализация для chav1961.calc.plugins.calc.winbridge --> 
 		<key name="menu.curcuits.wienbridge">Параметры моста Вина</key>

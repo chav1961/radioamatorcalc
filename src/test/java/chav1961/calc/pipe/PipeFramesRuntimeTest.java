@@ -14,24 +14,20 @@ import org.junit.Test;
 import chav1961.calc.interfaces.PipeItemRuntime.PipeConfigmation;
 import chav1961.calc.interfaces.PipeItemRuntime.PipeStepReturnCode;
 import chav1961.calc.windows.PipeManager;
-import chav1961.calc.windows.PipeTab;
 import chav1961.calc.windows.PipeManagerSerialForm.PluginSpecific;
+import chav1961.calc.windows.PipeTab;
 import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.exceptions.ContentException;
-import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.FlowException;
-import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.FieldFormat;
 import chav1961.purelib.model.ModelUtils;
-import chav1961.purelib.model.ModelUtilsTest;
 import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 import chav1961.purelib.ui.interfaces.FormManager;
-import chav1961.purelib.ui.interfaces.Format;
 
 public class PipeFramesRuntimeTest {
 	private final JTabbedPane			pane = new JTabbedPane();
