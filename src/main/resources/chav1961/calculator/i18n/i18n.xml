@@ -584,6 +584,7 @@
 <!-- Localization for chav1961.calc.plugins.calc.contour --> 
 		<key name="menu.curcuits.contour">Contour parameters</key>
 		<key name="menu.curcuits.contour.tt">Calculate contour parameters</key> 
+		<key name="help.curcuits.contour.help">uri(curcuits.contour.help.cre)</key>
 		<key name="chav1961.calc.plugins.calc.contour">Contour parameters</key>
 		<key name="chav1961.calc.plugins.calc.contour.tt">Calculate any of contour parameter thru other two ones</key>
 		<key name="chav1961.calc.plugins.calc.contour.inductanсe">Inductance (uH)</key>
@@ -592,6 +593,8 @@
 		<key name="chav1961.calc.plugins.calc.contour.capacity.tt">Type capacity in pF</key>
 		<key name="chav1961.calc.plugins.calc.contour.frequency">Frequency (kHz)</key>
 		<key name="chav1961.calc.plugins.calc.contour.frequency.tt">Type frequency in kHz</key>
+		<key name="chav1961.calc.plugins.calc.contour.charresistance">Char resistance (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.contour.charresistance.tt">Characteristic resistance of the contour in kOhm</key>
 		<key name="chav1961.calc.plugins.calc.contour.button.freq">F</key>
 		<key name="chav1961.calc.plugins.calc.contour.button.freq.tt">Calculate frequency</key>
 		<key name="chav1961.calc.plugins.calc.contour.button.ind">L</key>
@@ -1559,6 +1562,7 @@
 <!-- Локализация для chav1961.calc.plugins.calc.contour --> 
 		<key name="menu.curcuits.contour">Параметры контура</key>
 		<key name="menu.curcuits.contour.tt">Расчет параметров контура</key>
+		<key name="help.curcuits.contour.help">uri(curcuits.contour.help.cre)</key>
 		<key name="chav1961.calc.plugins.calc.contour">Параметры контура</key>
 		<key name="chav1961.calc.plugins.calc.contour.tt">Расчет любого параметра контура через два других параметра</key>
 		<key name="chav1961.calc.plugins.calc.contour.inductanсe">Индуктивность (uH)</key>
@@ -1567,6 +1571,8 @@
 		<key name="chav1961.calc.plugins.calc.contour.capacity.tt">Введите емкость в пикофарадах</key>
 		<key name="chav1961.calc.plugins.calc.contour.frequency">Частота (kHz)</key>
 		<key name="chav1961.calc.plugins.calc.contour.frequency.tt">Введите частоту в килогерцах</key>
+		<key name="chav1961.calc.plugins.calc.contour.charresistance">Хар. сопротивление (kOhm)</key>
+		<key name="chav1961.calc.plugins.calc.contour.charresistance.tt">Характеристичиеское сопротивление контура в килоомах</key>
 		<key name="chav1961.calc.plugins.calc.contour.button.freq">F</key>
 		<key name="chav1961.calc.plugins.calc.contour.button.freq.tt">Расчет частоты</key>
 		<key name="chav1961.calc.plugins.calc.contour.button.ind">L</key>
