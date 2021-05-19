@@ -104,7 +104,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private final JPopupMenu				trayMenu;
 	private final int						localHelpPort;
 	private final CountDownLatch			latch;
-	private final SimpleNavigatorTree		leftMenu;
+	private final SimpleNavigatorTree<ContentNodeMetadata>		leftMenu;
 	private final File						luceneDir = new File("./lucene");
 	private final JTabbedPane				tabs = new JTabbedPane();
 	private final JStateString				stateString;
@@ -156,7 +156,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 
 			final JSplitPane	split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 			
-			leftMenu = new SimpleNavigatorTree(localizer,xda.byUIPath(URI.create("ui:/model/navigation.top.navigator"))) {
+			leftMenu = new SimpleNavigatorTree<ContentNodeMetadata>(localizer,xda.byUIPath(URI.create("ui:/model/navigation.top.navigator"))) {
 								private static final long serialVersionUID = 1L;
 								@Override
 								protected void appendNodes(final ContentNodeMetadata submenu, final DefaultMutableTreeNode node) {
@@ -216,7 +216,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 
 	private void callPlugin(final String actionCommand) {
 		if (actionCommand != null && !actionCommand.isEmpty()) {
-			final URI	actionURI = URI.create(actionCommand);
+			final URI	actionURI = URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":"+actionCommand);
 			
 			for (PluginInterface<?> item : ServiceLoader.load(PluginInterface.class)) {
 				if (item.canServe(actionURI)) {
