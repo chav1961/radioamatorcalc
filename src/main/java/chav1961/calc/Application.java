@@ -501,6 +501,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			final Application				app = new Application(xda,parser.getValue(ARG_HELP_PORT,int.class),PureLibSettings.PURELIB_LOCALIZER,logger,latch);
 
 			app.setVisible(true);
+			
 			if (SystemTray.isSupported()) {
 				try(final JSystemTray		tray = new JSystemTray(LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated()), app.getClass().getResource("tray.png").toURI(), LocalizationKeys.TITLE_APPLICATION, app.trayMenu)) {
 					final ActionListener	al = (e)->{
