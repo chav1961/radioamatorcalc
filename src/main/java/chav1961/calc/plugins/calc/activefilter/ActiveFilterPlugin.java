@@ -36,13 +36,13 @@ public class ActiveFilterPlugin implements FormManager<Object,ActiveFilterPlugin
 	public float capacitance = 0;
 
 	@LocaleResource(value="chav1961.calc.plugins.calc.activefilter.resistance1",tooltip="chav1961.calc.plugins.calc.activefilter.resistance1.tt")
-	@Format("9.3ro")
+	@Format("9.2ro")
 	public float resistance1 = 0;
 	@LocaleResource(value="chav1961.calc.plugins.calc.activefilter.resistance2",tooltip="chav1961.calc.plugins.calc.activefilter.resistance2.tt")
 	@Format("9.2ro")
 	public float resistance2 = 0;
 	@LocaleResource(value="chav1961.calc.plugins.calc.activefilter.resistance3",tooltip="chav1961.calc.plugins.calc.activefilter.resistance3.tt")
-	@Format("9.3ro")
+	@Format("9.2ro")
 	public float resistance3 = 0;
 	
 	public ActiveFilterPlugin(final LoggerFacade logger) {
