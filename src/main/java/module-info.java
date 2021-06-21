@@ -12,6 +12,7 @@ module chav1961.radioamatorcalc {
 	uses chav1961.calc.interfaces.PluginInterface;
 	provides chav1961.calc.interfaces.PluginInterface with 
 		  chav1961.calc.plugins.calc.barfilter.BarFilterFactory
+		, chav1961.calc.plugins.calc.activefilter.ActiveFilterFactory
 		, chav1961.calc.plugins.calc.superget.SuperGetFactory
 		, chav1961.calc.plugins.calc.contour.ContourFactory
 		, chav1961.calc.plugins.calc.wienbridge.WienBridgeFactory

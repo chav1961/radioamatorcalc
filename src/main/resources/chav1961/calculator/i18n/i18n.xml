@@ -581,6 +581,30 @@
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.ptype">P-chain</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.ptype.tt">P-chain of contours</key>
 
+<!-- Localization for chav1961.calc.plugins.calc.activefilter --> 
+		<key name="menu.curcuits.activefilter">Active filter OpAmp</key>
+		<key name="menu.curcuits.activefilter.tt">Active filter by the operational amplifiers</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.calc">Calculate</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.calc.tt">Calculate filter parameters</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.type">Type</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.type.tt">Active filter type</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.frequency">Frequency (Hz)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.frequency.tt">Central frequency, Hz</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.quality">Input bar filter</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.quality.tt">Input bar filter</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.transmit">Trans. ratio</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.transmit.tt">transmission ratio</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.capacitance">C, (nF)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.capacitance.tt">Filter capacitance (nF)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.resistance1">R1, (Ohm)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.resistance1.tt">R1, (Ohm)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.resistance2">R2, (Ohm)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.resistance2.tt">R2, (Ohm)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.resistance3">R3, (Ohm)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.resistance3.tt">R3, (Ohm)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.activeFilterType.bar">Bar filter</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.activeFilterType.bar.tt">Bar filter</key>
+
 <!-- Localization for chav1961.calc.plugins.calc.contour --> 
 		<key name="menu.curcuits.contour">Contour parameters</key>
 		<key name="menu.curcuits.contour.tt">Calculate contour parameters</key> 
@@ -1558,6 +1582,30 @@
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.gtype.tt">Г-образные контуры</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.ptype">П-образный</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.ptype.tt">П-образные контуры</key>
+
+<!-- Локализация для chav1961.calc.plugins.calc.activefilter --> 
+		<key name="menu.curcuits.activefilter">Активный фильтр на ОУ</key>
+		<key name="menu.curcuits.activefilter.tt">Активный фильтр на опреационном усилителе</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.calc">Расчет</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.calc.tt">Рассчитать параметры фильтра</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.type">Тип фильтра</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.type.tt">Тип фильтра</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.frequency">Частота (Гц)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.frequency.tt">Центральная частота, Гц</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.quality">Добротность</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.quality.tt">Добротность фильтра</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.transmit">Коэф. передачи</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.transmit.tt">Коэффициент передачи фильтра</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.capacitance">C, (нФ)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.capacitance.tt">Емкость конденсаторов фильтра, (нФ)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.resistance1">R1, (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.resistance1.tt">R1, (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.resistance2">R2, (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.resistance2.tt">R2, (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.resistance3">R3, (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.resistance3.tt">R3, (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.activeFilterType.bar">Полосовой</key>
+		<key name="chav1961.calc.plugins.calc.activefilter.activeFilterType.bar.tt">Полосовой фильтр</key>
 
 <!-- Локализация для chav1961.calc.plugins.calc.contour --> 
 		<key name="menu.curcuits.contour">Параметры контура</key>
