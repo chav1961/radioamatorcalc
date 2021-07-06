@@ -716,6 +716,43 @@
 		<key name="chav1961.calc.plugins.calc.contour.button.cap">C</key>
 		<key name="chav1961.calc.plugins.calc.contour.button.cap.tt">Calculate capacity</key>
 
+
+<!-- Localization for chav1961.calc.plugins.calc.pcontour --> 
+		<key name="menu.curcuits.pcontour">P-contour parameters</key>
+		<key name="menu.curcuits.pcontour.tt">P-contour parameters</key>
+		<key name="help.curcuits.pcontour.help">uri(curcuits.pcontour.help.cre)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.button.calc">Calculate</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.button.calc.tt">Calculate contour parameters</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.type">Contour type</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.type.tt">Contour type</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.inputresistance">Ra, (Ohms)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.inputresistance.tt">Input resistance, Ohms</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.outputresistance">Rc, (Ohms)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.outputresistance.tt">Output resistance, Ohms</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.lowfrequency">Fmin, (Hz)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.lowfrequency.tt">Minimal frequency, Hz</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.highfrequency">Fmax, (Hz)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.highfrequency.tt">Maximal frequenct, Hz</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.freequality">Q free</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.freequality.tt">Free contour quality</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.loadquality">Q loaded</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.loadquality.tt">Loaded contour quality</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.indictance1">L1 (uH)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.indictance1.tt">L1, uH</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.indictance2">L2 (uH)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.indictance2.tt">L2 (uH)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.capacitance1">C1 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.capacitance1.tt">C1 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.capacitance2">C2 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.capacitance2.tt">C2 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.capacitance3">C3 (pF)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.capacitance3.tt">C3 (pF)</key>
+
+		<key name="chav1961.calc.plugins.calc.pcontour.pContourType.single">Single</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.pContourType.single.tt">Single p-contour</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.pContourType.double">Double</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.pContourType.double.tt">Double p-contour</key>
+
 <!-- Localization for chav1961.calc.plugins.calc.superget --> 
 		<key name="menu.curcuits.superget">Super-heterodyne contours</key>
 		<key name="menu.curcuits.superget.tt">Calculate super-heterodyne contours</key>
@@ -1807,6 +1844,42 @@
 		<key name="chav1961.calc.plugins.calc.contour.button.ind.tt">Расчет индуктивности</key>
 		<key name="chav1961.calc.plugins.calc.contour.button.cap">C</key>
 		<key name="chav1961.calc.plugins.calc.contour.button.cap.tt">Расчет емкости</key>
+
+<!-- Локализация для chav1961.calc.plugins.calc.pcontour --> 
+		<key name="menu.curcuits.pcontour">Параметры П-контура</key>
+		<key name="menu.curcuits.pcontour.tt">Параметры П-контура</key>
+		<key name="help.curcuits.pcontour.help">uri(curcuits.pcontour.help.cre)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.button.calc">Расчет</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.button.calc.tt">Рассчитать параемтрв П-контура</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.type">Тип контура</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.type.tt">Тип контура</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.inputresistance">Ra, (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.inputresistance.tt">Входное сопротивление, Ом</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.outputresistance">Rc, (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.outputresistance.tt">Выходное сопротивление, Ом</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.lowfrequency">Fmin, (Гц)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.lowfrequency.tt">Нижняя частота, Гц</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.highfrequency">Fmax, (Hz)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.highfrequency.tt">Верхняя частота, Гц</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.freequality">Q free</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.freequality.tt">Добротность ненагруженного контура</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.loadquality">Q load</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.loadquality.tt">Добротность нагруженного контура</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.indictance1">L1 (мкГн)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.indictance1.tt">L1, мкГн</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.indictance2">L2 (мкГн)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.indictance2.tt">L2 (мкГн)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.capacitance1">C1 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.capacitance1.tt">C1 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.capacitance2">C2 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.capacitance2.tt">C2 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.capacitance3">C3 (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.capacitance3.tt">C3 (пФ)</key>
+
+		<key name="chav1961.calc.plugins.calc.pcontour.pContourType.single">Одинарный</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.pContourType.single.tt">Одинарный П-контур</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.pContourType.double">Двойной</key>
+		<key name="chav1961.calc.plugins.calc.pcontour.pContourType.double.tt">Двойной П-контур</key>
 
 <!-- Локализация для chav1961.calc.plugins.calc.superget --> 
 		<key name="menu.curcuits.superget">Контуры супергетеродина</key>
