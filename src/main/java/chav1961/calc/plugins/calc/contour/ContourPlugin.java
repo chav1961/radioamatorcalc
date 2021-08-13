@@ -23,7 +23,7 @@ import chav1961.purelib.ui.interfaces.Action;
 public class ContourPlugin implements FormManager<Object,ContourPlugin>, ModuleAccessor {
 	private final LoggerFacade 	logger;
 	
-	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductanñe",tooltip="chav1961.calc.plugins.calc.contour.inductanñe.tt")
+	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductance",tooltip="chav1961.calc.plugins.calc.contour.inductance.tt")
 	@Format("9.2pzs")
 	public float inductance = 0;
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.capacity",tooltip="chav1961.calc.plugins.calc.contour.capacity.tt")

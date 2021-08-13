@@ -701,8 +701,8 @@
 		<key name="help.curcuits.contour.help">uri(curcuits.contour.help.cre)</key>
 		<key name="chav1961.calc.plugins.calc.contour">Contour parameters</key>
 		<key name="chav1961.calc.plugins.calc.contour.tt">Calculate any of contour parameter thru other two ones</key>
-		<key name="chav1961.calc.plugins.calc.contour.inductanсe">Inductance (uH)</key>
-		<key name="chav1961.calc.plugins.calc.contour.inductanсe.tt">Type Inductance in uH</key>
+		<key name="chav1961.calc.plugins.calc.contour.inductance">Inductance (uH)</key>
+		<key name="chav1961.calc.plugins.calc.contour.inductance.tt">Type Inductance in uH</key>
 		<key name="chav1961.calc.plugins.calc.contour.capacity">Capacity (pF)</key>
 		<key name="chav1961.calc.plugins.calc.contour.capacity.tt">Type capacity in pF</key>
 		<key name="chav1961.calc.plugins.calc.contour.frequency">Frequency (kHz)</key>
@@ -821,6 +821,32 @@
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.res.tt">Calculate resistance</key>
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap">C</key>
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap.tt">Calculate capacitance</key>
+		
+<!-- Localization for chav1961.calc.plugins.calc.resonant.tube --> 
+		<key name="menu.curcuits.resonant.tube">Resonant tube cascade</key>
+		<key name="menu.curcuits.resonant.tube.tt">Resonant tube cascade calculation</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.button.calc">Calculate</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.button.calc.tt">Calculate</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.resinternal">R internal (kOhms)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.resinternal.tt">Internal resistance of the tube, (kOhms)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.resgrid">R  grid (kOhms)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.resgrid.tt">Grid resistance of the next cascade, (kOhms)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.resinput">R  input (kOhms)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.resinput.tt">Input resistance of the next cascade, (kOhms)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.rescontour">R contour (Ohms)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.rescontour.tt">Contour resistance (Ohms)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.inductance">L (uH)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.inductance.tt">Contour inductance (uH)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.capacitance">C (pF)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.capacitance.tt">Contour capacitance (pF)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.conductance">Conductance (mA/V)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.conductance.tt">Tube conductance (mA/V)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.captransfer">Cag (pF)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.captransfer.tt">Tube transfer capacitance (pF)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.k">K</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.k.tt">Gain coefficient</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.kmax">Max available K</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.kmax.tt">Max available Gain coefficient</key>
 
 <!-- Localization for chav1961.calc.plugins.calc.timbre --> 
 		<key name="menu.curcuits.timbre">Timbre block parameters</key>
@@ -1830,8 +1856,8 @@
 		<key name="help.curcuits.contour.help">uri(curcuits.contour.help.cre)</key>
 		<key name="chav1961.calc.plugins.calc.contour">Параметры контура</key>
 		<key name="chav1961.calc.plugins.calc.contour.tt">Расчет любого параметра контура через два других параметра</key>
-		<key name="chav1961.calc.plugins.calc.contour.inductanсe">Индуктивность (uH)</key>
-		<key name="chav1961.calc.plugins.calc.contour.inductanсe.tt">Введите индуктивность в микрогенри</key>
+		<key name="chav1961.calc.plugins.calc.contour.inductance">Индуктивность (uH)</key>
+		<key name="chav1961.calc.plugins.calc.contour.inductance.tt">Введите индуктивность в микрогенри</key>
 		<key name="chav1961.calc.plugins.calc.contour.capacity">Емкость (pF)</key>
 		<key name="chav1961.calc.plugins.calc.contour.capacity.tt">Введите емкость в пикофарадах</key>
 		<key name="chav1961.calc.plugins.calc.contour.frequency">Частота (kHz)</key>
@@ -1949,6 +1975,32 @@
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.res.tt">Расчет сопротивления</key>
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap">C</key>
 		<key name="chav1961.calc.plugins.calc.phaseshift.button.cap.tt">Расчет емкости</key>
+
+<!-- Локализация для chav1961.calc.plugins.calc.resonant.tube --> 
+		<key name="menu.curcuits.resonant.tube">Резонансный каскад на лампе</key>
+		<key name="menu.curcuits.resonant.tube.tt">Расчет резонансного каскада на лампе</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.button.calc">Расчет</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.button.calc.tt">Расчет</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.resinternal">R внутр (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.resinternal.tt">Внутреннее сопротивление лампы, (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.resgrid">R сетки (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.resgrid.tt">Сопротивление сетки лампы следующего каскада, (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.resinput">R вх (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.resinput.tt">Входное сопротивление слебубщего каскада, (кОм)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.rescontour">R к (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.rescontour.tt">Сопротивление контура, (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.inductance">L (мкГн)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.inductance.tt">ИНдуктивность контура (мкГн)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.capacitance">C (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.capacitance.tt">Емкость контура (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.conductance">Крутизна (мА/В)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.conductance.tt">Крутизна характеристики лампы (мА/В)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.captransfer">Cпрох (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.captransfer.tt">проходная емкость лампы (пФ)</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.k">K</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.k.tt">Коэффициент усиления каскада</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.kmax">Kмакс</key>
+		<key name="chav1961.calc.plugins.calc.resonant.tube.kmax.tt">Максимальный устойчивый коэффициент усиления каскада</key>
 
 <!-- Локализация для chav1961.calc.plugins.calc.timbre --> 
 		<key name="menu.curcuits.timbre">Параметры темброблока</key>
