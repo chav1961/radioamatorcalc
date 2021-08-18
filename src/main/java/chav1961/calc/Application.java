@@ -503,7 +503,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 			app.setVisible(true);
 			
 			if (SystemTray.isSupported()) {
-				try(final JSystemTray		tray = new JSystemTray(LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated()), app.getClass().getResource("tray.png").toURI(), LocalizationKeys.TITLE_APPLICATION, app.trayMenu)) {
+				try(final JSystemTray		tray = new JSystemTray(LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated()), "Radioamator calc", app.getClass().getResource("tray.png").toURI(), LocalizationKeys.TITLE_APPLICATION, app.trayMenu)) {
 					final ActionListener	al = (e)->{
 												app.setVisible(!app.isVisible());
 											};
