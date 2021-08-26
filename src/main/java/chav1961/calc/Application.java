@@ -440,32 +440,33 @@ public class Application extends JFrame implements LocaleChangeListener {
 	}	
 	
 	@OnAction("action:/helpAbout")
-	private void showAboutScreen() {
-		try{final JEditorPane 	pane = new JEditorPane("text/html",null);
-			final Icon			icon = new ImageIcon(this.getClass().getResource("avatar.jpg"));
-			
-			try(final Reader	rdr = localizer.getContent(LocalizationKeys.HELP_ABOUT_APPLICATION,new MimeType("text","x-wiki.creole"),new MimeType("text","html"))) {
-				pane.read(rdr,null);
-			}
-			pane.setEditable(false);
-			pane.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-			pane.setPreferredSize(new Dimension(300,300));
-			pane.addHyperlinkListener(new HyperlinkListener() {
-								@Override
-								public void hyperlinkUpdate(final HyperlinkEvent e) {
-									if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-										try{Desktop.getDesktop().browse(e.getURL().toURI());
-										} catch (URISyntaxException | IOException exc) {
-											exc.printStackTrace();
-										}
-									}
-								}
-			});
-			
-			JOptionPane.showMessageDialog(this,pane,localizer.getValue(LocalizationKeys.TITLE_HELP_ABOUT_APPLICATION),JOptionPane.PLAIN_MESSAGE,icon);
-		} catch (LocalizationException | MimeParseException | IOException e) {
-			stateString.message(Severity.error,e.getLocalizedMessage());
-		}
+	private void showAboutScreen() throws URISyntaxException {
+		SwingUtils.showAboutScreen(this, localizer, LocalizationKeys.TITLE_HELP_ABOUT_APPLICATION, LocalizationKeys.HELP_ABOUT_APPLICATION, this.getClass().getResource("avatar.jpg").toURI(), new Dimension(300,300));
+//		try{final JEditorPane 	pane = new JEditorPane("text/html",null);
+//			final Icon			icon = new ImageIcon(this.getClass().getResource("avatar.jpg"));
+//			
+//			try(final Reader	rdr = localizer.getContent(LocalizationKeys.HELP_ABOUT_APPLICATION,new MimeType("text","x-wiki.creole"),new MimeType("text","html"))) {
+//				pane.read(rdr,null);
+//			}
+//			pane.setEditable(false);
+//			pane.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+//			pane.setPreferredSize(new Dimension(300,300));
+//			pane.addHyperlinkListener(new HyperlinkListener() {
+//								@Override
+//								public void hyperlinkUpdate(final HyperlinkEvent e) {
+//									if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+//										try{Desktop.getDesktop().browse(e.getURL().toURI());
+//										} catch (URISyntaxException | IOException exc) {
+//											exc.printStackTrace();
+//										}
+//									}
+//								}
+//			});
+//			
+//			JOptionPane.showMessageDialog(this,pane,localizer.getValue(LocalizationKeys.TITLE_HELP_ABOUT_APPLICATION),JOptionPane.PLAIN_MESSAGE,icon);
+//		} catch (LocalizationException | MimeParseException | IOException e) {
+//			stateString.message(Severity.error,e.getLocalizedMessage());
+//		}
 	}
 
 	private void placeTab(final JTabbedPane pane, final JPanel tab, final boolean canClose) throws MalformedURLException, LocalizationException, SyntaxException, ContentException {
