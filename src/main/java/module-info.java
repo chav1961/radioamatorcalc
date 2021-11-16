@@ -2,6 +2,7 @@ module chav1961.radioamatorcalc {
 	requires transitive chav1961.purelib;
 	requires java.desktop;
 	requires java.base;
+	requires java.sql;
 	
 	exports chav1961.calc.interfaces;
 	
@@ -25,6 +26,8 @@ module chav1961.radioamatorcalc {
 		, chav1961.calc.plugins.details.ringcurrenttrans.RingCurrentTransFactory
 		, chav1961.calc.plugins.details.ringmagnetic.RingMagneticFactory
 		, chav1961.calc.plugins.details.ringpulsetrans.RingPulseTransFactory
+		, chav1961.calc.plugins.details.flybacktrans.FlybackTransFactory
 		, chav1961.calc.plugins.devices.pulsestab.PulseStabFactory
-		, chav1961.calc.plugins.devices.powerfactor34262.PowerFactor34262Factory;
+		, chav1961.calc.plugins.devices.powerfactor34262.PowerFactor34262Factory
+		, chav1961.calc.plugins.devices.stepupautogenerator.StepUpAutoGeneratorFactory;
 }

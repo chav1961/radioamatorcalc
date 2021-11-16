@@ -10,6 +10,7 @@ public interface PluginInterface<T> {
 	
 	boolean canServe(URI plugin);
 	String getPluginName();
+	URI getPluginDescription();
 	T newIstance(LoggerFacade facade);
 	ContentNodeMetadata getMetadata();
 }

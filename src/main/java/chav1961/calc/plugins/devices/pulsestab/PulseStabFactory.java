@@ -1,9 +1,9 @@
 package chav1961.calc.plugins.devices.pulsestab;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import chav1961.calc.interfaces.PluginInterface;
-import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.model.Constants;
@@ -28,6 +28,15 @@ public class PulseStabFactory implements PluginInterface<PulseStabPlugin>{
 	@Override
 	public String getPluginName() {
 		return PLUGIN_NAME;
+	}
+
+	@Override
+	public URI getPluginDescription() {
+		try {
+			return this.getClass().getResource("help.cre").toURI();
+		} catch (URISyntaxException e) {
+			return null;
+		}
 	}
 
 	@Override

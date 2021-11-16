@@ -17,5 +17,7 @@ public @interface PluginProperties {
 	String pluginIconURI() default "";
 	String desktopIconURI() default "";
 	int leftWidth() default -1;
+	int topWidth() default -1;
 	String svgURI() default "";
+	int numberOfBars() default 1;
 }

@@ -4,6 +4,7 @@ encoding//src/main/java/chav1961/calc/plugins/calc/resonant/tube/ResonantTubePlu
 encoding//src/main/java/chav1961/calc/plugins/calc/untitled.txt=UTF-8
 encoding//src/main/java/chav1961/calc/plugins/details/CoilsUtil.java=UTF-8
 encoding//src/main/java/chav1961/calc/plugins/details/coils/CoilsPlugin.java=UTF-8
+encoding//src/main/java/chav1961/calc/plugins/details/flybacktrans/FlybackTransPlugin.java=UTF-8
 encoding//src/main/java/chav1961/calc/plugins/details/kerncoils/KernCoilsPlugin.java=UTF-8
 encoding//src/main/java/chav1961/calc/plugins/details/ringcoils/RingCoilsPlugin.java=UTF-8
 encoding//src/main/java/chav1961/calc/plugins/details/ringcurrenttrans/RingCurrentTransPlugin.java=UTF-8
@@ -16,4 +17,6 @@ encoding//src/main/resources/chav1961/calculator/i18n/help/en/curcuits.superget.
 encoding//src/main/resources/chav1961/calculator/i18n/help/ru/aboutApplication.cre=UTF-8
 encoding//src/main/resources/chav1961/calculator/i18n/help/ru/curcuits.contour.help.cre=UTF-8
 encoding//src/main/resources/chav1961/calculator/i18n/help/ru/curcuits.superget.help.cre=UTF-8
+encoding//src/main/resources/static/index.cre=UTF-8
 encoding//src/test/resources/plan.txt=UTF-8
+encoding/<project>=UTF-8

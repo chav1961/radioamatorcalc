@@ -1,6 +1,7 @@
 package chav1961.calc.plugins.calc.resonant.tube;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
@@ -29,6 +30,15 @@ public class ResonantTubeFactory implements PluginInterface<ResonantTubePlugin>{
 		return PLUGIN_NAME;
 	}
 
+	@Override
+	public URI getPluginDescription() {
+		try {
+			return this.getClass().getResource("help.cre").toURI();
+		} catch (URISyntaxException e) {
+			return null;
+		}
+	}
+	
 	@Override
 	public ContentNodeMetadata getMetadata() {
 		return new MutableContentNodeMetadata(getPluginName()

@@ -1,6 +1,7 @@
 package chav1961.calc.plugins.calc.timbre;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.plugins.calc.phaseshift.PhaseShiftPlugin;
@@ -29,6 +30,15 @@ public class TimbreFactory implements PluginInterface<TimbrePlugin>{
 	@Override
 	public String getPluginName() {
 		return PLUGIN_NAME;
+	}
+
+	@Override
+	public URI getPluginDescription() {
+		try {
+			return this.getClass().getResource("help.cre").toURI();
+		} catch (URISyntaxException e) {
+			return null;
+		}
 	}
 
 	@Override

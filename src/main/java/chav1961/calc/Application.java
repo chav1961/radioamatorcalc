@@ -193,22 +193,9 @@ public class Application extends JFrame implements LocaleChangeListener {
 						,SwingUtils.buildAnnotatedActionListener(this)
 						,"find");
 			SwingUtils.assignActionKey((JPanel)getContentPane(),SwingUtils.KS_HELP,(e)->showOverview(),"overview");
+			SwingUtils.assignExitMethod4MainWindow(this,()->exitApplication());
 			SwingUtils.centerMainWindow(this,0.75f);
 			
-			addWindowListener(new WindowListener() {
-				@Override public void windowOpened(WindowEvent e) {}
-				
-				@Override 
-				public void windowClosing(WindowEvent e) {
-					exitApplication();
-				}
-
-				@Override public void windowClosed(WindowEvent e) {}
-				@Override public void windowIconified(WindowEvent e) {}
-				@Override public void windowDeiconified(WindowEvent e) {}
-				@Override public void windowActivated(WindowEvent e) {}
-				@Override public void windowDeactivated(WindowEvent e) {}
-			});
 			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
 			pack();
 		}
@@ -442,31 +429,6 @@ public class Application extends JFrame implements LocaleChangeListener {
 	@OnAction("action:/helpAbout")
 	private void showAboutScreen() throws URISyntaxException {
 		SwingUtils.showAboutScreen(this, localizer, LocalizationKeys.TITLE_HELP_ABOUT_APPLICATION, LocalizationKeys.HELP_ABOUT_APPLICATION, this.getClass().getResource("avatar.jpg").toURI(), new Dimension(300,300));
-//		try{final JEditorPane 	pane = new JEditorPane("text/html",null);
-//			final Icon			icon = new ImageIcon(this.getClass().getResource("avatar.jpg"));
-//			
-//			try(final Reader	rdr = localizer.getContent(LocalizationKeys.HELP_ABOUT_APPLICATION,new MimeType("text","x-wiki.creole"),new MimeType("text","html"))) {
-//				pane.read(rdr,null);
-//			}
-//			pane.setEditable(false);
-//			pane.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-//			pane.setPreferredSize(new Dimension(300,300));
-//			pane.addHyperlinkListener(new HyperlinkListener() {
-//								@Override
-//								public void hyperlinkUpdate(final HyperlinkEvent e) {
-//									if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-//										try{Desktop.getDesktop().browse(e.getURL().toURI());
-//										} catch (URISyntaxException | IOException exc) {
-//											exc.printStackTrace();
-//										}
-//									}
-//								}
-//			});
-//			
-//			JOptionPane.showMessageDialog(this,pane,localizer.getValue(LocalizationKeys.TITLE_HELP_ABOUT_APPLICATION),JOptionPane.PLAIN_MESSAGE,icon);
-//		} catch (LocalizationException | MimeParseException | IOException e) {
-//			stateString.message(Severity.error,e.getLocalizedMessage());
-//		}
 	}
 
 	private void placeTab(final JTabbedPane pane, final JPanel tab, final boolean canClose) throws MalformedURLException, LocalizationException, SyntaxException, ContentException {
@@ -488,7 +450,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	public static void main(final String[] args) throws IOException, EnvironmentException, FlowException, ContentException, HeadlessException, URISyntaxException {
 		final ArgParser		parser = new ApplicationArgParser().parse(args);
 		final SubstitutableProperties		props = new SubstitutableProperties(Utils.mkProps(
-												 NanoServiceFactory.NANOSERVICE_PORT, ""+parser.getValue(ARG_HELP_PORT,int.class)
+												 NanoServiceFactory.NANOSERVICE_PORT, parser.getValue(ARG_HELP_PORT,String.class)
 												,NanoServiceFactory.NANOSERVICE_ROOT, "fsys:xmlReadOnly:root://chav1961.calc.Application/chav1961/calc/helptree.xml"
 												,NanoServiceFactory.NANOSERVICE_CREOLE_PROLOGUE_URI, Application.class.getResource("prolog.cre").toString() 
 												,NanoServiceFactory.NANOSERVICE_CREOLE_EPILOGUE_URI, Application.class.getResource("epilog.cre").toString() 
