@@ -86,7 +86,7 @@ public class PulseStabPlugin implements FormManager<Object,PulseStabPlugin>, Mod
 	}
 
 	@Override
-	public RefreshMode onAction(final PulseStabPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final PulseStabPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/PulseStabPlugin.calculate"	:
 				if (uIn == 0 || uOut == 0 || iOut == 0 || uRipple == 0) {

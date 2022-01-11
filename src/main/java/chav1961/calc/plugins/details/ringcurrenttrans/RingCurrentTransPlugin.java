@@ -87,7 +87,7 @@ public class RingCurrentTransPlugin implements FormManager<Object,RingCurrentTra
 	}
 
 	@Override
-	public RefreshMode onAction(final RingCurrentTransPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final RingCurrentTransPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/RingCurrentTransPlugin.calculate"	:
 				if (currentIn == 0 || currentOut == 0) {

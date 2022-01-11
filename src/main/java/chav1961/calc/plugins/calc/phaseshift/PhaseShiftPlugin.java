@@ -51,7 +51,7 @@ public class PhaseShiftPlugin implements FormManager<Object,PhaseShiftPlugin>, M
 	}
 
 	@Override
-	public RefreshMode onAction(final PhaseShiftPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final PhaseShiftPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/PhaseShiftPlugin.calcFreq"	:
 				if (resistance == 0 || capacity == 0) {

@@ -130,7 +130,7 @@ public class FlybackTransPlugin implements FormManager<Object,FlybackTransPlugin
 	}
 
 	@Override
-	public RefreshMode onAction(final FlybackTransPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final FlybackTransPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/FlybackTransPlugin.calculate"	:
 				if (inputVoltage == 0 || outputVoltage1 == 0 || outputCurrent1 == 0 || induction == 0 || frequency == 0) {

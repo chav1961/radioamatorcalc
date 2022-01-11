@@ -98,7 +98,7 @@ public class ResonantTubePlugin implements FormManager<Object,ResonantTubePlugin
 	}
 
 	@Override
-	public RefreshMode onAction(final ResonantTubePlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final ResonantTubePlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/ResonantTubePlugin.calculate"	:
 				if (resInternal == 0 || resGrid == 0 || inductance  == 0 || capacitance == 0 || conductance == 0 || capTransfer == 0) {

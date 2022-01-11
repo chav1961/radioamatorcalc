@@ -56,7 +56,7 @@ public class RingMagneticPlugin implements FormManager<Object,RingMagneticPlugin
 	}
 
 	@Override
-	public RefreshMode onAction(final RingMagneticPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final RingMagneticPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/RingMagneticPlugin.calcInductance"	:
 				if (numberOfCoils == 0 || current == 0) {

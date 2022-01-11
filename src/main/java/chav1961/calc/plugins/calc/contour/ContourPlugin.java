@@ -52,7 +52,7 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin>, ModuleA
 	}
 
 	@Override
-	public RefreshMode onAction(final ContourPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final ContourPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/ContourPlugin.calcFreq"	:
 				if (inductance == 0 || capacity == 0) {

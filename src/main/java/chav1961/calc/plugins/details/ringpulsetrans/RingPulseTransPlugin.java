@@ -123,7 +123,7 @@ public class RingPulseTransPlugin implements FormManager<Object,RingPulseTransPl
 	}
 
 	@Override
-	public RefreshMode onAction(final RingPulseTransPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final RingPulseTransPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/RingPulseTransPlugin.calculate"	:
 				if (inputVoltage == 0 || outputVoltage1 == 0 || outputCurrent1 == 0 || induction == 0 || frequency == 0) {

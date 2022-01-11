@@ -67,7 +67,7 @@ public class RingCoilsPlugin implements FormManager<Object,RingCoilsPlugin>, Mod
 	}
 
 	@Override
-	public RefreshMode onAction(final RingCoilsPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final RingCoilsPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/RingCoilsPlugin.calcInductance"	:
 				if (wireDiameter == 0 || coilsNumberOfCoils == 0) {

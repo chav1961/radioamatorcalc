@@ -113,7 +113,7 @@ public class StepUpAutoGeneratorPlugin implements FormManager<Object,StepUpAutoG
 	}
 
 	@Override
-	public RefreshMode onAction(final StepUpAutoGeneratorPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final StepUpAutoGeneratorPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/StepUpAutoGeneratorPlugin.calculate"	:
 				if (uIn == 0 || uOut == 0 || iOut == 0 || uRipple == 0) {

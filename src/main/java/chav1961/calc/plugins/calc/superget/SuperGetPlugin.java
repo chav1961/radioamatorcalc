@@ -103,7 +103,7 @@ public class SuperGetPlugin implements FormManager<Object,SuperGetPlugin>, Modul
 	}
 
 	@Override
-	public RefreshMode onAction(final SuperGetPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final SuperGetPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/SuperGetPlugin.calc"	:
 				if (freqMin == 0 || freqMax == 0 || freqOut == 0 || capMin == 0 || capMax == 0 || ind1 == 0 || ind2 == 0) {

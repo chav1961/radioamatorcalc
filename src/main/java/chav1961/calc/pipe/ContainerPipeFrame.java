@@ -620,7 +620,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 		}
 
 		@Override
-		public RefreshMode onAction(final T inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+		public RefreshMode onAction(final T inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 			final RefreshMode	mode = delegate.onAction(inst, id, actionName, parameter);
 			
 			if (mode != RefreshMode.NONE && mode != RefreshMode.REJECT) {

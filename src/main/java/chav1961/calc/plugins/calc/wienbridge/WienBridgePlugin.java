@@ -49,7 +49,7 @@ public class WienBridgePlugin implements FormManager<Object,WienBridgePlugin>, M
 	}
 
 	@Override
-	public RefreshMode onAction(final WienBridgePlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final WienBridgePlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/WienBridgePlugin.calcFreq"	:
 				if (resistance == 0 || capacity == 0) {

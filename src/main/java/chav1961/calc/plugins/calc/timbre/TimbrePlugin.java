@@ -115,7 +115,7 @@ public class TimbrePlugin implements FormManager<Object,TimbrePlugin>, ModuleAcc
 	}
 
 	@Override
-	public RefreshMode onAction(final TimbrePlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final TimbrePlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/TimbrePlugin.calculate"	:
 				if (resistance == 0 || kU == 0 || lowFrequency == 0 || highFrequency == 0) {

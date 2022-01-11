@@ -60,7 +60,7 @@ public class ActiveFilterPlugin implements FormManager<Object,ActiveFilterPlugin
 	}
 
 	@Override
-	public RefreshMode onAction(final ActiveFilterPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final ActiveFilterPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/ActiveFilterPlugin.calculate"	:
 				resistance1 = (float) (quality / (transmit * 2 * Math.PI * centralFreq * capacitance * 1e-9));

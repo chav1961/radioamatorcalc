@@ -85,7 +85,7 @@ public class PowerFactor34262Plugin implements FormManager<Object,PowerFactor342
 	}
 
 	@Override
-	public RefreshMode onAction(final PowerFactor34262Plugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final PowerFactor34262Plugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/PowerFactor34262Plugin.calculate"	:
 				if (uIn == 0 || uOut == 0 || iOut == 0 || tPulse == 0 || uCS == 0) {

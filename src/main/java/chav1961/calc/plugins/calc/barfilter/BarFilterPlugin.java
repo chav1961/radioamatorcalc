@@ -69,7 +69,7 @@ public class BarFilterPlugin implements FormManager<Object,BarFilterPlugin>, Mod
 	}
 
 	@Override
-	public RefreshMode onAction(final BarFilterPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final BarFilterPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/BarFilterPlugin.calculate"	:
 				return RefreshMode.RECORD_ONLY;

@@ -392,7 +392,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
-	@OnAction("action:/builtin.languages")
+	@OnAction("action:builtin:/builtin.languages")
 	private void selectLang(final Hashtable<String,String[]> langs) throws LocalizationException {
 		localizer.setCurrentLocale(SupportedLanguages.valueOf(langs.get("lang")[0]).getLocale());
 	}

@@ -29,5 +29,6 @@ module chav1961.radioamatorcalc {
 		, chav1961.calc.plugins.details.flybacktrans.FlybackTransFactory
 		, chav1961.calc.plugins.devices.pulsestab.PulseStabFactory
 		, chav1961.calc.plugins.devices.powerfactor34262.PowerFactor34262Factory
-		, chav1961.calc.plugins.devices.stepupautogenerator.StepUpAutoGeneratorFactory;
+		, chav1961.calc.plugins.devices.stepupautogenerator.StepUpAutoGeneratorFactory
+		, chav1961.calc.plugins.devices.forwardconvertor.ForwardConvertorFactory;
 }

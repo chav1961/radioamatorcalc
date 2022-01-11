@@ -71,7 +71,7 @@ public class CoilsPlugin implements FormManager<Object,CoilsPlugin>, ModuleAcces
 	}
 
 	@Override
-	public RefreshMode onAction(final CoilsPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final CoilsPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/CoilsPlugin.calcInductance"	:
 				if (coilsDiameter == 0 || coilsLength == 0 || wireDiameter == 0 || coilsNumberOfCoils == 0) {

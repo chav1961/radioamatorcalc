@@ -84,7 +84,7 @@ public class CurrentSettings implements FormManager<Object,CurrentSettings> {
 	}
 	
 	@Override
-	public RefreshMode onAction(final CurrentSettings inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final CurrentSettings inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/CurrentSettings.OK"		:
 				saveCurrent();

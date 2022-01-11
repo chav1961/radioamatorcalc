@@ -219,4 +219,8 @@ public enum RingType {
 	public float getSquare() {
 		return sqA;
 	}
+	
+	public float getSquareWindow() {
+		return getHeight() * getInnerDiameter();
+	}
 }

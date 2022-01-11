@@ -33,7 +33,7 @@ public class PP implements FormManager<Object,PP>, ModuleAccessor {
 	}
 
 	@Override
-	public RefreshMode onAction(final PP inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final PP inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		if ("app:action:/PP.calculate".equals(actionName)) {
 			test = test + test;
 			return RefreshMode.DEFAULT;

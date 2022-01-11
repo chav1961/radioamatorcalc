@@ -74,7 +74,7 @@ public class PContourPlugin implements FormManager<Object,PContourPlugin>, Modul
 	}
 
 	@Override
-	public RefreshMode onAction(final PContourPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final PContourPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/PContourPlugin.calculate"	:
 				final float	geomFrequency = (float) (2 * Math.PI * Math.sqrt(lowFrequency * highFrequency));

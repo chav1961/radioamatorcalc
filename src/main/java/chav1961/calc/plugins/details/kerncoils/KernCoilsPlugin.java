@@ -76,7 +76,7 @@ public class KernCoilsPlugin implements FormManager<Object,KernCoilsPlugin>, Mod
 	}
 
 	@Override
-	public RefreshMode onAction(final KernCoilsPlugin inst, final Object id, final String actionName, final Object parameter) throws FlowException, LocalizationException {
+	public RefreshMode onAction(final KernCoilsPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/KernCoilsPlugin.calcInductance"	:
 				if (wireDiameter == 0 || coilsNumberOfCoils == 0 || diameter == 0 || coilLength == 0) {
