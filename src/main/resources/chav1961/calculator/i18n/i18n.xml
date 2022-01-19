@@ -1209,8 +1209,10 @@
 <!-- Localization for chav1961.calc.plugins.devices.stepupautogenerator --> 
 		<key name="menu.devices.stepupautogenerator">Step-up autogenerator</key>
 		<key name="menu.devices.stepupautogenerator.tt">Single step-up autogenerator</key>
-		<key name="chav1961.calc.plugins.devices.stepupautogenerator.button">Calcualate</key>
-		<key name="chav1961.calc.plugins.devices.stepupautogenerator.button.tt">Calculate parameters</key>
+		<key name="chav1961.calc.plugins.devices.stepupautogenerator.calculate">Calculate</key>
+		<key name="chav1961.calc.plugins.devices.stepupautogenerator.calculate.tt">Calculate parameters</key>
+		<key name="chav1961.calc.plugins.devices.stepupautogenerator.calculatedetailed">Calculate detailed</key>
+		<key name="chav1961.calc.plugins.devices.stepupautogenerator.calculatedetailed.tt">Process detailed calculation with log</key>
 		<key name="chav1961.calc.plugins.devices.stepupautogenerator.uIn">Input voltage (V)</key>
 		<key name="chav1961.calc.plugins.devices.stepupautogenerator.uIn.tt">Input voltage of the autogenerator (V)</key>
 		<key name="chav1961.calc.plugins.devices.stepupautogenerator.uOut">Output voltage (V)</key>
@@ -2522,8 +2524,10 @@
 <!-- Локализация для chav1961.calc.plugins.devices.stepupautogenerator --> 
 		<key name="menu.devices.stepupautogenerator">Повышающий автогенератор</key>
 		<key name="menu.devices.stepupautogenerator.tt">Однотактный повышающий автогенератор</key>
-		<key name="chav1961.calc.plugins.devices.stepupautogenerator.button">Расчет</key>
-		<key name="chav1961.calc.plugins.devices.stepupautogenerator.button.tt">Выполнить расчет параметров</key>
+		<key name="chav1961.calc.plugins.devices.stepupautogenerator.calculate">Расчет</key>
+		<key name="chav1961.calc.plugins.devices.stepupautogenerator.calculate.tt">Выполнить расчет параметров</key>
+		<key name="chav1961.calc.plugins.devices.stepupautogenerator.calculatedetailed">Детальный расчет</key>
+		<key name="chav1961.calc.plugins.devices.stepupautogenerator.calculatedetailed.tt">Выполнить детальный расчет параметров с выдачей лога</key>
 		<key name="chav1961.calc.plugins.devices.stepupautogenerator.uIn">Входное напряжение (В)</key>
 		<key name="chav1961.calc.plugins.devices.stepupautogenerator.uIn.tt">Входное напряжение автогенератора (В)</key>
 		<key name="chav1961.calc.plugins.devices.stepupautogenerator.uOut">Выходное напряжение (В)</key>
