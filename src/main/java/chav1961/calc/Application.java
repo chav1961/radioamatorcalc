@@ -437,6 +437,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 		
 		if (menu != null) {
 			label.associate(pane, tab, menu);
+			SwingUtils.assignActionListeners(menu, tab);
 		}
 		else {
 			label.associate(pane, tab);
