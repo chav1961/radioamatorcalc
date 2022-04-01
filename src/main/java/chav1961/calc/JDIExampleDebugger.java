@@ -3,7 +3,10 @@ package chav1961.calc;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.sun.jdi.AbsentInformationException;
 import com.sun.jdi.Bootstrap;
@@ -15,7 +18,9 @@ import com.sun.jdi.StackFrame;
 import com.sun.jdi.VMDisconnectedException;
 import com.sun.jdi.Value;
 import com.sun.jdi.VirtualMachine;
+import com.sun.jdi.connect.AttachingConnector;
 import com.sun.jdi.connect.Connector;
+import com.sun.jdi.connect.Connector.Argument;
 import com.sun.jdi.connect.IllegalConnectorArgumentsException;
 import com.sun.jdi.connect.LaunchingConnector;
 import com.sun.jdi.connect.VMStartException;
@@ -122,6 +127,9 @@ public class JDIExampleDebugger {
 
     public static void main(String[] args) throws Exception {
 
+    	attachSharedMemory("test", 5);
+    	
+    	
         JDIExampleDebugger debuggerInstance = new JDIExampleDebugger();
         debuggerInstance.setDebugClass(JDIExampleDebuggee.class);
         int[] breakPoints = {8, 11};
@@ -168,8 +176,106 @@ public class JDIExampleDebugger {
 
     }
 
+    
+    public static VirtualMachine attachTCP(final InetSocketAddress addr, final int timeout) throws IOException, IllegalConnectorArgumentsException {
+    	if (addr == null) {
+    		throw new NullPointerException("Inet address to attach can't be null"); 
+    	}
+    	else if (timeout < 0) {
+    		throw new IllegalArgumentException("Timeout [timeout] can't be negative"); 
+    	}
+    	else {
+    		final String 	SUN_ATTACH_CONNECTOR = "com.sun.tools.jdi.SocketAttachingConnector";
+    		
+    		for (AttachingConnector con : Bootstrap.virtualMachineManager().attachingConnectors()) {
+    		    if (SUN_ATTACH_CONNECTOR.equals(con.getClass().getName())) {
+    		    	final Map<String, Connector.Argument> 	arguments = con.defaultArguments();
+
+    		    	for (Entry<String, Connector.Argument> item : arguments.entrySet()) {
+    		    		switch (item.getKey()) {
+    		    			case "host" 	:
+    		    				item.getValue().setValue(addr.getHostName());
+    		    				break;
+    		    			case "port" 	: 
+    		    				item.getValue().setValue(""+addr.getPort());
+    		    				break;
+    		    			case "timeout"	: 
+    		    				item.getValue().setValue(""+timeout);
+    		    				break;
+    		    		}
+    		    	}
+    		    	return con.attach(arguments);
+    		    }
+    		}
+    		throw new IOException("No TCP connectors available in the system");
+    	}
+    }
+
+    public static VirtualMachine attachSharedMemory(final String name, final int timeout) throws IOException, IllegalConnectorArgumentsException {
+    	if (name == null || name.isEmpty()) {
+    		throw new IllegalArgumentException("Shared name to attach can't be null"); 
+    	}
+    	else if (timeout < 0) {
+    		throw new IllegalArgumentException("Timeout [timeout] can't be negative"); 
+    	}
+    	else {
+    		final String 	SUN_ATTACH_CONNECTOR = "com.sun.tools.jdi.SharedMemoryAttachingConnector";
+    		
+    		for (AttachingConnector con : Bootstrap.virtualMachineManager().attachingConnectors()) {
+    		    if (SUN_ATTACH_CONNECTOR.equals(con.getClass().getName())) {
+    		    	final Map<String, Connector.Argument> 	arguments = con.defaultArguments();
+
+    		    	for (Entry<String, Connector.Argument> item : arguments.entrySet()) {
+    		    		switch (item.getKey()) {
+    		    			case "name" 	:
+    		    				item.getValue().setValue(name);
+    		    				break;
+    		    			case "timeout"	: 
+    		    				item.getValue().setValue(""+timeout);
+    		    				break;
+    		    		}
+    		    	}
+    		    	return con.attach(arguments);
+    		    }
+    		}
+    		throw new IOException("No shared memory connectors available in the system");
+    	}
+    }
 }
 
+
+//VirtualMachineManager vmm = Bootstrap.virtualMachineManager();
+//LaunchingConnector connector = vmm.defaultConnector();
+//Map<String, Argument> cArgs = connector.defaultArguments();
+//cArgs.get("options").setValue(options);
+//cArgs.get("main").setValue(main);
+//final VirtualMachine vm = connector.launch(cArgs);
+//
+//final Thread outThread = redirect("Subproc stdout",
+//                                  vm.process().getInputStream(),
+//                                  out);
+//final Thread errThread = redirect("Subproc stderr",
+//                                  vm.process().getErrorStream(),
+//                                  err);
+//if(killOnShutdown) {
+//    Runtime.getRuntime().addShutdownHook(new Thread() {
+//        public void run() {
+//            outThread.interrupt();
+//            errThread.interrupt();
+//            vm.process().destroy();
+//        }
+//    });
+//}
+//
+//return vm;
+//}
+//
+//private Thread redirect(String name, InputStream in, OutputStream out) {
+//Thread t = new StreamRedirectThread(name, in, out);
+//t.setDaemon(true);
+//t.start();
+//return t;
+//}
 
 
 //List<AttachingConnector> connectors = vmManager.attachingConnectors();
