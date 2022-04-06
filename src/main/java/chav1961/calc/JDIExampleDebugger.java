@@ -1,5 +1,7 @@
 package chav1961.calc;
 
+
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -34,8 +36,61 @@ import com.sun.jdi.request.BreakpointRequest;
 import com.sun.jdi.request.ClassPrepareRequest;
 import com.sun.jdi.request.StepRequest;
 
-public class JDIExampleDebugger {
+import chav1961.purelib.basic.PureLibSettings;
+import chav1961.purelib.basic.interfaces.LoggerFacade;
+import chav1961.purelib.basic.interfaces.LoggerFacadeOwner;
 
+public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnable {
+
+	public enum VMEvents {
+		ACCESS_WATCHPOINT_EVENT(com.sun.jdi.event.AccessWatchpointEvent.class),
+		BREAKPOINT_EVENT(com.sun.jdi.event.BreakpointEvent.class),
+		CLASS_PREPARE_EVENT(com.sun.jdi.event.ClassPrepareEvent.class),
+		CLASS_UNLOAD_EVENT(com.sun.jdi.event.ClassUnloadEvent.class),
+		EXCEPTION_EVENT(com.sun.jdi.event.ExceptionEvent.class),
+		METHOD_ENTRY_EVENT(com.sun.jdi.event.MethodEntryEvent.class),
+		METHOD_EXIT_EVENT(com.sun.jdi.event.MethodExitEvent.class),
+		MODIFICATION_WATCHPOINT_EVENT(com.sun.jdi.event.ModificationWatchpointEvent.class),
+		MONITOR_CONTENDED_ENTERED_EVENT(com.sun.jdi.event.MonitorContendedEnteredEvent.class),
+		MONITOR_CONTENDED_ENTER_EVENT(com.sun.jdi.event.MonitorContendedEnterEvent.class),
+		MONITOR_WAITED_EVENT(com.sun.jdi.event.MonitorWaitedEvent.class),
+		MONITOR_WAIT_EVENT(com.sun.jdi.event.MonitorWaitEvent.class),
+		STEP_EVENT(com.sun.jdi.event.StepEvent.class),
+		THREAD_DEATH_EVENT(com.sun.jdi.event.ThreadDeathEvent.class),
+		THREAD_START_EVENT(com.sun.jdi.event.ThreadStartEvent.class),
+		VM_DEATH_EVENT(com.sun.jdi.event.VMDeathEvent.class),
+		VM_DISCONNECT_EVENT(com.sun.jdi.event.VMDisconnectEvent.class),
+		VM_START_EVENT(com.sun.jdi.event.VMStartEvent.class),
+		WATCHPOINT_EVENT(com.sun.jdi.event.WatchpointEvent.class);
+		
+		private final Class<? extends com.sun.jdi.event.Event>	cl;
+		
+		VMEvents(final Class<? extends com.sun.jdi.event.Event> cl) {
+			this.cl = cl;
+		}
+		
+		public Class<? extends com.sun.jdi.event.Event> getEventClass() {
+			return cl;
+		}
+		
+		public static <T extends com.sun.jdi.event.Event> VMEvents valueOf(final T value) {
+			if (value == null) {
+				throw new NullPointerException("Value can't be null"); 
+			}
+			else {
+				final Class<? extends com.sun.jdi.event.Event>	cl = value.getClass();
+				
+				for (VMEvents event : values()) {
+					if (event.getEventClass().isAssignableFrom(cl)) {
+						return event;
+					}
+				}
+				throw new IllegalArgumentException("Value ["+value+"] has wrong class");
+			}
+		}
+	}
+	
+	
     private Class debugClass; 
     private int[] breakPointLines;
 
@@ -127,10 +182,10 @@ public class JDIExampleDebugger {
 
     public static void main(String[] args) throws Exception {
 
-    	attachSharedMemory("test", 5);
+  //  	attachSharedMemory("test", 5);
     	
     	
-        JDIExampleDebugger debuggerInstance = new JDIExampleDebugger();
+        JDIExampleDebugger debuggerInstance = new JDIExampleDebugger(PureLibSettings.CURRENT_LOGGER,null);
         debuggerInstance.setDebugClass(JDIExampleDebuggee.class);
         int[] breakPoints = {8, 11};
         debuggerInstance.setBreakPointLines(breakPoints);
@@ -143,19 +198,53 @@ public class JDIExampleDebugger {
             EventSet eventSet = null;
             while ((eventSet = vm.eventQueue().remove()) != null) {
                 for (Event event : eventSet) {
-                    if (event instanceof ClassPrepareEvent) {
-                        debuggerInstance.setBreakPoints(vm, (ClassPrepareEvent)event);
-                    }
-
-                    if (event instanceof BreakpointEvent) {
-                        event.request().disable();
-                        debuggerInstance.displayVariables((BreakpointEvent) event);
-                        debuggerInstance.enableStepRequest(vm, (BreakpointEvent)event);
-                    }
-
-                    if (event instanceof StepEvent) {
-                        debuggerInstance.displayVariables((StepEvent) event);
-                    }
+                	switch (VMEvents.valueOf(event)) {
+						case ACCESS_WATCHPOINT_EVENT:
+							break;
+						case BREAKPOINT_EVENT:
+	                        event.request().disable();
+	                        debuggerInstance.displayVariables((BreakpointEvent) event);
+	                        debuggerInstance.enableStepRequest(vm, (BreakpointEvent)event);
+							break;
+						case CLASS_PREPARE_EVENT:
+	                        debuggerInstance.setBreakPoints(vm, (ClassPrepareEvent)event);
+							break;
+						case CLASS_UNLOAD_EVENT:
+							break;
+						case EXCEPTION_EVENT:
+							break;
+						case METHOD_ENTRY_EVENT:
+							break;
+						case METHOD_EXIT_EVENT:
+							break;
+						case MODIFICATION_WATCHPOINT_EVENT:
+							break;
+						case MONITOR_CONTENDED_ENTERED_EVENT:
+							break;
+						case MONITOR_CONTENDED_ENTER_EVENT:
+							break;
+						case MONITOR_WAITED_EVENT:
+							break;
+						case MONITOR_WAIT_EVENT:
+							break;
+						case STEP_EVENT:
+	                        debuggerInstance.displayVariables((StepEvent) event);
+							break;
+						case THREAD_DEATH_EVENT:
+							break;
+						case THREAD_START_EVENT:
+							break;
+						case VM_DEATH_EVENT:
+							break;
+						case VM_DISCONNECT_EVENT:
+							break;
+						case VM_START_EVENT:
+							break;
+						case WATCHPOINT_EVENT:
+							break;
+						default:
+							throw new UnsupportedOperationException("Event type ["+VMEvents.valueOf(event)+"] is not supported yet");
+                	}
                     vm.resume();
                 }
             }
@@ -176,8 +265,67 @@ public class JDIExampleDebugger {
 
     }
 
+    private final LoggerFacade		logger;
+    private final VirtualMachine	vm;
     
-    public static VirtualMachine attachTCP(final InetSocketAddress addr, final int timeout) throws IOException, IllegalConnectorArgumentsException {
+    public JDIExampleDebugger(final LoggerFacade logger, final VirtualMachine vm) {
+    	if (logger == null) {
+    		throw new NullPointerException("Logger can't be null"); 
+    	}
+    	else if (vm == null) {
+    		throw new NullPointerException("Virtual machine can't be null"); 
+    	}
+    	else {
+    		this.logger = logger;
+    		this.vm = vm;
+    	}
+    }
+
+	@Override
+	public LoggerFacade getLogger() {
+		return logger;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+        
+        try{EventSet 	eventSet = null;
+            
+			while ((eventSet = vm.eventQueue().remove()) != null) {
+			    for (Event event : eventSet) {
+			        if (event instanceof ClassPrepareEvent) {
+			            setBreakPoints(vm, (ClassPrepareEvent)event);
+			        }
+
+			        if (event instanceof BreakpointEvent) {
+			            event.request().disable();
+			            displayVariables((BreakpointEvent) event);
+			            enableStepRequest(vm, (BreakpointEvent)event);
+			        }
+
+			        if (event instanceof StepEvent) {
+			            displayVariables((StepEvent) event);
+			        }
+			        vm.resume();
+			    }
+			}
+		} catch (InterruptedException | AbsentInformationException | IncompatibleThreadStateException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	@Override
+	public void close() throws IOException {
+		vm.dispose();
+	}
+
+	public static VirtualMachine launchApplication(final ProcessBuilder builder, final int timeout) throws IOException, IllegalConnectorArgumentsException {
+		return null;
+	}
+	
+    public static VirtualMachine attach2Application(final InetSocketAddress addr, final int timeout) throws IOException, IllegalConnectorArgumentsException {
     	if (addr == null) {
     		throw new NullPointerException("Inet address to attach can't be null"); 
     	}
@@ -211,7 +359,7 @@ public class JDIExampleDebugger {
     	}
     }
 
-    public static VirtualMachine attachSharedMemory(final String name, final int timeout) throws IOException, IllegalConnectorArgumentsException {
+    public static VirtualMachine attach2Application(final String name, final int timeout) throws IOException, IllegalConnectorArgumentsException {
     	if (name == null || name.isEmpty()) {
     		throw new IllegalArgumentException("Shared name to attach can't be null"); 
     	}
@@ -241,6 +389,7 @@ public class JDIExampleDebugger {
     		throw new IOException("No shared memory connectors available in the system");
     	}
     }
+
 }
 
 
