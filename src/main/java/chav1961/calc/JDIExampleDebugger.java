@@ -2,11 +2,12 @@ package chav1961.calc;
 
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.InetAddress;
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
+import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -22,10 +23,7 @@ import com.sun.jdi.Value;
 import com.sun.jdi.VirtualMachine;
 import com.sun.jdi.connect.AttachingConnector;
 import com.sun.jdi.connect.Connector;
-import com.sun.jdi.connect.Connector.Argument;
 import com.sun.jdi.connect.IllegalConnectorArgumentsException;
-import com.sun.jdi.connect.LaunchingConnector;
-import com.sun.jdi.connect.VMStartException;
 import com.sun.jdi.event.BreakpointEvent;
 import com.sun.jdi.event.ClassPrepareEvent;
 import com.sun.jdi.event.Event;
@@ -40,8 +38,11 @@ import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacadeOwner;
 
-public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnable {
-
+public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner {
+	private static final String	SOCKET_CONNECTOR = "com.sun.tools.jdi.SocketAttachingConnector"; 
+	private static final String	SHARED_MEMORY_CONNECTOR = "com.sun.tools.jdi.SharedMemoryAttachingConnector"; 
+	private static final String	PROCESS_CONNECTOR = "com.sun.tools.jdi.ProcessAttachingConnector"; 
+	
 	public enum VMEvents {
 		ACCESS_WATCHPOINT_EVENT(com.sun.jdi.event.AccessWatchpointEvent.class),
 		BREAKPOINT_EVENT(com.sun.jdi.event.BreakpointEvent.class),
@@ -65,7 +66,7 @@ public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnabl
 		
 		private final Class<? extends com.sun.jdi.event.Event>	cl;
 		
-		VMEvents(final Class<? extends com.sun.jdi.event.Event> cl) {
+		private VMEvents(final Class<? extends com.sun.jdi.event.Event> cl) {
 			this.cl = cl;
 		}
 		
@@ -91,47 +92,13 @@ public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnabl
 	}
 	
 	
-    private Class debugClass; 
-    private int[] breakPointLines;
-
-    public Class getDebugClass() {
-        return debugClass;
-    }
-
-    public void setDebugClass(Class debugClass) {
-        this.debugClass = debugClass;
-    }
-
-    public int[] getBreakPointLines() {
-        return breakPointLines;
-    }
-
-    public void setBreakPointLines(int[] breakPointLines) {
-        this.breakPointLines = breakPointLines;
-    }
-
-    /**
-     * Sets the debug class as the main argument in the connector and launches the VM
-     * @return VirtualMachine
-     * @throws IOException
-     * @throws IllegalConnectorArgumentsException
-     * @throws VMStartException
-     */
-    public VirtualMachine connectAndLaunchVM() throws IOException, IllegalConnectorArgumentsException, VMStartException {
-        LaunchingConnector launchingConnector = Bootstrap.virtualMachineManager().defaultConnector();
-        Map<String, Connector.Argument> arguments = launchingConnector.defaultArguments();
-        arguments.get("main").setValue(debugClass.getName());
-        VirtualMachine vm = launchingConnector.launch(arguments);
-        return vm;
-    }
-
     /**
      * Creates a request to prepare the debug class, add filter as the debug class and enables it
      * @param vm
      */
-    public void enableClassPrepareRequest(VirtualMachine vm) {
+    public void enableClassPrepareRequest(final Class<?> cl) {
         ClassPrepareRequest classPrepareRequest = vm.eventRequestManager().createClassPrepareRequest();
-        classPrepareRequest.addClassFilter(debugClass.getName());
+        classPrepareRequest.addClassFilter(cl.getName());
         classPrepareRequest.enable();
     }
 
@@ -141,7 +108,7 @@ public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnabl
      * @param event
      * @throws AbsentInformationException
      */
-    public void setBreakPoints(VirtualMachine vm, ClassPrepareEvent event) throws AbsentInformationException {
+    public void setBreakPoints(ClassPrepareEvent event, int... breakPointLines) throws AbsentInformationException {
         ClassType classType = (ClassType) event.referenceType();
         for(int lineNumber: breakPointLines) {
             Location location = classType.locationsOfLine(lineNumber).get(0);
@@ -156,7 +123,7 @@ public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnabl
      * @throws IncompatibleThreadStateException
      * @throws AbsentInformationException
      */
-    public void displayVariables(LocatableEvent event) throws IncompatibleThreadStateException, AbsentInformationException {
+    public void displayVariables(LocatableEvent event, Class<?> debugClass) throws IncompatibleThreadStateException, AbsentInformationException {
         StackFrame stackFrame = event.thread().frame(0);
         if(stackFrame.location().toString().contains(debugClass.getName())) {
             Map<LocalVariable, Value> visibleVariables = stackFrame.getValues(stackFrame.visibleVariables());
@@ -172,75 +139,86 @@ public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnabl
      * @param vm
      * @param event
      */
-    public void enableStepRequest(VirtualMachine vm, BreakpointEvent event) {
+    public StepRequest enableStepRequest(BreakpointEvent event, Class<?> debugClass, int... breakPointLines) {
         //enable step request for last break point
         if(event.location().toString().contains(debugClass.getName()+":"+breakPointLines[breakPointLines.length-1])) {
             StepRequest stepRequest = vm.eventRequestManager().createStepRequest(event.thread(), StepRequest.STEP_LINE, StepRequest.STEP_OVER);
-            stepRequest.enable();    
+            return stepRequest;
+        }
+        else {
+        	throw new RuntimeException(); 
         }
     }
 
     public static void main(String[] args) throws Exception {
+        final ProcessBuilder	pb = new ProcessBuilder("java","-jar","test.jar");
+        VirtualMachine 			vm = null;
+        Process					p = null;
+        JDIExampleDebugger 		debuggerInstance = null; 
 
-  //  	attachSharedMemory("test", 5);
-    	
-    	
-        JDIExampleDebugger debuggerInstance = new JDIExampleDebugger(PureLibSettings.CURRENT_LOGGER,null);
-        debuggerInstance.setDebugClass(JDIExampleDebuggee.class);
-        int[] breakPoints = {8, 11};
-        debuggerInstance.setBreakPointLines(breakPoints);
-        VirtualMachine vm = null;
-
+        pb.directory(new File("./"));
+        
         try {
-            vm = debuggerInstance.connectAndLaunchVM();
-            debuggerInstance.enableClassPrepareRequest(vm);
+            vm = launchApplication(pb, 30000);
+            p = vm.process();
 
+            debuggerInstance = new JDIExampleDebugger(PureLibSettings.CURRENT_LOGGER, vm);
+//            debuggerInstance.setDebugClass(JDIExampleDebuggee.class);
+            int[] breakPoints = {8, 11};
+//            debuggerInstance.setBreakPointLines(breakPoints);
+            
+            debuggerInstance.enableClassPrepareRequest(JDIExampleDebuggee.class);
+
+            boolean	exitLoop = false;
             EventSet eventSet = null;
-            while ((eventSet = vm.eventQueue().remove()) != null) {
+            
+            while (!exitLoop && (eventSet = vm.eventQueue().remove()) != null) {
                 for (Event event : eventSet) {
                 	switch (VMEvents.valueOf(event)) {
-						case ACCESS_WATCHPOINT_EVENT:
+						case ACCESS_WATCHPOINT_EVENT	:
 							break;
-						case BREAKPOINT_EVENT:
+						case BREAKPOINT_EVENT			:
 	                        event.request().disable();
-	                        debuggerInstance.displayVariables((BreakpointEvent) event);
-	                        debuggerInstance.enableStepRequest(vm, (BreakpointEvent)event);
+	                        debuggerInstance.displayVariables((BreakpointEvent) event, JDIExampleDebuggee.class);
+	                        debuggerInstance.enableStepRequest((BreakpointEvent)event, JDIExampleDebuggee.class, breakPoints);
 							break;
-						case CLASS_PREPARE_EVENT:
-	                        debuggerInstance.setBreakPoints(vm, (ClassPrepareEvent)event);
+						case CLASS_PREPARE_EVENT		:
+	                        debuggerInstance.setBreakPoints((ClassPrepareEvent)event);
 							break;
-						case CLASS_UNLOAD_EVENT:
+						case CLASS_UNLOAD_EVENT			:
 							break;
-						case EXCEPTION_EVENT:
+						case EXCEPTION_EVENT			:
 							break;
-						case METHOD_ENTRY_EVENT:
+						case METHOD_ENTRY_EVENT			:
 							break;
-						case METHOD_EXIT_EVENT:
+						case METHOD_EXIT_EVENT			:
 							break;
-						case MODIFICATION_WATCHPOINT_EVENT:
+						case MODIFICATION_WATCHPOINT_EVENT	:
 							break;
 						case MONITOR_CONTENDED_ENTERED_EVENT:
 							break;
-						case MONITOR_CONTENDED_ENTER_EVENT:
+						case MONITOR_CONTENDED_ENTER_EVENT	:
 							break;
-						case MONITOR_WAITED_EVENT:
+						case MONITOR_WAITED_EVENT		:
 							break;
-						case MONITOR_WAIT_EVENT:
+						case MONITOR_WAIT_EVENT			:
 							break;
-						case STEP_EVENT:
-	                        debuggerInstance.displayVariables((StepEvent) event);
+						case STEP_EVENT					:
+	                        debuggerInstance.displayVariables((StepEvent) event, JDIExampleDebuggee.class);
 							break;
-						case THREAD_DEATH_EVENT:
+						case THREAD_DEATH_EVENT			:
 							break;
-						case THREAD_START_EVENT:
+						case THREAD_START_EVENT			:
 							break;
-						case VM_DEATH_EVENT:
+						case VM_DEATH_EVENT				:
+							exitLoop = true;
 							break;
-						case VM_DISCONNECT_EVENT:
+						case VM_DISCONNECT_EVENT		:
+							exitLoop = true;
 							break;
-						case VM_START_EVENT:
+						case VM_START_EVENT				:
 							break;
-						case WATCHPOINT_EVENT:
+						case WATCHPOINT_EVENT			:
 							break;
 						default:
 							throw new UnsupportedOperationException("Event type ["+VMEvents.valueOf(event)+"] is not supported yet");
@@ -252,21 +230,18 @@ public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnabl
             System.out.println("Virtual Machine is disconnected.");
         } catch (Exception e) {
             e.printStackTrace();
-        } 
-        finally {
-            InputStreamReader reader = new InputStreamReader(vm.process().getInputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(System.out);
-            char[] buf = new char[512];
-
-            reader.read(buf);
-            writer.write(buf);
-            writer.flush();
+        } finally {
+        	if (p != null) {
+        		p.destroyForcibly();
+        		p.waitFor();
+        	}
         }
-
     }
 
     private final LoggerFacade		logger;
     private final VirtualMachine	vm;
+    private final Map<Class<?>,Map<Method,int[]>>	breakpoints = new IdentityHashMap<>(); 
+    private final Thread			t = new Thread(this::run);
     
     public JDIExampleDebugger(final LoggerFacade logger, final VirtualMachine vm) {
     	if (logger == null) {
@@ -278,6 +253,8 @@ public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnabl
     	else {
     		this.logger = logger;
     		this.vm = vm;
+    		this.t.setName(getClass().getName()+"-debugger");
+    		this.t.setDaemon(true);
     	}
     }
 
@@ -287,42 +264,119 @@ public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnabl
 	}
 
 	@Override
-	public void run() {
-		// TODO Auto-generated method stub
+	public void close() throws IOException {
+		t.interrupt();
+		vm.dispose();
+	}
+
+	public StepRequest processBreakpoint(final BreakpointEvent event) throws IncompatibleThreadStateException, AbsentInformationException {
+		displayVariables((BreakpointEvent) event, JDIExampleDebuggee.class);
+	    return enableStepRequest((BreakpointEvent)event, JDIExampleDebuggee.class, new int[]{8,11});
+	}
+	
+	public void processVMEvent() {
+	}	
+	
+	public void setBreakPoints(final Class<?> cl, final Method m, final int... lines) {
+	}
+	
+	public void setBreakPoints(final Class<?> cl, final int... lines) {
+
+	}
+	
+	public void clearBreakPoints(final Class<?> cl, final Method m) {
+
+	}
+	
+	public void clearBreakPoints(final Class<?> cl) {
+
+	}
+
+	protected VirtualMachine getVM() {
+		return vm;
+	}
+
+	private void run() {
+        EventSet eventSet = null;
         
-        try{EventSet 	eventSet = null;
-            
-			while ((eventSet = vm.eventQueue().remove()) != null) {
-			    for (Event event : eventSet) {
-			        if (event instanceof ClassPrepareEvent) {
-			            setBreakPoints(vm, (ClassPrepareEvent)event);
-			        }
-
-			        if (event instanceof BreakpointEvent) {
-			            event.request().disable();
-			            displayVariables((BreakpointEvent) event);
-			            enableStepRequest(vm, (BreakpointEvent)event);
-			        }
-
-			        if (event instanceof StepEvent) {
-			            displayVariables((StepEvent) event);
-			        }
-			        vm.resume();
-			    }
-			}
-		} catch (InterruptedException | AbsentInformationException | IncompatibleThreadStateException e) {
+        try{while (!Thread.interrupted() && (eventSet = vm.eventQueue().remove()) != null) {
+	            for (Event event : eventSet) {
+	            	switch (VMEvents.valueOf(event)) {
+						case ACCESS_WATCHPOINT_EVENT	:
+							break;
+						case BREAKPOINT_EVENT			:
+	                        event.request().disable();
+	                        processBreakpoint((BreakpointEvent) event).enable();
+							break;
+						case CLASS_PREPARE_EVENT		:
+	                        setBreakPoints((ClassPrepareEvent)event);
+							break;
+						case CLASS_UNLOAD_EVENT			:
+							break;
+						case EXCEPTION_EVENT			:
+							break;
+						case METHOD_ENTRY_EVENT			:
+							break;
+						case METHOD_EXIT_EVENT			:
+							break;
+						case MODIFICATION_WATCHPOINT_EVENT	:
+							break;
+						case MONITOR_CONTENDED_ENTERED_EVENT:
+							break;
+						case MONITOR_CONTENDED_ENTER_EVENT	:
+							break;
+						case MONITOR_WAITED_EVENT		:
+							break;
+						case MONITOR_WAIT_EVENT			:
+							break;
+						case STEP_EVENT					:
+	                        displayVariables((StepEvent) event, JDIExampleDebuggee.class);
+							break;
+						case THREAD_DEATH_EVENT			:
+							break;
+						case THREAD_START_EVENT			:
+							break;
+						case VM_DEATH_EVENT				:
+							break;
+						case VM_DISCONNECT_EVENT		:
+							break;
+						case VM_START_EVENT				:
+							break;
+						case WATCHPOINT_EVENT			:
+							break;
+						default:
+							throw new UnsupportedOperationException("Event type ["+VMEvents.valueOf(event)+"] is not supported yet");
+	            	}
+	                vm.resume();
+	            }
+	        }
+        } catch (IncompatibleThreadStateException | AbsentInformationException exc) {
+        	
+        } catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	
-	@Override
-	public void close() throws IOException {
-		vm.dispose();
-	}
-
 	public static VirtualMachine launchApplication(final ProcessBuilder builder, final int timeout) throws IOException, IllegalConnectorArgumentsException {
-		return null;
+		if (builder == null) {
+			throw new NullPointerException("Process builder can't be null"); 
+		}
+    	else if (timeout < 0) {
+    		throw new IllegalArgumentException("Timeout [timeout] can't be negative"); 
+    	}
+    	else {
+    		final List<String>	commands = builder.command();
+
+    		commands.add(1, "-Xdebug");
+    		commands.add(1, "-Xrunjdwp:server=y");
+    		builder.command(commands);
+    		
+    		final Process	p = builder.start();
+    		
+    		return attach2Application(p.pid(), timeout);
+    	}
 	}
 	
     public static VirtualMachine attach2Application(final InetSocketAddress addr, final int timeout) throws IOException, IllegalConnectorArgumentsException {
@@ -333,10 +387,8 @@ public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnabl
     		throw new IllegalArgumentException("Timeout [timeout] can't be negative"); 
     	}
     	else {
-    		final String 	SUN_ATTACH_CONNECTOR = "com.sun.tools.jdi.SocketAttachingConnector";
-    		
     		for (AttachingConnector con : Bootstrap.virtualMachineManager().attachingConnectors()) {
-    		    if (SUN_ATTACH_CONNECTOR.equals(con.getClass().getName())) {
+    		    if (SOCKET_CONNECTOR.equals(con.getClass().getName())) {
     		    	final Map<String, Connector.Argument> 	arguments = con.defaultArguments();
 
     		    	for (Entry<String, Connector.Argument> item : arguments.entrySet()) {
@@ -359,6 +411,35 @@ public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnabl
     	}
     }
 
+    public static VirtualMachine attach2Application(final long pid, final int timeout) throws IOException, IllegalConnectorArgumentsException {
+    	if (pid <= 0) {
+    		throw new IllegalArgumentException("Process id ["+pid+"] must be positive"); 
+    	}
+    	else if (timeout < 0) {
+    		throw new IllegalArgumentException("Timeout [timeout] can't be negative"); 
+    	}
+    	else {
+    		for (AttachingConnector con : Bootstrap.virtualMachineManager().attachingConnectors()) {
+    		    if (PROCESS_CONNECTOR.equals(con.getClass().getName())) {
+    		    	final Map<String, Connector.Argument> 	arguments = con.defaultArguments();
+
+    		    	for (Entry<String, Connector.Argument> item : arguments.entrySet()) {
+    		    		switch (item.getKey()) {
+    		    			case "pid" 	:
+    		    				item.getValue().setValue(""+pid);
+    		    				break;
+    		    			case "timeout"	: 
+    		    				item.getValue().setValue(""+timeout);
+    		    				break;
+    		    		}
+    		    	}
+    		    	return con.attach(arguments);
+    		    }
+    		}
+    		throw new IOException("No process connectors available in the system");
+    	}
+    }
+
     public static VirtualMachine attach2Application(final String name, final int timeout) throws IOException, IllegalConnectorArgumentsException {
     	if (name == null || name.isEmpty()) {
     		throw new IllegalArgumentException("Shared name to attach can't be null"); 
@@ -367,10 +448,8 @@ public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnabl
     		throw new IllegalArgumentException("Timeout [timeout] can't be negative"); 
     	}
     	else {
-    		final String 	SUN_ATTACH_CONNECTOR = "com.sun.tools.jdi.SharedMemoryAttachingConnector";
-    		
     		for (AttachingConnector con : Bootstrap.virtualMachineManager().attachingConnectors()) {
-    		    if (SUN_ATTACH_CONNECTOR.equals(con.getClass().getName())) {
+    		    if (SHARED_MEMORY_CONNECTOR.equals(con.getClass().getName())) {
     		    	final Map<String, Connector.Argument> 	arguments = con.defaultArguments();
 
     		    	for (Entry<String, Connector.Argument> item : arguments.entrySet()) {
@@ -389,56 +468,4 @@ public class JDIExampleDebugger implements Closeable, LoggerFacadeOwner, Runnabl
     		throw new IOException("No shared memory connectors available in the system");
     	}
     }
-
 }
-
-
-//VirtualMachineManager vmm = Bootstrap.virtualMachineManager();
-//LaunchingConnector connector = vmm.defaultConnector();
-//Map<String, Argument> cArgs = connector.defaultArguments();
-//cArgs.get("options").setValue(options);
-//cArgs.get("main").setValue(main);
-//final VirtualMachine vm = connector.launch(cArgs);
-//
-//final Thread outThread = redirect("Subproc stdout",
-//                                  vm.process().getInputStream(),
-//                                  out);
-//final Thread errThread = redirect("Subproc stderr",
-//                                  vm.process().getErrorStream(),
-//                                  err);
-//if(killOnShutdown) {
-//    Runtime.getRuntime().addShutdownHook(new Thread() {
-//        public void run() {
-//            outThread.interrupt();
-//            errThread.interrupt();
-//            vm.process().destroy();
-//        }
-//    });
-//}
-//
-//return vm;
-//}
-//
-//private Thread redirect(String name, InputStream in, OutputStream out) {
-//Thread t = new StreamRedirectThread(name, in, out);
-//t.setDaemon(true);
-//t.start();
-//return t;
-//}
-
-
-//List<AttachingConnector> connectors = vmManager.attachingConnectors();
-//AttachingConnector connector = connectors.get(0);
-//// in JDK 10, the first AttachingConnector is not the one we want
-//final String SUN_ATTACH_CONNECTOR = "com.sun.tools.jdi.SocketAttachingConnector";
-//for (AttachingConnector con : connectors) {
-//    if (con.getClass().getName().equals(SUN_ATTACH_CONNECTOR)) {
-//        connector = con;
-//        break;
-//    }
-//}
-//Map<String, Argument> arguments = connector.defaultArguments();
-//arguments.get(HOSTNAME).setValue(hostName);
-//arguments.get(PORT).setValue(String.valueOf(port));
-//arguments.get(TIMEOUT).setValue(String.valueOf(attachTimeout));
-//return new DebugSession(connector.attach(arguments));
