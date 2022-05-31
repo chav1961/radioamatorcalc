@@ -89,7 +89,7 @@ public class ReferenceTab<T> extends JPanel implements AutoCloseable, LocaleChan
 	private final ContentMetadataInterface	xmlModel;
 	private final JPopupMenu 				popup;
 	private final JToolBar 					toolbar;
-	private final AutoBuiltForm<T>			findForm;
+	private final AutoBuiltForm<T,?>		findForm;
 	private final TitledBorder				border = new TitledBorder("????");
 	
 	@LocaleResource(value="chav1961.calc.reference.name",tooltip="chav1961.calc.reference.name.tt")
@@ -100,7 +100,7 @@ public class ReferenceTab<T> extends JPanel implements AutoCloseable, LocaleChan
 	@Format("50r")
 	private String 							referenceDescription = "";
 	
-	public ReferenceTab(final JTabbedPane tabs, final Localizer localizer, final LoggerFacade logger, final String referenceId, final JTable innerComponent, final AutoBuiltForm<T> findForm) throws SyntaxException, LocalizationException, ContentException {
+	public ReferenceTab(final JTabbedPane tabs, final Localizer localizer, final LoggerFacade logger, final String referenceId, final JTable innerComponent, final AutoBuiltForm<T,?> findForm) throws SyntaxException, LocalizationException, ContentException {
 		if (tabs == null) {
 			throw new NullPointerException("Tabbed pane can't be null");
 		}

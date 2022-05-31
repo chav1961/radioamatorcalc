@@ -53,7 +53,7 @@ public class TubesReferences implements FormManager<Object,TubesReferences>, Loc
 	private final Localizer							localizer;
 	private final LoggerFacade						logger;
 	private final ContentMetadataInterface 			mdi;
-	private final AutoBuiltForm<TubesReferences>	form;
+	private final AutoBuiltForm<TubesReferences,?>	form;
 	private final InnerTableModel					model = new InnerTableModel();
 	private final JTable							table = new JTable(model);
 	
@@ -68,7 +68,7 @@ public class TubesReferences implements FormManager<Object,TubesReferences>, Loc
 			this.localizer = localizer;
 			this.logger = logger;
 			this.mdi = ContentModelFactory.forAnnotatedClass(this.getClass());
-			this.form = new AutoBuiltForm<TubesReferences>(mdi,localizer,PureLibSettings.INTERNAL_LOADER,this,this);
+			this.form = new AutoBuiltForm<TubesReferences,Object>(mdi,localizer,PureLibSettings.INTERNAL_LOADER,this,this);
 			
 			for (Module m : form.getUnnamedModules()) {
 				this.getClass().getModule().addExports(this.getClass().getPackageName(),m);
@@ -84,7 +84,7 @@ public class TubesReferences implements FormManager<Object,TubesReferences>, Loc
 		return table;
 	}
 
-	public AutoBuiltForm<TubesReferences> getForm() {
+	public AutoBuiltForm<TubesReferences,?> getForm() {
 		return this.form;
 	}
 

@@ -37,7 +37,7 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
 	private static final long 		serialVersionUID = 1L;
 	
     private final Localizer					localizer;
-    private final AutoBuiltForm<T>			abf;
+    private final AutoBuiltForm<T,?>		abf;
     private final InnerSVGPluginWindow<T>	w;
     
     public SVGPluginFrame(final Localizer localizer, final Class<T> instanceClass, final T instance) throws ContentException {
@@ -62,7 +62,7 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
         	
 			try{final FormManager<Object,T>	wrapper = new FormManagerWrapper<>((FormManager<Object,T>)instance, ()-> {refresh();},(name)->{selectIcon(name);}); 
 				
-				abf = new AutoBuiltForm<T>(ContentModelFactory.forAnnotatedClass(instanceClass),localizer,PureLibSettings.INTERNAL_LOADER,instance, wrapper);
+				abf = new AutoBuiltForm<T,Object>(ContentModelFactory.forAnnotatedClass(instanceClass),localizer,PureLibSettings.INTERNAL_LOADER,instance, wrapper);
 				
 				for (Module m : abf.getUnnamedModules()) {
 					instanceClass.getModule().addExports(instanceClass.getPackageName(),m);

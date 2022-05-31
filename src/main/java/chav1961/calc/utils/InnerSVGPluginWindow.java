@@ -35,17 +35,17 @@ public class InnerSVGPluginWindow<T> extends JPanel implements LocaleChangeListe
 	private static final long 			serialVersionUID = 1L;
 	private static final int 			MINIMUM_SVG_SCALE = 5;
 
-	private final AutoBuiltForm<T> 		form;
+	private final AutoBuiltForm<T,?>	form;
 	private final String[]				svgItems; 
 	private final Map<String,SVGViewer>	viewers = new HashMap<>();
 	private final JPanel				card = new JPanel(new CardLayout());
 	private String						currentView;
 
-	public InnerSVGPluginWindow(final Class<T> instanceClass, final String svgURI, final AutoBuiltForm<T> form) throws IOException, ContentException {
+	public InnerSVGPluginWindow(final Class<T> instanceClass, final String svgURI, final AutoBuiltForm<T,?> form) throws IOException, ContentException {
 		this(instanceClass,svgURI,form,null);
 	}
 
-	public InnerSVGPluginWindow(final Class<T> instanceClass, final String svgURI, final AutoBuiltForm<T> form, final SubstitutionSource ss) throws IOException, ContentException {
+	public InnerSVGPluginWindow(final Class<T> instanceClass, final String svgURI, final AutoBuiltForm<T,?> form, final SubstitutionSource ss) throws IOException, ContentException {
 		this.form = form;
 		this.svgItems = svgURI.split("\\,");
 		

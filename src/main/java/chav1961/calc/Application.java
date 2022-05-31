@@ -401,7 +401,7 @@ public class Application extends JFrame implements LocaleChangeListener {
 	private void settings() {
 		try{final ContentMetadataInterface				mdi = ContentModelFactory.forAnnotatedClass(CurrentSettings.class);
 		
-			try(final AutoBuiltForm<CurrentSettings>	abf = new AutoBuiltForm<CurrentSettings>(mdi,localizer,PureLibSettings.INTERNAL_LOADER,settings,settings)) {
+			try(final AutoBuiltForm<CurrentSettings,?>	abf = new AutoBuiltForm<CurrentSettings,Object>(mdi,localizer,PureLibSettings.INTERNAL_LOADER,settings,settings)) {
 				
 				for (Module m : abf.getUnnamedModules()) {
 					CurrentSettings.class.getModule().addExports(CurrentSettings.class.getPackageName(),m);

@@ -125,7 +125,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 	private final ScriptEditor					initialCode = new ScriptEditor();
 	private final JTabbedPane					tabs = new JTabbedPane();
 	private final LoggerFacade					logger;
-	private PluginAndForm<T>					paf = null;
+	private PluginAndForm<T,?>					paf = null;
 	@LocaleResource(value="chav1961.calc.pipe.container.caption",tooltip="chav1961.calc.pipe.container.caption.tt")
 	@Format("9.2pz")
 	public float temp = 0;
@@ -552,8 +552,8 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 		((JButton)SwingUtils.findComponentByName(toolbar,PIPE_MENU_REMOVE_LINK)).setEnabled(buttonsState);
 	}
 
-	private PluginAndForm<T> buildPluginAndForm(final FormManager<?,?> content) throws SyntaxException, ContentException, LocalizationException, NullPointerException, IllegalArgumentException {
-    	final PluginAndForm<T>	paf = new PluginAndForm<>();
+	private PluginAndForm<T,?> buildPluginAndForm(final FormManager<?,?> content) throws SyntaxException, ContentException, LocalizationException, NullPointerException, IllegalArgumentException {
+    	final PluginAndForm<T,?>	paf = new PluginAndForm<>();
 
     	paf.instanceClass = (Class<T>) content.getClass();
 		paf.innerMdi = ContentModelFactory.forAnnotatedClass(paf.instanceClass);
@@ -571,7 +571,7 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
     	
 		try{final FormManager<Object,T>	wrapper = new FormManagerWrapper<>((FormManager<Object,T>)content, ()-> {refresh();}); 
 			
-			paf.abf = new AutoBuiltForm<T>(paf.innerMdi,localizer,PureLibSettings.INTERNAL_LOADER, (T) content, wrapper);
+			paf.abf = new AutoBuiltForm(paf.innerMdi,localizer,PureLibSettings.INTERNAL_LOADER, (T) content, wrapper);
 			
 			for (Module m : paf.abf.getUnnamedModules()) {
 				paf.instanceClass.getModule().addExports(paf.instanceClass.getPackageName(),m);
@@ -635,9 +635,9 @@ public class ContainerPipeFrame<T> extends PipePluginFrame<ContainerPipeFrame> {
 		}
 	}
 	
-	private static class PluginAndForm<T> {
+	private static class PluginAndForm<T,K> {
 		private InnerSVGPluginWindow<T>		w;
-		private AutoBuiltForm<T>			abf;
+		private AutoBuiltForm<T,K>			abf;
 		private Class<T>					instanceClass; 
 		private ContentMetadataInterface	innerMdi;
 		private Localizer					pluginLocalizer;
