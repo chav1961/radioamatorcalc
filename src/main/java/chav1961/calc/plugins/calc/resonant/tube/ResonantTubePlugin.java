@@ -107,12 +107,13 @@ public class ResonantTubePlugin implements FormManager<Object,ResonantTubePlugin
 				}
 				else {
 					final float	omega = (float) (1 / (2 * Math.PI * Math.sqrt(inductance * capacitance)));
-					final float	x = (float) Math.sqrt(inductance / capacitance);
+					final float	x = (float) 1e3 * inductance / (capacitance * resContour);
+					final float	x2 = (float) (1e3 * Math.sqrt(inductance / capacitance));
 					final float dRc = x * x / resGrid;  
 					final float dRi = x * x / resInternal;  
 					final float dRinput = resInput == 0 ? 0 : x * x / resInput;  
-					final float	rEq = inductance / (capacitance * (resContour + dRc + dRi + dRinput));
-					final float	qEq = x / (resContour + dRc + dRi + dRinput);
+					final float	rEq = (float) (1e3 * inductance / (capacitance * (resContour + dRc + dRi + dRinput)));
+					final float	qEq = x2 / (resContour + dRc + dRi + dRinput);
 					
 					k = conductance * rEq;
 					kMax = (float) (0.4 * Math.sqrt(conductance  / (omega * capTransfer)));

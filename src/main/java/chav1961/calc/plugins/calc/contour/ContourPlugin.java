@@ -19,7 +19,7 @@ import chav1961.purelib.ui.interfaces.Action;
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.contour.button.freq",tooltip="chav1961.calc.plugins.calc.contour.button.freq.tt"),actionString="calcFreq")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.contour.button.ind",tooltip="chav1961.calc.plugins.calc.contour.button.ind.tt"),actionString="calcInd")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.contour.button.cap",tooltip="chav1961.calc.plugins.calc.contour.button.cap.tt"),actionString="calcCap")
-@PluginProperties(width=500,height=175,leftWidth=250,svgURI="schema.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
+@PluginProperties(width=500,height=225,leftWidth=250,svgURI="schema.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
 public class ContourPlugin implements FormManager<Object,ContourPlugin>, ModuleAccessor {
 	private final LoggerFacade 	logger;
 	
@@ -32,9 +32,15 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin>, ModuleA
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.frequency",tooltip="chav1961.calc.plugins.calc.contour.frequency.tt")
 	@Format("9.2pzs")
 	public float frequency = 0;
+	@LocaleResource(value="chav1961.calc.plugins.calc.contour.resistance",tooltip="chav1961.calc.plugins.calc.contour.resistance.tt")
+	@Format("9.2pzs")
+	public float resistance = 0;
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.charresistance",tooltip="chav1961.calc.plugins.calc.contour.charresistance.tt")
 	@Format("9.2ro")
 	public float charResistance = 0;
+	@LocaleResource(value="chav1961.calc.plugins.calc.contour.resonantresistance",tooltip="chav1961.calc.plugins.calc.contour.resonantresistance.tt")
+	@Format("9.2ro")
+	public float resonantResistance = 0;
 
 	
 	public ContourPlugin(final LoggerFacade logger) {
@@ -62,6 +68,7 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin>, ModuleA
 				else {
 					frequency = (float) frequencyByInductanceAndCapacity(inductance,capacity);
 					charResistance = (float) charResistanceByInductanceAndCapacity(inductance,capacity);
+					resonantResistance = (float) resonantResistanceByInductanceCapacityAndResistance(inductance,capacity,resistance);
 					return RefreshMode.RECORD_ONLY;
 				}
 			case "app:action:/ContourPlugin.calcInd"	:
@@ -72,6 +79,7 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin>, ModuleA
 				else {
 					inductance = (float) inductanceByFrequencyAndCapacity(frequency,capacity);
 					charResistance = (float) charResistanceByInductanceAndCapacity(inductance,capacity);
+					resonantResistance = (float) resonantResistanceByInductanceCapacityAndResistance(inductance,capacity,resistance);
 					return RefreshMode.RECORD_ONLY;
 				}
 			case "app:action:/ContourPlugin.calcCap"	:
@@ -82,6 +90,7 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin>, ModuleA
 				else {
 					capacity = (float) capacityByFrequencyAndInductance(frequency,inductance);
 					charResistance = (float) charResistanceByInductanceAndCapacity(inductance,capacity);
+					resonantResistance = (float) resonantResistanceByInductanceCapacityAndResistance(inductance,capacity,resistance);
 					return RefreshMode.RECORD_ONLY;
 				}
 			default :
@@ -140,4 +149,22 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin>, ModuleA
 	public static double charResistanceByInductanceAndCapacity(final double inductance, final double capacity) {
 		return Math.sqrt(inductance/capacity);
 	}
+
+	/**
+	 * <p>Calculate resonant resistance by inductance and capacity</p>
+	 * @param inductance inductance to calculate (uH)
+	 * @param capacity capacity to calculate (pF)
+	 * @param resistance coil resistance (Ohms)
+	 * @return resistance calculated (kOhms)
+	 */
+	public static double resonantResistanceByInductanceCapacityAndResistance(final double inductance, final double capacity, final double resistance) {
+		if (resistance == 0) {
+			return 0;
+		}
+		else {
+			return 1e3*inductance/(capacity*resistance);
+		}
+	}
+
+
 }
