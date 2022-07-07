@@ -1318,65 +1318,6 @@
 		<key name="chav1961.calc.plugins.devices.forwardconvertor.cOut3">Capacitance III (uF)</key>
 		<key name="chav1961.calc.plugins.devices.forwardconvertor.cOut3.tt">Capacitance III (uF)</key>
 
-<!-- Main menu -->
-		<key name="menu.main.file">File</key>
-		<key name="menu.main.file.tt">File menu</key>
-		<key name="menu.main.file.new">New</key>
-		<key name="menu.main.file.new.tt">Create new image</key>
-		<key name="menu.main.file.load">Load</key>
-		<key name="menu.main.file.load.tt">Load image</key>
-		<key name="menu.main.file.save">Save</key>
-		<key name="menu.main.file.save.tt">Save image</key>
-		<key name="menu.main.file.saveAs">Save as...</key>
-		<key name="menu.main.file.saveAs.tt">Save image as...</key>
-		<key name="menu.main.file.exit">Exit</key>
-		<key name="menu.main.file.exit.tt">Exit application</key>
-
-<!-- Toolbar ColorBar -->
-		<key name="toolbar.colorbar.black"></key>
-		<key name="toolbar.colorbar.black.tt"></key>
-		<key name="toolbar.colorbar.blue"></key>
-		<key name="toolbar.colorbar.blue.tt"></key>
-		<key name="toolbar.colorbar.cyan"></key>
-		<key name="toolbar.colorbar.cyan.tt"></key>
-		<key name="toolbar.colorbar.darkgray"></key>
-		<key name="toolbar.colorbar.darkgray.tt"></key>
-		<key name="toolbar.colorbar.gray"></key>
-		<key name="toolbar.colorbar.gray.tt"></key>
-		<key name="toolbar.colorbar.green"></key>
-		<key name="toolbar.colorbar.green.tt"></key>
-		<key name="toolbar.colorbar.lightgray"></key>
-		<key name="toolbar.colorbar.lightgray.tt"></key>
-		<key name="toolbar.colorbar.magenta"></key>
-		<key name="toolbar.colorbar.magenta.tt"></key>
-		<key name="toolbar.colorbar.orange"></key>
-		<key name="toolbar.colorbar.orange.tt"></key>
-		<key name="toolbar.colorbar.pink"></key>
-		<key name="toolbar.colorbar.pink.tt"></key>
-		<key name="toolbar.colorbar.red"></key>
-		<key name="toolbar.colorbar.red.tt"></key>
-		<key name="toolbar.colorbar.white"></key>
-		<key name="toolbar.colorbar.white.tt"></key>
-		<key name="toolbar.colorbar.yellow"></key>
-		<key name="toolbar.colorbar.yellow.tt"></key>
-		<key name="toolbar.colorbar.choose"></key>
-		<key name="toolbar.colorbar.choose.tt"></key>
-
-<!-- Toolbar ModeBar -->
-		<key name="toolbar.modebar.pen"></key>
-		<key name="toolbar.modebar.pen.tt"></key>
-		<key name="toolbar.modebar.brush"></key>
-		<key name="toolbar.modebar.brush.tt"></key>
-		<key name="toolbar.modebar.erase"></key>
-		<key name="toolbar.modebar.erase.tt"></key>
-		<key name="toolbar.modebar.text"></key>
-		<key name="toolbar.modebar.text.tt"></key>
-		<key name="toolbar.modebar.line"></key>
-		<key name="toolbar.modebar.line.tt"></key>
-		<key name="toolbar.modebar.ellipse"></key>
-		<key name="toolbar.modebar.ellipse.tt"></key>
-		<key name="toolbar.modebar.rect"></key>
-		<key name="toolbar.modebar.rect.tt"></key>
 		
 	</lang>
 	<lang name="ru">
@@ -2696,67 +2637,6 @@
 		<key name="chav1961.calc.plugins.devices.forwardconvertor.cOut2.tt">Емкость конденсатора II (мкФ)</key>
 		<key name="chav1961.calc.plugins.devices.forwardconvertor.cOut3">Конденсатор III (мкФ)</key>
 		<key name="chav1961.calc.plugins.devices.forwardconvertor.cOut3.tt">Емкость конденсатора III (мкФ)</key>
-
-<!-- Main menu -->
-		<key name="menu.main.file">File</key>
-		<key name="menu.main.file.tt">File menu</key>
-		<key name="menu.main.file.new">New</key>
-		<key name="menu.main.file.new.tt">Create new image</key>
-		<key name="menu.main.file.load">Load</key>
-		<key name="menu.main.file.load.tt">Load image</key>
-		<key name="menu.main.file.save">Save</key>
-		<key name="menu.main.file.save.tt">Save image</key>
-		<key name="menu.main.file.saveAs">Save as...</key>
-		<key name="menu.main.file.saveAs.tt">Save image as...</key>
-		<key name="menu.main.file.exit">Exit</key>
-		<key name="menu.main.file.exit.tt">Exit application</key>
-
-<!-- Toolbar ColorBar -->
-		<key name="toolbar.colorbar.black"></key>
-		<key name="toolbar.colorbar.black.tt"></key>
-		<key name="toolbar.colorbar.blue"></key>
-		<key name="toolbar.colorbar.blue.tt"></key>
-		<key name="toolbar.colorbar.cyan"></key>
-		<key name="toolbar.colorbar.cyan.tt"></key>
-		<key name="toolbar.colorbar.darkgray"></key>
-		<key name="toolbar.colorbar.darkgray.tt"></key>
-		<key name="toolbar.colorbar.gray"></key>
-		<key name="toolbar.colorbar.gray.tt"></key>
-		<key name="toolbar.colorbar.green"></key>
-		<key name="toolbar.colorbar.green.tt"></key>
-		<key name="toolbar.colorbar.lightgray"></key>
-		<key name="toolbar.colorbar.lightgray.tt"></key>
-		<key name="toolbar.colorbar.magenta"></key>
-		<key name="toolbar.colorbar.magenta.tt"></key>
-		<key name="toolbar.colorbar.orange"></key>
-		<key name="toolbar.colorbar.orange.tt"></key>
-		<key name="toolbar.colorbar.pink"></key>
-		<key name="toolbar.colorbar.pink.tt"></key>
-		<key name="toolbar.colorbar.red"></key>
-		<key name="toolbar.colorbar.red.tt"></key>
-		<key name="toolbar.colorbar.white"></key>
-		<key name="toolbar.colorbar.white.tt"></key>
-		<key name="toolbar.colorbar.yellow"></key>
-		<key name="toolbar.colorbar.yellow.tt"></key>
-		<key name="toolbar.colorbar.choose"></key>
-		<key name="toolbar.colorbar.choose.tt"></key>
-
-<!-- Toolbar ModeBar -->
-		<key name="toolbar.modebar.pen"></key>
-		<key name="toolbar.modebar.pen.tt"></key>
-		<key name="toolbar.modebar.brush"></key>
-		<key name="toolbar.modebar.brush.tt"></key>
-		<key name="toolbar.modebar.erase"></key>
-		<key name="toolbar.modebar.erase.tt"></key>
-		<key name="toolbar.modebar.text"></key>
-		<key name="toolbar.modebar.text.tt"></key>
-		<key name="toolbar.modebar.line"></key>
-		<key name="toolbar.modebar.line.tt"></key>
-		<key name="toolbar.modebar.ellipse"></key>
-		<key name="toolbar.modebar.ellipse.tt"></key>
-		<key name="toolbar.modebar.rect"></key>
-		<key name="toolbar.modebar.rect.tt"></key>
-
 
 	</lang>	
 </localization>
