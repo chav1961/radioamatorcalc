@@ -7,6 +7,7 @@ module chav1961.radioamatorcalc {
 	requires java.naming;
 	
 	exports chav1961.calc.interfaces;
+	exports chav1961.calc.edit to chav1961.purelib;
 	
 	opens chav1961.calc to chav1961.purelib;
 	opens chav1961.calc.pipe to chav1961.purelib;
