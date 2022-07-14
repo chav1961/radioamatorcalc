@@ -52,4 +52,26 @@ public class Test2 extends JFrame {
          }
       });
    }
+   /*
+   
+   @Override protected void paintComponent(Graphics g) {
+	   Graphics2D g2 = (Graphics2D) g.create();
+	   g2.setPaint(getForeground());
+	   Insets i = getInsets();
+	   float x = i.left;
+	   float y = i.top;
+	   int w = getWidth() - i.left - i.right;
+	   AttributedString as = new AttributedString(getText());
+	   as.addAttribute(TextAttribute.FONT, getFont());
+	   AttributedCharacterIterator aci = as.getIterator();
+	   FontRenderContext frc = g2.getFontRenderContext();
+	   LineBreakMeasurer lbm = new LineBreakMeasurer(aci, frc);
+	   while (lbm.getPosition() < aci.getEndIndex()) {
+	     TextLayout tl = lbm.nextLayout(w);
+	     tl.draw(g2, x, y + tl.getAscent());
+	     y += tl.getDescent() + tl.getLeading() + tl.getAscent();
+	   }
+	   g2.dispose();
+	 }
+	 */ 
 }
