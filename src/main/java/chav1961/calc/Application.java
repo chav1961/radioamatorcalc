@@ -132,15 +132,16 @@ public class Application extends JFrame implements LocaleChangeListener {
 			this.logger = logger;
 			this.localHelpPort = helpPort;
 			this.latch = latch;
+
+			parentLocalizer.push(localizer);
+			parentLocalizer.addLocaleChangeListener(this);
+			
 			this.stateString = new JStateString(this.localizer,10,true);
 			this.settings = new CurrentSettings(this.localizer,this.logger);
 			
 			stateString.setAutomaticClearTime(Severity.error,1,TimeUnit.MINUTES);
 			stateString.setAutomaticClearTime(Severity.warning,15,TimeUnit.SECONDS);
 			stateString.setAutomaticClearTime(Severity.info,5,TimeUnit.SECONDS);
-			
-			parentLocalizer.push(localizer);
-			localizer.addLocaleChangeListener(this);
 			
 			this.menu = SwingUtils.toJComponent(xda.byUIPath(URI.create("ui:/model/navigation.top.mainmenu")),JMenuBar.class); 
 			SwingUtils.assignActionListeners(this.menu,this);
