@@ -42,15 +42,28 @@ public class PowerFactor34262Factory implements PluginInterface<PowerFactor34262
 
 	@Override
 	public ContentNodeMetadata getMetadata() {
-		return new MutableContentNodeMetadata(getPluginName()
-				, PowerFactor34262Plugin.class
-				, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
-				, null
-				, PowerFactor34262Plugin.class.getAnnotation(LocaleResource.class).value()
-				, PowerFactor34262Plugin.class.getAnnotation(LocaleResource.class).tooltip()
-				, PowerFactor34262Plugin.class.getAnnotation(LocaleResource.class).help()
-				, null
-				, PLUGIN_URI
-				, null);
+		try {
+			return new MutableContentNodeMetadata(getPluginName()
+					, PowerFactor34262Plugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, PowerFactor34262Plugin.class.getAnnotation(LocaleResource.class).value()
+					, PowerFactor34262Plugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, PowerFactor34262Plugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, getClass().getResource("frameicon.png").toURI());
+		} catch (URISyntaxException e) {
+			return new MutableContentNodeMetadata(getPluginName()
+					, PowerFactor34262Plugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, PowerFactor34262Plugin.class.getAnnotation(LocaleResource.class).value()
+					, PowerFactor34262Plugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, PowerFactor34262Plugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, null);
+		}
 	}
 }

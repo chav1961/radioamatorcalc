@@ -41,15 +41,28 @@ public class ResonantTubeFactory implements PluginInterface<ResonantTubePlugin>{
 	
 	@Override
 	public ContentNodeMetadata getMetadata() {
-		return new MutableContentNodeMetadata(getPluginName()
-				, ResonantTubePlugin.class
-				, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
-				, null
-				, ResonantTubePlugin.class.getAnnotation(LocaleResource.class).value()
-				, ResonantTubePlugin.class.getAnnotation(LocaleResource.class).tooltip()
-				, ResonantTubePlugin.class.getAnnotation(LocaleResource.class).help()
-				, null
-				, PLUGIN_URI
-				, null);
+		try {
+			return new MutableContentNodeMetadata(getPluginName()
+					, ResonantTubePlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, ResonantTubePlugin.class.getAnnotation(LocaleResource.class).value()
+					, ResonantTubePlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, ResonantTubePlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, getClass().getResource("frameicon.png").toURI());
+		} catch (URISyntaxException e) {
+			return new MutableContentNodeMetadata(getPluginName()
+					, ResonantTubePlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, ResonantTubePlugin.class.getAnnotation(LocaleResource.class).value()
+					, ResonantTubePlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, ResonantTubePlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, null);
+		}
 	}
 }

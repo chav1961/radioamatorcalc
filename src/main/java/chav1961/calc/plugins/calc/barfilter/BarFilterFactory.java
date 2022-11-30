@@ -42,15 +42,28 @@ public class BarFilterFactory implements PluginInterface<BarFilterPlugin>{
 
 	@Override
 	public ContentNodeMetadata getMetadata() {
-		return new MutableContentNodeMetadata(getPluginName()
-				, BarFilterPlugin.class
-				, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
-				, null
-				, BarFilterPlugin.class.getAnnotation(LocaleResource.class).value()
-				, BarFilterPlugin.class.getAnnotation(LocaleResource.class).tooltip()
-				, BarFilterPlugin.class.getAnnotation(LocaleResource.class).help()
-				, null
-				, PLUGIN_URI
-				, null);
+		try {
+			return new MutableContentNodeMetadata(getPluginName()
+					, BarFilterPlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, BarFilterPlugin.class.getAnnotation(LocaleResource.class).value()
+					, BarFilterPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, BarFilterPlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, getClass().getResource("frameicon.png").toURI());
+		} catch (URISyntaxException e) {
+			return new MutableContentNodeMetadata(getPluginName()
+					, BarFilterPlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, BarFilterPlugin.class.getAnnotation(LocaleResource.class).value()
+					, BarFilterPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, BarFilterPlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, null);
+		}
 	}
 }

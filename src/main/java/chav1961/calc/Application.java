@@ -64,6 +64,7 @@ import chav1961.purelib.fsys.interfaces.FileSystemInterface;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
+import chav1961.purelib.i18n.interfaces.LocalizerOwner;
 import chav1961.purelib.i18n.interfaces.SupportedLanguages;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
@@ -82,7 +83,7 @@ import chav1961.purelib.ui.swing.useful.JFileSelectionDialog.FilterCallback;
 import chav1961.purelib.ui.swing.useful.JStateString;
 import chav1961.purelib.ui.swing.useful.JSystemTray;
 
-public class Application extends JFrame implements LocaleChangeListener {
+public class Application extends JFrame implements LocaleChangeListener, LocalizerOwner {
 	private static final long 				serialVersionUID = -2663340436788182341L;
 	private static final String				ARG_HELP_PORT = "helpPort";
 	private static final String				ARG_DEBUG = "debug";
@@ -192,6 +193,11 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
+	@Override
+	public Localizer getLocalizer() {
+		return localizer;
+	}
+	
 	private void callPlugin(final String actionCommand) {
 		if (actionCommand != null && !actionCommand.isEmpty()) {
 			final URI	actionURI = URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":"+actionCommand);

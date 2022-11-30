@@ -43,15 +43,28 @@ public class RingCurrentTransFactory implements PluginInterface<RingCurrentTrans
 
 	@Override
 	public ContentNodeMetadata getMetadata() {
-		return new MutableContentNodeMetadata(getPluginName()
-				, RingCurrentTransPlugin.class
-				, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
-				, null
-				, RingCurrentTransPlugin.class.getAnnotation(LocaleResource.class).value()
-				, RingCurrentTransPlugin.class.getAnnotation(LocaleResource.class).tooltip()
-				, RingCurrentTransPlugin.class.getAnnotation(LocaleResource.class).help()
-				, null
-				, PLUGIN_URI
-				, null);
+		try {
+			return new MutableContentNodeMetadata(getPluginName()
+					, RingCurrentTransPlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, RingCurrentTransPlugin.class.getAnnotation(LocaleResource.class).value()
+					, RingCurrentTransPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, RingCurrentTransPlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, getClass().getResource("frameicon.png").toURI());
+		} catch (URISyntaxException e) {
+			return new MutableContentNodeMetadata(getPluginName()
+					, RingCurrentTransPlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, RingCurrentTransPlugin.class.getAnnotation(LocaleResource.class).value()
+					, RingCurrentTransPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, RingCurrentTransPlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, null);
+		}
 	}
 }

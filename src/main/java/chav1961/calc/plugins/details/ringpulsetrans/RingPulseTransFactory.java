@@ -43,15 +43,28 @@ public class RingPulseTransFactory implements PluginInterface<RingPulseTransPlug
 
 	@Override
 	public ContentNodeMetadata getMetadata() {
-		return new MutableContentNodeMetadata(getPluginName()
-				, RingPulseTransPlugin.class
-				, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
-				, null
-				, RingPulseTransPlugin.class.getAnnotation(LocaleResource.class).value()
-				, RingPulseTransPlugin.class.getAnnotation(LocaleResource.class).tooltip()
-				, RingPulseTransPlugin.class.getAnnotation(LocaleResource.class).help()
-				, null
-				, PLUGIN_URI
-				, null);
+		try {
+			return new MutableContentNodeMetadata(getPluginName()
+					, RingPulseTransPlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, RingPulseTransPlugin.class.getAnnotation(LocaleResource.class).value()
+					, RingPulseTransPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, RingPulseTransPlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, getClass().getResource("frameicon.png").toURI());
+		} catch (URISyntaxException e) {
+			return new MutableContentNodeMetadata(getPluginName()
+					, RingPulseTransPlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, RingPulseTransPlugin.class.getAnnotation(LocaleResource.class).value()
+					, RingPulseTransPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, RingPulseTransPlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, null);
+		}
 	}
 }
