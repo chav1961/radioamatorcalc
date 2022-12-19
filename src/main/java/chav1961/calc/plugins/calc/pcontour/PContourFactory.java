@@ -42,15 +42,28 @@ public class PContourFactory implements PluginInterface<PContourPlugin>{
 	
 	@Override
 	public ContentNodeMetadata getMetadata() {
-		return new MutableContentNodeMetadata(getPluginName()
-				, PContourPlugin.class
-				, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
-				, null
-				, PContourPlugin.class.getAnnotation(LocaleResource.class).value()
-				, PContourPlugin.class.getAnnotation(LocaleResource.class).tooltip()
-				, PContourPlugin.class.getAnnotation(LocaleResource.class).help()
-				, null
-				, PLUGIN_URI
-				, null);
+		try {
+			return new MutableContentNodeMetadata(getPluginName()
+					, PContourPlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, PContourPlugin.class.getAnnotation(LocaleResource.class).value()
+					, PContourPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, PContourPlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, getClass().getResource("frameicon.png").toURI());
+		} catch (URISyntaxException e) {
+			return new MutableContentNodeMetadata(getPluginName()
+					, PContourPlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, PContourPlugin.class.getAnnotation(LocaleResource.class).value()
+					, PContourPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, PContourPlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, null);
+		}
 	}
 }

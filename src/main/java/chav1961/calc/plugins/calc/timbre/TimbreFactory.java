@@ -43,15 +43,28 @@ public class TimbreFactory implements PluginInterface<TimbrePlugin>{
 
 	@Override
 	public ContentNodeMetadata getMetadata() {
-		return new MutableContentNodeMetadata(getPluginName()
-				, TimbrePlugin.class
-				, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
-				, null
-				, TimbrePlugin.class.getAnnotation(LocaleResource.class).value()
-				, TimbrePlugin.class.getAnnotation(LocaleResource.class).tooltip()
-				, TimbrePlugin.class.getAnnotation(LocaleResource.class).help()
-				, null
-				, PLUGIN_URI
-				, null);
+		try {
+			return new MutableContentNodeMetadata(getPluginName()
+					, TimbrePlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, TimbrePlugin.class.getAnnotation(LocaleResource.class).value()
+					, TimbrePlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, TimbrePlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, getClass().getResource("frameicon.png").toURI());
+		} catch (URISyntaxException e) {
+			return new MutableContentNodeMetadata(getPluginName()
+					, TimbrePlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, TimbrePlugin.class.getAnnotation(LocaleResource.class).value()
+					, TimbrePlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, TimbrePlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, null);
+		}
 	}
 }

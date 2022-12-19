@@ -10,8 +10,6 @@ import java.awt.HeadlessException;
 import java.awt.SystemTray;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,13 +27,9 @@ import java.util.ServiceLoader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -43,8 +37,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import chav1961.calc.interfaces.PluginInterface;
@@ -55,7 +47,6 @@ import chav1961.calc.windows.PipeTab;
 import chav1961.calc.windows.ReferenceTab;
 import chav1961.calc.windows.WorkbenchTab;
 import chav1961.purelib.basic.ArgParser;
-import chav1961.purelib.basic.MimeType;
 import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.SubstitutableProperties;
 import chav1961.purelib.basic.Utils;
@@ -63,7 +54,6 @@ import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
-import chav1961.purelib.basic.exceptions.MimeParseException;
 import chav1961.purelib.basic.exceptions.PreparationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
@@ -74,6 +64,7 @@ import chav1961.purelib.fsys.interfaces.FileSystemInterface;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
+import chav1961.purelib.i18n.interfaces.LocalizerOwner;
 import chav1961.purelib.i18n.interfaces.SupportedLanguages;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
@@ -92,7 +83,7 @@ import chav1961.purelib.ui.swing.useful.JFileSelectionDialog.FilterCallback;
 import chav1961.purelib.ui.swing.useful.JStateString;
 import chav1961.purelib.ui.swing.useful.JSystemTray;
 
-public class Application extends JFrame implements LocaleChangeListener {
+public class Application extends JFrame implements LocaleChangeListener, LocalizerOwner {
 	private static final long 				serialVersionUID = -2663340436788182341L;
 	private static final String				ARG_HELP_PORT = "helpPort";
 	private static final String				ARG_DEBUG = "debug";
@@ -132,15 +123,16 @@ public class Application extends JFrame implements LocaleChangeListener {
 			this.logger = logger;
 			this.localHelpPort = helpPort;
 			this.latch = latch;
+
+			parentLocalizer.push(localizer);
+			parentLocalizer.addLocaleChangeListener(this);
+			
 			this.stateString = new JStateString(this.localizer,10,true);
 			this.settings = new CurrentSettings(this.localizer,this.logger);
 			
 			stateString.setAutomaticClearTime(Severity.error,1,TimeUnit.MINUTES);
 			stateString.setAutomaticClearTime(Severity.warning,15,TimeUnit.SECONDS);
 			stateString.setAutomaticClearTime(Severity.info,5,TimeUnit.SECONDS);
-			
-			parentLocalizer.push(localizer);
-			localizer.addLocaleChangeListener(this);
 			
 			this.menu = SwingUtils.toJComponent(xda.byUIPath(URI.create("ui:/model/navigation.top.mainmenu")),JMenuBar.class); 
 			SwingUtils.assignActionListeners(this.menu,this);
@@ -201,6 +193,11 @@ public class Application extends JFrame implements LocaleChangeListener {
 		}
 	}
 
+	@Override
+	public Localizer getLocalizer() {
+		return localizer;
+	}
+	
 	private void callPlugin(final String actionCommand) {
 		if (actionCommand != null && !actionCommand.isEmpty()) {
 			final URI	actionURI = URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":"+actionCommand);

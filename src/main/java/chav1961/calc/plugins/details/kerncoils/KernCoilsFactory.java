@@ -43,15 +43,28 @@ public class KernCoilsFactory implements PluginInterface<KernCoilsPlugin>{
 	
 	@Override
 	public ContentNodeMetadata getMetadata() {
-		return new MutableContentNodeMetadata(getPluginName()
-				, KernCoilsPlugin.class
-				, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
-				, null
-				, KernCoilsPlugin.class.getAnnotation(LocaleResource.class).value()
-				, KernCoilsPlugin.class.getAnnotation(LocaleResource.class).tooltip()
-				, KernCoilsPlugin.class.getAnnotation(LocaleResource.class).help()
-				, null
-				, PLUGIN_URI
-				, null);
+		try {
+			return new MutableContentNodeMetadata(getPluginName()
+					, KernCoilsPlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, KernCoilsPlugin.class.getAnnotation(LocaleResource.class).value()
+					, KernCoilsPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, KernCoilsPlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, getClass().getResource("frameicon.png").toURI());
+		} catch (URISyntaxException e) {
+			return new MutableContentNodeMetadata(getPluginName()
+					, KernCoilsPlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, KernCoilsPlugin.class.getAnnotation(LocaleResource.class).value()
+					, KernCoilsPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, KernCoilsPlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, null);
+		}
 	}
 }

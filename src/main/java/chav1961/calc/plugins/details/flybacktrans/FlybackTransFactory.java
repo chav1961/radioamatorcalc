@@ -41,15 +41,28 @@ public class FlybackTransFactory implements PluginInterface<FlybackTransPlugin>{
 
 	@Override
 	public ContentNodeMetadata getMetadata() {
-		return new MutableContentNodeMetadata(getPluginName()
-				, FlybackTransPlugin.class
-				, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
-				, null
-				, FlybackTransPlugin.class.getAnnotation(LocaleResource.class).value()
-				, FlybackTransPlugin.class.getAnnotation(LocaleResource.class).tooltip()
-				, FlybackTransPlugin.class.getAnnotation(LocaleResource.class).help()
-				, null
-				, PLUGIN_URI
-				, null);
+		try {
+			return new MutableContentNodeMetadata(getPluginName()
+					, FlybackTransPlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, FlybackTransPlugin.class.getAnnotation(LocaleResource.class).value()
+					, FlybackTransPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, FlybackTransPlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, getClass().getResource("frameicon.png").toURI());
+		} catch (URISyntaxException e) {
+			return new MutableContentNodeMetadata(getPluginName()
+					, FlybackTransPlugin.class
+					, Constants.MODEL_NAVIGATION_LEAF_PREFIX+'.'+getPluginName()
+					, null
+					, FlybackTransPlugin.class.getAnnotation(LocaleResource.class).value()
+					, FlybackTransPlugin.class.getAnnotation(LocaleResource.class).tooltip()
+					, FlybackTransPlugin.class.getAnnotation(LocaleResource.class).help()
+					, null
+					, PLUGIN_URI
+					, null);
+		}
 	}
 }
