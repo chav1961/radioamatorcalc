@@ -2,37 +2,68 @@ package chav1961.calc;
 
 import org.jocl.CL;
 
+import chav1961.purelib.basic.Utils;
+import chav1961.purelib.cdb.CompilerUtils;
+
 import org.jocl.*;
 import static java.lang.System.nanoTime;
 
+import java.util.Arrays;
+
 
 public class OpenCLWrapper implements AutoCloseable{
-    /**
-     * The source code of the OpenCL program to execute
-     */
     private static String programSource =
-    "__kernel void "+
-    "matrixMul(__global float* A,"+ 
-    "          __global float* B,"+ 
-    "          __global float* C,"+ 
-    "          int wA, int wB)"+
-    "{"+
-       "int tx = get_global_id(0);"+ 
-       "int ty = get_global_id(1);"+
-       "for (int i = 0; i < wA; i++) {"+
-       "}"+
-       "float value = 0;"+
-       "for (int k = 0; k < wA; ++k)"+
-       "{"+
-       "   float elementA = A[ty * wA + k];"+
-       "   float elementB = B[k * wB + tx];"+
-       "   value += elementA * elementB;"+
-       "}"+
+		    "__kernel void "+
+		    "matrixMul(__global float* A,"+ 
+		    "          __global float* B,"+ 
+		    "          __global float* C,"+ 
+		    "          int wA, int wB)"+
+		    "{"+
+		       "int tx = get_global_id(0);"+ 
+		       "int ty = get_global_id(1);"+
+		       "for (int i = 0; i < wA; i++) {"+
+		       "}"+
+		       "float value = 0;"+
+		       "for (int k = 0; k < wA; ++k)"+
+		       "{"+
+		       "   float elementA = A[ty * wA + k];"+
+		       "   float elementB = B[k * wB + tx];"+
+		       "   value += elementA * elementB;"+
+		       "}"+
+		
+		      "C[ty * wA + tx] = value;"+
+		    "}";
 
-      "C[ty * wA + tx] = value;"+
-    "}";
-
-
+    private static String invSource =
+    		"__kernel void invert(\n"
+    		+ "__global float *source,\n"
+			+ "__global float *identity,\n"
+			+ "unsigned int n) {\n"
+			+ "	\n"
+			+ "	unsigned int j = get_global_id(0);\n"
+			+ "	unsigned int i;\n"
+			+ "	unsigned int k;\n"
+			+ "	float temp;\n"
+			+ "	\n"
+			+ "	for (k = 0; k < n; k++) {\n"
+			+ "		temp = 1.0f/source[n*k+k];\n"
+			+ "		\n"
+			+ "		source[n*k+j] *= temp;\n"
+			+ "		identity[n*k+j] *= temp;\n"
+			+ "		\n"
+			+ "		barrier(CLK_GLOBAL_MEM_FENCE);\n"
+			+ "		\n"
+			+ "		for (i = 0; i < n; i++) {\n"
+			+ "			if (i != k) {\n"
+			+ "				temp = source[n*i+k];\n"
+			+ "				source[n*i+j] -= source[n*k+j] * temp;\n"
+			+ "				identity[n*i+j] -= identity[n*k+j] * temp;\n"
+			+ "			}\n"
+			+ "		}\n"
+			+ "		barrier(CLK_GLOBAL_MEM_FENCE);\n"
+			+ "	}\n"
+			+ "}\n";    
+    
     private final cl_context 		context;
     private final cl_command_queue	commandQueue;
     
@@ -71,9 +102,110 @@ public class OpenCLWrapper implements AutoCloseable{
         this.commandQueue = CL.clCreateCommandQueue(context, device, 0, null);
     }
 
+	public cl_mem getBuffer(final Class<?> clazz, final int size, final long flags) {
+		if (clazz == null) {
+			throw new NullPointerException("CLass awaited can't be null");
+		}
+    	else if (size <= 0) {
+    		throw new IllegalArgumentException("Buffer size ["+size+"] must be greater than 0");
+    	}
+    	else {
+			switch (CompilerUtils.defineClassType(clazz)) {
+				case CompilerUtils.CLASSTYPE_INT	:	
+					return CL.clCreateBuffer(context, flags, Sizeof.cl_int * size, null, null);
+				case CompilerUtils.CLASSTYPE_LONG	:	
+					return CL.clCreateBuffer(context, flags, Sizeof.cl_long * size, null, null);
+				case CompilerUtils.CLASSTYPE_FLOAT	:	
+					return CL.clCreateBuffer(context, flags, Sizeof.cl_float * size, null, null);
+				case CompilerUtils.CLASSTYPE_DOUBLE	:	
+					return CL.clCreateBuffer(context, flags, Sizeof.cl_double * size, null, null);
+				default :
+					throw new IllegalArgumentException("Class type ["+clazz.getCanonicalName()+"] is not supported for buffer content"); 
+			}
+    	}
+	}
+
+	public cl_mem getBuffer(final int[] content, final long flags) {
+		if (content == null) {
+			throw new NullPointerException("Content can't be null");
+		}
+		else {
+			return CL.clCreateBuffer(context, flags, Sizeof.cl_int * content.length, Pointer.to(content), null);
+		}
+	}
+
+	public cl_mem getBuffer(final long[] content, final long flags) {
+		if (content == null) {
+			throw new NullPointerException("Content can't be null");
+		}
+		else {
+			return CL.clCreateBuffer(context, flags, Sizeof.cl_long * content.length, Pointer.to(content), null);
+		}
+	}
+
+	public cl_mem getBuffer(final float[] content, final long flags) {
+		if (content == null) {
+			throw new NullPointerException("Content can't be null");
+		}
+		else {
+			return CL.clCreateBuffer(context, flags, Sizeof.cl_float * content.length, Pointer.to(content), null);
+		}
+	}
+	
+	public cl_mem getBuffer(final double[] content, final long flags) {
+		if (content == null) {
+			throw new NullPointerException("Content can't be null");
+		}
+		else {
+			return CL.clCreateBuffer(context, flags, Sizeof.cl_double * content.length, Pointer.to(content), null);
+		}
+	}
+    
+	public void freeBuffer(final cl_mem buffer) {
+		if (buffer == null) {
+			throw new NullPointerException("Buffer to free can't be null");
+		}
+		else {
+			CL.clReleaseMemObject(buffer);
+		}
+	}
+	
     public OpenCLExecutor getExecutor(final String programName, final String program, final int globalSize, final int localSize) {
-    	return new OpenCLExecutor(programName, program, globalSize, localSize);
+    	if (Utils.checkEmptyOrNullString(programName)) {
+    		throw new IllegalArgumentException("Program name can't be null or empty"); 
+    	}
+    	else if (Utils.checkEmptyOrNullString(program)) {
+    		throw new IllegalArgumentException("Program content can't be null or empty"); 
+    	}
+    	else if (globalSize <= 0) {
+    		throw new IllegalArgumentException("Global size ["+globalSize+"] must be greater than 0");
+    	}
+    	else if (localSize < 0) {
+    		throw new IllegalArgumentException("Local size ["+localSize+"] must be greater than or equals 0");
+    	}
+    	else {
+        	return new OpenCLExecutor(programName, program, new long[]{globalSize}, new long[]{localSize});
+    	}
     }
+
+    public OpenCLExecutor getExecutor(final String programName, final String program, final long[] globalSize, final long[] localSize) {
+    	if (Utils.checkEmptyOrNullString(programName)) {
+    		throw new IllegalArgumentException("Program name can't be null or empty"); 
+    	}
+    	else if (Utils.checkEmptyOrNullString(program)) {
+    		throw new IllegalArgumentException("Program content can't be null or empty"); 
+    	}
+    	else if (globalSize == null || globalSize.length == 0 || globalSize.length > 3) {
+    		throw new IllegalArgumentException("Global size array can't be null and must have 1..3 elements");
+    	}
+    	else if (localSize == null || localSize.length == 0 || localSize.length > 3) {
+    		throw new IllegalArgumentException("Local size array can't be null and must have 1..3 elements");
+    	}
+    	else {
+        	return new OpenCLExecutor(programName, program, globalSize, localSize);
+    	}
+    }
+    
     
     @Override
     public void close() throws RuntimeException {
@@ -107,6 +239,23 @@ public class OpenCLWrapper implements AutoCloseable{
 	        	));
 	        }
 	   	}
+
+	   	try(final OpenCLWrapper	t = new OpenCLWrapper(0, 0)) {
+	        int n = 3;
+	        float srcArray[] = new float[] {1, -2, 3, 0, 4, -1, 5, 0, 0};
+	        float identity[] = new float[n*n];
+	        for (int i=0; i<n; i++) {
+	        	identity[n*i+i] = 1;
+	        }
+	        
+	        try(final OpenCLExecutor	ex = t.getExecutor("invert", invSource, new long[] {n,n}, new long[] {1, 1})) {
+	        	System.err.println("Duration3="+ex.execute(new FloatArray(srcArray)
+	        					, new FloatArray(identity)
+	        					, new SourceInt(n)
+	        	));
+	        	System.err.println("Inv="+Arrays.toString(identity));
+	        }
+	   	}
 	}
     
    public class OpenCLExecutor implements AutoCloseable {
@@ -115,7 +264,7 @@ public class OpenCLWrapper implements AutoCloseable{
 	   private final long[]		global_work_size;
 	   private final long[]		local_work_size;		
 	   
-	   public OpenCLExecutor(final String programName, final String source, final int globalSize, final int localSize) {
+	   private OpenCLExecutor(final String programName, final String source, final long[] globalSize, final long[] localSize) {
 	        // Create the program from the source code
 	        this.program = CL.clCreateProgramWithSource(context, 1, new String[]{ source }, null, null);
 
@@ -126,8 +275,8 @@ public class OpenCLWrapper implements AutoCloseable{
 	        this.kernel = CL.clCreateKernel(program, programName, null);
 
 	        // Set the work-item dimensions
-	        this.global_work_size = new long[]{globalSize};
-	        this.local_work_size = new long[]{localSize};
+	        this.global_work_size = globalSize.clone();
+	        this.local_work_size = localSize.clone();
 	   }
 	   
 	   public long execute(final ExecutorArgument... parameters) {
@@ -143,14 +292,18 @@ public class OpenCLWrapper implements AutoCloseable{
 							case IN	:
 								final float[]	sourceContent = ((SourceFloatArray)parameters[index]).getContent();
 						        
-								memObjects[index] = CL.clCreateBuffer(context, CL.CL_MEM_READ_ONLY | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * sourceContent.length, Pointer.to(sourceContent), null);
+								memObjects[index] = getBuffer(sourceContent, CL.CL_MEM_READ_ONLY | CL.CL_MEM_COPY_HOST_PTR); 
 								break;
 							case OUT	:
 								final float[]	targetContent = ((TargetFloatArray)parameters[index]).getContent();
 								
-						        memObjects[index] = CL.clCreateBuffer(context, CL.CL_MEM_READ_WRITE, Sizeof.cl_float * targetContent.length, null, null);
+						        memObjects[index] = getBuffer(float.class, targetContent.length, CL.CL_MEM_READ_WRITE); 
 								break;
 							case IN_OUT	:
+								final float[]	content = ((FloatArray)parameters[index]).getContent();
+								
+								memObjects[index] = getBuffer(content, CL.CL_MEM_READ_WRITE | CL.CL_MEM_COPY_HOST_PTR);
+								break;
 							default:
 								throw new UnsupportedOperationException("Access mode  ["+parameters[index].getAccessMode()+"] is not supported yet"); 
 						}
@@ -176,7 +329,7 @@ public class OpenCLWrapper implements AutoCloseable{
 	 	   		}
 	 	   	}
 	        
-	        CL.clEnqueueNDRangeKernel(commandQueue, kernel, 1, null, global_work_size, local_work_size, 0, null, null);
+	        CL.clEnqueueNDRangeKernel(commandQueue, kernel, global_work_size.length, null, global_work_size, local_work_size, 0, null, null);
 
 	        // Read the output data
 	 	   	for(int index = 0; index < parameters.length; index++) {
@@ -184,7 +337,11 @@ public class OpenCLWrapper implements AutoCloseable{
 					case FLOAT_ARRAY	:
 						switch (parameters[index].getAccessMode()) {
 							case IN		:
+								break;
 							case IN_OUT	:
+								final float[]	content = ((FloatArray)parameters[index]).getContent();
+								
+						        CL.clEnqueueReadBuffer(commandQueue, memObjects[index], CL.CL_TRUE, 0, Sizeof.cl_float * content.length, Pointer.to(content), 0, null, null);
 								break;
 							case OUT	:
 								final float[]	targetContent = ((TargetFloatArray)parameters[index]).getContent();
@@ -205,7 +362,7 @@ public class OpenCLWrapper implements AutoCloseable{
 	        // Release memory objects
 	 	   	for (cl_mem item : memObjects) {
 	 	   		if (item != null) {
-	 		        CL.clReleaseMemObject(item);
+	 		        freeBuffer(item);
 	 	   		}
 	 	   	}
 	        return nanoTime() - time;
@@ -274,6 +431,19 @@ public class OpenCLWrapper implements AutoCloseable{
 	   }
    }
 
+   public static class FloatArray extends ExecutorArgument {
+	   private final float[]	content;
+
+	   public FloatArray(final float[] content) {
+			super(ArgumentType.FLOAT_ARRAY, AccessMode.IN_OUT);
+			this.content = content;
+	   }
+
+	   float[] getContent() {
+		   return content;
+	   }
+   }
+   
    public static class SourceInt extends ExecutorArgument {
 	   private final int	content;
 
