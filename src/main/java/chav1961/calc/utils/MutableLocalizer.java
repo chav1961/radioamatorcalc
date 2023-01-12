@@ -175,7 +175,7 @@ public class MutableLocalizer extends AbstractLocalizer {
 	}
 
 	@Override
-	protected String getHelp(final String helpId, final String encoding) throws LocalizationException, IllegalArgumentException {
+	protected String getHelp(final String helpId, final Locale locale, final String encoding) throws LocalizationException, IllegalArgumentException {
 		return getValue(helpId);
 	}
 
