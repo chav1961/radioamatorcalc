@@ -327,4 +327,14 @@ public class MutableLocalizer extends AbstractLocalizer {
 			return "<"+localeAssociated.getLanguage()+">: '" + value + "'";
 		}
 	}
+
+	@Override
+	public String getLocalValue(String key, Locale locale) throws LocalizationException, IllegalArgumentException {
+		return getLocalValue(key);
+	}
+
+	@Override
+	protected boolean isLocaleSupported(String key, Locale locale) throws LocalizationException, IllegalArgumentException {
+		return true;
+	}
 }
