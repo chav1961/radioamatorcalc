@@ -269,9 +269,10 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 			final FilterCallback		pipeFilter = new FilterCallback() {
 											final String[]	fileMask = new String[]{"*.pip"};
 											
-											@Override public String getFilterName() {return "Funny Prolog Fact/rule base";}
+											@Override public String getFilterName() {return "Pipe";}
 											@Override public String[] getFileMask() {return fileMask;}
 											@Override public boolean accept(FileSystemInterface item) throws IOException {return item.isDirectory() || item.getName().endsWith(".pip");}
+											@Override public boolean accept(File item) throws IOException {return item.isDirectory() || item.getName().endsWith(".pip");}
 										};
 			
 			for (String item : JFileSelectionDialog.select(this,localizer,fsi,JFileSelectionDialog.OPTIONS_CAN_SELECT_FILE|JFileSelectionDialog.OPTIONS_FOR_OPEN,pipeFilter)) {
@@ -332,9 +333,10 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 				final FilterCallback		pipeFilter = new FilterCallback() {
 												final String[]	fileMask = new String[]{"*.pip"};
 												
-												@Override public String getFilterName() {return "Funny Prolog Fact/rule base";}
+												@Override public String getFilterName() {return "Pipe";}
 												@Override public String[] getFileMask() {return fileMask;}
 												@Override public boolean accept(FileSystemInterface item) throws IOException {return item.isDirectory() || item.getName().endsWith(".pip");}
+												@Override public boolean accept(File item) throws IOException {return item.isDirectory() || item.getName().endsWith(".pip");}
 											};
 				
 				for (String item : JFileSelectionDialog.select(this,localizer,fsi,JFileSelectionDialog.OPTIONS_CAN_SELECT_FILE|JFileSelectionDialog.OPTIONS_FOR_SAVE,pipeFilter)) {
