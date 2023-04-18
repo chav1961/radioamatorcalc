@@ -5,8 +5,6 @@ module chav1961.radioamatorcalc {
 	requires java.sql;
 	requires jdk.jdi;
 	requires java.naming;
-	requires com.github.oshi;
-	requires jocl;
 	
 	exports chav1961.calc.interfaces;
 	
