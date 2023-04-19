@@ -182,7 +182,7 @@ public class MutableLocalizer extends AbstractLocalizer {
 	private void loadContent() throws IOException, LocalizationException {
 		final Locale[]	currentLocale = new Locale[1];
 		
-		try(final InputStream	is = isGetter.getContent()) {
+		try(final InputStream	is = isGetter.getInputContent()) {
 			XMLUtils.walkDownXML(XMLUtils.validateAndLoadXML(is,XMLUtils.getPurelibXSD(XSDCollection.XMLLocalizerContent),PureLibSettings.CURRENT_LOGGER).getDocumentElement(), (mode,node)->{
 				switch (mode) {
 					case ENTER	:
@@ -217,7 +217,7 @@ public class MutableLocalizer extends AbstractLocalizer {
 	}
 
 	private void storeContent() throws IOException, LocalizationException {
-		try(final OutputStream			os = osGetter.getContent()) {
+		try(final OutputStream			os = osGetter.getOutputContent()) {
 			final XMLEventFactory 		eventFactory = XMLEventFactory.newInstance();
 			final XMLEventWriter 		writer = XMLOutputFactory.newInstance().createXMLEventWriter(os);
 			final XMLStreamException[]	err = new XMLStreamException[] {null}; 
