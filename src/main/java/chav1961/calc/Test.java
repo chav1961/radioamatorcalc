@@ -33,6 +33,7 @@ import javax.crypto.spec.SecretKeySpec;
 // https://www.baeldung.com/java-aes-encryption-decryption
 
 public class Test {
+	public static String	val = new StringBuilder().append("val1 "+"val2").toString();
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
