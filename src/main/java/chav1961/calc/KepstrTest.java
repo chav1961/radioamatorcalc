@@ -17,7 +17,7 @@ public class KepstrTest {
 	public static void main(String[] args) throws IOException {
 		final double[] content; 
 		
-		try(final InputStream is = KepstrTest.class.getResourceAsStream("source.bin");
+		try(final InputStream is = KepstrTest.class.getResourceAsStream("coin8.raw");
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			
 			Utils.copyStream(is, baos);
@@ -83,12 +83,13 @@ public class KepstrTest {
 				}
 			}
 			result[index] = temp;
+			startPiece += pieceSize;
 		}
 		return result;
 	}
 
 	private static double hammingWeight(final int sequentialNumber, final double value, final int pieceSize) {
-		return 0.53836 - 0.46164 * Math.cos(2 * Math.PI * sequentialNumber / (pieceSize - 1)); 
+		return 0.53836 + 0.46164 * value * Math.cos(Math.PI * sequentialNumber / (pieceSize - 1)); 
 	}
 	
 	private static double[] discreteFourierTransform(final double[] source) {
