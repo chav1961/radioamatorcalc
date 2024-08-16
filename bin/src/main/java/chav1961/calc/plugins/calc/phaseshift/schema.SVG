@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with "sPlan" (http://www.abacom-online.de) -->
+<svg version="1.1" baseProfile="full"
+xmlns="http://www.w3.org/2000/svg"
+width="390" height="250">
+<title>schema</title>
+<defs>
+<style type="text/css">
+<![CDATA[
+polyline {stroke-linecap:round; stroke-linejoin:round}
+polygon {stroke-linecap:round; stroke-linejoin:round}
+path {stroke-linecap:round; stroke-linejoin:round}
+circle {stroke-linecap:round; stroke-linejoin:round}
+]]>
+</style>
+</defs>
+<path fill="rgb(255,255,255)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 70 80 L 120 80 120 100 70 100 70 80" />
+<polyline points="50.00 90.00 70.00 90.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="120.00 90.00 140.00 90.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<text x="50.00" y="59.00" font-family ="Arial" font-size ="28pt" font-weight="normal" font-style="italic" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${resistance} kOhm</text>
+<path fill="rgb(0,0,0)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 170 70 L 170 70 170 110 170 110 170 70" />
+<polyline points="180.00 90.00 210.00 90.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<path fill="rgb(0,0,0)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 180 70 L 180 70 180 110 180 110 180 70" />
+<polyline points="140.00 90.00 170.00 90.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<path fill="rgb(255,255,255)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 200 110 L 220 110 220 160 200 160 200 110" />
+<polyline points="210.00 90.00 210.00 110.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="210.00 160.00 210.00 180.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<path fill="rgb(0,0,0)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 240 70 L 240 70 240 110 240 110 240 70" />
+<polyline points="250.00 90.00 280.00 90.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<path fill="rgb(0,0,0)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 250 70 L 250 70 250 110 250 110 250 70" />
+<polyline points="210.00 90.00 240.00 90.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<text x="200.00" y="59.00" font-family ="Arial" font-size ="28pt" font-weight="normal" font-style="italic" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${capacity} nF</text>
+<path fill="rgb(255,255,255)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 270 110 L 290 110 290 160 270 160 270 110" />
+<polyline points="280.00 90.00 280.00 110.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="280.00 160.00 280.00 180.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<path fill="rgb(0,0,0)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 310 70 L 310 70 310 110 310 110 310 70" />
+<polyline points="320.00 90.00 350.00 90.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<path fill="rgb(0,0,0)" stroke="rgb(0,0,0)" stroke-width="2" style="stroke-linecap:square; stroke-linejoin:miter" d=" M 320 70 L 320 70 320 110 320 110 320 70" />
+<polyline points="280.00 90.00 310.00 90.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<circle cx="210" cy="90" r="6" fill="rgb(0,0,0)" stroke="none" stroke-width="2" />
+<circle cx="280" cy="90" r="6" fill="rgb(0,0,0)" stroke="none" stroke-width="2" />
+<polyline points="210.00 180.00 210.00 210.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="190.00 210.00 230.00 210.00" fill="none" stroke="rgb(0,0,0)" stroke-width="4" />
+<polyline points="280.00 180.00 280.00 210.00" fill="none" stroke="rgb(0,0,0)" stroke-width="2" />
+<polyline points="260.00 210.00 300.00 210.00" fill="none" stroke="rgb(0,0,0)" stroke-width="4" />
+<text x="40.00" y="174.00" font-family ="Arial" font-size ="21pt" font-weight="normal" font-style="normal" fill="rgb(0,0,0)" transform=" rotate(0.000) scale(1.000,1.000)">${frequency} kHz</text>
+</svg>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app:root xmlns:app="http://ui.purelib.chav1961/">
+	<app:i18n location="i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml"/>
+	<app:menu id="mainmenu">
+		<app:submenu name="menu.file" caption="menu.file" tooltip="menu.ttFile">
+			<app:item name="menu.file.cleandesktop" caption="menu.cleanDesktop" tooltip="menu.ttCleanDesktop" action="cleanDektop"/>
+			<app:separator/>
+			<app:item name="menu.file.newpipe" caption="menu.newPipe" tooltip="menu.ttNewPipe" action="newPipe"/>
+			<app:item name="menu.file.loadpipe" caption="menu.loadPipe" tooltip="menu.ttLoadPipe" action="loadPipe"/>
+			<app:separator/>
+			<app:item name="menu.file.savepipe" caption="menu.savePipe" tooltip="menu.ttSavePipe" action="savePipe"/>
+			<app:item name="menu.file.savepipeAs" caption="menu.savePipeAs" tooltip="menu.ttSavePipeAs" action="savePipeAs"/>
+			<app:separator/>
+			<app:item name="menu.file.exit" caption="menu.exit" tooltip="menu.ttExit" action="exit"/>
+		</app:submenu>
+		<app:submenu name="menu.references" caption="menu.references" tooltip="menu.references.tt">
+			<app:item name="menu.references.tubes" caption="menu.references.tubes" tooltip="menu.references.tubes.tt" action="references.tubes"/>
+		</app:submenu>
+		<app:submenu name="menu.tools" caption="menu.tools" tooltip="menu.ttTools">
+			<app:item name="menu.tools.find" caption="menu.find" tooltip="menu.ttFind" action="find"/>
+			<app:item name="menu.tools.index" caption="menu.index" tooltip="menu.ttIndex" action="index"/>
+			<app:separator/>
+			<app:item name="menu.tools.addpdf" caption="menu.addPdf" tooltip="menu.ttAddPdf" action="addPdf"/>
+			<app:separator/>
+			<app:builtinSubmenu name="builtin.languages" caption="menu.languages" tooltip="menu.ttLanguages"/>
+			<app:item name="menu.tools.settings" caption="menu.settings" tooltip="menu.ttSettings" action="settings"/>
+		</app:submenu>
+		<app:submenu name="menu.help" caption="menu.help" tooltip="menu.ttHelp">
+			<app:item name="menu.help.overview" caption="menu.overview" tooltip="menu.ttOverview" action="helpOverview"/>
+			<app:separator/>
+			<app:item name="menu.help.about" caption="menu.about" tooltip="menu.ttAbout" action="helpAbout"/>
+		</app:submenu>
+	</app:menu>
+	<app:keyset id="mainmenu.keyset">
+		<app:key code="E" ctrl="true" action="cleanDektop"/>
+		<app:key code="N" ctrl="true" action="newPipe"/>
+		<app:key code="O" ctrl="true" action="loadPipe"/>
+		<app:key code="S" ctrl="true" action="savePipe"/>
+		<app:key code="Q" ctrl="true" action="exit"/>
+		<app:key code="F1" action="helpOverview"/>
+	</app:keyset>
+	<app:menu id="traymenu">
+		<app:item name="menu.tools.settings" caption="menu.settings" tooltip="menu.ttSettings" action="settings"/>
+		<app:separator/>
+		<app:item name="menu.file.exit" caption="menu.exit" tooltip="menu.ttExit" action="exit"/>
+	</app:menu>
+	<app:menu id="navigator">
+		<app:submenu name="menu.favorites" caption="menu.favorites" tooltip="menu.favorites.tt">  
+			<app:placeholder/>
+		</app:submenu>
+		<app:submenu name="menu.curcuits" caption="menu.curcuits" tooltip="menu.curcuits.tt">  
+			<app:placeholder/>
+		</app:submenu>
+		<app:submenu name="menu.details" caption="menu.details" tooltip="menu.details.tt">  
+			<app:placeholder/>
+		</app:submenu>
+		<app:submenu name="menu.devices" caption="menu.devices" tooltip="menu.devices.tt">  
+			<app:placeholder/>
+		</app:submenu>
+		<app:submenu name="menu.heatAndMech" caption="menu.heatAndMech" tooltip="menu.heatAndMech.tt">  
+			<app:placeholder/>
+		</app:submenu>
+		<app:submenu name="menu.comports" caption="menu.comports" tooltip="menu.comports.tt">  
+			<app:placeholder/>
+		</app:submenu>
+	</app:menu>
+	<app:menu id="desktopToolbar">
+		<app:item name="desktop.toolbar.closeAll" caption="desktop.toolbar.closeAll" tooltip="desktop.toolbar.closeAllTT" icon="root://chav1961.calc.Application/chav1961/calc/closeAll.png" action="closeAll"/>
+		<app:item name="menu.tools.find" caption="menu.find" tooltip="menu.ttFind" icon="root://chav1961.calc.Application/chav1961/calc/find.png" action="find"/>
+	</app:menu>
+	<app:menu id="searchToolbar">
+		<app:item name="search.toolbar.close" caption="search.toolbar.close" tooltip="search.toolbar.closeTT" icon="root://chav1961.calc.Application/chav1961/calc/closeAll.png" action="closeSearch"/>
+	</app:menu>
+</app:root>

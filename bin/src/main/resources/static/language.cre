@@ -1,0 +1,77 @@
+== Язык программирования NanoLang
+
+Язык программирования NanoLang используется для написания небольшх кусков программного кода в узлах конвейера. Ниже приводится полное описание синтаксиса языка в формате BNF:
+
+{{{
+<program> ::= [<declarationPart>]<operationPart>
+<declarationPart> ::= <declarations>[';'...]
+<operationPart> ::= <operator>[';'...]
+<operator> ::= {<assignment>|<if>|<while>|<until>|<for>|<case>|<break>|<continue>|<return>|<print>|<sequence>}
+<assignment> ::= <leftPart> ':=' <expression>
+<if> ::= 'if' <expression> 'then' <operator> ['else' <operator>]
+<while> ::= 'while' <expression> 'do' <operator>
+<until> ::= 'repeat' <operator> 'until' <expression>
+<for> ::= 'for' <name> 'in' <rangeList> 'do' <operator>
+<case> ::= 'case' <expression> ('of' <rangeList> ':' <operator>)... ['else' ':' <operator>] 'end'  
+<break> ::= 'break' [<intValue>] 		// break thru N nested loops, default = 1
+<continue> ::= 'continue' [<intValue>] 	// break thru N-1 nested loops and continue, default = 1
+<return> ::= 'return'
+<print> ::= 'print' <expression> [(',' <expression)...]
+<sequence> ::= 'begin' <operationPart> 'end'
+<declarations> ::= {<intDecl>|<realDecl>|<strDecl>|<boolDecl>}
+<intDecl> ::= 'int' <name> [:= <expression>] [(',' <name> [:= <expression>] )...]
+<realDecl> ::= 'real' <name> [:= <expression>] [(',' <name> [:= <expression>] )...]
+<strDecl> ::= 'str' <name> [:= <expression>] [(',' <name> [:= <expression>] )...]
+<boolDecl> ::= 'bool' <name> [:= <expression>] [(',' <name> [:= <expression>])...]
+<rangeList> ::= <rangeItem> [(',' <rangeItem>)...]
+<rangeItem ::= <expression>['..' <expression>]
+<leftPart> ::= [<pluginId> '.']<name>
+<expression> ::= <andExpr> [('or' <andExpr>)...]
+<andExpr> ::= <notExpr> [('and' <notExpr>)...]
+<notExpr> ::= ['not'] <comparison>
+<comparison> ::= {<addExpr> {'>='|'>'|'<='|'<'|'='|'<>'} <addExpr> | <addExpr> 'in' <rangeList>}
+<addExpr> ::= <mulExpr> [({'+'|'-'} <mulExpr>)...]
+<mulExpr> ::= <unaryExpr> [({'*'|'/'|'div'|'mod'} <unaryExpr>)...]
+<unaryExpr> ::= [{'+'|'-'}]<term>
+<term> ::= {<constant>|<name>|<pluginId>.<name>|<function>|'('<expression>')'} 
+<constant> ::= {<intValue> | <realValue> | <strValue> | 'true' | 'false' }
+<name> ::= <letter>[({<letter>|<digit>})...]
+<pluginId> ::= '#'<intValue>
+<function> ::= <functionName>'('[<expression> [(',' <expression>)...]]')'
+<functionName> ::= {'sin' | 'cos' | 'tan' | 'arcsin' | 'arccos' | 'arctan' | 'exp' | 'exp10' | 'ln' | 'log10' | 'sqr' | 'sqrt'}
+<intValue> ::= <digit>[<digit>...]
+<realValue> ::= <intValue>['.'<intValue>][{'e'|'E'}['-']<intValue>]
+<strValue> ::= '"'[<any_symbol>...]'"' 
+}}}
+
+==== Типы данных
+
+В языке используются следующие типы данных:
+
+* тип **int** - целочисленный тип данных, соответствует типам **byte**, **short**, **int**, **long** и **char** языка Java
+* тип **real** - вещественный тип данных, соответствует типам **float** и **double** языка Java
+* тип **str** - строковый тип данных, соответствует строкам (класс **java.lang.String**) языка Java
+* тип **bool** - булевский тип данных, соответствует типу **boolean** языка Java
+
+Никаких иных типов данных в языке не предусмотрено, так же, как и более сложных структур данных (например, массивов). Константы соответствующих типов имеют
+традиционный для многих языков программирования формат (в частности, внутри строк допустимо использование Escape-последовательностей).
+
+==== Имена
+
+В качестве имен в языке также используется традиционное для многих языков программирования сооглашение - последовательность букв, цифр и знаков подчеркивания,
+начинающаяся с буквы. Каждое имя в программе всегда локализовано в том или ином узле конвейера. Помимо имен, определенных при объявлении типов, в список имен входят
+также имена полей, присутствующих на экранной форме той или иной программы в узлах-плагинах, а также имена полей, определенных в списке полей того или иного узла
+конвейера. Для обращения к полям других узлов конвейера, в программе используется конструкция вида **#<номер_узла>.<имя_поля>**. Номер узла конвейера присутствует в
+его заголовке.
+
+==== Операции
+
+Набор операций включает в себя:
+
+* всю арифметику (** + **, ** - **, ** * **, ** / **, **div**, **mod**)
+* операции сравнения (** > **, ** >= **, ** < **, ** <= **, ** = **, ** <> **)
+* вхождение значения в список диапазонов (например, x **in** 10..20, 30, -3..-1)
+* логические операции (**not**, **and**, **or**)
+
+Приоритет операций - традиционный, для изменения порядка вычисления используются круглые скобки. 
+

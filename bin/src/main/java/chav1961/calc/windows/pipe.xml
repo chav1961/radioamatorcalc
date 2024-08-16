@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app:root xmlns:app="http://ui.purelib.chav1961/">
+	<app:i18n location="i18n:xml:root://chav1961.calc.Application/chav1961/calculator/i18n/i18n.xml"/>
+	<app:menu id="workbenchMenu">
+		<app:item name="workbenchMenu.iconifyAll" caption="workbenchMenu.iconifyAll" tooltip="workbenchMenu.iconifyAll.tt" action="iconifyAll"/>
+		<app:item name="workbenchMenu.closeAll" caption="workbenchMenu.closeAll" tooltip="workbenchMenu.closeAll.tt" action="closeAll"/>
+	</app:menu>
+	<app:menu id="pipeMenu">
+		<app:submenu name="pipeMenu.new" caption="pipeMenu.new" tooltip="pipeMenu.new.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/newIcon.png">
+			<app:item name="pipeMenu.new.initial" caption="pipeMenu.new.initial" tooltip="pipeMenu.new.initial.tt" action="newInitial"/>
+			<app:separator/>
+			<app:item name="pipeMenu.new.conditional" caption="pipeMenu.new.conditional" tooltip="pipeMenu.new.conditional.tt" action="newConditional"/>
+			<app:item name="pipeMenu.new.calc" caption="pipeMenu.new.calc" tooltip="pipeMenu.new.calc.tt" action="newCalc"/>
+			<app:item name="pipeMenu.new.dialog" caption="pipeMenu.new.dialog" tooltip="pipeMenu.new.dialog.tt" action="newDialog"/>
+			<app:separator/>
+			<app:item name="pipeMenu.new.terminal" caption="pipeMenu.new.terminal" tooltip="pipeMenu.new.terminal.tt" action="newTerminal"/>
+		</app:submenu>
+		<app:separator/>
+		<app:item name="pipeMenu.clean" caption="pipeMenu.clean" tooltip="pipeMenu.clean.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/clearAllIcon.png" action="cleanPipe"/>
+		<app:item name="pipeMenu.validate" caption="pipeMenu.validate" tooltip="pipeMenu.validate.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/validateIcon.png" action="validatePipe"/>
+		<app:separator/>
+		<app:item name="pipeMenu.start" caption="pipeMenu.start" tooltip="pipeMenu.start.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/startIcon.png" action="startPipe"/>
+		<app:item name="pipeMenu.debug" caption="pipeMenu.debug" tooltip="pipeMenu.debug.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/startIcon.png" action="debugPipe"/>
+		<app:item name="pipeMenu.stop" caption="pipeMenu.stop" tooltip="pipeMenu.stop.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/stopIcon.png" action="stopPipe"/>
+	</app:menu>
+	<app:menu id="initial.toolbar">
+		<app:item name="chav1961.calc.pipe.initial.toolbar.addfield" caption="chav1961.calc.pipe.initial.toolbar.addfield" tooltip="chav1961.calc.pipe.initial.toolbar.addfield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/newIcon.png" action="addField"/>
+		<app:item name="chav1961.calc.pipe.initial.toolbar.removefield" caption="chav1961.calc.pipe.initial.toolbar.removefield" tooltip="chav1961.calc.pipe.initial.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeField"/>
+		<app:item name="chav1961.calc.pipe.initial.toolbar.editfield" caption="chav1961.calc.pipe.initial.toolbar.editfield" tooltip="chav1961.calc.pipe.initial.toolbar.editfield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/editIcon.png" action="editField"/>
+	</app:menu>
+	<app:menu id="conditional.toolbar">
+		<app:item name="chav1961.calc.pipe.conditional.toolbar.removefield" caption="chav1961.calc.pipe.conditional.toolbar.removefield" tooltip="chav1961.calc.pipe.conditional.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeField"/>
+	</app:menu>
+	<app:menu id="dialog.toolbar">
+		<app:item name="chav1961.calc.pipe.dialog.toolbar.removefield" caption="chav1961.calc.pipe.dialog.toolbar.removefield" tooltip="chav1961.calc.pipe.dialog.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeField"/>
+		<app:item name="chav1961.calc.pipe.dialog.toolbar.editfield" caption="chav1961.calc.pipe.dialog.toolbar.editfield" tooltip="chav1961.calc.pipe.dialog.toolbar.editfield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/editIcon.png" action="editField"/>
+	</app:menu>
+	<app:menu id="calc.sourceToolbar">
+		<app:item name="chav1961.calc.pipe.calc.sourceToolbar.removefield" caption="chav1961.calc.pipe.calc.toolbar.removefield" tooltip="chav1961.calc.pipe.calc.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeSourceField"/>
+	</app:menu>
+	<app:menu id="container.toolbar">
+		<app:item name="chav1961.calc.pipe.container.toolbar.removelink" caption="chav1961.calc.pipe.container.toolbar.removelink" tooltip="chav1961.calc.pipe.container.toolbar.removelink.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteLinkIcon.png" action="removeLink"/>
+	</app:menu>
+	<app:menu id="terminal.toolbar">
+		<app:item name="chav1961.calc.pipe.terminal.toolbar.removefield" caption="chav1961.calc.pipe.terminal.toolbar.removefield" tooltip="chav1961.calc.pipe.terminal.toolbar.removefield.tt" icon="root://chav1961.calc.Application/chav1961/calc/pipe/deleteIcon.png" action="removeField"/>
+	</app:menu>
+</app:root>
