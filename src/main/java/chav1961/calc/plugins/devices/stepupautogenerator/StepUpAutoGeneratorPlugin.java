@@ -13,6 +13,7 @@ import chav1961.calc.interfaces.PluginProperties;
 import chav1961.calc.interfaces.RingMyu;
 import chav1961.calc.interfaces.RingType;
 import chav1961.calc.plugins.math.MathUtils;
+import chav1961.purelib.basic.MimeType;
 import chav1961.purelib.basic.PureLibSettings;
 import chav1961.purelib.basic.Utils;
 import chav1961.purelib.basic.exceptions.FlowException;
@@ -195,7 +196,7 @@ public class StepUpAutoGeneratorPlugin implements FormManager<Object,StepUpAutoG
 							if (needDetailed) {
 								swr.write(Utils.fromResource(this.getClass().getResource("protocol.cre"), PureLibSettings.DEFAULT_CONTENT_ENCODING));
 								swr.flush();
-								final JMultiLineEditor	ed = new JMultiLineEditor(PureLibSettings.PURELIB_LOCALIZER, PureLibSettings.MIME_HTML_TEXT, wr.toString());
+								final JMultiLineEditor	ed = new JMultiLineEditor(PureLibSettings.PURELIB_LOCALIZER, MimeType.MIME_HTML_TEXT, wr.toString());
 								
 								ed.show(null);
 							}
