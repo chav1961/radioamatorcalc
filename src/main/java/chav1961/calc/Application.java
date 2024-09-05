@@ -69,7 +69,6 @@ import chav1961.purelib.i18n.interfaces.SupportedLanguages;
 import chav1961.purelib.model.ContentModelFactory;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
-import chav1961.purelib.nanoservice.NanoServiceFactory;
 import chav1961.purelib.streams.JsonStaxParser;
 import chav1961.purelib.streams.JsonStaxPrinter;
 import chav1961.purelib.ui.swing.AutoBuiltForm;
@@ -449,15 +448,8 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 
 	public static void main(final String[] args) throws IOException, EnvironmentException, FlowException, ContentException, HeadlessException, URISyntaxException {
 		final ArgParser		parser = new ApplicationArgParser().parse(args);
-		final SubstitutableProperties		props = new SubstitutableProperties(Utils.mkProps(
-												 NanoServiceFactory.NANOSERVICE_PORT, parser.getValue(ARG_HELP_PORT,String.class)
-												,NanoServiceFactory.NANOSERVICE_ROOT, "fsys:xmlReadOnly:root://chav1961.calc.Application/chav1961/calc/helptree.xml"
-												,NanoServiceFactory.NANOSERVICE_CREOLE_PROLOGUE_URI, Application.class.getResource("prolog.cre").toString() 
-												,NanoServiceFactory.NANOSERVICE_CREOLE_EPILOGUE_URI, Application.class.getResource("epilog.cre").toString() 
-											));
 		
 		try(final InputStream				is = Application.class.getResourceAsStream("application.xml");
-			final NanoServiceFactory		service = new NanoServiceFactory(PureLibSettings.CURRENT_LOGGER,props);
 			final LoggerFacade				logger = PureLibSettings.CURRENT_LOGGER) {
 			final ContentMetadataInterface	xda = ContentModelFactory.forXmlDescription(is);
 			final CountDownLatch			latch = new CountDownLatch(1);
@@ -472,16 +464,12 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 											};
 
 					tray.addActionListener(al);
-					service.start();
 					latch.await();
-					service.stop();
 					tray.removeActionListener(al);
 				}
 			}
 			else {
-				service.start();
 				latch.await();
-				service.stop();
 			}
 		} catch (InterruptedException e) {
 		}
