@@ -13,7 +13,7 @@ import chav1961.purelib.model.MutableContentNodeMetadata;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 
-public class RingCoilsFactory implements PluginInterface<RingCoilsPlugin>{
+public class RingCoilsFactory implements PluginInterface<RingCoilsPlugin> {
 	private static final String	PLUGIN_NAME = "menu.details.ringcoils"; 
 	private static final URI	PLUGIN_URI = URI.create(ContentMetadataInterface.APPLICATION_SCHEME+":"+Constants.MODEL_APPLICATION_SCHEME_ACTION+":/"+PLUGIN_NAME);
 

@@ -24,10 +24,10 @@ public class ContourPlugin implements FormManager<Object,ContourPlugin>, ModuleA
 	private final LoggerFacade 	logger;
 	
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.inductance",tooltip="chav1961.calc.plugins.calc.contour.inductance.tt")
-	@Format("9.2pzs")
+	@Format("9.4pzs")
 	public float inductance = 0;
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.capacity",tooltip="chav1961.calc.plugins.calc.contour.capacity.tt")
-	@Format("9.2pzs")
+	@Format("9.4pzs")
 	public float capacity = 0;
 	@LocaleResource(value="chav1961.calc.plugins.calc.contour.frequency",tooltip="chav1961.calc.plugins.calc.contour.frequency.tt")
 	@Format("9.2pzs")

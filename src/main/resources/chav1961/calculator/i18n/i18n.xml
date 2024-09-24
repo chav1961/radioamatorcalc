@@ -1140,6 +1140,30 @@
 		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.coiled">Two coils</key>
 		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.coiled.tt">Primary coil identical to secondary one</key>
 
+<!-- Localization for chav1961.calc.plugins.details.quartz --> 
+		<key name="menu.details.quartzparameters">Quartz parameters</key>
+		<key name="menu.details.quartzparameters.tt">Calculate dynamic quartz parameters</key>
+		<key name="chav1961.calc.plugins.details.quartz.button.calc">Calculate</key>
+		<key name="chav1961.calc.plugins.details.quartz.button.calc.tt">Calculate parameters</key>
+		<key name="chav1961.calc.plugins.details.quartz.capC1">C1 capacity (pF)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capC1.tt">C1 capacity (pF)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capCs">Cs capacity (pF)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capCs.tt">Cs capacity (pF)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capC2">C2 capacity (pF)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capC2.tt">C2 capacity (pF)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capC3">C3 capacity (pF)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capC3.tt">C3 capacity (pF)</key>
+		<key name="chav1961.calc.plugins.details.quartz.freq0">Open key frequency (MHz)</key>
+		<key name="chav1961.calc.plugins.details.quartz.freq0.tt">Open key frequency (MHz)</key>
+		<key name="chav1961.calc.plugins.details.quartz.freq1">Shot key frequency (MHz)</key>
+		<key name="chav1961.calc.plugins.details.quartz.freq1.tt">Shot key frequency (MHz)</key>
+		<key name="chav1961.calc.plugins.details.quartz.Ld">Quartz dynamic inductance, (mH)</key>
+		<key name="chav1961.calc.plugins.details.quartz.Ld.tt">Quartz dynamic nnductance, (mH)</key>
+		<key name="chav1961.calc.plugins.details.quartz.Cd">Quartz dynamic capacity (pF)</key>
+		<key name="chav1961.calc.plugins.details.quartz.Cd.tt">Quartz dynamic capacity (pF)</key>
+		<key name="chav1961.calc.plugins.details.quartz.Rd">Quartz resistance (Ohm)</key>
+		<key name="chav1961.calc.plugins.details.quartz.Rd.tt">Quartz resistance (Ohm)</key>
+
 <!-- Localization for chav1961.calc.plugins.devices.pulsestab --> 
 		<key name="menu.devices.pulsestab">Pulse stabilizer</key>
 		<key name="menu.devices.pulsestab.tt">Calculate pulse stabilizer parameters</key>
@@ -2458,6 +2482,30 @@
 		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.oneWire.tt">Первичная обмотка в виде провода, проходящего через кольцо</key>
 		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.coiled">Две обмотки</key>
 		<key name="chav1961.calc.plugins.detalis.ringcurrenttrans.currenttranstype.coiled.tt">Первичная обмотка, идентичная по конструкции вторичной</key>
+
+<!-- Локализация для chav1961.calc.plugins.details.quartz --> 
+		<key name="menu.details.quartzparameters">Параметры кварца</key>
+		<key name="menu.details.quartzparameters.tt">Расчет динамических папаметров кварцевого резонатора</key>
+		<key name="chav1961.calc.plugins.details.quartz.button.calc">Расчет</key>
+		<key name="chav1961.calc.plugins.details.quartz.button.calc.tt">Рассчитать параметры</key>
+		<key name="chav1961.calc.plugins.details.quartz.capC1">Емкость C1 (пФ)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capC1.tt">Емкость C1 (пФ)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capCs">Емкость Cs (пФ)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capCs.tt">Емкость Cs (пФ)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capC2">Емкость C2 (пФ)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capC2.tt">Емкость C2 (пФ)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capC3">Емкость C3 (пФ)</key>
+		<key name="chav1961.calc.plugins.details.quartz.capC3.tt">Емкость C3 (пФ)</key>
+		<key name="chav1961.calc.plugins.details.quartz.freq0">Частота с разомкнутым ключом (МГц)</key>
+		<key name="chav1961.calc.plugins.details.quartz.freq0.tt">Частота с разомкнутым ключом (МГц)</key>
+		<key name="chav1961.calc.plugins.details.quartz.freq1">Частота с замкнутым ключом (МГц)</key>
+		<key name="chav1961.calc.plugins.details.quartz.freq1.tt">Частота с замкнутым ключом (МГц)</key>
+		<key name="chav1961.calc.plugins.details.quartz.Ld">Дин. индуктивность кварца (мГн)</key>
+		<key name="chav1961.calc.plugins.details.quartz.Ld.tt">Дин. индуктивность кварца (мГн)</key>
+		<key name="chav1961.calc.plugins.details.quartz.Cd">Дин. емкость кварца (пФ)</key>
+		<key name="chav1961.calc.plugins.details.quartz.Cd.tt">Дин. емкость кварца (пФ)</key>
+		<key name="chav1961.calc.plugins.details.quartz.Rd">Дин. сопротивление кварца (Ом)</key>
+		<key name="chav1961.calc.plugins.details.quartz.Rd.tt">Дин. сопротивление кварца (Ом)</key>
 
 <!-- Локализация для chav1961.calc.plugins.devices.pulsestab --> 
 		<key name="menu.devices.pulsestab">Импульсный стабилизатор</key>
