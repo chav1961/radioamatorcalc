@@ -53,7 +53,7 @@ public class PhaseShiftFactory implements PluginInterface<PhaseShiftPlugin>{
 					, PhaseShiftPlugin.class.getAnnotation(LocaleResource.class).help()
 					, null
 					, PLUGIN_URI
-					, getClass().getResource("frameicon.png").toURI());
+					, getClass().getResource("frameIcon.png").toURI());
 		} catch (URISyntaxException e) {
 			return new MutableContentNodeMetadata(getPluginName()
 					, PhaseShiftPlugin.class

@@ -53,7 +53,7 @@ public class RingCoilsFactory implements PluginInterface<RingCoilsPlugin> {
 					, RingCoilsPlugin.class.getAnnotation(LocaleResource.class).help()
 					, null
 					, PLUGIN_URI
-					, getClass().getResource("frameicon.png").toURI());
+					, getClass().getResource("frameIcon.png").toURI());
 		} catch (URISyntaxException e) {
 			return new MutableContentNodeMetadata(getPluginName()
 					, RingCoilsPlugin.class

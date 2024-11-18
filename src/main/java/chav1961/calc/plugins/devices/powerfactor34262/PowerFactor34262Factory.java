@@ -52,7 +52,7 @@ public class PowerFactor34262Factory implements PluginInterface<PowerFactor34262
 					, PowerFactor34262Plugin.class.getAnnotation(LocaleResource.class).help()
 					, null
 					, PLUGIN_URI
-					, getClass().getResource("frameicon.png").toURI());
+					, getClass().getResource("frameIcon.png").toURI());
 		} catch (URISyntaxException e) {
 			return new MutableContentNodeMetadata(getPluginName()
 					, PowerFactor34262Plugin.class

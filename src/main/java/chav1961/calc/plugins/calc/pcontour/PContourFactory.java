@@ -52,7 +52,7 @@ public class PContourFactory implements PluginInterface<PContourPlugin>{
 					, PContourPlugin.class.getAnnotation(LocaleResource.class).help()
 					, null
 					, PLUGIN_URI
-					, getClass().getResource("frameicon.png").toURI());
+					, getClass().getResource("frameIcon.png").toURI());
 		} catch (URISyntaxException e) {
 			return new MutableContentNodeMetadata(getPluginName()
 					, PContourPlugin.class

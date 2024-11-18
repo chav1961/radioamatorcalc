@@ -52,7 +52,7 @@ public class ActiveFilterFactory implements PluginInterface<ActiveFilterPlugin>{
 					, ActiveFilterPlugin.class.getAnnotation(LocaleResource.class).help()
 					, null
 					, PLUGIN_URI
-					, getClass().getResource("frameicon.png").toURI());
+					, getClass().getResource("frameIcon.png").toURI());
 		} catch (URISyntaxException e) {
 			return new MutableContentNodeMetadata(getPluginName()
 					, ActiveFilterPlugin.class

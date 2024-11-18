@@ -4,4 +4,4 @@ This application contains a set of useful calculations sometimes needed in radio
 During development, there was a goal to create not only useful application, but deep test my library 
 [[https://github.com/chav1961/purelib|Pure Library]] on it (bugs, functionality, easy-to-use 
 and so on). I hope, that the first goal is not strongly damaged by second one 
-{{root:chav1961.calc.Application!smile.png| }}  
+{{root://chav1961.calc.Application/chav1961/calc/smile.png| }}  

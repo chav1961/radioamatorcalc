@@ -53,7 +53,7 @@ public class RingPulseTransFactory implements PluginInterface<RingPulseTransPlug
 					, RingPulseTransPlugin.class.getAnnotation(LocaleResource.class).help()
 					, null
 					, PLUGIN_URI
-					, getClass().getResource("frameicon.png").toURI());
+					, getClass().getResource("frameIcon.png").toURI());
 		} catch (URISyntaxException e) {
 			return new MutableContentNodeMetadata(getPluginName()
 					, RingPulseTransPlugin.class
