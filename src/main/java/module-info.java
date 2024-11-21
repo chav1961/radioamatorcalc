@@ -7,7 +7,6 @@ module chav1961.radioamatorcalc {
 	requires java.naming;
 	requires java.xml;
 	requires java.datatransfer;
-	requires google.api.translate.java;
 	
 	exports chav1961.calc.interfaces;
 	
