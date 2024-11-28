@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import chav1961.calc.script.LocalVarStack.ValueType;
-import chav1961.calc.script.ScriptProcessor.DataManager;
-import chav1961.calc.script.ScriptProcessor.Lexema;
 import chav1961.purelib.basic.AndOrTree;
 import chav1961.purelib.basic.CharUtils;
 import chav1961.purelib.basic.SequenceIterator;
@@ -57,9 +55,6 @@ import chav1961.purelib.basic.interfaces.SyntaxTreeInterface;
 public class ScriptProcessor {
 	private static final char 								LEX_TERMINAL = '\uFFFF';
 	private static final SyntaxTreeInterface<LexemaType>	KEYWORDS = new AndOrTree<>();
-	private static final double								LOG10 = Math.log(10);
-	private static final double								INV_LOG10 = 1/LOG10;
-	private static final int								CURRENT_MASK = 0xFF000000;
 	private static final int								CURRENT_VALUE = 0x00FFFFFF;
 	private static final int								CURRENT_JUMPS = 0x80000000;
 	private static final int								CURRENT_RETURN = 0x40000000;
@@ -69,47 +64,47 @@ public class ScriptProcessor {
 	private static final int								CURRENT_JUMP_DEPTH_SHIFT = 24;
 	
 	static {
-		KEYWORDS.placeName("if",LexemaType.LexIf);
-		KEYWORDS.placeName("then",LexemaType.LexThen);
-		KEYWORDS.placeName("else",LexemaType.LexElse);
-		KEYWORDS.placeName("while",LexemaType.LexWhile);
-		KEYWORDS.placeName("do",LexemaType.LexDo);
-		KEYWORDS.placeName("repeat",LexemaType.LexRepeat);
-		KEYWORDS.placeName("until",LexemaType.LexUntil);
-		KEYWORDS.placeName("for",LexemaType.LexFor);
-		KEYWORDS.placeName("case",LexemaType.LexCase);
-		KEYWORDS.placeName("of",LexemaType.LexOf);
-		KEYWORDS.placeName("break",LexemaType.LexBreak);
-		KEYWORDS.placeName("continue",LexemaType.LexContinue);
-		KEYWORDS.placeName("return",LexemaType.LexReturn);
-		KEYWORDS.placeName("begin",LexemaType.LexBegin);
-		KEYWORDS.placeName("end",LexemaType.LexEnd);
-		KEYWORDS.placeName("print",LexemaType.LexPrint);
-		KEYWORDS.placeName("call",LexemaType.LexCall);
-		KEYWORDS.placeName("div",LexemaType.LexIDiv);
-		KEYWORDS.placeName("mod",LexemaType.LexMod);
-		KEYWORDS.placeName("in",LexemaType.LexIn);
-		KEYWORDS.placeName("and",LexemaType.LexAnd);
-		KEYWORDS.placeName("not",LexemaType.LexNot);
-		KEYWORDS.placeName("or",LexemaType.LexOr);
-		KEYWORDS.placeName("sin",LexemaType.LexFSin);
-		KEYWORDS.placeName("cos",LexemaType.LexFCos);
-		KEYWORDS.placeName("tan",LexemaType.LexFTan);
-		KEYWORDS.placeName("arcsin",LexemaType.LexFASin);
-		KEYWORDS.placeName("arccos",LexemaType.LexFACos);
-		KEYWORDS.placeName("arctan",LexemaType.LexFATan);
-		KEYWORDS.placeName("exp",LexemaType.LexFExp);
-		KEYWORDS.placeName("exp10",LexemaType.LexFExp10); 
-		KEYWORDS.placeName("ln",LexemaType.LexFLn);
-		KEYWORDS.placeName("ln10",LexemaType.LexFLog10); 
-		KEYWORDS.placeName("sqr",LexemaType.LexFSqr);
-		KEYWORDS.placeName("sqrt",LexemaType.LexFSqrt);
-		KEYWORDS.placeName("int",LexemaType.LexInt);
-		KEYWORDS.placeName("real",LexemaType.LexReal);
-		KEYWORDS.placeName("str",LexemaType.LexString);
-		KEYWORDS.placeName("bool",LexemaType.LexBoolean);
-		KEYWORDS.placeName("true",LexemaType.LexTrue);
-		KEYWORDS.placeName("false",LexemaType.LexFalse);
+		KEYWORDS.placeName((CharSequence)"if",LexemaType.LexIf);
+		KEYWORDS.placeName((CharSequence)"then",LexemaType.LexThen);
+		KEYWORDS.placeName((CharSequence)"else",LexemaType.LexElse);
+		KEYWORDS.placeName((CharSequence)"while",LexemaType.LexWhile);
+		KEYWORDS.placeName((CharSequence)"do",LexemaType.LexDo);
+		KEYWORDS.placeName((CharSequence)"repeat",LexemaType.LexRepeat);
+		KEYWORDS.placeName((CharSequence)"until",LexemaType.LexUntil);
+		KEYWORDS.placeName((CharSequence)"for",LexemaType.LexFor);
+		KEYWORDS.placeName((CharSequence)"case",LexemaType.LexCase);
+		KEYWORDS.placeName((CharSequence)"of",LexemaType.LexOf);
+		KEYWORDS.placeName((CharSequence)"break",LexemaType.LexBreak);
+		KEYWORDS.placeName((CharSequence)"continue",LexemaType.LexContinue);
+		KEYWORDS.placeName((CharSequence)"return",LexemaType.LexReturn);
+		KEYWORDS.placeName((CharSequence)"begin",LexemaType.LexBegin);
+		KEYWORDS.placeName((CharSequence)"end",LexemaType.LexEnd);
+		KEYWORDS.placeName((CharSequence)"print",LexemaType.LexPrint);
+		KEYWORDS.placeName((CharSequence)"call",LexemaType.LexCall);
+		KEYWORDS.placeName((CharSequence)"div",LexemaType.LexIDiv);
+		KEYWORDS.placeName((CharSequence)"mod",LexemaType.LexMod);
+		KEYWORDS.placeName((CharSequence)"in",LexemaType.LexIn);
+		KEYWORDS.placeName((CharSequence)"and",LexemaType.LexAnd);
+		KEYWORDS.placeName((CharSequence)"not",LexemaType.LexNot);
+		KEYWORDS.placeName((CharSequence)"or",LexemaType.LexOr);
+		KEYWORDS.placeName((CharSequence)"sin",LexemaType.LexFSin);
+		KEYWORDS.placeName((CharSequence)"cos",LexemaType.LexFCos);
+		KEYWORDS.placeName((CharSequence)"tan",LexemaType.LexFTan);
+		KEYWORDS.placeName((CharSequence)"arcsin",LexemaType.LexFASin);
+		KEYWORDS.placeName((CharSequence)"arccos",LexemaType.LexFACos);
+		KEYWORDS.placeName((CharSequence)"arctan",LexemaType.LexFATan);
+		KEYWORDS.placeName((CharSequence)"exp",LexemaType.LexFExp);
+		KEYWORDS.placeName((CharSequence)"exp10",LexemaType.LexFExp10); 
+		KEYWORDS.placeName((CharSequence)"ln",LexemaType.LexFLn);
+		KEYWORDS.placeName((CharSequence)"ln10",LexemaType.LexFLog10); 
+		KEYWORDS.placeName((CharSequence)"sqr",LexemaType.LexFSqr);
+		KEYWORDS.placeName((CharSequence)"sqrt",LexemaType.LexFSqrt);
+		KEYWORDS.placeName((CharSequence)"int",LexemaType.LexInt);
+		KEYWORDS.placeName((CharSequence)"real",LexemaType.LexReal);
+		KEYWORDS.placeName((CharSequence)"str",LexemaType.LexString);
+		KEYWORDS.placeName((CharSequence)"bool",LexemaType.LexBoolean);
+		KEYWORDS.placeName((CharSequence)"true",LexemaType.LexTrue);
+		KEYWORDS.placeName((CharSequence)"false",LexemaType.LexFalse);
 	}
 	
 	public enum LexemaType {
@@ -1027,8 +1022,6 @@ loop:	for (;;) {
 	}
 
 	private static void reduceStack(final List<Object> stack, final int topStackDepth) throws SyntaxException {
-		final boolean 	b1 = stack.size() >= topStackDepth + 4;
-		
 		if (stack.size() >= topStackDepth + 4 && ((Lexema)stack.get(stack.size()-3)).type.groupType().compareTo(((Lexema)stack.get(stack.size()-1)).type.groupType()) < 0) {
 			final GroupType	group = ((Lexema)stack.get(stack.size()-3)).type.groupType();
 			int 			index, count = 0, from;
@@ -1070,6 +1063,7 @@ loop:	for (;;) {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static Object calculate(final Object left, Lexema oper, final Object right) throws SyntaxException {
 		final ValueType	leftType = ValueType.classify(left), rightType = ValueType.classify(right);   
 		
@@ -1419,6 +1413,7 @@ loop:	for (;;) {
 		private final Class<LexType>	clazz;
 		private final boolean[]			content;
 		
+		@SafeVarargs
 		public TerminalSet(final Class<LexType> clazz, final LexType... initials) {
 			this.clazz = clazz;
 			this.content = new boolean[clazz.getEnumConstants().length];
@@ -1433,7 +1428,7 @@ loop:	for (;;) {
 			this.content = content;
 		}
 		
-		public TerminalSet<LexType> add(final LexType... additionals) {
+		public TerminalSet<LexType> add(@SuppressWarnings("unchecked") final LexType... additionals) {
 			final boolean[]	clone = content.clone();
 			
 			for (LexType item : additionals) {
