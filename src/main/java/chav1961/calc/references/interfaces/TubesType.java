@@ -1,5 +1,6 @@
-package chav1961.calc.references.tubes;
+package chav1961.calc.references.interfaces;
 
+import chav1961.calc.references.tubes.DiodeRecord;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 

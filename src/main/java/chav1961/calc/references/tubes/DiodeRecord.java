@@ -3,6 +3,7 @@ package chav1961.calc.references.tubes;
 import java.net.URI;
 
 import chav1961.calc.interfaces.ReferenceColumn;
+import chav1961.calc.references.interfaces.TubeCorpusType;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 import chav1961.purelib.ui.interfaces.Format;
@@ -12,21 +13,21 @@ import chav1961.purelib.ui.interfaces.Format;
 public class DiodeRecord {
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
 	@Format("30")
-	@ReferenceColumn("Наименование")
+	@ReferenceColumn("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")
 	public String		name;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
 	@Format("30")
-	@ReferenceColumn("Назначение")
+	@ReferenceColumn("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")
 	public String		description;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
 	@Format("20")
-	public CorpusType 	corpus;
+	public TubeCorpusType 	corpus;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
 	@Format("30")
-	@ReferenceColumn("*Аналоги")
+	@ReferenceColumn("*пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")
 	public String		analogs;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
@@ -46,7 +47,7 @@ public class DiodeRecord {
 
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
 	@Format("9.2mpzs")
-	@ReferenceColumn("Uн")	
+	@ReferenceColumn("UпїЅ")	
 	public float		Uf;
 
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
@@ -56,7 +57,7 @@ public class DiodeRecord {
 
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
 	@Format("9.2mpzs")
-	@ReferenceColumn("Iн")	
+	@ReferenceColumn("IпїЅ")	
 	public float		If;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
@@ -66,17 +67,17 @@ public class DiodeRecord {
 
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
 	@Format("9.2mpzs")
-	@ReferenceColumn("Rвн")	
+	@ReferenceColumn("RпїЅпїЅ")	
 	public float		Rinner;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
 	@Format("9.2mpzs")
-	@ReferenceColumn("С")	
+	@ReferenceColumn("пїЅ")	
 	public float		Capacity;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
 	@Format("9.2mpzs")
-	@ReferenceColumn("Шумы")	
+	@ReferenceColumn("пїЅпїЅпїЅпїЅ")	
 	public float		Unoise;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
@@ -86,17 +87,17 @@ public class DiodeRecord {
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
 	@Format("9.2mpzs")
-	@ReferenceColumn("Uкпmax")	
+	@ReferenceColumn("UпїЅпїЅmax")	
 	public float		Ufcmax;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
 	@Format("9.2mpzs")
-	@ReferenceColumn("Iкmax")	
+	@ReferenceColumn("IпїЅmax")	
 	public float		Icmax;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
 	@Format("9.2mpzs")
-	@ReferenceColumn("Iкиmax")	
+	@ReferenceColumn("IпїЅпїЅmax")	
 	public float		Icimax;
 	
 	@LocaleResource(value="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage",tooltip="chav1961.calc.plugins.details.ringpulsetrans.inputVoltage.tt")
