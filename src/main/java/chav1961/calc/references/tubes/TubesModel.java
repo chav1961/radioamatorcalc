@@ -12,10 +12,15 @@ import chav1961.calc.references.interfaces.TubePanelGroup;
 import chav1961.calc.references.interfaces.TubeParameter;
 import chav1961.calc.references.interfaces.TubesType;
 import chav1961.purelib.basic.Utils;
+import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.Localizer;
 
 class TubesModel extends DefaultTableModel {
-	private static final long serialVersionUID = -4800780353810497969L;
+	private static final long 		serialVersionUID = -4800780353810497969L;
+	private static final String		COL_SCHEME = "chav1961.calc.reference.tubesReference.table.scheme"; 
+	private static final String		COL_PANEL = "chav1961.calc.reference.tubesReference.table.panel"; 
+	
 	
 	private final Localizer			localizer;
 	private final TubeDescriptor[]	content;
@@ -87,18 +92,22 @@ class TubesModel extends DefaultTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return type == null ? 0 : joinedParms.length + 2;
+		return joinedParms.length + 2;
 	}
 
 	@Override
 	public String getColumnName(final int columnIndex) {
 		switch (columnIndex) {
 			case 0 	:
-				return localizer.getValue("");
+				return localizer.getValue(COL_SCHEME);
 			case 1 	:
-				return localizer.getValue("");
+				return localizer.getValue(COL_PANEL);
 			default :
-				return localizer.getValue(joinedParms[columnIndex-2].name());
+				try {
+					return localizer.getValue(TubeParameter.class.getField(joinedParms[columnIndex-2].name()).getAnnotation(LocaleResource.class).value());
+				} catch (LocalizationException | IllegalArgumentException | NoSuchFieldException | SecurityException e) {
+					return joinedParms[columnIndex-2].name();
+				}
 		}
 	}
 

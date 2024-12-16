@@ -396,6 +396,35 @@
 		<key name="chav1961.calc.reference.tubesReference.tt">Electronic tubes reference</key>
 		<key name="chav1961.calc.reference.tubesReference.typesType">Tube type</key>
 		<key name="chav1961.calc.reference.tubesReference.typesType.tt">Electronic tube type</key>
+
+		<key name="chav1961.calc.reference.tubesReference.preview.table.name">Parameter name</key>
+		<key name="chav1961.calc.reference.tubesReference.preview.table.value">Value</key>
+		<key name="chav1961.calc.reference.tubesReference.table.scheme">Pinout</key>
+		<key name="chav1961.calc.reference.tubesReference.table.panel">Panel</key>
+		<key name="chav1961.calc.reference.tubesReference.tab.general">General</key>
+
+		<key name="chav1961.calc.references.tubes.pinType.ordinal">Ordinal</key>
+		<key name="chav1961.calc.references.tubes.pinType.ordinal.tt">Ordinal</key>
+		<key name="chav1961.calc.references.tubes.pinType.top">Top</key>
+		<key name="chav1961.calc.references.tubes.pinType.top.tt">Top</key>
+
+		<key name="chav1961.calc.references.tubes.tubeConnectorType.an">AN</key>
+		<key name="chav1961.calc.references.tubes.tubeConnectorType.an.tt">AN</key>
+
+		<key name="chav1961.calc.references.tubes.tubeCorpusGroup.tg">TG</key>
+		<key name="chav1961.calc.references.tubes.tubeCorpusGroup.tg.tt">TG</key>
+
+		<key name="chav1961.calc.references.tubes.tubeCorpusType.tg">TG</key>
+		<key name="chav1961.calc.references.tubes.tubeCorpusType.tg.tt">TG</key>
+
+		<key name="chav1961.calc.references.tubes.tubePanelGroup.pin9">PIN9</key>
+		<key name="chav1961.calc.references.tubes.tubePanelGroup.pin9.tt">PIN9</key>
+
+		<key name="chav1961.calc.references.tubes.tubePanelType.pin9">PIN9</key>
+		<key name="chav1961.calc.references.tubes.tubePanelType.pin9.tt">PIN9</key>
+
+		<key name="chav1961.calc.references.tubes.tubeParameter.myu">Myu</key>
+		<key name="chav1961.calc.references.tubes.tubeParameter.myu.tt">Myu</key>
 		
 		<key name="chav1961.calc.references.tubes.tubesType.diode">Diode</key>
 		<key name="chav1961.calc.references.tubes.tubesType.diode.tt">Diode</key>
@@ -1740,6 +1769,35 @@
 		<key name="chav1961.calc.reference.tubesReference.tt">Справочник по электронным лампам</key>
 		<key name="chav1961.calc.reference.tubesReference.typesType">Тип</key>
 		<key name="chav1961.calc.reference.tubesReference.typesType.tt">Тип электронной лампы</key>
+
+		<key name="chav1961.calc.reference.tubesReference.preview.table.name">Наименование параметра</key>
+		<key name="chav1961.calc.reference.tubesReference.preview.table.value">Значение</key>
+		<key name="chav1961.calc.reference.tubesReference.table.scheme">Разводка</key>
+		<key name="chav1961.calc.reference.tubesReference.table.panel">Панель</key>
+		<key name="chav1961.calc.reference.tubesReference.tab.general">Общий список</key>
+
+		<key name="chav1961.calc.references.tubes.pinType.ordinal">Ordinal</key>
+		<key name="chav1961.calc.references.tubes.pinType.ordinal.tt">Ordinal</key>
+		<key name="chav1961.calc.references.tubes.pinType.top">Top</key>
+		<key name="chav1961.calc.references.tubes.pinType.top.tt">Top</key>
+
+		<key name="chav1961.calc.references.tubes.tubeConnectorType.an">AN</key>
+		<key name="chav1961.calc.references.tubes.tubeConnectorType.an.tt">AN</key>
+
+		<key name="chav1961.calc.references.tubes.tubeCorpusGroup.tg">TG</key>
+		<key name="chav1961.calc.references.tubes.tubeCorpusGroup.tg.tt">TG</key>
+
+		<key name="chav1961.calc.references.tubes.tubeCorpusType.tg">TG</key>
+		<key name="chav1961.calc.references.tubes.tubeCorpusType.tg.tt">TG</key>
+
+		<key name="chav1961.calc.references.tubes.tubePanelGroup.pin9">PIN9</key>
+		<key name="chav1961.calc.references.tubes.tubePanelGroup.pin9.tt">PIN9</key>
+
+		<key name="chav1961.calc.references.tubes.tubePanelType.pin9">PIN9</key>
+		<key name="chav1961.calc.references.tubes.tubePanelType.pin9.tt">PIN9</key>
+
+		<key name="chav1961.calc.references.tubes.tubeParameter.myu">Myu</key>
+		<key name="chav1961.calc.references.tubes.tubeParameter.myu.tt">Myu</key>
 
 		<key name="chav1961.calc.references.tubes.tubesType.diode">Диод</key>
 		<key name="chav1961.calc.references.tubes.tubesType.diode.tt">Диод</key>

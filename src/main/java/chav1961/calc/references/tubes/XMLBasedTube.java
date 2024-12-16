@@ -1,7 +1,11 @@
 package chav1961.calc.references.tubes;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Base64;
 
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -10,9 +14,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import chav1961.calc.references.interfaces.Graphic;
+import chav1961.calc.references.interfaces.PinType;
 import chav1961.calc.references.interfaces.TubeConnector;
-import chav1961.calc.references.interfaces.TubeConnector.PinType;
-import chav1961.calc.references.interfaces.TubeConnector.TubeConnectorType;
+import chav1961.calc.references.interfaces.TubeConnectorType;
 import chav1961.calc.references.interfaces.TubeCorpusType;
 import chav1961.calc.references.interfaces.TubeDescriptor;
 import chav1961.calc.references.interfaces.TubePanelType;
@@ -77,7 +81,7 @@ public class XMLBasedTube implements TubeDescriptor {
 				this.description = root.getAttribute(ATTR_DESCRIPTION);
 				this.corpus = TubeCorpusType.valueOf(root.getAttribute(ATTR_CORPUS));
 				this.panel = TubePanelType.valueOf(root.getAttribute(ATTR_PANEL));
-				this.scheme = new ImageIcon(URIUtils.convert2selfURI(scheme.item(0).getTextContent().trim().getBytes()).toURL());
+				this.scheme = loadIcon(scheme.item(0).getTextContent().trim());
 				this.parms = new TubeParmDescriptor[parms.getLength()];
 				
 				for(int index = 0; index < this.parms.length; index++) {
@@ -104,7 +108,7 @@ public class XMLBasedTube implements TubeDescriptor {
 				for(int index = 0; index < this.connectors.length; index++) {
 					final int				number = ((Element)connectors.item(index)).hasAttribute(ATTR_NUMBER) ? Integer.valueOf(((Element)connectors.item(index)).getAttribute(ATTR_NUMBER)) : 0;
 					final int				pin = Integer.valueOf(((Element)connectors.item(index)).getAttribute(ATTR_PIN));
-					final TubeConnectorType	type = TubeConnectorType.valueOf(((Element)connectors.item(index)).getAttribute(ATTR_TOOLTIP));
+					final TubeConnectorType	type = TubeConnectorType.valueOf(((Element)connectors.item(index)).getAttribute(ATTR_TYPE));
 					final PinType			pinType = ((Element)connectors.item(index)).hasAttribute(ATTR_PINTYPE) ? PinType.valueOf(((Element)connectors.item(index)).getAttribute(ATTR_PINTYPE)) : PinType.ORDINAL;
 					
 					this.connectors[index] = new TubeConnectorImpl(number, type, pin, pinType);
@@ -222,9 +226,21 @@ public class XMLBasedTube implements TubeDescriptor {
 				result[count++] = item;
 			}
 		}
+	
 		return result;
 	}
 
+	
+	private Icon loadIcon(final String base64Content) {
+		try {
+			final byte[]		content = Base64.getDecoder().decode(base64Content);
+			final BufferedImage	image = ImageIO.read(new ByteArrayInputStream(content));
+			
+			return new ImageIcon(image);
+		} catch (IOException e) {
+			return null;
+		}
+	}
 
 	private static class TubeParmDescriptor {
 		final int			lampNo;

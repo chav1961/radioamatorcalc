@@ -11,15 +11,18 @@ import chav1961.calc.references.interfaces.TubeDescriptor;
 import chav1961.calc.references.interfaces.TubesType;
 import chav1961.purelib.basic.Utils;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 import chav1961.purelib.ui.swing.SwingUtils;
 
 class TubesTabs extends JTabbedPane implements LocaleChangeListener {
+	private static final long 	serialVersionUID = -9007080601952548368L;
 	private static final Icon	GENERAL_ICON = new ImageIcon(TubesTabs.class.getResource(""));
-	private static final String	GENERAL_TITLE = "";
+	private static final String	GENERAL_TITLE = "chav1961.calc.reference.tubesReference.tab.general";
 	
-	private static final long serialVersionUID = -9007080601952548368L;
+	
+	private final Localizer		localizer;
 
 	TubesTabs(final Localizer localizer, final Consumer<TubeDescriptor> selection, final TubeDescriptor... content) {
 		if (localizer == null) {
@@ -29,6 +32,8 @@ class TubesTabs extends JTabbedPane implements LocaleChangeListener {
 			throw new IllegalArgumentException("Content is null or contains nulls inside");
 		}
 		else {
+			this.localizer = localizer;
+			
 			addTab(localizer, content, selection);
 			for(TubesType item : TubesType.values()) {
 				addTab(item, localizer, content, selection);
@@ -64,7 +69,16 @@ class TubesTabs extends JTabbedPane implements LocaleChangeListener {
 
 	private void fillLocalizedStrings() {
 		for(int index = 0, maxIndex = getTabCount(); index < maxIndex; index++) {
-			setTitleAt(index, index == 0 ? GENERAL_TITLE : TubesType.values()[index - 1].name());
+			if (index == 0) {
+				setTitleAt(index, localizer.getValue(GENERAL_TITLE));
+			}
+			else {
+				try {
+					setTitleAt(index, localizer.getValue(TubesType.class.getField(TubesType.values()[index - 1].name()).getAnnotation(LocaleResource.class).value()));
+				} catch (LocalizationException | NoSuchFieldException | SecurityException e) {
+					setTitleAt(index, TubesType.values()[index - 1].name());
+				}
+			}
 		}
 	}
 }

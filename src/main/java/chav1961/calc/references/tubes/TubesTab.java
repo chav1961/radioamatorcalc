@@ -1,13 +1,18 @@
 package chav1961.calc.references.tubes;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.util.Locale;
 import java.util.function.Consumer;
 
+import javax.swing.Icon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 import chav1961.calc.references.interfaces.TubeDescriptor;
 import chav1961.calc.references.interfaces.TubesType;
@@ -33,6 +38,35 @@ class TubesTab extends JPanel implements LocaleChangeListener {
 		this.table.setCellSelectionEnabled(true);
 		this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.table.getSelectionModel().addListSelectionListener((e)->fireSelection());
+		this.table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		this.table.setRowHeight(32);
+		this.table.setDefaultRenderer(Icon.class, new DefaultTableCellRenderer() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+					return new JLabel((Icon)value);
+				}
+		});
+		this.table.setDefaultRenderer(float[].class, new DefaultTableCellRenderer() {
+				private static final long serialVersionUID = 1L;
+	
+				@Override
+				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+					if (value != null) {
+						final StringBuilder	result = new StringBuilder("<html><body>");
+						
+						for(float item : (float[])value) {
+							result.append("<p><b>").append(item).append("</b></p>");
+						}
+						return new JLabel(result.append("</body></html>").toString(), JLabel.RIGHT);
+					}
+					else {
+						return new JLabel("-", JLabel.CENTER);
+					}
+				}
+		});
+		
 		this.scroll = new JScrollPane(table);
 		
 		add(scroll, BorderLayout.CENTER);

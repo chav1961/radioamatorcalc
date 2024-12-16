@@ -5,7 +5,7 @@ import javax.swing.Icon;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
 
-@LocaleResourceLocation("i18n:xml:root://chav1961.calc.references.tubes.TubesType/chav1961/calculator/i18n/i18n.xml")
+@LocaleResourceLocation("i18n:xml:root://chav1961.calc.references.interfaces.TubeParameter/chav1961/calculator/i18n/i18n.xml")
 public enum TubesType {
 	@LocaleResource(value="chav1961.calc.references.tubes.tubesType.diode",tooltip="chav1961.calc.references.tubes.tubesType.diode.tt")
 	DIODE(1, 1), 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tubes>
+	<tube type="DIODE" abbr="1a1a" corpus="TG" panel="PIN9" description="localizedKey">
+		<parms>
+			<parm name="MYU" number="0">10</parm>
+		</parms>
+		<scheme>iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABWUlEQVR4nK3Wv0tWURwG8A+JSSJpIORkNlZOSjqHs0FKS0pbf0AtDbpns/4Foou6qi1GLoFDDioogYguRkWugUsc+CYvel89933vAw98z/P98cDlnHsOxdjEGf5k8ix6svAAJ2jJbcAtHONhTvE0PiiPGUzlFO6jvwGDx/h+U9Ewvmkc2xi6rmAOb5sweIfZeslWnKKnCYP7+IHbRcnnWNc8PmG0KLGMVxUYTGDpstiJX+iowKAdP9FVK77BAd5XxIOYeYHJOCj1+Bs7+BjcCe26njQzC0+xi7YarS20lGsa45gv0JM2VoXBk/gkl7GHRyrCVzyrWY9gS4UYw2rNeg0vqjRowRF60RdxmfsiC4txSl9HXAm6Yxe9xAoWYvhKaONR0zA+x89rqQ5TbqPs0Dv4gkP8jfs5xUVMuVST4tRzN8dgILblvZJMPYM5BqnovMST5T9TzxWDf69ybCTo/04CAAAAAElFTkSuQmCC</scheme>
+		<connectors>
+			<connector number="0" type="AN" pin="1" pinType="ORDINAL"/>
+		</connectors>
+		<graphics>
+			<graphic name="localizedKey" tooltip="localizedKey" number="0">iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABWUlEQVR4nK3Wv0tWURwG8A+JSSJpIORkNlZOSjqHs0FKS0pbf0AtDbpns/4Foou6qi1GLoFDDioogYguRkWugUsc+CYvel89933vAw98z/P98cDlnHsOxdjEGf5k8ix6svAAJ2jJbcAtHONhTvE0PiiPGUzlFO6jvwGDx/h+U9Ewvmkc2xi6rmAOb5sweIfZeslWnKKnCYP7+IHbRcnnWNc8PmG0KLGMVxUYTGDpstiJX+iowKAdP9FVK77BAd5XxIOYeYHJOCj1+Bs7+BjcCe26njQzC0+xi7YarS20lGsa45gv0JM2VoXBk/gkl7GHRyrCVzyrWY9gS4UYw2rNeg0vqjRowRF60RdxmfsiC4txSl9HXAm6Yxe9xAoWYvhKaONR0zA+x89rqQ5TbqPs0Dv4gkP8jfs5xUVMuVST4tRzN8dgILblvZJMPYM5BqnovMST5T9TzxWDf69ybCTo/04CAAAAAElFTkSuQmCC</graphic>
+		</graphics>
+	</tube>
+</tubes>
