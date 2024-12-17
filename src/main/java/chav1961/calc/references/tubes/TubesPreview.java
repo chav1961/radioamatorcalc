@@ -3,6 +3,8 @@ package chav1961.calc.references.tubes;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.lang.classfile.constantpool.NameAndTypeEntry;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -19,9 +23,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import chav1961.calc.references.interfaces.TubeDescriptor;
+import chav1961.calc.references.interfaces.TubePanelGroup;
 import chav1961.calc.references.interfaces.TubePanelType;
 import chav1961.purelib.basic.NamedValue;
 import chav1961.purelib.basic.exceptions.LocalizationException;
+import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.i18n.interfaces.Localizer.LocaleChangeListener;
 
@@ -33,13 +39,15 @@ class TubesPreview extends JPanel implements LocaleChangeListener {
 
 	private final Localizer	localizer;
 	
-	private JLabel			scheme = new JLabel();
-	private JLabel			panel = new JLabel();
-	private JLabel			abbr = new JLabel();
-	private JLabel			description = new JLabel();
-	private Parameters[]	parms = new Parameters[PARM_COUNT];
-	private JTable[]		tables = new JTable[PARM_COUNT];
-	private TubeDescriptor	desc = null;
+	private JLabel				scheme = new JLabel();
+	private JLabel				panel = new JLabel();
+	private JLabel				abbr = new JLabel("", JLabel.CENTER);
+	private JEditorPane			description = new JEditorPane("text/html","");
+	private final JPanel		tabArea = new JPanel(new GridLayout(1, PARM_COUNT));
+	private final JScrollPane[]	scrolls = new JScrollPane[PARM_COUNT];
+	private Parameters[]		parms = new Parameters[PARM_COUNT];
+	private JTable[]			tables = new JTable[PARM_COUNT];
+	private TubeDescriptor		desc = null;
 	
 	TubesPreview(final Localizer localizer) {
 		super(new BorderLayout(5, 5));
@@ -47,17 +55,18 @@ class TubesPreview extends JPanel implements LocaleChangeListener {
 
 		final JPanel		pictures = new JPanel(new GridLayout(2, 1, 5, 5));
 		final JPanel		center = new JPanel(new BorderLayout(5, 5));
-		final JPanel		tabArea = new JPanel(new GridLayout(1, PARM_COUNT));
 
 		for(int index = 0; index < PARM_COUNT; index++) {
 			parms[index] = new Parameters();
 			tables[index] = new JTable(parms[index]);
-			tabArea.add(new JScrollPane(tables[index]));
+			scrolls[index] = new JScrollPane(tables[index]);
 		}
 		add(abbr, BorderLayout.NORTH);
 		pictures.add(scheme);
 		pictures.add(panel);
 		add(pictures, BorderLayout.WEST);
+		description.setEditable(false);
+		description.setOpaque(false);
 		center.add(description, BorderLayout.NORTH);
 		center.add(tabArea, BorderLayout.CENTER);
 		add(center, BorderLayout.CENTER);
@@ -80,17 +89,25 @@ class TubesPreview extends JPanel implements LocaleChangeListener {
 	}
 	
 	private void fillContent() {
-		// TODO Auto-generated method stub
+		tabArea.removeAll();
+		for(int index = 0; index < tables.length; index++) {
+			if (index < desc.getType().getNumberOfLampTypes()) {
+				tabArea.add(scrolls[index]);
+			}
+		}
 		scheme.setIcon(desc.getScheme());
-		panel.setIcon(desc.getPanelType().getIcon());
+		try {
+			panel.setIcon(new ImageIcon(URI.create(TubePanelGroup.class.getField(desc.getPanelType().getGroup().name()).getAnnotation(LocaleResource.class).icon()).toURL()));
+		} catch (NoSuchFieldException | SecurityException | MalformedURLException e) {
+			panel.setIcon(null);
+		}
 		fillLocalizedStrings();
 	}
 
 	private void fillLocalizedStrings() {
-		// TODO Auto-generated method stub
 		if (desc != null) {
 			abbr.setText(desc.getAbbr()+" - "+desc.getType());
-			description.setText("");
+			description.setText(desc.getDescription());
 		}
 	}
 

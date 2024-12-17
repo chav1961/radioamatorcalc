@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tubes>
-	<tube type="DIODE" abbr="1a1a" corpus="TG" panel="PIN9" description="localizedKey">
+	<tube type="DIODE" abbr="1a1a" corpus="TG" panel="PIN9">
+		<description>
+			== test 
+			assa **desc**;
+		</description>
 		<parms>
 			<parm name="MYU" number="0">10</parm>
 		</parms>

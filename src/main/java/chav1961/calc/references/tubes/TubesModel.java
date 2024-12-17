@@ -18,8 +18,10 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 
 class TubesModel extends DefaultTableModel {
 	private static final long 		serialVersionUID = -4800780353810497969L;
+	private static final int		ADVANCED_COL = 3;
 	private static final String		COL_SCHEME = "chav1961.calc.reference.tubesReference.table.scheme"; 
 	private static final String		COL_PANEL = "chav1961.calc.reference.tubesReference.table.panel"; 
+	private static final String		COL_ABBR = "chav1961.calc.reference.tubesReference.table.abbr"; 
 	
 	
 	private final Localizer			localizer;
@@ -92,7 +94,7 @@ class TubesModel extends DefaultTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return joinedParms.length + 2;
+		return joinedParms.length + ADVANCED_COL;
 	}
 
 	@Override
@@ -102,11 +104,13 @@ class TubesModel extends DefaultTableModel {
 				return localizer.getValue(COL_SCHEME);
 			case 1 	:
 				return localizer.getValue(COL_PANEL);
+			case 2 	:
+				return localizer.getValue(COL_ABBR);
 			default :
 				try {
-					return localizer.getValue(TubeParameter.class.getField(joinedParms[columnIndex-2].name()).getAnnotation(LocaleResource.class).value());
+					return localizer.getValue(TubeParameter.class.getField(joinedParms[columnIndex-ADVANCED_COL].name()).getAnnotation(LocaleResource.class).value());
 				} catch (LocalizationException | IllegalArgumentException | NoSuchFieldException | SecurityException e) {
-					return joinedParms[columnIndex-2].name();
+					return joinedParms[columnIndex-ADVANCED_COL].name();
 				}
 		}
 	}
@@ -118,6 +122,8 @@ class TubesModel extends DefaultTableModel {
 				return Icon.class;
 			case 1 	:
 				return TubePanelGroup.class;
+			case 2 	:
+				return String.class;
 			default :
 				return float[].class;
 		}
@@ -135,12 +141,14 @@ class TubesModel extends DefaultTableModel {
 				return content[rowIndex].getScheme();
 			case 1 	:
 				return content[rowIndex].getPanelType().getGroup();
+			case 2 	:
+				return content[rowIndex].getAbbr();
 			default :
 				final TubeDescriptor	desc  = content[rowIndex];
 				final float[]			temp = new float[desc.getType().getNumberOfLampTypes()];
 				
 				for(int index = 0; index < temp.length; index++) {
-					final TubeParameter	p = joinedParms[columnIndex-2];
+					final TubeParameter	p = joinedParms[columnIndex-ADVANCED_COL];
 					
 					temp[index] = Float.NaN;
 					for(int parmIndex = 0; parmIndex < parms[index].length; parmIndex++) {

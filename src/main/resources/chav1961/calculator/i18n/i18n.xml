@@ -401,7 +401,11 @@
 		<key name="chav1961.calc.reference.tubesReference.preview.table.value">Value</key>
 		<key name="chav1961.calc.reference.tubesReference.table.scheme">Pinout</key>
 		<key name="chav1961.calc.reference.tubesReference.table.panel">Panel</key>
+		<key name="chav1961.calc.reference.tubesReference.table.abbr">Part No</key>
 		<key name="chav1961.calc.reference.tubesReference.tab.general">General</key>
+		<key name="chav1961.calc.reference.tubesReference.filterForm.title">Title</key>
+		<key name="chav1961.calc.reference.tubesReference.filterForm.abbr.name">Part No</key>
+		<key name="chav1961.calc.reference.tubesReference.filterForm.descr.name">Description</key>
 
 		<key name="chav1961.calc.references.tubes.pinType.ordinal">Ordinal</key>
 		<key name="chav1961.calc.references.tubes.pinType.ordinal.tt">Ordinal</key>
@@ -1774,8 +1778,12 @@
 		<key name="chav1961.calc.reference.tubesReference.preview.table.value">Значение</key>
 		<key name="chav1961.calc.reference.tubesReference.table.scheme">Разводка</key>
 		<key name="chav1961.calc.reference.tubesReference.table.panel">Панель</key>
+		<key name="chav1961.calc.reference.tubesReference.table.abbr">Тип</key>
 		<key name="chav1961.calc.reference.tubesReference.tab.general">Общий список</key>
-
+		<key name="chav1961.calc.reference.tubesReference.filterForm.title">Заголовок</key>
+		<key name="chav1961.calc.reference.tubesReference.filterForm.abbr.name">Тип</key>
+		<key name="chav1961.calc.reference.tubesReference.filterForm.descr.name">Описание</key>
+		
 		<key name="chav1961.calc.references.tubes.pinType.ordinal">Ordinal</key>
 		<key name="chav1961.calc.references.tubes.pinType.ordinal.tt">Ordinal</key>
 		<key name="chav1961.calc.references.tubes.pinType.top">Top</key>

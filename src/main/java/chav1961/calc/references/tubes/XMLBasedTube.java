@@ -3,6 +3,7 @@ package chav1961.calc.references.tubes;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Base64;
 
 import javax.imageio.ImageIO;
@@ -23,6 +24,7 @@ import chav1961.calc.references.interfaces.TubePanelType;
 import chav1961.calc.references.interfaces.TubeParameter;
 import chav1961.calc.references.interfaces.TubesType;
 import chav1961.purelib.basic.URIUtils;
+import chav1961.purelib.streams.char2char.CreoleWriter;
 
 /*
  * <tube type="TubesType" abbr="1a1a" corpus="TubeCorpusType" panel="TubePanelType" description="localizedKey">
@@ -40,6 +42,7 @@ import chav1961.purelib.basic.URIUtils;
  */
 
 public class XMLBasedTube implements TubeDescriptor {
+	private static final String			TAG_DESCRIPTION = "description";
 	private static final String			TAG_PARM = "parm";
 	private static final String			TAG_SCHEME = "scheme";
 	private static final String			TAG_CONNECTOR = "connector";
@@ -48,7 +51,6 @@ public class XMLBasedTube implements TubeDescriptor {
 	private static final String			ATTR_ABBR = "abbr";
 	private static final String			ATTR_CORPUS = "corpus";
 	private static final String			ATTR_PANEL = "panel";
-	private static final String			ATTR_DESCRIPTION = "description";
 	private static final String			ATTR_NAME = "name";
 	private static final String			ATTR_NUMBER = "number";
 	private static final String			ATTR_PIN = "pin";
@@ -75,14 +77,23 @@ public class XMLBasedTube implements TubeDescriptor {
 				final NodeList scheme = root.getElementsByTagName(TAG_SCHEME);
 				final NodeList connectors = root.getElementsByTagName(TAG_CONNECTOR);
 				final NodeList graphics = root.getElementsByTagName(TAG_GRAPHIC);
-				
+				final NodeList desc = root.getElementsByTagName(TAG_DESCRIPTION);
+
 				this.type = TubesType.valueOf(root.getAttribute(ATTR_TYPE));
 				this.abbr = root.getAttribute(ATTR_ABBR);
-				this.description = root.getAttribute(ATTR_DESCRIPTION);
 				this.corpus = TubeCorpusType.valueOf(root.getAttribute(ATTR_CORPUS));
 				this.panel = TubePanelType.valueOf(root.getAttribute(ATTR_PANEL));
 				this.scheme = loadIcon(scheme.item(0).getTextContent().trim());
 				this.parms = new TubeParmDescriptor[parms.getLength()];
+
+				try(final StringWriter	wr = new StringWriter()) {
+					try (final CreoleWriter	cwr = new CreoleWriter(wr)) {
+						cwr.write(desc.item(0).getTextContent().trim());
+					}
+					final String	val = wr.toString();
+					
+					this.description = val.substring(val.indexOf("<html>"));
+				}
 				
 				for(int index = 0; index < this.parms.length; index++) {
 					final int			number = ((Element)parms.item(index)).hasAttribute(ATTR_NUMBER) ? Integer.valueOf(((Element)parms.item(index)).getAttribute(ATTR_NUMBER)) : 0;
