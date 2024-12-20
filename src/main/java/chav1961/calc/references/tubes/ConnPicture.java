@@ -1,5 +1,6 @@
 package chav1961.calc.references.tubes;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -19,10 +20,12 @@ import javax.swing.JComponent;
 
 import chav1961.calc.references.interfaces.TubeConnector;
 import chav1961.purelib.basic.exceptions.ContentException;
+import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
+import chav1961.purelib.ui.swing.SwingUtils;
 import chav1961.purelib.ui.swing.useful.svg.SVGPainter;
 import chav1961.purelib.ui.swing.useful.svg.SVGParser;
 
-public class ConnPicture extends JComponent implements MouseListener, MouseMotionListener {
+class ConnPicture extends JComponent implements MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 4745784785481072237L;
 	private static final float		POINT_AREA = 0.01f;
 	private static final float		LINE_AREA = 0.01f;
@@ -40,27 +43,31 @@ public class ConnPicture extends JComponent implements MouseListener, MouseMotio
 	private Point					fromPoint = null, toPoint = null;
 	private SVGPainter				leftPainter = null;
 	
-	public ConnPicture() throws ContentException {
-		this.rightPainter = SVGParser.parse(getClass().getResourceAsStream(""));
+	ConnPicture() throws ContentException {
+		this.rightPainter = SVGParser.parse(getClass().getResourceAsStream("right.svg"));
 	}
 
-	public void setPinout(final InputStream svg) throws ContentException {
+	public void setPinout(final InputStream svg) {
 		if (svg == null) {
 			throw new NullPointerException("SVG stream can't be null");
 		}
 		else {
-			this.leftPainter = SVGParser.parse(svg);
-
-			for(int index = lines.size()-1; index >= 0; index--) {
-				if (!rightPoints.contains(lines.get(index).getP1()) || !rightPoints.contains(lines.get(index).getP2())) {
-					lines.remove(index);
+			try {
+				this.leftPainter = SVGParser.parse(svg);
+				
+				for(int index = lines.size()-1; index >= 0; index--) {
+					if (!rightPoints.contains(lines.get(index).getP1()) || !rightPoints.contains(lines.get(index).getP2())) {
+						lines.remove(index);
+					}
 				}
+				repaint();
+			} catch (ContentException e) {
+				SwingUtils.getNearestLogger(this).message(Severity.warning, e, e.getLocalizedMessage());
 			}
-			repaint();
 		}
 	}
 	
-	public TubeConnector[] getConnectors() {
+	TubeConnector[] getConnectors() {
 		return null;
 	}
 	
@@ -68,10 +75,13 @@ public class ConnPicture extends JComponent implements MouseListener, MouseMotio
 	protected void paintComponent(final Graphics g) {
 		final Graphics2D		g2d = (Graphics2D)g;
 		final AffineTransform	oldAt = g2d.getTransform();
+		final Color				oldColor = g2d.getColor();
 		final AffineTransform	leftAt = new AffineTransform(oldAt);
 		final AffineTransform	rightAt = new AffineTransform(oldAt);
-	
-		rightAt.translate(0, getHeight());
+
+		g2d.setColor(getBackground());
+		g2d.fillRect(0, 0, getWidth(), getHeight());
+		rightAt.translate(getWidth()/2, getHeight());
 		rightAt.scale(1, -1);
 		g2d.setTransform(rightAt);
 		rightPainter.paint(g2d);
@@ -95,6 +105,8 @@ public class ConnPicture extends JComponent implements MouseListener, MouseMotio
 		if (fromPoint != null) {
 			
 		}
+		g2d.setColor(oldColor);
+		g2d.setTransform(oldAt);
 	}
 
 	@Override

@@ -406,6 +406,8 @@
 		<key name="chav1961.calc.reference.tubesReference.filterForm.title">Title</key>
 		<key name="chav1961.calc.reference.tubesReference.filterForm.abbr.name">Part No</key>
 		<key name="chav1961.calc.reference.tubesReference.filterForm.descr.name">Description</key>
+		<key name="chav1961.calc.reference.tubesReference.filterForm.pinout.title">Pinout to find</key>		
+		<key name="chav1961.calc.reference.tubesReference.connScreen.label">Pinout to find:</key>
 
 		<key name="chav1961.calc.references.tubes.pinType.ordinal">Ordinal</key>
 		<key name="chav1961.calc.references.tubes.pinType.ordinal.tt">Ordinal</key>
@@ -1783,6 +1785,8 @@
 		<key name="chav1961.calc.reference.tubesReference.filterForm.title">Заголовок</key>
 		<key name="chav1961.calc.reference.tubesReference.filterForm.abbr.name">Тип</key>
 		<key name="chav1961.calc.reference.tubesReference.filterForm.descr.name">Описание</key>
+		<key name="chav1961.calc.reference.tubesReference.filterForm.pinout.title">Найти разводку</key>		
+		<key name="chav1961.calc.reference.tubesReference.connScreen.label">Цоколевка :</key>
 		
 		<key name="chav1961.calc.references.tubes.pinType.ordinal">Ordinal</key>
 		<key name="chav1961.calc.references.tubes.pinType.ordinal.tt">Ordinal</key>

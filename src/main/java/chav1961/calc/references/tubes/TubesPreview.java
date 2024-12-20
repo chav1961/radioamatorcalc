@@ -2,29 +2,22 @@ package chav1961.calc.references.tubes;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.lang.classfile.constantpool.NameAndTypeEntry;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 import chav1961.calc.references.interfaces.TubeDescriptor;
 import chav1961.calc.references.interfaces.TubePanelGroup;
-import chav1961.calc.references.interfaces.TubePanelType;
 import chav1961.purelib.basic.NamedValue;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.i18n.interfaces.LocaleResource;

@@ -14,6 +14,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -33,9 +34,11 @@ import chav1961.calc.references.interfaces.TubeParameter;
 import chav1961.calc.references.interfaces.TubesType;
 import chav1961.purelib.basic.NamedValue;
 import chav1961.purelib.basic.Utils;
+import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.i18n.interfaces.Localizer;
 import chav1961.purelib.model.FieldFormat;
 import chav1961.purelib.ui.swing.SwingUtils;
+import chav1961.purelib.ui.swing.useful.JLocalizedOptionPane;
 
 public class FilterForm extends JPanel {
 	private static final long 	serialVersionUID = 2249124198926610489L;
@@ -43,6 +46,7 @@ public class FilterForm extends JPanel {
 	private static final String	COL_VALUE = "chav1961.calc.reference.tubesReference.preview.table.value"; 
 	private static final String	LABEL_ABBR_NAME = "chav1961.calc.reference.tubesReference.filterForm.abbr.name"; 
 	private static final String	LABEL_DESCR_NAME = "chav1961.calc.reference.tubesReference.filterForm.descr.name"; 
+	private static final String	PINOUT_TITLE = "chav1961.calc.reference.tubesReference.filterForm.pinout.title"; 
 
 	private final Localizer				localizer;
 	private final ParmTableModel		model;
@@ -112,7 +116,8 @@ public class FilterForm extends JPanel {
 		sl.putConstraint(SpringLayout.SOUTH, pane, -10, SpringLayout.SOUTH, center);
 		
 		add(center, BorderLayout.CENTER);
-		
+	
+		pinouts.addActionListener((e)->showPinout());
 		fillLocalizedStrings();
 	}
 
@@ -231,6 +236,20 @@ public class FilterForm extends JPanel {
 			}
 		}
 		return false;
+	}
+
+	private void showPinout() {
+		try {
+			final ConnScreen cs = new ConnScreen(localizer);
+			
+			if (new JLocalizedOptionPane(localizer).confirm(this, cs, COL_NAME, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+				
+			}
+		} catch (ContentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	
