@@ -7,7 +7,6 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 import org.junit.Assert;
 
-import chav1961.calc.references.tubes.DiodeRecord;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.sql.content.ResultSetFactory;
