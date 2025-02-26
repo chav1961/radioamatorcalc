@@ -22,6 +22,7 @@ public abstract class LocalizationKeys {
 	public static final String		SETTINGS_HELP = "settings.help";
 	
 	public static final String		HELP_ABOUT_APPLICATION = "help.aboutApplication";
+	public static final String		HELP_OVERVIEW = "help.overview";
 	
 	public static final String		CONFIRM_BUTTON_OPEN = "confirm.button.open";
 	public static final String		CONFIRM_BUTTON_OPEN_TOOLTIP = "confirm.button.open.tooltip";

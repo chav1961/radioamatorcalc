@@ -186,6 +186,7 @@ public class PipeTab extends JPanel implements AutoCloseable, LocaleChangeListen
 			this.tab = new JCloseableTab(localizer,this.ownModel.getRoot());
 			this.popup = SwingUtils.toJComponent(xmlModel.byUIPath(PIPE_MENU_ROOT),JPopupMenu.class);
 			this.toolbar = SwingUtils.toJComponent(xmlModel.byUIPath(PIPE_MENU_ROOT),JToolBar.class);
+			this.toolbar.setFloatable(false);
 			SwingUtils.assignActionListeners(this.toolbar,this);
 			
 			setLayout(new BorderLayout());

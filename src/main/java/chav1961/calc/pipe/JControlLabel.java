@@ -3,9 +3,6 @@ package chav1961.calc.pipe;
 import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.IOException;
 import java.util.Locale;
 
 import javax.swing.Icon;
@@ -13,7 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 
 import chav1961.calc.interfaces.PipeContainerInterface;
-import chav1961.calc.interfaces.PipeContainerItemInterface;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.i18n.LocalizerFactory;

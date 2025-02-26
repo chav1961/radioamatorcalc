@@ -84,7 +84,8 @@ abstract class InnerFrame<T> extends JInternalFrame implements LocaleChangeListe
 				public void internalFrameClosed(InternalFrameEvent e) {
 					SwingUtils.walkDown(InnerFrame.this, (mode,node)->{
 						if (mode == NodeEnterMode.EXIT && (node instanceof AutoCloseable)) {
-							try{((AutoCloseable)node).close();
+							try{
+								((AutoCloseable)node).close();
 							} catch (Exception exc) {
 							}
 						}

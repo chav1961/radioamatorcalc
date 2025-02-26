@@ -4,12 +4,10 @@ package chav1961.calc;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.SystemTray;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,18 +33,18 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.TabContent;
 import chav1961.calc.utils.SVGPluginFrame;
+import chav1961.calc.windows.HelpTab;
 import chav1961.calc.windows.PipeTab;
-import chav1961.calc.windows.ReferenceTab;
 import chav1961.calc.windows.WorkbenchTab;
 import chav1961.purelib.basic.ArgParser;
 import chav1961.purelib.basic.PureLibSettings;
+import chav1961.purelib.basic.Utils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
 import chav1961.purelib.basic.exceptions.FlowException;
@@ -55,6 +53,7 @@ import chav1961.purelib.basic.exceptions.PreparationException;
 import chav1961.purelib.basic.exceptions.SyntaxException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
+import chav1961.purelib.basic.interfaces.LoggerFacadeOwner;
 import chav1961.purelib.fsys.FileSystemFactory;
 import chav1961.purelib.fsys.FileSystemOnFile;
 import chav1961.purelib.fsys.interfaces.FileSystemInterface;
@@ -79,9 +78,8 @@ import chav1961.purelib.ui.swing.useful.JFileSelectionDialog.FilterCallback;
 import chav1961.purelib.ui.swing.useful.JStateString;
 import chav1961.purelib.ui.swing.useful.JSystemTray;
 
-public class Application extends JFrame implements LocaleChangeListener, LocalizerOwner {
+public class Application extends JFrame implements LocaleChangeListener, LocalizerOwner, LoggerFacadeOwner {
 	private static final long 				serialVersionUID = -2663340436788182341L;
-	private static final String				ARG_HELP_PORT = "helpPort";
 	private static final String				ARG_DEBUG = "debug";
 	
 	private final CurrentSettings			settings;
@@ -89,7 +87,6 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 	private final LoggerFacade				logger;
 	private final JMenuBar					menu;
 	private final JPopupMenu				trayMenu;
-	private final int						localHelpPort;
 	private final CountDownLatch			latch;
 	private final SimpleNavigatorTree<ContentNodeMetadata>		leftMenu;
 	private final File						luceneDir = new File("./lucene");
@@ -101,7 +98,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 	private File							currentPipeFile = null;
 	private File				 			currentWorkingDir = new File("./");
 	
-	public Application(final ContentMetadataInterface xda, final int helpPort, final Localizer parentLocalizer, final LoggerFacade logger, final CountDownLatch latch) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException, SyntaxException, PreparationException, ContentException {
+	public Application(final ContentMetadataInterface xda, final Localizer parentLocalizer, final LoggerFacade logger, final CountDownLatch latch) throws NullPointerException, IllegalArgumentException, EnvironmentException, IOException, FlowException, SyntaxException, PreparationException, ContentException {
 		if (xda == null) {
 			throw new NullPointerException("Application descriptor can't be null");
 		}
@@ -117,14 +114,13 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 		else {
 			this.localizer = LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated());
 			this.logger = logger;
-			this.localHelpPort = helpPort;
 			this.latch = latch;
 
 			parentLocalizer.push(localizer);
 			parentLocalizer.addLocaleChangeListener(this);
 			
-			this.stateString = new JStateString(this.localizer,10,true);
-			this.settings = new CurrentSettings(this.localizer,this.logger);
+			this.stateString = new JStateString(this.localizer, 10, true);
+			this.settings = new CurrentSettings(this.localizer, this.logger);
 			
 			stateString.setAutomaticClearTime(Severity.error,1,TimeUnit.MINUTES);
 			stateString.setAutomaticClearTime(Severity.warning,15,TimeUnit.SECONDS);
@@ -133,7 +129,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 			this.menu = SwingUtils.toJComponent(xda.byUIPath(URI.create("ui:/model/navigation.top.mainmenu")),JMenuBar.class); 
 			SwingUtils.assignActionListeners(this.menu,this);
 			this.trayMenu = SwingUtils.toJComponent(xda.byUIPath(URI.create("ui:/model/navigation.top.traymenu")),JPopupMenu.class); 
-			SwingUtils.assignActionListeners(this.trayMenu,this);
+			SwingUtils.assignActionListeners(this.trayMenu, this);
 			
 			final JPanel	centerPanel = new JPanel(new BorderLayout()); 
 			
@@ -144,7 +140,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 
 			final JSplitPane	split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 			
-			leftMenu = new SimpleNavigatorTree<ContentNodeMetadata>(localizer,xda.byUIPath(URI.create("ui:/model/navigation.top.navigator"))) {
+			leftMenu = new SimpleNavigatorTree<ContentNodeMetadata>(localizer, xda.byUIPath(URI.create("ui:/model/navigation.top.navigator"))) {
 								private static final long serialVersionUID = 1L;
 								@Override
 								protected void appendNodes(final ContentNodeMetadata submenu, final DefaultMutableTreeNode node) {
@@ -157,7 +153,6 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 									}
 								}
 							};
-
 			leftMenu.addActionListener((e)->{callPlugin(e.getActionCommand());});
 			
 			this.contentManipulator = new JFileContentManipulator(new FileSystemOnFile(URI.create("file://./")),this.localizer
@@ -171,20 +166,23 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 			
 			centerPanel.add(split,BorderLayout.CENTER);
 
-			wbt = new WorkbenchTab(tabs,localizer,stateString);			
-			wbt.pluginCount.addListener((oldValue,newValue)->((JMenuItem)SwingUtils.findComponentByName(menu,"menu.file.cleandesktop")).setEnabled(newValue != 0));
+			wbt = new WorkbenchTab(tabs, localizer, stateString);			
+			wbt.pluginCount.addListener((oldValue, newValue)->((JMenuItem)SwingUtils.findComponentByName(menu,"menu.file.cleandesktop")).setEnabled(newValue != 0));
 			wbt.pluginCount.refresh();
 			placeTab(tabs,wbt,false);
 			
 			SwingUtils.assignActionKey((JPanel)getContentPane()
-						,KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_DOWN_MASK)
+						,SwingUtils.KS_FIND
 						,SwingUtils.buildAnnotatedActionListener(this)
-						,"find");
-			SwingUtils.assignActionKey((JPanel)getContentPane(),SwingUtils.KS_HELP,(e)->showOverview(),"overview");
+						,SwingUtils.ACTION_FIND);
+			SwingUtils.assignActionKey((JPanel)getContentPane()
+						,SwingUtils.KS_HELP
+						,(e)->showOverview()
+						,"overview");
 			SwingUtils.assignExitMethod4MainWindow(this,()->exitApplication());
-			SwingUtils.centerMainWindow(this,0.75f);
+			SwingUtils.centerMainWindow(this, 0.75f);
 			
-			fillLocalizedStrings(localizer.currentLocale().getLocale(),localizer.currentLocale().getLocale());
+			fillLocalizedStrings();
 			pack();
 		}
 	}
@@ -192,6 +190,44 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 	@Override
 	public Localizer getLocalizer() {
 		return localizer;
+	}
+	
+	@Override
+	public LoggerFacade getLogger() {
+		return stateString;
+	}
+
+	@Override
+	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
+		fillLocalizedStrings();
+		SwingUtils.refreshLocale(menu,oldLocale, newLocale);
+		SwingUtils.refreshLocale(leftMenu,oldLocale, newLocale);
+		SwingUtils.refreshLocale(wbt,oldLocale, newLocale);
+	}
+	
+	public void expandPluginByItsId(final String pluginId) {
+		leftMenu.findAndSelect(URI.create(pluginId));
+	}
+
+	public void showHelp(final String helpURI) {
+		if (Utils.checkEmptyOrNullString(helpURI)) {
+			throw new IllegalArgumentException("Help URI string can't be null");
+		}
+		else {
+			for(int index = 0; index < tabs.getTabCount(); index++) {
+				if (tabs.getComponentAt(index) instanceof HelpTab) {
+					((HelpTab)tabs.getComponentAt(index)).showHelp(helpURI);
+					return;
+				}
+			}
+			try {
+				final HelpTab	tab = new HelpTab(tabs, localizer, logger, helpURI);
+				
+				placeTab(tabs, tab, true);
+			} catch (LocalizationException | ContentException | MalformedURLException e) {
+				stateString.message(Severity.error,e.getLocalizedMessage());
+			}
+		}
 	}
 	
 	private void callPlugin(final String actionCommand) {
@@ -202,7 +238,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 				if (item.canServe(actionURI)) {
 					if (tabs.getSelectedComponent() instanceof WorkbenchTab) {
 						try{final Object			inst = item.newIstance(stateString);
-							final SVGPluginFrame	frame = new SVGPluginFrame(localizer,inst.getClass(),inst);
+							final SVGPluginFrame<?>	frame = new SVGPluginFrame(localizer,inst.getClass(),inst);
 						        
 							 frame.setVisible(true);
 							 ((WorkbenchTab)tabs.getSelectedComponent()).placePlugin(frame);
@@ -220,20 +256,8 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 			stateString.message(Severity.error,"No any plugin found for ["+actionCommand+"]");
 		}
 	}
-
-	@Override
-	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-		fillLocalizedStrings(oldLocale,newLocale);
-		SwingUtils.refreshLocale(menu,oldLocale, newLocale);
-		SwingUtils.refreshLocale(leftMenu,oldLocale, newLocale);
-		SwingUtils.refreshLocale(wbt,oldLocale, newLocale);
-	}
 	
-	public void expandPluginByItsId(final String pluginId) {
-		leftMenu.findAndSelect(URI.create(pluginId));
-	}
-	
-	private void fillLocalizedStrings(Locale oldLocale, Locale newLocale) throws LocalizationException {
+	private void fillLocalizedStrings() throws LocalizationException {
 		setTitle(localizer.getValue(LocalizationKeys.TITLE_APPLICATION));
 	}
 
@@ -356,16 +380,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 	
 	@OnAction("action:/exit")
 	private void exitApplication () {
-		try{//if (contentManipulator.saveFile()) {
-//				if (desktopMgr.getPipeManager().getComponentCount() > 0) {
-//					setVisible(false);
-//					dispose();
-//				}
-//				else {
-//					setVisible(false);
-//					dispose();
-//				}
-			//}
+		try{
 			contentManipulator.close();
 			setVisible(false);
 			dispose();
@@ -376,11 +391,6 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 		}
 	}
 	
-	@OnAction("action:/references.tubes")
-	private void refTubes() {
-		// TODO:
-	}
-
 	@OnAction("action:builtin:/builtin.languages")
 	private void selectLang(final Hashtable<String,String[]> langs) throws LocalizationException {
 		localizer.setCurrentLocale(SupportedLanguages.valueOf(langs.get("lang")[0]).getLocale());
@@ -407,12 +417,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 
 	@OnAction("action:/helpOverview")
 	private void showOverview() {
-		if (Desktop.isDesktopSupported()) {
-			try{Desktop.getDesktop().browse(URI.create("http://localhost:"+localHelpPort+"/static/index.cre"));
-			} catch (IOException exc) {
-				exc.printStackTrace();
-			}
-		}
+		showHelp(LocalizationKeys.HELP_OVERVIEW);
 	}	
 	
 	@OnAction("action:/helpAbout")
@@ -444,7 +449,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 			final LoggerFacade				logger = PureLibSettings.CURRENT_LOGGER) {
 			final ContentMetadataInterface	xda = ContentModelFactory.forXmlDescription(is);
 			final CountDownLatch			latch = new CountDownLatch(1);
-			final Application				app = new Application(xda,parser.getValue(ARG_HELP_PORT,int.class),PureLibSettings.PURELIB_LOCALIZER,logger,latch);
+			final Application				app = new Application(xda, PureLibSettings.PURELIB_LOCALIZER, logger, latch);
 
 			app.setVisible(true);
 			
@@ -468,7 +473,6 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 	
 	private static class ApplicationArgParser extends ArgParser {
 		private static final ArgParser.AbstractArg[]	KEYS = {
-			new IntegerArg(ARG_HELP_PORT, true, "Help port to use for help browser", PureLibSettings.instance().getProperty(PureLibSettings.BUILTIN_HELP_PORT,int.class)),
 			new BooleanArg(ARG_DEBUG, false, "turn on debugging trace", false)
 		};
 		

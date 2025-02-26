@@ -23,11 +23,6 @@
 		<key name="menu.exit">Quit</key>
 		<key name="menu.ttExit">Quit application</key>
 
-		<key name="menu.references">Guides</key>
-		<key name="menu.references.tt">Reference guides for electronic components</key>
-		<key name="menu.references.tubes">Tubes</key>
-		<key name="menu.references.tubes.tt">Electronic tubes references</key>
-
 		<key name="menu.tools">Tools</key>
 		<key name="menu.ttTools">Set of tools to manage application</key>
 
@@ -119,6 +114,7 @@
 
 <!-- Localization for helps -->
 		<key name="help.aboutApplication">uri(aboutApplication.cre)</key>
+		<key name="help.overview">uri(index.cre)</key>
 
 <!-- Localization for window titles -->
 		<key name="title.Application">(c) 2018 A.Chernomyrdin aka chav1961. Radioamator calc V.R.=1.0</key>
@@ -254,9 +250,9 @@
 		<key name="chav1961.calc.pipe">%1$s Pipe %2$s</key>
 		<key name="chav1961.calc.pipe.tt">Pipe is used to build calculation's chains (similar to block-schemas)</key>
 
-		<key name="chav1961.calc.reference">%1$s</key>
-		<key name="chav1961.calc.reference.tt">Electronic component references</key>
-	
+		<key name="chav1961.calc.help">Help</key>
+		<key name="chav1961.calc.help.tt">Help contains help required</key>
+
 <!-- localization for standard pipe components -->
 		<key name="chav1961.calc.pipe.screen.source.tt">Control source starts execution for other pipe nodes</key>
 		<key name="chav1961.calc.pipe.screen.target.tt">Control target waits all incoming contorls to complete</key>
@@ -383,81 +379,6 @@
 		<key name="chav1961.calc.windows.pipemanager.validation.noWayToTerminal">Pipe error: No any way form initial node to any terminal node</key> 
 		<key name="chav1961.calc.windows.pipemanager.validation.unconditionalLoop">Pipe error: unconditional loop in the pipe</key> 
 		<key name="chav1961.calc.windows.pipemanager.validation.OK">Pipe validation OK</key> 
-
-<!-- localization for standard reference components -->
-		<key name="chav1961.calc.reference.seek">Find</key>
-		<key name="chav1961.calc.reference.name">Reference name</key>
-		<key name="chav1961.calc.reference.name.tt">Name of the reference guide</key>
-		<key name="chav1961.calc.reference.description">Description</key>
-		<key name="chav1961.calc.reference.description.tt">Reference description</key>
-
-<!-- Localization for tubes reference -->
-		<key name="chav1961.calc.reference.tubesReference">Tubes reference</key>
-		<key name="chav1961.calc.reference.tubesReference.tt">Electronic tubes reference</key>
-		<key name="chav1961.calc.reference.tubesReference.typesType">Tube type</key>
-		<key name="chav1961.calc.reference.tubesReference.typesType.tt">Electronic tube type</key>
-
-		<key name="chav1961.calc.reference.tubesReference.preview.table.name">Parameter name</key>
-		<key name="chav1961.calc.reference.tubesReference.preview.table.value">Value</key>
-		<key name="chav1961.calc.reference.tubesReference.table.scheme">Pinout</key>
-		<key name="chav1961.calc.reference.tubesReference.table.panel">Panel</key>
-		<key name="chav1961.calc.reference.tubesReference.table.abbr">Part No</key>
-		<key name="chav1961.calc.reference.tubesReference.tab.general">General</key>
-		<key name="chav1961.calc.reference.tubesReference.filterForm.title">Title</key>
-		<key name="chav1961.calc.reference.tubesReference.filterForm.abbr.name">Part No</key>
-		<key name="chav1961.calc.reference.tubesReference.filterForm.descr.name">Description</key>
-		<key name="chav1961.calc.reference.tubesReference.filterForm.pinout.title">Pinout to find</key>		
-		<key name="chav1961.calc.reference.tubesReference.connScreen.label">Pinout to find:</key>
-
-		<key name="chav1961.calc.references.tubes.pinType.ordinal">Ordinal</key>
-		<key name="chav1961.calc.references.tubes.pinType.ordinal.tt">Ordinal</key>
-		<key name="chav1961.calc.references.tubes.pinType.top">Top</key>
-		<key name="chav1961.calc.references.tubes.pinType.top.tt">Top</key>
-
-		<key name="chav1961.calc.references.tubes.tubeConnectorType.an">AN</key>
-		<key name="chav1961.calc.references.tubes.tubeConnectorType.an.tt">AN</key>
-
-		<key name="chav1961.calc.references.tubes.tubeCorpusGroup.tg">TG</key>
-		<key name="chav1961.calc.references.tubes.tubeCorpusGroup.tg.tt">TG</key>
-
-		<key name="chav1961.calc.references.tubes.tubeCorpusType.tg">TG</key>
-		<key name="chav1961.calc.references.tubes.tubeCorpusType.tg.tt">TG</key>
-
-		<key name="chav1961.calc.references.tubes.tubePanelGroup.pin9">PIN9</key>
-		<key name="chav1961.calc.references.tubes.tubePanelGroup.pin9.tt">PIN9</key>
-
-		<key name="chav1961.calc.references.tubes.tubePanelType.pin9">PIN9</key>
-		<key name="chav1961.calc.references.tubes.tubePanelType.pin9.tt">PIN9</key>
-
-		<key name="chav1961.calc.references.tubes.tubeParameter.myu">Myu</key>
-		<key name="chav1961.calc.references.tubes.tubeParameter.myu.tt">Myu</key>
-		
-		<key name="chav1961.calc.references.tubes.tubesType.diode">Diode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.diode.tt">Diode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doubleDiode">Double diode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doubleDiode.tt">Double diode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.triode">Triode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.triode.tt">Triode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doubleTriode">Double triode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doubleTriode.tt">Double triode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.tetrode">Tetrode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.tetrode.tt">Tetrode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doubleTetrode">Double tetrode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doubleTetrode.tt">Double tetrode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.pentode">Pentode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.pentode.tt">Pentode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doublePentode">Double pentode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doublePentode.tt">Double pentode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.triodePentode">Triode-pentode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.triodePentode.tt">Triode-pentode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.heptode">Heptode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.heptode.tt">Heptode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.triodeHeptode">Triode-heptode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.triodeHeptode.tt">Triode-heptode</key>
-		<key name="chav1961.calc.references.tubes.tubesType.stabilovolt">Stabilovolt</key>
-		<key name="chav1961.calc.references.tubes.tubesType.stabilovolt.tt">Stabilovolt</key>
-		<key name="chav1961.calc.references.tubes.tubesType.baretter">Baretter</key>
-		<key name="chav1961.calc.references.tubes.tubesType.baretter.tt">Baretter</key>
 
 <!-- Localization for plugins -->
 
@@ -1402,11 +1323,6 @@
 		<key name="menu.savePipeAs">Сохранить конвейер как...</key>
 		<key name="menu.ttSavePipeAs">Сохранить содержимое правой части экрана под новым именем</key>
 
-		<key name="menu.references">Справочники</key>
-		<key name="menu.references.tt">Справочники по электронным компонентам</key>
-		<key name="menu.references.tubes">Лампы</key>
-		<key name="menu.references.tubes.tt">Справочники по электронным лампам</key>
-
 		<key name="menu.tools">Инструменты</key>
 		<key name="menu.ttTools">Набор инструментов для настройки приложения</key>
 
@@ -1497,8 +1413,8 @@
 		<key name="settings.saved">Новые настройки сохранены</key>
 
 <!-- Локализация справок по приложению -->
-
 		<key name="help.aboutApplication">uri(aboutApplication.cre)</key>
+		<key name="help.overview">uri(index.cre)</key>
 
 <!-- Локализация заголовков окон -->
 		<key name="title.Application"> (c) 2018 А.Черномырдин aka chav1961. Калькулятор радиолюбителя V.R.=1.0</key>
@@ -1633,8 +1549,8 @@
 		<key name="chav1961.calc.pipe">%1$s Конв. %2$s</key>
 		<key name="chav1961.calc.pipe.tt">Конвейер позволяет собирать из плагинов цепочки вычислений (наподобие блок-схем)</key>
 
-		<key name="chav1961.calc.reference">%1$s</key>
-		<key name="chav1961.calc.reference.tt">Справочник по электронным компонентам</key>
+		<key name="chav1961.calc.help">Справка</key>
+		<key name="chav1961.calc.help.tt">Закладка содержит справку</key>
 
 <!-- Локализация для стандартных компонент конвейера -->
 		<key name="chav1961.calc.pipe.screen.source.tt">Стартовый узел запускает выполнение других узлов конвейера</key>
@@ -1762,81 +1678,6 @@
 		<key name="chav1961.calc.windows.pipemanager.validation.noWayToTerminal">Ошибка конвейера: нет ни одного пути из начального узла в конечные узлы</key> 
 		<key name="chav1961.calc.windows.pipemanager.validation.unconditionalLoop">Ошибка конвейера: безусловный бесконечный цикл в конвейере</key> 
 		<key name="chav1961.calc.windows.pipemanager.validation.OK">Проверка конвейера успешна</key> 
-
-<!-- Локализация для стандартных компонентов справочника -->
-		<key name="chav1961.calc.reference.seek">Поиск</key>
-		<key name="chav1961.calc.reference.name">Наименование</key>
-		<key name="chav1961.calc.reference.name.tt">Наименование справочника электронных компонент</key>
-		<key name="chav1961.calc.reference.description">Описание</key>
-		<key name="chav1961.calc.reference.description.tt">Описание справочника электронных компонент</key>
-
-<!-- Локализация для справочника по лампам -->
-		<key name="chav1961.calc.reference.tubesReference">Справочник по лампам</key>
-		<key name="chav1961.calc.reference.tubesReference.tt">Справочник по электронным лампам</key>
-		<key name="chav1961.calc.reference.tubesReference.typesType">Тип</key>
-		<key name="chav1961.calc.reference.tubesReference.typesType.tt">Тип электронной лампы</key>
-
-		<key name="chav1961.calc.reference.tubesReference.preview.table.name">Наименование параметра</key>
-		<key name="chav1961.calc.reference.tubesReference.preview.table.value">Значение</key>
-		<key name="chav1961.calc.reference.tubesReference.table.scheme">Разводка</key>
-		<key name="chav1961.calc.reference.tubesReference.table.panel">Панель</key>
-		<key name="chav1961.calc.reference.tubesReference.table.abbr">Тип</key>
-		<key name="chav1961.calc.reference.tubesReference.tab.general">Общий список</key>
-		<key name="chav1961.calc.reference.tubesReference.filterForm.title">Заголовок</key>
-		<key name="chav1961.calc.reference.tubesReference.filterForm.abbr.name">Тип</key>
-		<key name="chav1961.calc.reference.tubesReference.filterForm.descr.name">Описание</key>
-		<key name="chav1961.calc.reference.tubesReference.filterForm.pinout.title">Найти разводку</key>		
-		<key name="chav1961.calc.reference.tubesReference.connScreen.label">Цоколевка :</key>
-		
-		<key name="chav1961.calc.references.tubes.pinType.ordinal">Ordinal</key>
-		<key name="chav1961.calc.references.tubes.pinType.ordinal.tt">Ordinal</key>
-		<key name="chav1961.calc.references.tubes.pinType.top">Top</key>
-		<key name="chav1961.calc.references.tubes.pinType.top.tt">Top</key>
-
-		<key name="chav1961.calc.references.tubes.tubeConnectorType.an">AN</key>
-		<key name="chav1961.calc.references.tubes.tubeConnectorType.an.tt">AN</key>
-
-		<key name="chav1961.calc.references.tubes.tubeCorpusGroup.tg">TG</key>
-		<key name="chav1961.calc.references.tubes.tubeCorpusGroup.tg.tt">TG</key>
-
-		<key name="chav1961.calc.references.tubes.tubeCorpusType.tg">TG</key>
-		<key name="chav1961.calc.references.tubes.tubeCorpusType.tg.tt">TG</key>
-
-		<key name="chav1961.calc.references.tubes.tubePanelGroup.pin9">PIN9</key>
-		<key name="chav1961.calc.references.tubes.tubePanelGroup.pin9.tt">PIN9</key>
-
-		<key name="chav1961.calc.references.tubes.tubePanelType.pin9">PIN9</key>
-		<key name="chav1961.calc.references.tubes.tubePanelType.pin9.tt">PIN9</key>
-
-		<key name="chav1961.calc.references.tubes.tubeParameter.myu">Myu</key>
-		<key name="chav1961.calc.references.tubes.tubeParameter.myu.tt">Myu</key>
-
-		<key name="chav1961.calc.references.tubes.tubesType.diode">Диод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.diode.tt">Диод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doubleDiode">Двойной диод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doubleDiode.tt">Двойной диод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.triode">Триод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.triode.tt">Триод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doubleTriode">Двойной триод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doubleTriode.tt">Двойной триод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.tetrode">Тетрод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.tetrode.tt">Тетрод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doubleTetrode">Двойной тетрод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doubleTetrode.tt">Двойной тетрод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.pentode">Пентод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.pentode.tt">Пентод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doublePentode">Двойной пентод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.doublePentode.tt">Двойной пентод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.triodePentode">Триод-пентод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.triodePentode.tt">Триод-пентод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.heptode">Гептод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.heptode.tt">Гептод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.triodeHeptode">Триод-гептод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.triodeHeptode.tt">Триод-гептод</key>
-		<key name="chav1961.calc.references.tubes.tubesType.stabilovolt">Стабиловольт</key>
-		<key name="chav1961.calc.references.tubes.tubesType.stabilovolt.tt">Стабиловольт</key>
-		<key name="chav1961.calc.references.tubes.tubesType.baretter">Бареттер</key>
-		<key name="chav1961.calc.references.tubes.tubesType.baretter.tt">Бареттер</key>
 
 <!-- Локализация для плагинов -->
 

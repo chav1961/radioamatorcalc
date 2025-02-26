@@ -1,13 +1,11 @@
 package chav1961.calc.pipe;
 
-import java.awt.Component;
 import java.awt.Cursor;
 
 import javax.swing.Icon;
 
 import chav1961.calc.interfaces.MetadataTarget;
 import chav1961.calc.interfaces.PipeContainerInterface;
-import chav1961.calc.interfaces.PipeContainerItemInterface;
 import chav1961.calc.pipe.ModelContentChangeListener.ChangeType;
 import chav1961.calc.utils.PipeLink;
 import chav1961.purelib.basic.exceptions.ContentException;

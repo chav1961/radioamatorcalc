@@ -13,9 +13,6 @@
 			<app:separator/>
 			<app:item name="menu.file.exit" caption="menu.exit" tooltip="menu.ttExit" action="exit"/>
 		</app:submenu>
-		<app:submenu name="menu.references" caption="menu.references" tooltip="menu.references.tt">
-			<app:item name="menu.references.tubes" caption="menu.references.tubes" tooltip="menu.references.tubes.tt" action="references.tubes"/>
-		</app:submenu>
 		<app:submenu name="menu.tools" caption="menu.tools" tooltip="menu.ttTools">
 			<app:item name="menu.tools.find" caption="menu.find" tooltip="menu.ttFind" action="find"/>
 			<app:item name="menu.tools.index" caption="menu.index" tooltip="menu.ttIndex" action="index"/>

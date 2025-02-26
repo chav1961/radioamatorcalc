@@ -4,7 +4,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import chav1961.calc.interfaces.PipeContainerInterface;
-import chav1961.calc.interfaces.PipeContainerItemInterface;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.model.interfaces.ContentMetadataInterface.ContentNodeMetadata;
 
