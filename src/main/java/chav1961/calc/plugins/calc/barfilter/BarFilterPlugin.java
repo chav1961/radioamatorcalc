@@ -15,7 +15,7 @@ import chav1961.purelib.ui.interfaces.RefreshMode;
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.plugins.calc.barfilter.BarFilterPlugin/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="menu.curcuits.barfilter",tooltip="menu.curcuits.barfilter.tt",help="help.aboutApplication")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.barfilter.calc",tooltip="chav1961.calc.plugins.calc.barfilter.calc.tt"),actionString="calculate")
-@PluginProperties(width=500,height=360,leftWidth=250,svgURI="schema1.SVG,schema2.SVG,schema3.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
+@PluginProperties(width=500,height=435,leftWidth=250,svgURI="schema1.SVG,schema2.SVG,schema3.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
 public class BarFilterPlugin implements FormManager<Object,BarFilterPlugin>, ModuleAccessor {
 	private final LoggerFacade 	logger;
 	
@@ -37,6 +37,9 @@ public class BarFilterPlugin implements FormManager<Object,BarFilterPlugin>, Mod
 	@LocaleResource(value="chav1961.calc.plugins.calc.barfilter.outputresistance",tooltip="chav1961.calc.plugins.calc.barfilter.outputresistance.tt")
 	@Format("9mpzs")
 	public float outputResistance = 0;
+	@LocaleResource(value="chav1961.calc.plugins.calc.barfilter.charresistance",tooltip="chav1961.calc.plugins.calc.barfilter.charresistance.tt")
+	@Format("9mpzs")
+	public float charResistance = 0;
 
 	@LocaleResource(value="chav1961.calc.plugins.calc.barfilter.inductance1",tooltip="chav1961.calc.plugins.calc.barfilter.inductance1.tt")
 	@Format("9.3ro")
@@ -53,6 +56,12 @@ public class BarFilterPlugin implements FormManager<Object,BarFilterPlugin>, Mod
 	@LocaleResource(value="chav1961.calc.plugins.calc.barfilter.capacitance3",tooltip="chav1961.calc.plugins.calc.barfilter.capacitance3.tt")
 	@Format("9.2ro")
 	public float capacitance3 = 0;
+	@LocaleResource(value="chav1961.calc.plugins.calc.barfilter.trans1",tooltip="chav1961.calc.plugins.calc.barfilter.trans1.tt")
+	@Format("9.2ro")
+	public float trans1 = 0;
+	@LocaleResource(value="chav1961.calc.plugins.calc.barfilter.trans2",tooltip="chav1961.calc.plugins.calc.barfilter.trans2.tt")
+	@Format("9.2ro")
+	public float trans2 = 0;
 	
 	public BarFilterPlugin(final LoggerFacade logger) {
 		if (logger == null) {
@@ -72,6 +81,14 @@ public class BarFilterPlugin implements FormManager<Object,BarFilterPlugin>, Mod
 	public RefreshMode onAction(final BarFilterPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/BarFilterPlugin.calculate"	:
+				final float	r = charResistance;
+				final float	q = centralFreq / (2 * passBarWidth);
+				
+				inductance1 = inductance2 = (float) (1e6 * r / (2000 * Math.PI * centralFreq * q));
+				capacitance1 = capacitance2 = (float) (1e12 * q / (2000 * Math.PI * centralFreq * r));
+				capacitance3 = capacitance2 / q;
+				trans1 = (float) Math.sqrt(inputResistance / r);
+				trans2 = (float) Math.sqrt(outputResistance / r);
 				return RefreshMode.RECORD_ONLY;
 			default :
 				throw new UnsupportedOperationException("Unknown action string ["+actionName+"]");

@@ -610,6 +610,8 @@
 		<key name="chav1961.calc.plugins.calc.barfilter.inputresistance.tt">Input filter resistance, Ohms</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.outputresistance">Input resistance (Ohms)</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.outputresistance.tt">Output filter resistance, Ohms</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.charresistance">Character resistance (Ohms)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.charresistance.tt">Character filter resistance, Ohms</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.inductance1">L1 (uH)</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.inductance1.tt">L1 inductance, uH</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.capacitance1">C1 (pF)</key>
@@ -620,6 +622,10 @@
 		<key name="chav1961.calc.plugins.calc.barfilter.capacitance2.tt">C2 capacitance, pF</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.capacitance3">C3 (pF)</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.capacitance3.tt">C2 capacitance, pF</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.trans1">Ktr1</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.trans1.tt">Transformation of input contour</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.trans2">Ktr2</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.trans2.tt">Transformation of output contour</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.parallel">parallel</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.parallel.tt">Parallel contours</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.gtype">G-chain</key>
@@ -1909,6 +1915,8 @@
 		<key name="chav1961.calc.plugins.calc.barfilter.inputresistance.tt">Входное сопротивление фильтра, Ом</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.outputresistance">Вых. сопротивление (Ом)</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.outputresistance.tt">Выходное сопротивление фильтра, Ом</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.charresistance">Хар. сопротивление (Ом)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.charresistance.tt">Характеристическое сопротивление фильтра, Ом</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.inductance1">L1 (мкГн)</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.inductance1.tt">Индуктивность L1, мкГн</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.capacitance1">C1 (пФ)</key>
@@ -1919,6 +1927,10 @@
 		<key name="chav1961.calc.plugins.calc.barfilter.capacitance2.tt">Емкость C2, пФ</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.capacitance3">C3 (пФ)</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.capacitance3.tt">Емкость C3, пФ</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.trans1">Kтр1</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.trans1.tt">Коэффициент трансформации входного контура</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.trans2">Kтр2</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.trans2.tt">Коэффициент трансформации выходного контура</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.parallel">Параллельный</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.parallel.tt">Параллельне контуры, соединенные с землей</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.barFilterType.gtype">Г-образный</key>
