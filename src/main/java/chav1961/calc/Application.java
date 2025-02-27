@@ -83,6 +83,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 	private static final String				ARG_DEBUG = "debug";
 	
 	private final CurrentSettings			settings;
+	private final Localizer			 		parentLocalizer;
 	private final Localizer			 		localizer;
 	private final LoggerFacade				logger;
 	private final JMenuBar					menu;
@@ -112,6 +113,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 			throw new NullPointerException("Latch can't be null");
 		}
 		else {
+			this.parentLocalizer = parentLocalizer;
 			this.localizer = LocalizerFactory.getLocalizer(xda.getRoot().getLocalizerAssociated());
 			this.logger = logger;
 			this.latch = latch;
@@ -199,10 +201,12 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 
 	@Override
 	public void localeChanged(final Locale oldLocale, final Locale newLocale) throws LocalizationException {
-		fillLocalizedStrings();
+		SwingUtils.refreshLocale(stateString,oldLocale, newLocale);
 		SwingUtils.refreshLocale(menu,oldLocale, newLocale);
+		SwingUtils.refreshLocale(trayMenu,oldLocale, newLocale);
 		SwingUtils.refreshLocale(leftMenu,oldLocale, newLocale);
-		SwingUtils.refreshLocale(wbt,oldLocale, newLocale);
+		SwingUtils.refreshLocale(tabs,oldLocale, newLocale);
+		fillLocalizedStrings();
 	}
 	
 	public void expandPluginByItsId(final String pluginId) {
@@ -393,7 +397,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 	
 	@OnAction("action:builtin:/builtin.languages")
 	private void selectLang(final Hashtable<String,String[]> langs) throws LocalizationException {
-		localizer.setCurrentLocale(SupportedLanguages.valueOf(langs.get("lang")[0]).getLocale());
+		parentLocalizer.setCurrentLocale(SupportedLanguages.valueOf(langs.get("lang")[0]).getLocale());
 	}
 
 	@OnAction("action:/settings")
