@@ -15,7 +15,7 @@ import chav1961.purelib.ui.interfaces.RefreshMode;
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.plugins.calc.barfilter.BarFilterPlugin/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="menu.curcuits.barfilter",tooltip="menu.curcuits.barfilter.tt",help="help.aboutApplication")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.barfilter.calc",tooltip="chav1961.calc.plugins.calc.barfilter.calc.tt"),actionString="calculate")
-@PluginProperties(width=500,height=435,leftWidth=250,svgURI="schema1.SVG,schema2.SVG,schema3.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
+@PluginProperties(width=600,height=435,leftWidth=350,svgURI="schema1.SVG,schema2.SVG,schema3.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
 public class BarFilterPlugin implements FormManager<Object,BarFilterPlugin>, ModuleAccessor {
 	private final LoggerFacade 	logger;
 	
@@ -81,14 +81,44 @@ public class BarFilterPlugin implements FormManager<Object,BarFilterPlugin>, Mod
 	public RefreshMode onAction(final BarFilterPlugin inst, final Object id, final String actionName, final Object... parameter) throws FlowException, LocalizationException {
 		switch (actionName) {
 			case "app:action:/BarFilterPlugin.calculate"	:
-				final float	r = charResistance;
-				final float	q = centralFreq / (2 * passBarWidth);
-				
-				inductance1 = inductance2 = (float) (1e6 * r / (2000 * Math.PI * centralFreq * q));
-				capacitance1 = capacitance2 = (float) (1e12 * q / (2000 * Math.PI * centralFreq * r));
-				capacitance3 = capacitance2 / q;
-				trans1 = (float) Math.sqrt(inputResistance / r);
-				trans2 = (float) Math.sqrt(outputResistance / r);
+				switch (type) {
+					case G_TYPE			:
+						final float	rG = charResistance;
+						final float	qG = centralFreq / (2 * passBarWidth);
+						
+						inductance1 = (float) (1e6 * rG * qG / (2000 * Math.PI * centralFreq));
+						inductance2 = (float) (1e6 * rG / (2000 * Math.PI * centralFreq * qG));
+						capacitance1 = (float) (1e12 / (2000 * Math.PI * centralFreq * rG * qG));
+						capacitance2 = (float) (1e12 * qG / (2000 * Math.PI * centralFreq * rG));
+						capacitance3 = 0;
+						trans1 = 1;
+						trans2 = (float) Math.sqrt(outputResistance / rG);
+						break;
+					case PARALLEL_TYPE	:
+						final float	rParallel = charResistance;
+						final float	qParallel = centralFreq / (2 * passBarWidth);
+						
+						inductance1 = inductance2 = (float) (1e6 * rParallel / (2000 * Math.PI * centralFreq * qParallel));
+						capacitance1 = capacitance2 = (float) (1e12 * qParallel / (2000 * Math.PI * centralFreq * rParallel));
+						capacitance3 = capacitance2 / qParallel;
+						trans1 = (float) Math.sqrt(inputResistance / rParallel);
+						trans2 = (float) Math.sqrt(outputResistance / rParallel);
+						break;
+					case P_TYPE			:
+						final float	rP = charResistance;
+						final float	qP = centralFreq / (2 * passBarWidth);
+						
+						inductance1 = (float) (2e6 * rP * qP / (2000 * Math.PI * centralFreq));
+						inductance2 = (float) (1e6 * rP / (2000 * Math.PI * centralFreq * qP));
+						capacitance1 = (float) (1e12 / (4000 * Math.PI * centralFreq * rP * qP));
+						capacitance2 = (float) (1e12 * qP / (2000 * Math.PI * centralFreq * rP));
+						capacitance3 = 0;
+						trans1 = (float) Math.sqrt(inputResistance / rP);
+						trans2 = (float) Math.sqrt(outputResistance / rP);
+						break;
+					default :
+						throw new UnsupportedOperationException("Bar filet type ["+type+"] is not supported yet");
+				}
 				return RefreshMode.RECORD_ONLY;
 			default :
 				throw new UnsupportedOperationException("Unknown action string ["+actionName+"]");

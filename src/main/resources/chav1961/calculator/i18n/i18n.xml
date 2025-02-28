@@ -608,7 +608,7 @@
 		<key name="chav1961.calc.plugins.calc.barfilter.passbarwidth.tt">Filter pass band, kHz</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.inputresistance">Input resistance (Ohms)</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.inputresistance.tt">Input filter resistance, Ohms</key>
-		<key name="chav1961.calc.plugins.calc.barfilter.outputresistance">Input resistance (Ohms)</key>
+		<key name="chav1961.calc.plugins.calc.barfilter.outputresistance">Output resistance (Ohms)</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.outputresistance.tt">Output filter resistance, Ohms</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.charresistance">Character resistance (Ohms)</key>
 		<key name="chav1961.calc.plugins.calc.barfilter.charresistance.tt">Character filter resistance, Ohms</key>
