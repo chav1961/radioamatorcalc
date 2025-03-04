@@ -37,6 +37,7 @@ import chav1961.purelib.i18n.interfaces.Localizer;
 
 public class MutableLocalizer extends AbstractLocalizer {
 	private static final LocalKeyValue[]	EMPTY_VALUESET = new LocalKeyValue[0]; 
+	private static final String				SUBSCHEME = "mutable";
 	private static final String				NAMESPACE = "http://www.i18n.purelib.chav1961.ru/";
 	private static final String				PREFIX = "";
 	private static final String				TAG_ROOT = "localization";
@@ -83,9 +84,14 @@ public class MutableLocalizer extends AbstractLocalizer {
 
 	@Override
 	public URI getLocalizerId() {
-		return URI.create("mutable:/");
+		return URI.create(SUBSCHEME+":/");
 	}
 
+	@Override
+	public String getSubscheme() {
+		return SUBSCHEME;
+	}
+	
 	@Override
 	public boolean canServe(final URI resource) throws NullPointerException {
 		return false;

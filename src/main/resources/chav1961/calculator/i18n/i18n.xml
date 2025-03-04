@@ -93,6 +93,13 @@
 		<key name="menu.comports">Measures</key>
 		<key name="menu.comports.tt">Device are connected to COM-ports</key>
 
+		<key name="navigator.favorite.clearAll">Clear all</key>
+		<key name="navigator.favorite.clearAll.tt">Clear all</key>
+		<key name="navigator.favorite.item.remove">Remove item</key>
+		<key name="navigator.favorite.item.remove.tt">Remove item</key>
+		<key name="navigator.plugin.toFavorites">Add to favorites</key>
+		<key name="navigator.plugin.toFavorites.tt">Add to favorites</key>
+
 <!-- Localization for settings -->
 		<key name="settings.save">Save</key>
 		<key name="settings.save.tooltip">Save new application settings</key>
@@ -1386,7 +1393,7 @@
 		<key name="pipeMenu.stop.tt">Остановка конвейера</key>
 
 <!-- Локализация меню навигатора -->
-		<key name="menu.favorites">Популярные</key>
+		<key name="menu.favorites">Избранное</key>
 		<key name="menu.favorites.tt">Наиболее популярные расчеты</key>
 		<key name="menu.curcuits">Параметры цепей</key>
 		<key name="menu.curcuits.tt">Расчет параметров цепей</key> 
@@ -1398,6 +1405,13 @@
 		<key name="menu.heatAndMech.tt">Тепловые и механические расчеты</key>
 		<key name="menu.comports">Приборы</key>
 		<key name="menu.comports.tt">Приборы, подсоединенные к COM-портам</key>
+
+		<key name="navigator.favorite.clearAll">Очистить все</key>
+		<key name="navigator.favorite.clearAll.tt">Очистить все</key>
+		<key name="navigator.favorite.item.remove">Удалить строку</key>
+		<key name="navigator.favorite.item.remove.tt">Удалить строку</key>
+		<key name="navigator.plugin.toFavorites">Добавить в избранное</key>
+		<key name="navigator.plugin.toFavorites.tt">Добавить в избранное</key>
 
 <!-- Локализация настроек приложения -->
 		<key name="settings.save">Сохранить</key>

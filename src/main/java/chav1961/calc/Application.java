@@ -9,6 +9,8 @@ import java.awt.HeadlessException;
 import java.awt.SystemTray;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +36,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EtchedBorder;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 import chav1961.calc.interfaces.PluginInterface;
 import chav1961.calc.interfaces.TabContent;
@@ -44,6 +45,7 @@ import chav1961.calc.windows.PipeTab;
 import chav1961.calc.windows.WorkbenchTab;
 import chav1961.purelib.basic.ArgParser;
 import chav1961.purelib.basic.PureLibSettings;
+import chav1961.purelib.basic.SubstitutableProperties;
 import chav1961.purelib.basic.Utils;
 import chav1961.purelib.basic.exceptions.ContentException;
 import chav1961.purelib.basic.exceptions.EnvironmentException;
@@ -81,6 +83,7 @@ import chav1961.purelib.ui.swing.useful.JSystemTray;
 public class Application extends JFrame implements LocaleChangeListener, LocalizerOwner, LoggerFacadeOwner {
 	private static final long 				serialVersionUID = -2663340436788182341L;
 	private static final String				ARG_DEBUG = "debug";
+	private static final String				CONFIG_NAME = "./.radioamatorcalc.props";
 	
 	private final CurrentSettings			settings;
 	private final Localizer			 		parentLocalizer;
@@ -95,6 +98,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 	private final JStateString				stateString;
 	private final JFileContentManipulator	contentManipulator;
 	private final WorkbenchTab				wbt;
+	private final SubstitutableProperties	props = new SubstitutableProperties();
 			
 	private File							currentPipeFile = null;
 	private File				 			currentWorkingDir = new File("./");
@@ -127,6 +131,14 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 			stateString.setAutomaticClearTime(Severity.error,1,TimeUnit.MINUTES);
 			stateString.setAutomaticClearTime(Severity.warning,15,TimeUnit.SECONDS);
 			stateString.setAutomaticClearTime(Severity.info,5,TimeUnit.SECONDS);
+
+			final File	props = new File(CONFIG_NAME);
+			
+			if (props.exists() && props.isFile() && props.canRead()) {
+				try(final InputStream	is = new FileInputStream(props)) {
+					this.props.load(is);
+				}
+			}
 			
 			this.menu = SwingUtils.toJComponent(xda.byUIPath(URI.create("ui:/model/navigation.top.mainmenu")),JMenuBar.class); 
 			SwingUtils.assignActionListeners(this.menu,this);
@@ -142,19 +154,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 
 			final JSplitPane	split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 			
-			leftMenu = new SimpleNavigatorTree<ContentNodeMetadata>(localizer, xda.byUIPath(URI.create("ui:/model/navigation.top.navigator"))) {
-								private static final long serialVersionUID = 1L;
-								@Override
-								protected void appendNodes(final ContentNodeMetadata submenu, final DefaultMutableTreeNode node) {
-									final String	namePrefix = submenu.getName()+'.';
-									
-									for (PluginInterface<?> item : ServiceLoader.load(PluginInterface.class)) {
-										if (item.getPluginName().startsWith(namePrefix)) {
-											node.add(new DefaultMutableTreeNode(item.getMetadata(),false));
-										}
-									}
-								}
-							};
+			leftMenu = new LeftNavigator(localizer, xda.byUIPath(URI.create("ui:/model/navigation.top.navigator")), this.props);
 			leftMenu.addActionListener((e)->{callPlugin(e.getActionCommand());});
 			
 			this.contentManipulator = new JFileContentManipulator(new FileSystemOnFile(URI.create("file://./")),this.localizer
@@ -387,6 +387,7 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 		try{
 			contentManipulator.close();
 			setVisible(false);
+			props.store(new File(CONFIG_NAME));
 			dispose();
 		} catch (IOException e) {
 			stateString.message(Severity.error,e.getLocalizedMessage());

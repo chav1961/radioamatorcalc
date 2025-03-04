@@ -68,4 +68,13 @@
 	<app:menu id="searchToolbar">
 		<app:item name="search.toolbar.close" caption="search.toolbar.close" tooltip="search.toolbar.closeTT" icon="root://chav1961.calc.Application/chav1961/calc/closeAll.png" action="closeSearch"/>
 	</app:menu>
+	<app:menu id="navigator.favorite">
+		<app:item name="navigator.favorite.clearAll" caption="navigator.favorite.clearAll" tooltip="navigator.favorite.clearAll.tt" action="clearAllFavorites"/>
+	</app:menu>
+	<app:menu id="navigator.favorite.item">
+		<app:item name="navigator.favorite.item.remove" caption="navigator.favorite.item.remove" tooltip="navigator.favorite.item.remove.tt" action="removeFavorite"/>
+	</app:menu>
+	<app:menu id="navigator.plugin">
+		<app:item name="navigator.plugin.toFavorites" caption="navigator.plugin.toFavorites" tooltip="navigator.plugin.toFavorites.tt" action="addFavorite"/>
+	</app:menu>
 </app:root>
