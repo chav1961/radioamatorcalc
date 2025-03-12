@@ -26,15 +26,6 @@
 		<key name="menu.tools">Tools</key>
 		<key name="menu.ttTools">Set of tools to manage application</key>
 
-		<key name="menu.find">Search (Ctrl+F) ...</key>
-		<key name="menu.ttFind">Internet-styled search for calculator abilities</key>
-
-		<key name="menu.index">Indexing... </key>
-		<key name="menu.ttIndex">Rebuild search index for calculator abilities</key> 
-
-		<key name="menu.addPdf">Add PDF</key>
-		<key name="menu.ttAddPdf">Add new pdf file to the knowledge base</key> 
-
 		<key name="menu.languages">Language</key>
 		<key name="menu.ttLanguages">Select language for application</key>
 
@@ -1338,15 +1329,6 @@
 
 		<key name="menu.tools">Инструменты</key>
 		<key name="menu.ttTools">Набор инструментов для настройки приложения</key>
-
-		<key name="menu.find">Поиск (Ctrl+F)...</key>
-		<key name="menu.ttFind">Поиск возможностей приложения по расчетам в Интернет-стиле</key>
-
-		<key name="menu.index">Индексация... </key>
-		<key name="menu.ttIndex">Построение поискового индекса по возможностям калькулятора</key> 
-
-		<key name="menu.addPdf">Добавить PDF</key>
-		<key name="menu.ttAddPdf">Добавить новый pdf файл в базу знаний</key> 
 
 		<key name="menu.languages">Язык</key>
 		<key name="menu.ttLanguages">Выбрать язык приложения</key>

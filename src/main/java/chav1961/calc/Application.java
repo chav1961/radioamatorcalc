@@ -10,7 +10,6 @@ import java.awt.SystemTray;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -93,7 +92,6 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 	private final JPopupMenu				trayMenu;
 	private final CountDownLatch			latch;
 	private final SimpleNavigatorTree<ContentNodeMetadata>		leftMenu;
-	private final File						luceneDir = new File("./lucene");
 	private final JTabbedPane				tabs = new JTabbedPane();
 	private final JStateString				stateString;
 	private final JFileContentManipulator	contentManipulator;
@@ -173,10 +171,6 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 			wbt.pluginCount.refresh();
 			placeTab(tabs,wbt,false);
 			
-			SwingUtils.assignActionKey((JPanel)getContentPane()
-						,SwingUtils.KS_FIND
-						,SwingUtils.buildAnnotatedActionListener(this)
-						,SwingUtils.ACTION_FIND);
 			SwingUtils.assignActionKey((JPanel)getContentPane()
 						,SwingUtils.KS_HELP
 						,(e)->showOverview()
