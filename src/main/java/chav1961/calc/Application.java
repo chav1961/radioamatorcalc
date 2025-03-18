@@ -56,7 +56,6 @@ import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.basic.interfaces.LoggerFacadeOwner;
 import chav1961.purelib.fsys.FileSystemFactory;
-import chav1961.purelib.fsys.FileSystemOnFile;
 import chav1961.purelib.fsys.interfaces.FileSystemInterface;
 import chav1961.purelib.i18n.LocalizerFactory;
 import chav1961.purelib.i18n.interfaces.Localizer;
@@ -155,7 +154,8 @@ public class Application extends JFrame implements LocaleChangeListener, Localiz
 			leftMenu = new LeftNavigator(localizer, xda.byUIPath(URI.create("ui:/model/navigation.top.navigator")), this.props);
 			leftMenu.addActionListener((e)->{callPlugin(e.getActionCommand());});
 			
-			this.contentManipulator = new JFileContentManipulator(new FileSystemOnFile(URI.create("file://./")),this.localizer
+			this.contentManipulator = new JFileContentManipulator(FileSystemInterface.Factory.newInstance(URI.create(FileSystemInterface.FILESYSTEM_URI_SCHEME+":file://./"))
+												,this.localizer
 												,()->{return new InputStream() {@Override public int read() throws IOException {return -1;}};}
 												,()->{return new OutputStream() {@Override public void write(int b) throws IOException {}};}
 												);
