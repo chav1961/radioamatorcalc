@@ -1,46 +1,44 @@
 package chav1961.calc.plugins.calc.pcontour;
 
 import chav1961.calc.interfaces.PluginProperties;
-import chav1961.purelib.basic.CSSUtils.Frequency;
 import chav1961.purelib.basic.exceptions.FlowException;
 import chav1961.purelib.basic.exceptions.LocalizationException;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
-import chav1961.purelib.basic.interfaces.LoggerFacade.Severity;
 import chav1961.purelib.basic.interfaces.ModuleAccessor;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.i18n.interfaces.LocaleResourceLocation;
+import chav1961.purelib.ui.interfaces.Action;
 import chav1961.purelib.ui.interfaces.FormManager;
 import chav1961.purelib.ui.interfaces.Format;
 import chav1961.purelib.ui.interfaces.RefreshMode;
-import chav1961.purelib.ui.interfaces.Action;
 
-@LocaleResourceLocation("i18n:xml:root://chav1961.calc.plugins.calc.contour.ContourPlugin/chav1961/calculator/i18n/i18n.xml")
+@LocaleResourceLocation("i18n:xml:root://chav1961.calc.plugins.calc.pcontour.PContourPlugin/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="menu.curcuits.pcontour",tooltip="menu.curcuits.pcontour.tt",help="help.curcuits.pcontour.help")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.pcontour.button.calc",tooltip="chav1961.calc.plugins.calc.pcontour.button.calc.tt"),actionString="calculate")
-@PluginProperties(width=500,height=175,leftWidth=250,svgURI="schema1.SVG,schema2.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
+@PluginProperties(width=500,height=375,leftWidth=250,svgURI="schema1.SVG,schema2.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
 public class PContourPlugin implements FormManager<Object,PContourPlugin>, ModuleAccessor {
 	private final LoggerFacade 	logger;
 	
 	@LocaleResource(value="chav1961.calc.plugins.calc.pcontour.type",tooltip="chav1961.calc.plugins.calc.pcontour.type.tt")
-	@Format("9.2pzs")
+	@Format("9.2mpzs")
 	public PContourType	type = PContourType.SINGLE;
 	@LocaleResource(value="chav1961.calc.plugins.calc.pcontour.inputresistance",tooltip="chav1961.calc.plugins.calc.pcontour.inputresistance.tt")
-	@Format("9pzs")
+	@Format("9mpzs")
 	public float	inputResistance = 1000;
 	@LocaleResource(value="chav1961.calc.plugins.calc.pcontour.outputresistance",tooltip="chav1961.calc.plugins.calc.pcontour.outputresistance.tt")
-	@Format("9pzs")
+	@Format("9mpzs")
 	public float	outputResistance = 50;
 	@LocaleResource(value="chav1961.calc.plugins.calc.pcontour.lowfrequency",tooltip="chav1961.calc.plugins.calc.pcontour.lowfrequency.tt")
-	@Format("9.3pzs")
+	@Format("9.3mpzs")
 	public float	lowFrequency = 27;
 	@LocaleResource(value="chav1961.calc.plugins.calc.pcontour.highfrequency",tooltip="chav1961.calc.plugins.calc.pcontour.highfrequency.tt")
-	@Format("9.3pzs")
+	@Format("9.3mpzs")
 	public float	highFrequency = 27;
 	@LocaleResource(value="chav1961.calc.plugins.calc.pcontour.freequality",tooltip="chav1961.calc.plugins.calc.pcontour.freequality.tt")
-	@Format("9pzs")
+	@Format("9mpzs")
 	public float	freeQuality = 100;
 	@LocaleResource(value="chav1961.calc.plugins.calc.pcontour.loadquality",tooltip="chav1961.calc.plugins.calc.pcontour.loadquality.tt")
-	@Format("9pzs")
+	@Format("9mpzs")
 	public float	loadQuality = 15;
 	@LocaleResource(value="chav1961.calc.plugins.calc.pcontour.indictance1",tooltip="chav1961.calc.plugins.calc.pcontour.indictance1.tt")
 	@Format("9ro")

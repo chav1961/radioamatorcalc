@@ -18,6 +18,7 @@ module chav1961.radioamatorcalc {
 		, chav1961.calc.plugins.calc.superget.SuperGetFactory
 		, chav1961.calc.plugins.calc.resonant.tube.ResonantTubeFactory		
 		, chav1961.calc.plugins.calc.contour.ContourFactory
+		, chav1961.calc.plugins.calc.pcontour.PContourFactory
 		, chav1961.calc.plugins.calc.wienbridge.WienBridgeFactory
 		, chav1961.calc.plugins.calc.phaseshift.PhaseShiftFactory
 		, chav1961.calc.plugins.calc.timbre.TimbreFactory

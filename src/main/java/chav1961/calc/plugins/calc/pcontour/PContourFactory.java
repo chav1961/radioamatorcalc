@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import chav1961.calc.interfaces.PluginInterface;
-import chav1961.purelib.basic.URIUtils;
 import chav1961.purelib.basic.interfaces.LoggerFacade;
 import chav1961.purelib.i18n.interfaces.LocaleResource;
 import chav1961.purelib.model.Constants;
