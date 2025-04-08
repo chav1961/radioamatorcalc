@@ -15,7 +15,7 @@ import chav1961.purelib.ui.interfaces.RefreshMode;
 @LocaleResourceLocation("i18n:xml:root://chav1961.calc.plugins.calc.pcontour.PContourPlugin/chav1961/calculator/i18n/i18n.xml")
 @LocaleResource(value="menu.curcuits.pcontour",tooltip="menu.curcuits.pcontour.tt",help="help.curcuits.pcontour.help")
 @Action(resource=@LocaleResource(value="chav1961.calc.plugins.calc.pcontour.button.calc",tooltip="chav1961.calc.plugins.calc.pcontour.button.calc.tt"),actionString="calculate")
-@PluginProperties(width=500,height=375,leftWidth=250,svgURI="schema1.SVG,schema2.SVG",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
+@PluginProperties(width=650,height=380,leftWidth=450,svgURI="schema1.svg,schema2.svg",pluginIconURI="frameIcon.png",desktopIconURI="desktopIcon.png",resizable=false)
 public class PContourPlugin implements FormManager<Object,PContourPlugin>, ModuleAccessor {
 	private final LoggerFacade 	logger;
 	
