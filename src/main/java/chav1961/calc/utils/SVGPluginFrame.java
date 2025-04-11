@@ -88,7 +88,7 @@ public class SVGPluginFrame<T> extends InnerFrame<T> {
 						else if (field.isAnnotationPresent(Format.class)) {
 							final FieldFormat	ff = new FieldFormat(field.getType(),field.getAnnotation(Format.class).value());
 							
-							return result == null ? "" : ff.print(result,FieldFormat.PrintMode.SINGLE_TEXT);
+							return result == null ? "" : ff.print(result, FieldFormat.PrintMode.SINGLE_TEXT);
 						}
 						else {
 							return result == null ? "" : result.toString();
